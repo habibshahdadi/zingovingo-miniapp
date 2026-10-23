@@ -194,8 +194,7 @@ $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">د
 }
 // ==================== ثبت درخواست جدید ====================
 function loadNewRequest() {
-const baseUrl = window.location.href.split('?')[0];
-window.location.href = baseUrl + 'customerform.html?operatorId=' + encodeURIComponent(currentUser.username);
+  window.location.href = 'customerform.html?operatorId=' + encodeURIComponent(currentUser.username);
 }
 // ==================== پروفایل ====================
 function loadProfile() {
