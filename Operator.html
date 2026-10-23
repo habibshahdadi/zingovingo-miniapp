@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="zv-api.js"></script>
+<base target="_top">
+<title>پنل اپراتور | ZingoVingo</title>
+<style>
+:root{--navy:#0B1736;--navy-light:#1a2a4d;--orange:#FF6B1A;--orange-light:#ff8533;--bg:#f4f6fb;--text:#172033;--muted:#657086;--line:#dfe4ee;--white:#fff;--green:#067647;--danger:#b42318;--blue:#1849a9;--yellow:#f79009;--shadow:0 2px 10px #17203308;--radius:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;line-height:1.7;font-size:14px}
+button,input,select,textarea{font-family:inherit;font-size:13px}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy) 0%,#1a2a4d 100%)}
+.login-box{background:#fff;border-radius:20px;padding:40px;width:min(420px,92%);box-shadow:0 20px 60px #0003}
+.login-box h1{color:var(--navy);text-align:center;margin-bottom:8px;font-size:28px}
+.login-box h1 span{color:var(--orange)}
+.login-box .subtitle{text-align:center;color:var(--muted);margin-bottom:24px;font-size:13px}
+.login-box .field{margin-bottom:14px}
+.login-box label{display:block;margin-bottom:6px;font-weight:700;font-size:13px}
+.login-box input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;outline:none}
+.login-box input:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
+.login-box .btn{width:100%;padding:13px;margin-top:8px}
+.login-error{background:#fef3f2;color:var(--danger);padding:10px;border-radius:8px;margin-bottom:12px;font-size:13px;display:none}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:var(--navy);color:#fff;padding:0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.brand{padding:20px;border-bottom:1px solid var(--navy-light)}
+.brand h2{font-size:22px;font-weight:900}
+.brand h2 span{color:var(--orange)}
+.brand small{color:#8896b3;font-size:11px}
+.nav-menu{flex:1;padding:12px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:12px 20px;cursor:pointer;color:#c8d2e6;font-size:14px;border-right:3px solid transparent;transition:all .2s}
+.nav-item:hover{background:var(--navy-light);color:#fff}
+.nav-item.active{background:var(--navy-light);color:#fff;border-right-color:var(--orange)}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--navy-light);font-size:12px}
+.user-info{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:14px;overflow:hidden}
+.user-avatar img{width:100%;height:100%;object-fit:cover}
+.user-name{font-weight:700;font-size:13px}
+.user-role{color:#8896b3;font-size:11px}
+.logout-btn{background:transparent;border:1px solid var(--navy-light);color:#c8d2e6;padding:8px;border-radius:8px;cursor:pointer;width:100%;font-size:12px}
+.logout-btn:hover{background:var(--navy-light);color:#fff}
+.main{padding:24px;overflow-x:hidden}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.page-title{font-size:20px;color:var(--navy);font-weight:900}
+.btn{border:0;border-radius:10px;padding:9px 16px;font:inherit;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{background:var(--orange-light)}
+.btn-secondary{background:#eef1f7;color:var(--navy)}
+.btn-secondary:hover{background:#dfe4ee}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.stat-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden;transition:transform .2s}
+.stat-card:hover{transform:translateY(-2px)}
+.stat-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:var(--orange)}
+.stat-card.green::before{background:var(--green)}
+.stat-card.blue::before{background:var(--blue)}
+.stat-card.yellow::before{background:var(--yellow)}
+.stat-card.red::before{background:var(--danger)}
+.stat-label{font-size:12px;color:var(--muted);margin-bottom:6px}
+.stat-value{font-size:24px;font-weight:900;color:var(--navy);font-variant-numeric:tabular-nums}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:700;color:var(--muted)}
+input,select,textarea{font:inherit;border:1px solid #cfd6e3;border-radius:8px;padding:9px 11px;background:#fff;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
+textarea{min-height:80px;resize:vertical}
+.modal{display:none;position:fixed;inset:0;background:#071127a8;z-index:100;padding:18px;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-box{width:min(500px,100%);background:#fff;border-radius:var(--radius);padding:24px;max-height:90vh;overflow:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.modal-header h2{font-size:18px;color:var(--navy)}
+.modal-close{background:transparent;border:0;font-size:22px;cursor:pointer;color:var(--muted);padding:4px 10px}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.form-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.toast{position:fixed;bottom:20px;left:20px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;z-index:200;display:none;box-shadow:0 10px 30px #0003;font-size:13px}
+.toast.show{display:block;animation:slideIn .3s}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--danger)}
+@keyframes slideIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.employee-profile{display:grid;grid-template-columns:150px 1fr;gap:20px}
+.employee-avatar-large{width:150px;height:150px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:50px;color:#fff;font-weight:900;overflow:hidden;cursor:pointer}
+.employee-avatar-large img{width:100%;height:100%;object-fit:cover}
+.employee-details{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.detail-item{background:#f8f9fc;padding:12px;border-radius:10px}
+.detail-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.detail-value{font-weight:700;color:var(--navy)}
+.loading{text-align:center;padding:40px;color:var(--muted)}
+.spinner{display:inline-block;width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--orange);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.menu-toggle{display:none;background:var(--navy);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+.action-btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:20px;background:var(--orange);color:#fff;border-radius:14px;font-size:16px;font-weight:700;text-decoration:none;transition:all .2s;cursor:pointer;border:0;font-family:inherit}
+.action-btn:hover{background:var(--orange-light);transform:translateY(-2px)}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:fixed;right:-280px;width:260px;z-index:50;transition:right .3s}.sidebar.open{right:0}.menu-toggle{display:block}.employee-profile{grid-template-columns:1fr}.employee-avatar-large{width:120px;height:120px;font-size:40px}}
+</style>
+</head>
+<body>
+<div id="loginPage" class="login-page">
+<div class="login-box">
+<h1>Zingo<span>Vingo</span></h1>
+<div class="subtitle">پنل اپراتور — ثبت درخواست</div>
+<div id="loginError" class="login-error"></div>
+<div class="field"><label>نام کاربری یا ایمیل</label><input id="loginUser" placeholder="username" autocomplete="username"></div>
+<div class="field"><label>رمز عبور</label><input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+<button class="btn btn-primary" onclick="doLogin()">ورود به پنل</button>
+<div style="text-align:center;margin-top:16px;font-size:12px;color:var(--muted)"><a href="?customerform.html" style="color:var(--orange);text-decoration:none">→ فرم ثبت درخواست عمومی</a></div>
+</div>
+</div>
+<div id="appContainer" class="app" style="display:none">
+<aside class="sidebar" id="sidebar">
+<div class="brand"><h2>Zingo<span>Vingo</span></h2><small>پنل اپراتور</small></div>
+<nav class="nav-menu" id="navMenu"></nav>
+<div class="sidebar-footer">
+<div class="user-info"><div class="user-avatar" id="userAvatar">?</div><div><div class="user-name" id="userName">—</div><div class="user-role">اپراتور</div></div></div>
+<button class="logout-btn" onclick="doLogout()">🚪 خروج</button>
+</div>
+</aside>
+<main class="main">
+<button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"> منو</button>
+<div id="pageContent"><div class="loading"><div class="spinner"></div></div></div>
+</main>
+</div>
+<div id="toast" class="toast"></div>
+<div id="modal" class="modal"><div class="modal-box" id="modalBox"></div></div>
+
+<script>
+fetch('PhotoEditor.html').then(function (r) { return r.text(); }).then(function (html) {
+  var wrap = document.createElement('div'); wrap.innerHTML = html; document.body.appendChild(wrap);
+  Array.prototype.slice.call(wrap.querySelectorAll('script')).forEach(function (old) {
+    var s = document.createElement('script'); s.textContent = old.textContent; document.body.appendChild(s);
+  });
+}).catch(function (e) { console.warn('PhotoEditor بارگذاری نشد:', e); });
+</script>
+
+<script>
+const $ = id => document.getElementById(id);
+const toFa = n => new Intl.NumberFormat('fa-IR').format(n);
+let currentToken = localStorage.getItem('zv_operator_token') || null;
+let currentUser = null;
+const MENU_ITEMS = [
+{ id: 'dashboard', label: '📊 داشبورد' },
+{ id: 'newRequest', label: '➕ ثبت درخواست جدید' },
+{ id: 'profile', label: '👤 پروفایل من' }
+];
+function toast(msg, type='info') { const t = $('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => t.classList.remove('show'), 3500); }
+function openModal(html) { $('modalBox').innerHTML = html; $('modal').classList.add('open'); }
+function closeModal() { $('modal').classList.remove('open'); }
+$('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
+function renderMenu() {
+const menu = $('navMenu');
+menu.innerHTML = MENU_ITEMS.map(item => '<div class="nav-item" data-page="' + item.id + '">' + item.label + '</div>').join('');
+menu.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', () => { menu.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); item.classList.add('active'); loadPage(item.dataset.page); document.getElementById('sidebar').classList.remove('open'); }); });
+}
+function doLogin() {
+const u = $('loginUser').value.trim(), p = $('loginPass').value;
+if (!u || !p) { showLoginError('نام کاربری و رمز عبور را وارد کنید'); return; }
+$('loginError').style.display = 'none';
+const btn = document.querySelector('.login-box .btn-primary');
+if (btn) { btn.disabled = true; btn.textContent = 'در حال ورود...'; }
+google.script.run.withSuccessHandler(function(r) {
+if (btn) { btn.disabled = false; btn.textContent = 'ورود به پنل'; }
+if (r && r.success) { currentToken = r.token; currentUser = r.user; localStorage.setItem('zv_operator_token', r.token); localStorage.setItem('zv_operator_user', JSON.stringify(r.user)); showApp(r.user); }
+else showLoginError((r && r.message) || 'خطا در ورود');
+}).withFailureHandler(function(e) { if (btn) { btn.disabled = false; btn.textContent = 'ورود به پنل'; } showLoginError(e.message || 'خطا در ورود'); }).operatorLogin(u, p);
+}
+function showLoginError(msg) { $('loginError').textContent = msg; $('loginError').style.display = 'block'; }
+function doLogout() { if (currentToken) google.script.run.operatorLogout(currentToken); localStorage.removeItem('zv_operator_token'); localStorage.removeItem('zv_operator_user'); currentToken = null; currentUser = null; location.reload(); }
+function showApp(user) {
+currentUser = user; $('loginPage').style.display = 'none'; $('appContainer').style.display = 'grid';
+$('userName').textContent = user.name;
+const avatar = $('userAvatar'); if (user.avatar) avatar.innerHTML = '<img src="' + user.avatar + '" onerror="this.style.display=\'none\'">'; else avatar.textContent = user.name ? user.name.charAt(0) : '?';
+renderMenu();
+const firstNav = document.querySelector('.nav-item[data-page="dashboard"]'); if (firstNav) firstNav.classList.add('active');
+loadPage('dashboard');
+}
+(function checkSession() { const saved = localStorage.getItem('zv_operator_user'); if (currentToken && saved) { currentUser = JSON.parse(saved); showApp(currentUser); } })();
+function loadPage(page) {
+const c = $('pageContent'); c.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+const loaders = { dashboard: loadDashboard, newRequest: loadNewRequest, profile: loadProfile };
+(loaders[page] || loadDashboard)();
+}
+// ==================== داشبورد ====================
+function loadDashboard() {
+google.script.run.withSuccessHandler(function(stats) {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">داشبورد اپراتور</h1></div>' +
+'<div class="card" style="text-align:center;padding:24px"><div style="font-size:14px;color:var(--muted);margin-bottom:8px">شناسه اپراتور</div><div style="font-size:20px;font-weight:900;color:var(--orange)">' + (currentUser.employeeId || currentUser.username) + '</div></div>' +
+'<div class="stats-grid">' +
+'<div class="stat-card"><div class="stat-label">کل درخواست‌ها</div><div class="stat-value">' + toFa(stats.total) + '</div></div>' +
+'<div class="stat-card green"><div class="stat-label">تکمیل شده</div><div class="stat-value">' + toFa(stats.completed) + '</div></div>' +
+'<div class="stat-card yellow"><div class="stat-label">در انتظار</div><div class="stat-value">' + toFa(stats.pending) + '</div></div>' +
+'<div class="stat-card red"><div class="stat-label">لغو شده</div><div class="stat-value">' + toFa(stats.cancelled) + '</div></div>' +
+'</div>' +
+'<button class="action-btn" onclick="loadNewRequest()">➕ ثبت درخواست جدید</button>';
+}).withFailureHandler(function(e) { $('pageContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>'; }).getOperatorStats(currentToken);
+}
+// ==================== ثبت درخواست جدید ====================
+function loadNewRequest() {
+const baseUrl = window.location.href.split('?')[0];
+window.location.href = baseUrl + 'customerform.html?operatorId=' + encodeURIComponent(currentUser.username);
+}
+// ==================== پروفایل ====================
+function loadProfile() {
+google.script.run.withSuccessHandler(function(profile) {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">پروفایل من</h1><button class="btn btn-primary" onclick=\'editProfile(' + JSON.stringify(profile).replace(/'/g,"&#39;") + ')\'>✏️ ویرایش</button></div>' +
+'<div class="card"><div class="employee-profile"><div class="employee-avatar-large" onclick="openMyPhotoEditor()" title="برای تغییر عکس کلیک کنید">' + (profile.avatar ? '<img src="'+profile.avatar+'" onerror="this.parentElement.innerHTML=\'' + (profile.fullName||'?').charAt(0) + '\'">' : (profile.fullName||'?').charAt(0)) + '</div>' +
+'<div class="employee-details"><div class="detail-item"><div class="detail-label">شناسه اپراتور</div><div class="detail-value">' + profile.employeeId + '</div></div><div class="detail-item"><div class="detail-label">نام کامل</div><div class="detail-value">' + profile.fullName + '</div></div><div class="detail-item"><div class="detail-label">نام کاربری</div><div class="detail-value">' + profile.username + '</div></div><div class="detail-item"><div class="detail-label">ایمیل</div><div class="detail-value">' + (profile.email||'—') + '</div></div><div class="detail-item"><div class="detail-label">موبایل</div><div class="detail-value" style="direction:ltr;text-align:right">' + (profile.phone||'—') + '</div></div><div class="detail-item"><div class="detail-label">نقش</div><div class="detail-value">اپراتور</div></div></div></div></div>';
+}).withFailureHandler(function(e) { $('pageContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>'; }).getOperatorProfile(currentToken);
+}
+function editProfile(p) {
+openModal('<div class="modal-header"><h2>ویرایش پروفایل</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="form-grid"><div class="field"><label>نام کاربری</label><input id="pUsername" value="' + p.username + '"></div><div class="field"><label>رمز عبور جدید (خالی = بدون تغییر)</label><input id="pPassword" type="password"></div><div class="field"><label>ایمیل</label><input id="pEmail" value="' + (p.email||'') + '"></div><div class="field"><label>موبایل</label><input id="pPhone" value="' + (p.phone||'') + '"></div></div>' +
+'<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveProfile()">ذخیره</button></div>');
+}
+function saveProfile() {
+const updates = { username: $('pUsername').value, email: $('pEmail').value, phone: $('pPhone').value };
+const pass = $('pPassword').value; if (pass) updates.password = pass;
+google.script.run.withSuccessHandler(function() { closeModal(); toast('پروفایل بروزرسانی شد', 'success'); loadProfile(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).updateOperatorProfile(updates, currentToken);
+}
+// ==================== آپلود عکس پروفایل ====================
+function openMyPhotoEditor() {
+if (!window.ZVPhoto) { toast('کامپوننت ویرایش عکس بارگذاری نشده', 'error'); return; }
+ZVPhoto.open({
+endpoint: 'uploadMyProfilePhoto',
+token: currentToken,
+onDone: function(url) {
+currentUser.avatar = url;
+localStorage.setItem('zv_operator_user', JSON.stringify(currentUser));
+const av = $('userAvatar'); if (av) av.innerHTML = '<img src="' + url + '" onerror="this.style.display=\'none\'">';
+toast('عکس پروفایل بروزرسانی شد', 'success');
+loadProfile();
+}
+});
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Enter' && $('loginPage').style.display !== 'none') doLogin(); });
+</script>
+</body>
+</html>
