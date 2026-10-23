@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base target="_top">
+<title>پنل مدیر ارشد | ZingoVingo</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="zv-api.js"></script>
+<style>
+:root{--navy:#0B1736;--navy-light:#1a2a4d;--orange:#FF6B1A;--orange-light:#ff8533;--bg:#f4f6fb;--text:#172033;--muted:#657086;--line:#dfe4ee;--white:#fff;--green:#067647;--danger:#b42318;--blue:#1849a9;--yellow:#f79009;--shadow:0 2px 10px #17203308;--radius:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;line-height:1.7;font-size:14px}
+button,input,select,textarea{font-family:inherit;font-size:13px}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy) 0%,#1a2a4d 100%)}
+.login-box{background:#fff;border-radius:20px;padding:40px;width:min(420px,92%);box-shadow:0 20px 60px #0003}
+.login-box h1{color:var(--navy);text-align:center;margin-bottom:8px;font-size:28px}
+.login-box h1 span{color:var(--orange)}
+.login-box .subtitle{text-align:center;color:var(--muted);margin-bottom:24px;font-size:13px}
+.login-box .field{margin-bottom:14px}
+.login-box label{display:block;margin-bottom:6px;font-weight:700;font-size:13px}
+.login-box input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;outline:none}
+.login-box input:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
+.login-box .btn{width:100%;padding:13px;margin-top:8px}
+.login-error{background:#fef3f2;color:var(--danger);padding:10px;border-radius:8px;margin-bottom:12px;font-size:13px;display:none}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:var(--navy);color:#fff;padding:0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.brand{padding:20px;border-bottom:1px solid var(--navy-light)}
+.brand h2{font-size:22px;font-weight:900}
+.brand h2 span{color:var(--orange)}
+.brand small{color:#8896b3;font-size:11px}
+.nav-menu{flex:1;padding:12px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:12px 20px;cursor:pointer;color:#c8d2e6;font-size:14px;border-right:3px solid transparent;transition:all .2s}
+.nav-item:hover{background:var(--navy-light);color:#fff}
+.nav-item.active{background:var(--navy-light);color:#fff;border-right-color:var(--orange)}
+.nav-item .badge{margin-right:auto;background:var(--orange);color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--navy-light);font-size:12px}
+.user-info{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:14px;overflow:hidden}
+.user-avatar img{width:100%;height:100%;object-fit:cover}
+.user-name{font-weight:700;font-size:13px}
+.user-role{color:#8896b3;font-size:11px}
+.logout-btn{background:transparent;border:1px solid var(--navy-light);color:#c8d2e6;padding:8px;border-radius:8px;cursor:pointer;width:100%;font-size:12px}
+.logout-btn:hover{background:var(--navy-light);color:#fff}
+.main{padding:24px;overflow-x:hidden}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.page-title{font-size:20px;color:var(--navy);font-weight:900}
+.btn{border:0;border-radius:10px;padding:9px 16px;font:inherit;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{background:var(--orange-light)}
+.btn-secondary{background:#eef1f7;color:var(--navy)}
+.btn-secondary:hover{background:#dfe4ee}
+.btn-danger{background:#fef3f2;color:var(--danger)}
+.btn-danger:hover{background:#fee4e2}
+.btn-success{background:#ecfdf3;color:var(--green)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.stat-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden;transition:transform .2s}
+.stat-card:hover{transform:translateY(-2px)}
+.stat-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:var(--orange)}
+.stat-card.green::before{background:var(--green)}
+.stat-card.blue::before{background:var(--blue)}
+.stat-card.yellow::before{background:var(--yellow)}
+.stat-card.red::before{background:var(--danger)}
+.stat-label{font-size:12px;color:var(--muted);margin-bottom:6px}
+.stat-value{font-size:24px;font-weight:900;color:var(--navy);font-variant-numeric:tabular-nums}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8f9fc;padding:12px;text-align:right;font-weight:700;color:var(--navy);border-bottom:2px solid var(--line);position:sticky;top:0;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:hover{background:#fafbfd}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-new{background:#eff6ff;color:var(--blue)}
+.badge-progress{background:#fff7ed;color:#9a3412}
+.badge-done{background:#ecfdf3;color:var(--green)}
+.badge-cancel{background:#fef3f2;color:var(--danger)}
+.badge-active{background:#ecfdf3;color:var(--green)}
+.badge-inactive{background:#fef3f2;color:var(--danger)}
+.badge-role{background:var(--navy-light);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:700;color:var(--muted)}
+input,select,textarea{font:inherit;border:1px solid #cfd6e3;border-radius:8px;padding:9px 11px;background:#fff;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
+textarea{min-height:80px;resize:vertical}
+.modal{display:none;position:fixed;inset:0;background:#071127a8;z-index:100;padding:18px;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-box{width:min(800px,100%);background:#fff;border-radius:var(--radius);padding:24px;max-height:90vh;overflow:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.modal-header h2{font-size:18px;color:var(--navy)}
+.modal-close{background:transparent;border:0;font-size:22px;cursor:pointer;color:var(--muted);padding:4px 10px}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.form-grid .full{grid-column:1/-1}
+.toast{position:fixed;bottom:20px;left:20px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;z-index:200;display:none;box-shadow:0 10px 30px #0003;font-size:13px}
+.toast.show{display:block;animation:slideIn .3s}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--danger)}
+@keyframes slideIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto}
+.tab{padding:10px 16px;cursor:pointer;border-bottom:2px solid transparent;font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap}
+.tab.active{color:var(--orange);border-bottom-color:var(--orange)}
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:16px;margin-bottom:20px}
+.chart-box{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.chart-box h3{margin-bottom:12px;color:var(--navy);font-size:15px}
+.employee-profile{display:grid;grid-template-columns:200px 1fr;gap:20px}
+.employee-avatar-large{width:200px;height:200px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:60px;color:#fff;font-weight:900;overflow:hidden;cursor:pointer}
+.employee-avatar-large img{width:100%;height:100%;object-fit:cover}
+.employee-details{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.detail-item{background:#f8f9fc;padding:12px;border-radius:10px}
+.detail-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.detail-value{font-weight:700;color:var(--navy)}
+.loading{text-align:center;padding:40px;color:var(--muted)}
+.spinner{display:inline-block;width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--orange);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.menu-toggle{display:none;background:var(--navy);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+.bulk-actions{background:#fff7ed;border:1px solid #fed7aa;padding:10px 14px;border-radius:10px;margin-bottom:14px;display:none;align-items:center;gap:10px;flex-wrap:wrap}
+.bulk-actions.show{display:flex}
+.bulk-actions strong{color:#9a3412}
+.top-list{display:grid;gap:8px}
+.top-item{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8f9fc;border-radius:8px}
+.top-item .rank{background:var(--orange);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900}
+.top-item .info{flex:1;margin:0 10px}
+.top-item .info .name{font-weight:700;font-size:13px}
+.top-item .info .sub{font-size:11px;color:var(--muted)}
+.top-item .value{font-weight:900;color:var(--navy)}
+.multi-select{position:relative}
+.multi-select-btn{border:1px solid #cfd6e3;border-radius:8px;padding:9px 11px;background:#fff;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.multi-select-dropdown{display:none;position:absolute;top:100%;right:0;left:0;background:#fff;border:1px solid var(--line);border-radius:8px;max-height:200px;overflow-y:auto;z-index:10;box-shadow:0 10px 30px #17203320}
+.multi-select-dropdown.open{display:block}
+.multi-select-dropdown label{display:flex;align-items:center;gap:8px;padding:8px 11px;cursor:pointer;font-size:13px}
+.multi-select-dropdown label:hover{background:#f8f9fc}
+@media print{.sidebar,.page-header,.btn,.filters,.modal-footer,.bulk-actions,.menu-toggle{display:none!important}.app{grid-template-columns:1fr}.main{padding:0}.card{box-shadow:none;border:1px solid #ddd}}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:fixed;right:-280px;width:260px;z-index:50;transition:right .3s}.sidebar.open{right:0}.menu-toggle{display:block}.form-grid{grid-template-columns:1fr}.employee-profile{grid-template-columns:1fr}.employee-avatar-large{width:150px;height:150px;font-size:40px}}
+</style>
+</head>
+<body>
+<div id="loginPage" class="login-page">
+<div class="login-box">
+<h1>Zingo<span>Vingo</span></h1>
+<div class="subtitle">پنل مدیر ارشد — مدیریت سیستم</div>
+<div id="loginError" class="login-error"></div>
+<div class="field"><label>نام کاربری یا ایمیل</label><input id="loginUser" placeholder="username یا email" autocomplete="username"></div>
+<div class="field"><label>رمز عبور</label><input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+<button class="btn btn-primary" onclick="doLogin()">ورود به پنل</button>
+<div style="text-align:center;margin-top:16px;font-size:12px;color:var(--muted)"><a href="customerform.html" style="color:var(--orange);text-decoration:none">→ بازگشت به سایت</a></div>
+</div>
+</div>
+<div id="appContainer" class="app" style="display:none">
+<aside class="sidebar" id="sidebar">
+<div class="brand"><h2>Zingo<span>Vingo</span></h2><small>پنل مدیر ارشد</small></div>
+<nav class="nav-menu" id="navMenu"></nav>
+<div class="sidebar-footer">
+<div class="user-info"><div class="user-avatar" id="userAvatar">?</div><div><div class="user-name" id="userName">—</div><div class="user-role" id="userRole">—</div></div></div>
+<button class="logout-btn" onclick="doLogout()">🚪 خروج</button>
+<div style="margin-top:10px"><a href="customerform.html" style="color:var(--orange);text-decoration:none;font-size:11px">→ بازگشت به سایت</a></div>
+</div>
+</aside>
+<main class="main">
+<button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰ منو</button>
+<div id="pageContent"><div class="loading"><div class="spinner"></div></div></div>
+</main>
+</div>
+<div id="toast" class="toast"></div>
+<div id="modal" class="modal"><div class="modal-box" id="modalBox"></div></div>
+
+<script>
+fetch('PhotoEditor.html').then(function (r) { return r.text(); }).then(function (html) {
+  var wrap = document.createElement('div'); wrap.innerHTML = html; document.body.appendChild(wrap);
+  Array.prototype.slice.call(wrap.querySelectorAll('script')).forEach(function (old) {
+    var s = document.createElement('script'); s.textContent = old.textContent; document.body.appendChild(s);
+  });
+}).catch(function (e) { console.warn('PhotoEditor بارگذاری نشد:', e); });
+</script>
+
+<script>
+const $ = id => document.getElementById(id);
+const money = n => new Intl.NumberFormat('en-US').format(Math.round(Number(n)||0)) + ' ریال';
+const toFa = n => new Intl.NumberFormat('fa-IR').format(n);
+let currentToken = localStorage.getItem('zv_administrator_token') || null;
+let currentUser = null;
+let selectedRows = new Set();
+const MENU_ITEMS = [
+{ id: 'dashboard', label: '📊 داشبورد' },
+{ id: 'orders', label: ' سفارشات', hasBadge: true },
+{ id: 'cards', label: '🎫 کارت‌ها' },
+{ id: 'tasks', label: '✅ لیست کارها' },
+{ id: 'branches', label: '🏢 شعبه‌ها' },
+{ id: 'groups', label: '👥 گروه‌ها' },
+{ id: 'employees', label: '👔 کارمندان' },
+{ id: 'workers', label: '👷 نیروها' },
+{ id: 'services', label: '🧰 خدمات' },
+{ id: 'customers', label: ' مشتریان' },
+{ id: 'offers', label: '🎟️ کدهای تخفیف' },
+{ id: 'reports', label: '📈 گزارش‌ها' },
+{ id: 'logs', label: '📝 لاگ‌ها' },
+{ id: 'settings', label: '🔧 تنظیمات' },
+{ id: 'profile', label: '👤 پروفایل من' }
+];
+function toast(msg, type='info') { const t = $('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => t.classList.remove('show'), 3500); }
+function openModal(html) { $('modalBox').innerHTML = html; $('modal').classList.add('open'); }
+function closeModal() { $('modal').classList.remove('open'); }
+$('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
+function statusBadge(s) { return '<span class="badge badge-' + (/جدید|ثبت اولیه/.test(s)?'new':/تکمیل/.test(s)?'done':/لغو/.test(s)?'cancel':'progress') + '">' + s + '</span>'; }
+function renderMenu() {
+const menu = $('navMenu');
+const allowed = (currentUser.permissions && currentUser.permissions.pages) || [];
+menu.innerHTML = MENU_ITEMS.filter(item => allowed.includes(item.id)).map(item => '<div class="nav-item" data-page="' + item.id + '">' + item.label + (item.hasBadge ? '<span class="badge" id="pendingBadge">0</span>' : '') + '</div>').join('');
+menu.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', () => { menu.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); item.classList.add('active'); loadPage(item.dataset.page); document.getElementById('sidebar').classList.remove('open'); }); });
+}
+function doLogin() {
+const u = $('loginUser').value.trim(), p = $('loginPass').value;
+if (!u || !p) { showLoginError('نام کاربری و رمز عبور را وارد کنید'); return; }
+$('loginError').style.display = 'none';
+const btn = document.querySelector('.login-box .btn-primary');
+if (btn) { btn.disabled = true; btn.textContent = 'در حال ورود...'; }
+google.script.run.withSuccessHandler(function(r) {
+if (btn) { btn.disabled = false; btn.textContent = 'ورود به پنل'; }
+if (r && r.success) { currentToken = r.token; currentUser = r.user; localStorage.setItem('zv_administrator_token', r.token); localStorage.setItem('zv_administrator_user', JSON.stringify(r.user)); showApp(r.user); }
+else showLoginError((r && r.message) || 'خطا در ورود');
+}).withFailureHandler(function(e) { if (btn) { btn.disabled = false; btn.textContent = 'ورود به پنل'; } showLoginError(e.message || 'خطا در ورود'); }).adminLogin(u, p);
+}
+function showLoginError(msg) { $('loginError').textContent = msg; $('loginError').style.display = 'block'; }
+function doLogout() { if (currentToken) google.script.run.adminLogout(currentToken); localStorage.removeItem('zv_administrator_token'); localStorage.removeItem('zv_administrator_user'); currentToken = null; currentUser = null; location.reload(); }
+function showApp(user) {
+currentUser = user; $('loginPage').style.display = 'none'; $('appContainer').style.display = 'grid';
+$('userName').textContent = user.name; $('userRole').innerHTML = (user.roleFa || 'ادمین ارشد') + ' <span class="badge-role">' + user.role + '</span>';
+const avatar = $('userAvatar'); if (user.avatar) avatar.innerHTML = '<img src="' + user.avatar + '" onerror="this.style.display=\'none\'">'; else avatar.textContent = user.name ? user.name.charAt(0) : '?';
+renderMenu();
+const firstNav = document.querySelector('.nav-item[data-page="dashboard"]'); if (firstNav) firstNav.classList.add('active');
+loadPage('dashboard');
+}
+(function checkSession() { const saved = localStorage.getItem('zv_administrator_user'); if (currentToken && saved) { currentUser = JSON.parse(saved); showApp(currentUser); } })();
+function loadPage(page) {
+const c = $('pageContent'); c.innerHTML = '<div class="loading"><div class="spinner"></div></div>'; selectedRows.clear();
+const loaders = { dashboard: loadDashboard, orders: loadOrders, cards: loadCards, tasks: loadTasks, branches: loadBranches, groups: loadGroups, employees: loadEmployees, workers: loadWorkers, services: loadServices, customers: loadCustomers, offers: loadOffers, reports: loadReports, logs: loadLogs, settings: loadSettings, profile: loadProfile };
+(loaders[page] || loadDashboard)();
+}
+function updateBulkActions() { const sc = $('selectedCount'), ba = $('bulkActions'); if (sc) sc.textContent = toFa(selectedRows.size); if (ba) ba.classList.toggle('show', selectedRows.size > 0); }
+function clearSelection() { selectedRows.clear(); document.querySelectorAll('.row-check,.chk').forEach(c => c.checked = false); const sa = $('selectAll'); if (sa) sa.checked = false; updateBulkActions(); }
+
+/* ==================== آپلود عکس پروفایل ==================== */
+function openMyPhotoEditor() {
+if (!window.ZVPhoto) { toast('کامپوننت ویرایش عکس بارگذاری نشده', 'error'); return; }
+ZVPhoto.open({
+endpoint: 'uploadMyProfilePhoto',
+token: currentToken,
+onDone: function(url) {
+currentUser.avatar = url;
+localStorage.setItem('zv_administrator_user', JSON.stringify(currentUser));
+const av = $('userAvatar'); if (av) av.innerHTML = '<img src="' + url + '" onerror="this.style.display=\'none\'">';
+toast('عکس پروفایل بروزرسانی شد', 'success');
+loadProfile();
+}
+});
+}
+function uploadFor(entity, id, username) {
+if (!window.ZVPhoto) { toast('کامپوننت ویرایش عکس بارگذاری نشده', 'error'); return; }
+ZVPhoto.open({
+endpoint: 'uploadProfilePhotoFor',
+token: currentToken,
+target: { entity: entity, id: id, username: username },
+onDone: function(url) {
+toast('عکس ذخیره شد', 'success');
+if (entity === 'employees') fetchEmployees();
+else if (entity === 'workers') fetchWorkers();
+else if (entity === 'customers') fetchCustomers();
+}
+});
+}
+
+/* ==================== داشبورد ==================== */
+function loadDashboard() {
+google.script.run.withSuccessHandler(function(data) {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">داشبورد مدیریت سیستم</h1></div>' +
+'<div class="stats-grid">' +
+'<div class="stat-card"><div class="stat-label">کل سفارشات</div><div class="stat-value">' + toFa(data.totalOrders) + '</div></div>' +
+'<div class="stat-card green"><div class="stat-label">امروز</div><div class="stat-value">' + toFa(data.todayOrders) + '</div></div>' +
+'<div class="stat-card blue"><div class="stat-label">این ماه</div><div class="stat-value">' + toFa(data.monthOrders) + '</div><div class="stat-sub">' + money(data.monthRevenue) + '</div></div>' +
+'<div class="stat-card yellow"><div class="stat-label">درآمد کل</div><div class="stat-value">' + money(data.totalRevenue) + '</div></div>' +
+'<div class="stat-card"><div class="stat-label">در انتظار</div><div class="stat-value">' + toFa(data.pendingOrders) + '</div></div>' +
+'<div class="stat-card green"><div class="stat-label">تکمیل شده</div><div class="stat-value">' + toFa(data.completedOrders) + '</div></div>' +
+'<div class="stat-card red"><div class="stat-label">لغو شده</div><div class="stat-value">' + toFa(data.cancelledOrders) + '</div></div>' +
+'<div class="stat-card blue"><div class="stat-label">مشتریان فعال</div><div class="stat-value">' + toFa(data.activeCustomers || 0) + '</div></div>' +
+'</div>' +
+'<div class="charts-grid">' +
+'<div class="card"><h3 style="margin-bottom:12px;color:var(--navy)">🏆 کارمندان برتر ماه</h3><div class="top-list">' + (data.topEmployees && data.topEmployees.length ? data.topEmployees.map(function(e,i){return '<div class="top-item"><div class="rank">'+toFa(i+1)+'</div><div class="info"><div class="name">'+e.name+'</div><div class="sub">'+toFa(e.count)+' سفارش تکمیل</div></div><div class="value">'+money(e.revenue)+'</div></div>';}).join('') : '<div style="color:var(--muted);text-align:center;padding:20px">داده‌ای نیست</div>') + '</div></div>' +
+'<div class="card"><h3 style="margin-bottom:12px;color:var(--navy)">👷 کارگران برتر ماه</h3><div class="top-list">' + (data.topWorkers && data.topWorkers.length ? data.topWorkers.map(function(w,i){return '<div class="top-item"><div class="rank">'+toFa(i+1)+'</div><div class="info"><div class="name">'+w.name+'</div><div class="sub">در حال انجام</div></div><div class="value">'+toFa(w.count)+'</div></div>';}).join('') : '<div style="color:var(--muted);text-align:center;padding:20px">داده‌ای نیست</div>') + '</div></div>' +
+'<div class="card"><h3 style="margin-bottom:12px;color:var(--navy)">🏙 شهرهای برتر ماه</h3><div class="top-list">' + (data.topCities && data.topCities.length ? data.topCities.map(function(c,i){return '<div class="top-item"><div class="rank">'+toFa(i+1)+'</div><div class="info"><div class="name">'+c.name+'</div></div><div class="value">'+toFa(c.count)+' سفارش</div></div>';}).join('') : '<div style="color:var(--muted);text-align:center;padding:20px">داده‌ای نیست</div>') + '</div></div>' +
+'<div class="card"><h3 style="margin-bottom:12px;color:var(--navy)">⭐ مشتریان برتر ماه</h3><div class="top-list">' + (data.topCustomers && data.topCustomers.length ? data.topCustomers.map(function(c,i){return '<div class="top-item"><div class="rank">'+toFa(i+1)+'</div><div class="info"><div class="name">'+c.name+'</div><div class="sub">'+toFa(c.count)+' سفارش</div></div><div class="value">'+money(c.revenue)+'</div></div>';}).join('') : '<div style="color:var(--muted);text-align:center;padding:20px">داده‌ای نیست</div>') + '</div></div>' +
+'</div>' +
+'<div class="charts-grid"><div class="chart-box"><h3>توزیع وضعیت سفارشات</h3><canvas id="chartStatus"></canvas></div>' +
+'<div class="card"><h3 style="margin-bottom:12px;color:var(--navy)">پرفروش‌ترین خدمات</h3>' + (data.topServices && data.topServices.length ? data.topServices.map(function(s){return '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)"><span>'+s.name+'</span><strong>'+toFa(s.count)+' سفارش</strong></div>';}).join('') : '<div style="color:var(--muted);text-align:center;padding:20px">داده‌ای نیست</div>') + '</div></div>';
+if (document.getElementById('pendingBadge')) document.getElementById('pendingBadge').textContent = toFa(data.pendingOrders);
+if (data.statusDistribution && Object.keys(data.statusDistribution).length) {
+new Chart($('chartStatus'), { type: 'doughnut', data: { labels: Object.keys(data.statusDistribution), datasets: [{ data: Object.values(data.statusDistribution), backgroundColor: ['#1849a9','#f79009','#067647','#b42318','#657086','#8b5cf6'] }] }, options: { responsive: true } });
+}
+}).withFailureHandler(function(e) { $('pageContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>'; }).getDashboardData(currentToken);
+}
+
+/* ==================== سفارشات ==================== */
+let ordersFilters = {};
+function loadOrders() {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">مدیریت سفارشات</h1><div style="display:flex;gap:8px"><button class="btn btn-secondary" onclick="exportOrders()"> خروجی CSV</button></div></div>' +
+'<div class="bulk-actions" id="bulkActions"><strong id="selectedCount">0</strong> ردیف انتخاب شده: <button class="btn btn-sm btn-primary" onclick="bulkEditOrders()">ویرایش گروهی</button><button class="btn btn-sm btn-danger" onclick="bulkDeleteOrders()">حذف گروهی</button><button class="btn btn-sm btn-secondary" onclick="clearSelection()">انصراف</button></div>' +
+'<div class="card"><div class="filters">' +
+'<div class="field"><label>جستجو</label><input id="fSearch" placeholder="نام، موبایل، کد" oninput="debounceOrders()"></div>' +
+'<div class="field"><label>وضعیت</label><select id="fStatus" onchange="applyOrdersFilter()"><option value="همه">همه</option><option>جدید</option><option>ثبت اولیه</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option></select></div>' +
+'<div class="field"><label>از تاریخ (شمسی)</label><input id="fFrom" placeholder="1405/07/01" onchange="applyOrdersFilter()"></div>' +
+'<div class="field"><label>تا تاریخ (شمسی)</label><input id="fTo" placeholder="1405/07/30" onchange="applyOrdersFilter()"></div>' +
+'<div class="field"><label>استان</label><input id="fProvince" placeholder="استان" onchange="applyOrdersFilter()"></div>' +
+'<div class="field"><label>شهر</label><input id="fCity" placeholder="شهر" onchange="applyOrdersFilter()"></div>' +
+'</div><div id="ordersTable"></div></div>';
+fetchOrders();
+}
+let ordersTimer;
+function debounceOrders() { clearTimeout(ordersTimer); ordersTimer = setTimeout(applyOrdersFilter, 400); }
+function applyOrdersFilter() { ordersFilters = { search: $('fSearch').value, status: $('fStatus').value, fromDate: $('fFrom').value, toDate: $('fTo').value, province: $('fProvince').value, city: $('fCity').value }; fetchOrders(); }
+function fetchOrders() {
+google.script.run.withSuccessHandler(function(result) {
+const rows = result.data;
+if (!rows.length) { $('ordersTable').innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">سفارشی یافت نشد</div>'; return; }
+$('ordersTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th><th>تاریخ ثبت</th><th>مشتری</th><th>موبایل</th><th>خدمت</th><th>مقدار</th><th>تاریخ اجرا</th><th>ساعت</th><th>مبلغ</th><th>وضعیت</th><th>مسئول</th><th>عملیات</th></tr></thead><tbody>' + rows.map(function(r) {
+return '<tr><td><input type="checkbox" class="row-check" data-row="' + r.rowIndex + '" onchange="toggleRow(' + r.rowIndex + ', this)"></td><td>' + r.date + '</td><td>' + r.customer + '</td><td style="direction:ltr;text-align:right">' + r.phone + '</td><td>' + r.service + '</td><td>' + toFa(r.quantity) + '</td><td>' + r.executeDate + '</td><td>' + r.executeTime + '</td><td>' + money(r.finalPrice) + '</td><td>' + statusBadge(r.status) + '</td><td>' + (r.employee||'—') + '</td><td style="white-space:nowrap"><button class="btn btn-sm btn-secondary" onclick="editOrder(' + r.rowIndex + ')">✏️</button> <button class="btn btn-sm btn-success" onclick="convertToCard(\'' + r.requestId + '\')">🎫</button> <button class="btn btn-sm btn-secondary" onclick="viewInvoice(\'' + r.requestId + '\')">🧾</button> <button class="btn btn-sm btn-danger" onclick="deleteSingleOrder(' + r.rowIndex + ',\'' + r.requestId + '\')">🗑</button></td></tr>';
+}).join('') + '</tbody></table></div>';
+}).withFailureHandler(function(e) { $('ordersTable').innerHTML = '<div style="color:var(--danger);padding:20px">' + e.message + '</div>'; }).getOrdersList(ordersFilters, currentToken);
+}
+function toggleRow(idx, cb) { if (cb.checked) selectedRows.add(idx); else selectedRows.delete(idx); updateBulkActions(); }
+function toggleSelectAll(cb) { document.querySelectorAll('.row-check').forEach(function(c) { c.checked = cb.checked; if (cb.checked) selectedRows.add(Number(c.dataset.row)); else selectedRows.delete(Number(c.dataset.row)); }); updateBulkActions(); }
+function bulkDeleteOrders() { if (!confirm('حذف ' + selectedRows.size + ' سفارش؟')) return; google.script.run.withSuccessHandler(function(r) { toast(r.message, 'success'); clearSelection(); fetchOrders(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteOrders(Array.from(selectedRows), currentToken); }
+function bulkEditOrders() {
+openModal('<div class="modal-header"><h2>ویرایش گروهی ' + toFa(selectedRows.size) + ' سفارش</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="form-grid">' +
+'<div class="field"><label>تغییر وضعیت به</label><select id="bulkStatus"><option value="">بدون تغییر</option><option>جدید</option><option>ثبت اولیه</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option></select></div>' +
+'<div class="field"><label>تغییر کارمند مسئول (Verifier)</label><input id="bulkEmployee" placeholder="username کارمند"></div>' +
+'<div class="field full"><label>تغییر آدرس</label><textarea id="bulkAddress"></textarea></div>' +
+'<div class="field full"><label>تغییر خدمات جانبی</label><textarea id="bulkSideServices" placeholder="با کاما جدا کنید"></textarea></div>' +
+'</div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="applyBulkEdit()">اعمال</button></div>');
+}
+function applyBulkEdit() {
+const updates = {};
+if ($('bulkStatus').value) updates.status = $('bulkStatus').value;
+if ($('bulkEmployee').value) updates.verifier = $('bulkEmployee').value;
+if ($('bulkAddress').value) updates.addrFrom = $('bulkAddress').value;
+if ($('bulkSideServices').value) updates.sideServices = $('bulkSideServices').value;
+if (!Object.keys(updates).length) { toast('حداقل یک فیلد را پر کنید', 'error'); return; }
+const indices = Array.from(selectedRows); let idx = 0;
+(function next() { if (idx >= indices.length) { toast('ویرایش گروهی انجام شد', 'success'); clearSelection(); fetchOrders(); closeModal(); return; } google.script.run.withSuccessHandler(function(){ idx++; next(); }).withFailureHandler(function(e){ toast(e.message, 'error'); idx++; next(); }).updateOrder(indices[idx], updates, currentToken); })();
+}
+function editOrder(rowIndex) {
+google.script.run.withSuccessHandler(function(result) {
+const r = result.data.find(function(x) { return x.rowIndex === rowIndex; }); if (!r) return;
+openModal('<div class="modal-header"><h2>ویرایش سفارش ' + r.requestId + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="form-grid">' +
+'<div class="field"><label>وضعیت</label><select id="eStatus"><option ' + (r.status==='جدید'?'selected':'') + '>جدید</option><option ' + (r.status==='ثبت اولیه'?'selected':'') + '>ثبت اولیه</option><option ' + (r.status==='در حال انجام'?'selected':'') + '>در حال انجام</option><option ' + (r.status==='تکمیل شده'?'selected':'') + '>تکمیل شده</option><option ' + (r.status==='لغو شده'?'selected':'') + '>لغو شده</option></select></div>' +
+'<div class="field"><label>نوع اقدام</label><select id="eAction"><option ' + (r.actionType==='عادی'?'selected':'') + '>عادی</option><option ' + (r.actionType==='رزرو'?'selected':'') + '>رزرو</option><option ' + (r.actionType==='فوری'?'selected':'') + '>فوری</option></select></div>' +
+'<div class="field"><label>مبلغ نهایی (ریال)</label><input id="ePrice" type="number" value="' + r.finalPrice + '"></div>' +
+'<div class="field"><label>تاریخ اجرا (شمسی)</label><input id="eDate" value="' + r.executeDate + '" placeholder="1405/07/23"></div>' +
+'<div class="field"><label>ساعت اجرا</label><input id="eTime" type="time" value="' + r.executeTime + '"></div>' +
+'<div class="field"><label>کارمند مسئول (Verifier)</label><input id="eEmployee" value="' + (r.employee||'') + '"></div>' +
+'<div class="field full"><label>آدرس</label><textarea id="eAddress">' + r.address + '</textarea></div>' +
+'<div class="field full"><label>خدمات جانبی (با کاما)</label><textarea id="eSideServices">' + r.sideServices + '</textarea></div>' +
+'<div class="field full"><label>توضیحات</label><textarea id="eNotes">' + r.notes + '</textarea></div>' +
+'</div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveOrder(' + rowIndex + ')">ذخیره</button></div>');
+}).getOrdersList({}, currentToken);
+}
+function saveOrder(rowIndex) {
+const updates = { status: $('eStatus').value, actionType: $('eAction').value, finalPrice: Number($('ePrice').value), execDate: $('eDate').value, execTime: $('eTime').value, verifier: $('eEmployee').value, addrFrom: $('eAddress').value, sideServices: $('eSideServices').value, notes: $('eNotes').value };
+google.script.run.withSuccessHandler(function(r) { closeModal(); toast(r.message, 'success'); fetchOrders(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).updateOrder(rowIndex, updates, currentToken);
+}
+function deleteSingleOrder(rowIndex, requestId) { if (!confirm('حذف سفارش ' + requestId + '؟')) return; google.script.run.withSuccessHandler(function(r) { toast(r.message, 'success'); fetchOrders(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteOrders([rowIndex], currentToken); }
+function convertToCard(requestId) { if (!confirm('تبدیل سفارش ' + requestId + ' به کارت عملیاتی؟')) return; google.script.run.withSuccessHandler(function(r) { toast(r.message, 'success'); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_convertOrderToCard(requestId, currentToken); }
+function viewInvoice(requestId) {
+google.script.run.withSuccessHandler(function(o) {
+openModal('<div class="modal-header"><h2>فاکتور ' + requestId + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div style="line-height:2"><div><strong>مشتری:</strong> ' + o.customer + '</div><div><strong>موبایل:</strong> ' + o.phone + '</div><div><strong>خدمت:</strong> ' + o.service + ' × ' + o.qty + '</div><div><strong>تاریخ اجرا:</strong> ' + o.executeDate + ' ساعت ' + o.executeTime + '</div><div><strong>آدرس:</strong> ' + o.address + '</div><div><strong>خدمات جانبی:</strong> ' + (o.sideServices||'ندارد') + '</div><hr style="margin:12px 0"><div><strong>قیمت پایه:</strong> ' + money(o.basePrice) + '</div><div><strong>تخفیف:</strong> ' + money(o.discount) + '</div><div><strong>مالیات:</strong> ' + money(o.tax) + '</div><div style="font-size:18px;color:var(--navy);font-weight:900;margin-top:10px">مبلغ نهایی: ' + money(o.finalPrice) + '</div></div>' +
+'<div class="modal-footer"><button class="btn btn-secondary" onclick="window.print()">🖨 پرینت</button><button class="btn btn-primary" onclick="closeModal()">بستن</button></div>');
+}).getOrderInvoice(requestId, currentToken);
+}
+function exportOrders() { google.script.run.withSuccessHandler(function(csv) { const blob = new Blob([csv], {type:'text/csv;charset=utf-8'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'orders.csv'; a.click(); toast('فایل CSV دانلود شد', 'success'); }).exportOrdersToCSV(ordersFilters, currentToken); }
+
+/* ==================== کارت‌ها ==================== */
+let cardsFilters = {};
+function loadCards() {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">کارت‌های عملیاتی</h1></div>' +
+'<div class="bulk-actions" id="bulkActions"><strong id="selectedCount">0</strong> انتخاب شده: <button class="btn btn-sm btn-danger" onclick="bulkDeleteCards()">حذف گروهی</button><button class="btn btn-sm btn-secondary" onclick="clearSelection()">انصراف</button></div>' +
+'<div class="card"><div class="filters">' +
+'<div class="field"><label>جستجو</label><input id="cdSearch" placeholder="مشتری، CardID، RequestID" oninput="debounceCards()"></div>' +
+'<div class="field"><label>وضعیت</label><select id="cdStatus" onchange="applyCardsFilter()"><option value="همه">همه</option><option>جدید</option><option>تخصیص به شعبه</option><option>تخصیص به گروه</option><option>تخصیص به کارگر</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option><option>تعلیق</option></select></div>' +
+'<div class="field"><label>شعبه</label><select id="cdBranch" onchange="applyCardsFilter()"><option value="">همه</option></select></div>' +
+'</div><div id="cardsTable"></div></div>';
+google.script.run.withSuccessHandler(function(list) { const sel = $('cdBranch'); list.forEach(function(b) { sel.innerHTML += '<option value="' + b.id + '">' + b.name + '</option>'; }); }).getBranchesForDropdown(currentToken);
+fetchCards();
+}
+let cdTimer;
+function debounceCards() { clearTimeout(cdTimer); cdTimer = setTimeout(applyCardsFilter, 400); }
+function applyCardsFilter() { cardsFilters = { search: $('cdSearch').value, status: $('cdStatus').value, branch: $('cdBranch').value }; fetchCards(); }
+function fetchCards() {
+google.script.run.withSuccessHandler(function(result) {
+const rows = result.data;
+if (!rows.length) { $('cardsTable').innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">کارتی یافت نشد</div>'; return; }
+$('cardsTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th><th>CardID</th><th>RequestID</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>اجرا</th><th>شعبه</th><th>اجراکننده</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' + rows.map(function(r) {
+return '<tr><td><input type="checkbox" class="row-check" data-row="' + r.rowIndex + '" onchange="toggleRow(' + r.rowIndex + ', this)"></td><td><strong>' + r.cardId + '</strong></td><td>' + r.requestId + '</td><td>' + r.customer + '</td><td>' + r.details + '</td><td>' + money(r.amount) + '</td><td>' + r.executeDateTime + '</td><td>' + (r.branch||'—') + '</td><td>' + (r.worker||'—') + '</td><td>' + statusBadge(r.status) + '</td><td style="white-space:nowrap"><button class="btn btn-sm btn-primary" onclick="changeCardStatus(\'' + r.cardId + '\',\'' + r.status + '\')">تغییر وضعیت</button> <button class="btn btn-sm btn-secondary" onclick="viewCardHistory(\'' + r.cardId + '\')">📋</button></td></tr>';
+}).join('') + '</tbody></table></div>';
+}).withFailureHandler(function(e) { $('cardsTable').innerHTML = '<div style="color:var(--danger);padding:20px">' + e.message + '</div>'; }).adm_getCards(cardsFilters, currentToken);
+}
+function bulkDeleteCards() { if (!confirm('حذف ' + selectedRows.size + ' کارت؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); clearSelection(); fetchCards(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_deleteCards(Array.from(selectedRows), currentToken); }
+function changeCardStatus(cardId, currentStatus) {
+const statuses = ['جدید','تخصیص به شعبه','تخصیص به گروه','تخصیص به کارگر','در حال انجام','تکمیل شده','لغو شده','تعلیق'];
+google.script.run.withSuccessHandler(function(workers) {
+openModal('<div class="modal-header"><h2>تغییر وضعیت کارت ' + cardId + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="form-grid"><div class="field"><label>وضعیت جدید</label><select id="newCardStatus">' + statuses.map(function(s){return '<option ' + (s===currentStatus?'selected':'') + '>' + s + '</option>';}).join('') + '</select></div>' +
+'<div class="field"><label>اجراکننده (کارگر)</label><select id="newWorker"><option value="">بدون تغییر</option>' + workers.map(function(w){return '<option value="' + w.id + '">' + w.name + ' (' + (w.type||'worker') + ')</option>';}).join('') + '</select></div></div>' +
+'<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="applyCardStatus(\'' + cardId + '\')">اعمال</button></div>');
+}).adm_getWorkersForDropdown(currentToken);
+}
+function applyCardStatus(cardId) { google.script.run.withSuccessHandler(function(r) { closeModal(); toast(r.message, 'success'); fetchCards(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_updateCardStatus(cardId, $('newCardStatus').value, $('newWorker').value, currentToken); }
+function viewCardHistory(cardId) {
+google.script.run.withSuccessHandler(function(logs) {
+openModal('<div class="modal-header"><h2>تاریخچه کارت ' + cardId + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>از</th><th>به</th><th>توسط</th><th>توضیح</th></tr></thead><tbody>' + (logs.length ? logs.map(function(l){return '<tr><td>' + l.date + '</td><td>' + (l.from||'—') + '</td><td>' + l.to + '</td><td>' + l.by + '</td><td>' + (l.note||'—') + '</td></tr>';}).join('') : '<tr><td colspan="5" style="text-align:center;padding:20px">سابقه‌ای نیست</td></tr>') + '</tbody></table></div>');
+}).adm_getCardHistory(cardId, currentToken);
+}
+
+/* ==================== لیست کارها ==================== */
+let tasksFilters = {};
+function loadTasks() {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">لیست کارها (Task Lists)</h1></div>' +
+'<div class="card"><div class="filters">' +
+'<div class="field"><label>جستجو</label><input id="tSearch" placeholder="Lists-ID / Customers-ID" oninput="debounceTasks()"></div>' +
+'<div class="field"><label>وضعیت</label><select id="tStatus" onchange="applyTasksFilter()"><option value="همه">همه</option><option>جدید</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option></select></div>' +
+'</div><div id="tasksTable"></div></div>';
+fetchTasks();
+}
+let tTimer;
+function debounceTasks() { clearTimeout(tTimer); tTimer = setTimeout(applyTasksFilter, 400); }
+function applyTasksFilter() { tasksFilters = { search: $('tSearch').value, status: $('tStatus').value }; fetchTasks(); }
+function fetchTasks() {
+google.script.run.withSuccessHandler(function(result) {
+const rows = result.data;
+if (!rows.length) { $('tasksTable').innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">تسکی یافت نشد</div>'; return; }
+$('tasksTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>Lists-ID</th><th>مشتری</th><th>ایجاد</th><th>اجرا</th><th>ساعت</th><th>تکرار</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' + rows.map(function(r) {
+return '<tr><td><strong>' + r.taskId + '</strong></td><td>' + r.customerId + '</td><td>' + r.creationDate + '</td><td>' + r.executionDate + '</td><td>' + r.executionTime + '</td><td>' + (r.recurrenceType||'—') + '</td><td>' + statusBadge(r.status) + '</td><td><button class="btn btn-sm btn-primary" onclick="changeTaskStatus(\'' + r.taskId + '\',\'' + r.status + '\')">تغییر وضعیت</button></td></tr>';
+}).join('') + '</tbody></table></div>';
+}).withFailureHandler(function(e) { $('tasksTable').innerHTML = '<div style="color:var(--danger);padding:20px">' + e.message + '</div>'; }).adm_getTasks(tasksFilters, currentToken);
+}
+function changeTaskStatus(taskId, currentStatus) {
+const statuses = ['جدید','در حال انجام','تکمیل شده','لغو شده'];
+openModal('<div class="modal-header"><h2>تغییر وضعیت تسک ' + taskId + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="field"><label>وضعیت جدید</label><select id="newTaskStatus">' + statuses.map(function(s){return '<option ' + (s===currentStatus?'selected':'') + '>' + s + '</option>';}).join('') + '</select></div>' +
+'<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="applyTaskStatus(\'' + taskId + '\')">اعمال</button></div>');
+}
+function applyTaskStatus(taskId) { google.script.run.withSuccessHandler(function(r) { closeModal(); toast(r.message, 'success'); fetchTasks(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_updateTaskStatus(taskId, $('newTaskStatus').value, currentToken); }
+
+/* ==================== شعبه‌ها ==================== */
+function loadBranches() {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">مدیریت شعبه‌ها</h1><button class="btn btn-primary" onclick="editBranch()">+ شعبه جدید</button></div>' +
+'<div class="bulk-actions" id="bulkActions"><strong id="selectedCount">0</strong> انتخاب شده: <button class="btn btn-sm btn-danger" onclick="bulkDeleteBranches()">حذف گروهی</button><button class="btn btn-sm btn-secondary" onclick="clearSelection()">انصراف</button></div>' +
+'<div id="branchesContent"></div>';
+fetchBranches();
+}
+function fetchBranches() {
+google.script.run.withSuccessHandler(function(list) {
+$('branchesContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th><th>کد</th><th>نام</th><th>استان</th><th>شهر</th><th>مدیر شعبه</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' + list.map(function(b) {
+return '<tr><td><input type="checkbox" class="row-check" data-row="' + b.rowIndex + '" onchange="toggleRow(' + b.rowIndex + ', this)"></td><td>' + b.branchId + '</td><td>' + b.name + '</td><td>' + b.province + '</td><td>' + b.city + '</td><td>' + b.manager + '</td><td><span class="badge badge-' + (b.status==='فعال'?'active':'inactive') + '">' + b.status + '</span></td><td><button class="btn btn-sm btn-secondary" onclick=\'editBranch(' + JSON.stringify(b).replace(/'/g,"&#39;") + ')\'>✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteSingleBranch(' + b.rowIndex + ')">🗑</button></td></tr>';
+}).join('') + '</tbody></table></div></div>';
+}).withFailureHandler(function(e) { $('branchesContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>'; }).adm_getBranches(currentToken);
+}
+function bulkDeleteBranches() { if (!confirm('حذف ' + selectedRows.size + ' شعبه؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); clearSelection(); fetchBranches(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_deleteBranches(Array.from(selectedRows), currentToken); }
+function deleteSingleBranch(idx) { if (!confirm('حذف؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); fetchBranches(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_deleteBranches([idx], currentToken); }
+function editBranch(b) {
+b = b || {};
+openModal('<div class="modal-header"><h2>' + (b.rowIndex?'ویرایش':'افزودن') + ' شعبه</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="form-grid"><div class="field"><label>کد شعبه</label><input id="bId" value="' + (b.branchId||'') + '" placeholder="BR-001"></div>' +
+'<div class="field"><label>نام شعبه *</label><input id="bName" value="' + (b.name||'') + '"></div>' +
+'<div class="field"><label>استان</label><input id="bProvince" value="' + (b.province||'') + '"></div>' +
+'<div class="field"><label>شهر</label><input id="bCity" value="' + (b.city||'') + '"></div>' +
+'<div class="field"><label>مدیر شعبه (username)</label><input id="bManager" value="' + (b.manager||'') + '"></div>' +
+'<div class="field"><label>وضعیت</label><select id="bStatus"><option ' + (b.status==='فعال'?'selected':'') + '>فعال</option><option ' + (b.status==='غیرفعال'?'selected':'') + '>غیرفعال</option></select></div>' +
+'<div class="field full"><label>آدرس</label><textarea id="bAddress">' + (b.address||'') + '</textarea></div></div>' +
+'<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveBranch(' + (b.rowIndex||'null') + ')">ذخیره</button></div>');
+}
+function saveBranch(rowIndex) {
+const data = { branchId: $('bId').value, name: $('bName').value, province: $('bProvince').value, city: $('bCity').value, manager: $('bManager').value, status: $('bStatus').value, address: $('bAddress').value };
+if (rowIndex) data.rowIndex = rowIndex;
+google.script.run.withSuccessHandler(function() { closeModal(); toast('ذخیره شد', 'success'); fetchBranches(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_saveBranch(data, currentToken);
+}
+
+/* ==================== گروه‌ها ==================== */
+function loadGroups() {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">مدیریت گروه‌ها</h1><button class="btn btn-primary" onclick="editGroup()">+ گروه جدید</button></div><div id="groupsContent"></div>';
+fetchGroups();
+}
+function fetchGroups() {
+google.script.run.withSuccessHandler(function(list) {
+$('groupsContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>شعبه</th><th>منطقه</th><th>سرپرست</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' + list.map(function(g) {
+return '<tr><td>' + g.groupId + '</td><td>' + g.name + '</td><td>' + g.branch + '</td><td>' + g.region + '</td><td>' + g.supervisor + '</td><td><span class="badge badge-' + (g.status==='فعال'?'active':'inactive') + '">' + g.status + '</span></td><td style="white-space:nowrap"><button class="btn btn-sm btn-secondary" onclick=\'editGroup(' + JSON.stringify(g).replace(/'/g,"&#39;") + ')\'>✏️</button> <button class="btn btn-sm btn-secondary" onclick="viewGroupMembers(\'' + g.groupId + '\',\'' + g.name + '\')"></button> <button class="btn btn-sm btn-danger" onclick="deleteSingleGroup(' + g.rowIndex + ')">🗑</button></td></tr>';
+}).join('') + '</tbody></table></div></div>';
+}).withFailureHandler(function(e) { $('groupsContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>'; }).adm_getGroups(currentToken);
+}
+function deleteSingleGroup(idx) { if (!confirm('حذف؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); fetchGroups(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_deleteGroups([idx], currentToken); }
+function editGroup(g) {
+g = g || {};
+google.script.run.withSuccessHandler(function(branches) {
+openModal('<div class="modal-header"><h2>' + (g.rowIndex?'ویرایش':'افزودن') + ' گروه</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="form-grid"><div class="field"><label>کد گروه</label><input id="gId" value="' + (g.groupId||'') + '" placeholder="GRP-001"></div>' +
+'<div class="field"><label>نام گروه *</label><input id="gName" value="' + (g.name||'') + '"></div>' +
+'<div class="field"><label>شعبه</label><select id="gBranch"><option value="">انتخاب</option>' + branches.map(function(b){return '<option value="' + b.id + '" ' + (b.id===g.branch?'selected':'') + '>' + b.name + '</option>';}).join('') + '</select></div>' +
+'<div class="field"><label>منطقه</label><input id="gRegion" value="' + (g.region||'') + '"></div>' +
+'<div class="field"><label>سرپرست (username)</label><input id="gSupervisor" value="' + (g.supervisor||'') + '"></div>' +
+'<div class="field"><label>وضعیت</label><select id="gStatus"><option ' + (g.status==='فعال'?'selected':'') + '>فعال</option><option ' + (g.status==='غیرفعال'?'selected':'') + '>غیرفعال</option></select></div>' +
+'<div class="field full"><label>توضیحات</label><textarea id="gDesc">' + (g.description||'') + '</textarea></div></div>' +
+'<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveGroup(' + (g.rowIndex||'null') + ')">ذخیره</button></div>');
+}).getBranchesForDropdown(currentToken);
+}
+function saveGroup(rowIndex) {
+const data = { groupId: $('gId').value, name: $('gName').value, branch: $('gBranch').value, region: $('gRegion').value, supervisor: $('gSupervisor').value, status: $('gStatus').value, description: $('gDesc').value };
+if (rowIndex) data.rowIndex = rowIndex;
+google.script.run.withSuccessHandler(function() { closeModal(); toast('ذخیره شد', 'success'); fetchGroups(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_saveGroup(data, currentToken);
+}
+function viewGroupMembers(groupId, groupName) {
+openModal('<div class="modal-header"><h2>اعضای گروه: ' + groupName + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div style="margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap"><input id="mUsername" placeholder="username عضو" style="max-width:200px"><select id="mRole" style="max-width:140px"><option value="member">member</option><option value="supervisor">supervisor</option></select><button class="btn btn-sm btn-primary" onclick="addMemberToGroup(\'' + groupId + '\')">+ افزودن</button></div>' +
+'<div id="membersList"><div class="loading"><div class="spinner"></div></div></div>');
+loadGroupMembers(groupId);
+}
+function loadGroupMembers(groupId) {
+google.script.run.withSuccessHandler(function(members) {
+$('membersList').innerHTML = members.length ? '<div class="table-wrap"><table><thead><tr><th>username</th><th>نقش</th><th>عضویت</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' + members.map(function(m){return '<tr><td>' + m.username + '</td><td><span class="badge badge-' + (m.role==='supervisor'?'new':'active') + '">' + m.role + '</span></td><td>' + m.joinDate + '</td><td>' + m.status + '</td><td><button class="btn btn-sm btn-danger" onclick="removeMember(' + m.rowIndex + ',\'' + groupId + '\')">حذف</button></td></tr>';}).join('') + '</tbody></table></div>' : '<div style="text-align:center;padding:20px;color:var(--muted)">عضوی نیست</div>';
+}).adm_getGroupMembers(groupId, currentToken);
+}
+function addMemberToGroup(groupId) {
+const data = { groupId: groupId, username: $('mUsername').value, role: $('mRole').value, status: 'فعال' };
+google.script.run.withSuccessHandler(function() { toast('عضو اضافه شد', 'success'); $('mUsername').value = ''; loadGroupMembers(groupId); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_addGroupMember(data, currentToken);
+}
+function removeMember(rowIndex, groupId) { if (!confirm('حذف عضو؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); loadGroupMembers(groupId); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_removeGroupMember(rowIndex, currentToken); }
+
+/* ==================== کارمندان ==================== */
+function loadEmployees() {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">مدیریت کارمندان</h1><button class="btn btn-primary" onclick="editEmployee()">+ کارمند جدید</button></div>' +
+'<div class="bulk-actions" id="bulkActions"><strong id="selectedCount">0</strong> انتخاب شده: <button class="btn btn-sm btn-danger" onclick="bulkDeleteEmployees()">حذف گروهی</button><button class="btn btn-sm btn-secondary" onclick="clearSelection()">انصراف</button></div>' +
+'<div id="employeesContent"></div>';
+fetchEmployees();
+}
+function fetchEmployees() {
+google.script.run.withSuccessHandler(function(list) {
+$('employeesContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th><th>کد</th><th>نام</th><th>یوزرنیم</th><th>سمت</th><th>شعبه</th><th>سطح</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' + list.map(function(e) {
+return '<tr><td><input type="checkbox" class="row-check" data-row="' + e.rowIndex + '" onchange="toggleRow(' + e.rowIndex + ', this)"></td><td>' + e.employeeId + '</td><td><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden">' + (e.avatar ? '<img src="'+e.avatar+'" style="width:100%;height:100%;object-fit:cover">' : (e.fullName||'?').charAt(0)) + '</div>' + e.fullName + '</div></td><td>' + e.username + '</td><td>' + (e.position||'—') + '</td><td>' + (e.branch||'—') + '</td><td><span class="badge badge-new">' + e.role + '</span></td><td><span class="badge badge-' + (e.status==='فعال'?'active':'inactive') + '">' + e.status + '</span></td><td style="white-space:nowrap"><button class="btn btn-sm btn-secondary" onclick=\'viewEmployee(' + JSON.stringify(e).replace(/'/g,"&#39;") + ')\'>👁</button> <button class="btn btn-sm btn-secondary" onclick=\'editEmployee(' + JSON.stringify(e).replace(/'/g,"&#39;") + ')\'>️</button>' + (e.rowIndex ? ' <button class="btn btn-sm btn-secondary" onclick="uploadFor(\'employees\',\'' + e.employeeId + '\',\'' + e.username + '\')">📷</button>' : '') + ' <button class="btn btn-sm btn-secondary" onclick="viewEmployeeLogs(\'' + e.employeeId + '\',\'' + e.fullName + '\')">📋</button> <button class="btn btn-sm btn-danger" onclick="deleteSingleEmp(' + e.rowIndex + ')">🗑</button></td></tr>';
+}).join('') + '</tbody></table></div></div>';
+}).withFailureHandler(function(e) { $('employeesContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>'; }).getEmployeesList(currentToken);
+}
+function bulkDeleteEmployees() { if (!confirm('حذف ' + selectedRows.size + ' کارمند؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); clearSelection(); fetchEmployees(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteEmployees(Array.from(selectedRows), currentToken); }
+function deleteSingleEmp(idx) { if (!confirm('حذف؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); fetchEmployees(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteEmployees([idx], currentToken); }
+function editEmployee(e) {
+e = e || {};
+openModal('<div class="modal-header"><h2>' + (e.rowIndex?'ویرایش':'افزودن') + ' کارمند</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="form-grid"><div class="field"><label>نام *</label><input id="eFirstName" value="' + (e.firstName||'') + '"></div>' +
+'<div class="field"><label>نام خانوادگی *</label><input id="eLastName" value="' + (e.lastName||'') + '"></div>' +
+'<div class="field"><label>نام کاربری *</label><input id="eUsername" value="' + (e.username||'') + '" ' + (e.rowIndex?'readonly':'') + '></div>' +
+'<div class="field"><label>رمز عبور ' + (e.rowIndex?'(خالی=بدون تغییر)':'*') + '</label><input id="ePassword" type="password" value=""></div>' +
+'<div class="field"><label>سمت</label><input id="ePosition" value="' + (e.position||'') + '"></div>' +
+'<div class="field"><label>سطح دسترسی *</label><select id="eRole"><option value="Administrator" ' + (e.role==='Administrator'?'selected':'') + '>ادمین ارشد</option><option value="Manager" ' + (e.role==='Manager'?'selected':'') + '>مدیر کل</option><option value="Admin" ' + (e.role==='Admin'?'selected':'') + '>پشتیبانی سایت</option><option value="Branch Manager" ' + (e.role==='Branch Manager'?'selected':'') + '>مدیر شعبه</option><option value="Employee" ' + (e.role==='Employee'?'selected':'') + '>کارمند</option></select></div>' +
+'<div class="field"><label>شعبه</label><input id="eBranch" value="' + (e.branch||'') + '"></div>' +
+'<div class="field"><label>تخصص</label><input id="eSpecialty" value="' + (e.specialty||'') + '"></div>' +
+'<div class="field"><label>ایمیل</label><input id="eEmail" type="email" value="' + (e.email||'') + '"></div>' +
+'<div class="field"><label>موبایل</label><input id="ePhone" value="' + (e.phone||'') + '"></div>' +
+'<div class="field"><label>کد ملی</label><input id="eNational" value="' + (e.nationalCode||'') + '"></div>' +
+'<div class="field"><label>عکس پروفایل (URL)</label><input id="eAvatar" value="' + (e.avatar||'') + '"></div>' +
+'<div class="field"><label>تاریخ استخدام (شمسی)</label><input id="eJoinDate" value="' + (e.joinDate||'') + '" placeholder="1405/07/01"></div>' +
+'<div class="field"><label>تماس اضطراری</label><input id="eEmergency" value="' + (e.emergencyContact||'') + '"></div>' +
+'<div class="field"><label>وضعیت</label><select id="eStatus"><option ' + (e.status==='فعال'?'selected':'') + '>فعال</option><option ' + (e.status==='غیرفعال'?'selected':'') + '>غیرفعال</option></select></div>' +
+'<div class="field full"><label>آدرس</label><textarea id="eAddress">' + (e.address||'') + '</textarea></div></div>' +
+'<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveEmployee(' + (e.rowIndex||'null') + ')">ذخیره</button></div>');
+}
+function saveEmployee(rowIndex) {
+const data = { username: $('eUsername').value, firstName: $('eFirstName').value, lastName: $('eLastName').value, position: $('ePosition').value, role: $('eRole').value, branch: $('eBranch').value, specialty: $('eSpecialty').value, email: $('eEmail').value, phone: $('ePhone').value, nationalCode: $('eNational').value, avatar: $('eAvatar').value, joinDate: $('eJoinDate').value, emergencyContact: $('eEmergency').value, status: $('eStatus').value, address: $('eAddress').value };
+const pass = $('ePassword').value; if (pass) data.password = pass;
+if (rowIndex) data.rowIndex = rowIndex; else if (!pass) { toast('رمز عبور الزامی است', 'error'); return; }
+google.script.run.withSuccessHandler(function() { closeModal(); toast('ذخیره شد', 'success'); fetchEmployees(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).saveEmployee(data, currentToken);
+}
+function viewEmployee(e) {
+openModal('<div class="modal-header"><h2>پروفایل ' + e.fullName + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="employee-profile"><div class="employee-avatar-large">' + (e.avatar ? '<img src="'+e.avatar+'">' : (e.fullName||'?').charAt(0)) + '</div>' +
+'<div class="employee-details"><div class="detail-item"><div class="detail-label">کد پرسنلی</div><div class="detail-value">' + e.employeeId + '</div></div><div class="detail-item"><div class="detail-label">نام کاربری</div><div class="detail-value">' + e.username + '</div></div><div class="detail-item"><div class="detail-label">سمت</div><div class="detail-value">' + (e.position||'—') + '</div></div><div class="detail-item"><div class="detail-label">سطح دسترسی</div><div class="detail-value">' + e.role + '</div></div><div class="detail-item"><div class="detail-label">شعبه</div><div class="detail-value">' + (e.branch||'—') + '</div></div><div class="detail-item"><div class="detail-label">ایمیل</div><div class="detail-value">' + (e.email||'—') + '</div></div><div class="detail-item"><div class="detail-label">موبایل</div><div class="detail-value" style="direction:ltr;text-align:right">' + (e.phone||'—') + '</div></div><div class="detail-item"><div class="detail-label">تاریخ استخدام</div><div class="detail-value">' + (e.joinDate||'—') + '</div></div><div class="detail-item"><div class="detail-label">کد ملی</div><div class="detail-value">' + (e.nationalCode||'—') + '</div></div><div class="detail-item"><div class="detail-label">وضعیت</div><div class="detail-value">' + e.status + '</div></div><div class="detail-item" style="grid-column:1/-1"><div class="detail-label">آدرس</div><div class="detail-value">' + (e.address||'—') + '</div></div></div></div>');
+}
+function viewEmployeeLogs(empId, empName) {
+openModal('<div class="modal-header"><h2>سوابق ' + empName + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="filters"><div class="field"><label>از تاریخ</label><input id="logFrom" placeholder="1405/01/01"></div><div class="field"><label>تا تاریخ</label><input id="logTo" placeholder="1405/12/29"></div><div class="field" style="justify-content:flex-end"><button class="btn btn-primary" onclick="loadLogsFor(\'' + empId + '\')">نمایش</button><button class="btn btn-secondary" onclick="window.print()">🖨 پرینت</button></div></div>' +
+'<div id="logsContent"><div class="loading"><div class="spinner"></div></div></div>');
+loadLogsFor(empId);
+}
+function loadLogsFor(empId) {
+google.script.run.withSuccessHandler(function(logs) {
+$('logsContent').innerHTML = logs.length ? '<div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>نام</th><th>عملیات</th><th>جزئیات</th><th>نتیجه</th></tr></thead><tbody>' + logs.map(function(l){return '<tr><td>' + l.date + '</td><td>' + l.employeeName + '</td><td>' + l.action + '</td><td>' + (l.details||'—') + '</td><td><span class="badge badge-' + (l.result==='success'?'active':'cancel') + '">' + l.result + '</span></td></tr>';}).join('') + '</tbody></table></div>' : '<div style="text-align:center;padding:20px;color:var(--muted)">سابقه‌ای نیست</div>';
+}).getEmployeeLogs(empId, $('logFrom').value, $('logTo').value, currentToken);
+}
+
+/* ==================== نیروها ==================== */
+let workersType = '';
+function loadWorkers() {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">مدیریت نیروها (کارگر / سرپرست / متصدی)</h1><button class="btn btn-primary" onclick="editWorker()">+ نیروی جدید</button></div>' +
+'<div class="tabs"><div class="tab ' + (workersType===''?'active':'') + '" onclick="workersType=\'\';loadWorkers()">همه</div><div class="tab ' + (workersType==='worker'?'active':'') + '" onclick="workersType=\'worker\';loadWorkers()">کارگران</div><div class="tab ' + (workersType==='Supervisor'?'active':'') + '" onclick="workersType=\'Supervisor\';loadWorkers()">سرپرستان</div><div class="tab ' + (workersType==='operator'?'active':'') + '" onclick="workersType=\'operator\';loadWorkers()">متصدیان</div></div>' +
+'<div class="bulk-actions" id="bulkActions"><strong id="selectedCount">0</strong> انتخاب شده: <button class="btn btn-sm btn-danger" onclick="bulkDeleteWorkers()">حذف گروهی</button><button class="btn btn-sm btn-secondary" onclick="clearSelection()">انصراف</button></div>' +
+'<div id="workersContent"></div>';
+fetchWorkers();
+}
+function fetchWorkers() {
+google.script.run.withSuccessHandler(function(list) {
+$('workersContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th><th>کد</th><th>نام</th><th>یوزرنیم</th><th>نوع</th><th>شعبه</th><th>گروه</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' + list.map(function(w) {
+return '<tr><td><input type="checkbox" class="row-check" data-row="' + w.rowIndex + '" onchange="toggleRow(' + w.rowIndex + ', this)"></td><td>' + w.workerId + '</td><td>' + w.fullName + '</td><td>' + w.username + '</td><td><span class="badge badge-new">' + w.type + '</span></td><td>' + (w.branch||'—') + '</td><td>' + (w.group||'—') + '</td><td><span class="badge badge-' + (w.status==='فعال'?'active':'inactive') + '">' + w.status + '</span></td><td style="white-space:nowrap"><button class="btn btn-sm btn-secondary" onclick=\'editWorker(' + JSON.stringify(w).replace(/'/g,"&#39;") + ')\'>✏️</button>' + (w.rowIndex ? ' <button class="btn btn-sm btn-secondary" onclick="uploadFor(\'workers\',\'' + w.workerId + '\',\'' + w.username + '\')">📷</button>' : '') + ' <button class="btn btn-sm btn-danger" onclick="deleteSingleWorker(' + w.rowIndex + ')">🗑</button></td></tr>';
+}).join('') + '</tbody></table></div></div>';
+}).withFailureHandler(function(e) { $('workersContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>'; }).adm_getWorkers(workersType, currentToken);
+}
+function bulkDeleteWorkers() { if (!confirm('حذف ' + selectedRows.size + ' نیرو؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); clearSelection(); fetchWorkers(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_deleteWorkers(Array.from(selectedRows), currentToken); }
+function deleteSingleWorker(idx) { if (!confirm('حذف؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); fetchWorkers(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_deleteWorkers([idx], currentToken); }
+function editWorker(w) {
+w = w || {};
+openModal('<div class="modal-header"><h2>' + (w.rowIndex?'ویرایش':'افزودن') + ' نیرو</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="form-grid"><div class="field"><label>نام کامل *</label><input id="wFullName" value="' + (w.fullName||'') + '"></div>' +
+'<div class="field"><label>نام کاربری *</label><input id="wUsername" value="' + (w.username||'') + '" ' + (w.rowIndex?'readonly':'') + '></div>' +
+'<div class="field"><label>رمز عبور ' + (w.rowIndex?'(خالی=بدون تغییر)':'*') + '</label><input id="wPassword" type="password" value=""></div>' +
+'<div class="field"><label>نوع *</label><select id="wType"><option value="worker" ' + (w.type==='worker'?'selected':'') + '>کارگر</option><option value="Supervisor" ' + (w.type==='Supervisor'?'selected':'') + '>سرپرست</option><option value="operator" ' + (w.type==='operator'?'selected':'') + '>متصدی</option></select></div>' +
+'<div class="field"><label>شعبه</label><input id="wBranch" value="' + (w.branch||'') + '"></div>' +
+'<div class="field"><label>گروه</label><input id="wGroup" value="' + (w.group||'') + '"></div>' +
+'<div class="field"><label>سمت</label><input id="wPosition" value="' + (w.position||'') + '"></div>' +
+'<div class="field"><label>تخصص</label><input id="wSpecialty" value="' + (w.specialty||'') + '"></div>' +
+'<div class="field"><label>ایمیل</label><input id="wEmail" value="' + (w.email||'') + '"></div>' +
+'<div class="field"><label>موبایل</label><input id="wPhone" value="' + (w.phone||'') + '"></div>' +
+'<div class="field"><label>عکس پروفایل (URL)</label><input id="wAvatar" value="' + (w.avatar||'') + '"></div>' +
+'<div class="field"><label>تاریخ استخدام (شمسی)</label><input id="wJoinDate" value="' + (w.joinDate||'') + '"></div>' +
+'<div class="field"><label>وضعیت</label><select id="wStatus"><option ' + (w.status==='فعال'?'selected':'') + '>فعال</option><option ' + (w.status==='غیرفعال'?'selected':'') + '>غیرفعال</option></select></div>' +
+'<div class="field full"><label>آدرس</label><textarea id="wAddress">' + (w.address||'') + '</textarea></div></div>' +
+'<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveWorker(' + (w.rowIndex||'null') + ')">ذخیره</button></div>');
+}
+function saveWorker(rowIndex) {
+const data = { fullName: $('wFullName').value, username: $('wUsername').value, type: $('wType').value, branch: $('wBranch').value, group: $('wGroup').value, position: $('wPosition').value, specialty: $('wSpecialty').value, email: $('wEmail').value, phone: $('wPhone').value, avatar: $('wAvatar').value, joinDate: $('wJoinDate').value, status: $('wStatus').value, address: $('wAddress').value };
+const pass = $('wPassword').value; if (pass) data.password = pass;
+if (rowIndex) data.rowIndex = rowIndex; else if (!pass) { toast('رمز عبور الزامی است', 'error'); return; }
+google.script.run.withSuccessHandler(function() { closeModal(); toast('ذخیره شد', 'success'); fetchWorkers(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).adm_saveWorker(data, currentToken);
+}
+
+/* ==================== خدمات ==================== */
+let servicesTab = 'main';
+function loadServices() {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">مدیریت خدمات</h1></div>' +
+'<div class="tabs"><div class="tab ' + (servicesTab==='main'?'active':'') + '" onclick="servicesTab=\'main\';loadServices()">خدمات اصلی</div><div class="tab ' + (servicesTab==='side'?'active':'') + '" onclick="servicesTab=\'side\';loadServices()">خدمات جانبی</div><div class="tab ' + (servicesTab==='questions'?'active':'') + '" onclick="servicesTab=\'questions\';loadServices()">پرسش‌ها</div></div>' +
+'<div class="bulk-actions" id="bulkActions"><strong id="selectedCount">0</strong> انتخاب شده: <button class="btn btn-sm btn-danger" onclick="bulkDeleteCurrent()">حذف گروهی</button><button class="btn btn-sm btn-secondary" onclick="clearSelection()">انصراف</button></div>' +
+'<div id="servicesContent"></div>';
+if (servicesTab === 'main') loadMainServices(); else if (servicesTab === 'side') loadSideServices(); else loadQuestions();
+}
+function bulkDeleteCurrent() {
+const idx = Array.from(selectedRows);
+if (!idx.length) return;
+if (!confirm('حذف ' + idx.length + ' ردیف؟')) return;
+const fn = servicesTab === 'main' ? 'deleteServices' : servicesTab === 'side' ? 'deleteSideServices' : 'deleteQuestions';
+const reload = servicesTab === 'main' ? loadMainServices : servicesTab === 'side' ? loadSideServices : loadQuestions;
+google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); clearSelection(); reload(); }).withFailureHandler(function(e) { toast(e.message, 'error'); })[fn](idx, currentToken);
+}
+function loadMainServices() {
+google.script.run.withSuccessHandler(function(list) {
+$('servicesContent').innerHTML = '<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:12px"><h3 style="color:var(--navy)">خدمات اصلی</h3><button class="btn btn-primary" onclick="editService()">+ افزودن</button></div><div class="table-wrap"><table><thead><tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th><th>کد</th><th>نام</th><th>نرخ</th><th>واحد</th><th>حداقل</th><th>عملیات</th></tr></thead><tbody>' + list.map(function(s) {
+return '<tr><td><input type="checkbox" class="row-check" data-row="' + s.rowIndex + '" onchange="toggleRow(' + s.rowIndex + ', this)"></td><td>' + s.id + '</td><td>' + s.name + '</td><td>' + money(s.rate) + '</td><td>' + s.unit + '</td><td>' + toFa(s.minimum) + '</td><td><button class="btn btn-sm btn-secondary" onclick=\'editService(' + JSON.stringify(s).replace(/'/g,"&#39;") + ')\'>✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteSingleService(' + s.rowIndex + ')">🗑</button></td></tr>';
+}).join('') + '</tbody></table></div></div>';
+}).getServicesList(currentToken);
+}
+function deleteSingleService(idx) { if (!confirm('حذف؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); loadMainServices(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteServices([idx], currentToken); }
+function editService(s) {
+s = s || {};
+openModal('<div class="modal-header"><h2>' + (s.rowIndex?'ویرایش':'افزودن') + ' خدمت</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="form-grid"><div class="field"><label>کد خدمت *</label><input id="sId" value="' + (s.id||'') + '" ' + (s.rowIndex?'readonly':'') + '></div><div class="field"><label>نام خدمت *</label><input id="sName" value="' + (s.name||'') + '"></div><div class="field"><label>نرخ پایه (ریال) *</label><input id="sRate" type="number" value="' + (s.rate||0) + '"></div><div class="field"><label>واحد</label><input id="sUnit" value="' + (s.unit||'واحد') + '"></div><div class="field"><label>حداقل سفارش</label><input id="sMin" type="number" value="' + (s.minimum||1) + '"></div></div>' +
+'<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveService(' + (s.rowIndex||'null') + ')">ذخیره</button></div>');
+}
+function saveService(rowIndex) {
+const data = { id: $('sId').value, name: $('sName').value, rate: Number($('sRate').value), unit: $('sUnit').value, minimum: Number($('sMin').value) };
+if (rowIndex) data.rowIndex = rowIndex;
+google.script.run.withSuccessHandler(function() { closeModal(); toast('ذخیره شد', 'success'); loadMainServices(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).saveService(data, currentToken);
+}
+function loadSideServices() {
+google.script.run.withSuccessHandler(function(list) {
+$('servicesContent').innerHTML = '<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:12px"><h3 style="color:var(--navy)">خدمات جانبی</h3><button class="btn btn-primary" onclick="editSideService()">+ افزودن</button></div><div class="table-wrap"><table><thead><tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th><th>کد</th><th>نام</th><th>نرخ</th><th>واحد</th><th>خدمات مرتبط</th><th>عملیات</th></tr></thead><tbody>' + list.map(function(s) {
+return '<tr><td><input type="checkbox" class="row-check" data-row="' + s.rowIndex + '" onchange="toggleRow(' + s.rowIndex + ', this)"></td><td>' + s.id + '</td><td>' + s.name + '</td><td>' + money(s.rate) + '</td><td>' + s.unit + '</td><td>' + s.relatedService + '</td><td><button class="btn btn-sm btn-secondary" onclick=\'editSideService(' + JSON.stringify(s).replace(/'/g,"&#39;") + ')\'>✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteSingleSide(' + s.rowIndex + ')">🗑</button></td></tr>';
+}).join('') + '</tbody></table></div></div>';
+}).getSideServicesList(currentToken);
+}
+function deleteSingleSide(idx) { if (!confirm('حذف؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); loadSideServices(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteSideServices([idx], currentToken); }
+function editSideService(s) {
+s = s || {};
+google.script.run.withSuccessHandler(function(services) {
+const selected = (s.relatedService || '').split(/[,،;؛]/).map(function(x){return x.trim();}).filter(Boolean);
+openModal('<div class="modal-header"><h2>' + (s.rowIndex?'ویرایش':'افزودن') + ' خدمت جانبی</h2><button class="modal-close" onclick="closeModal()"></button></div>' +
+'<div class="form-grid"><div class="field"><label>کد *</label><input id="ssId" value="' + (s.id||'') + '" ' + (s.rowIndex?'readonly':'') + '></div><div class="field"><label>نام *</label><input id="ssName" value="' + (s.name||'') + '"></div><div class="field"><label>نرخ (ریال)</label><input id="ssRate" type="number" value="' + (s.rate||0) + '"></div><div class="field"><label>واحد</label><input id="ssUnit" value="' + (s.unit||'واحد') + '"></div>' +
+'<div class="field full"><label>خدمات اصلی مرتبط (چند انتخابی)</label><div class="multi-select"><div class="multi-select-btn" onclick="this.nextElementSibling.classList.toggle(\'open\')"><span id="ssRelatedLabel">' + (selected.length ? selected.join('، ') : 'انتخاب کنید') + '</span><span>▼</span></div><div class="multi-select-dropdown">' + services.map(function(svc){return '<label><input type="checkbox" class="ssRelatedCheck" value="' + svc.id + '" ' + (selected.includes(svc.id)?'checked':'') + ' onchange="updateRelatedLabel()"> ' + svc.name + ' (' + svc.id + ')</label>';}).join('') + '</div></div></div>' +
+'<div class="field full"><label>توضیحات</label><textarea id="ssDesc">' + (s.description||'') + '</textarea></div></div>' +
+'<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveSideService(' + (s.rowIndex||'null') + ')">ذخیره</button></div>');
+}).getServicesList(currentToken);
+}
+function updateRelatedLabel() { const checked = Array.from(document.querySelectorAll('.ssRelatedCheck:checked')).map(function(c){return c.value;}); $('ssRelatedLabel').textContent = checked.length ? checked.join('، ') : 'انتخاب کنید'; }
+function saveSideService(rowIndex) {
+const related = Array.from(document.querySelectorAll('.ssRelatedCheck:checked')).map(function(c){return c.value;}).join(', ');
+const data = { id: $('ssId').value, name: $('ssName').value, rate: Number($('ssRate').value), unit: $('ssUnit').value, relatedService: related, description: $('ssDesc').value };
+if (rowIndex) data.rowIndex = rowIndex;
+google.script.run.withSuccessHandler(function() { closeModal(); toast('ذخیره شد', 'success'); loadSideServices(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).saveSideService(data, currentToken);
+}
+function loadQuestions() {
+google.script.run.withSuccessHandler(function(list) {
+google.script.run.withSuccessHandler(function(services) {
+google.script.run.withSuccessHandler(function(columns) {
+window._allServices = services; window._allColumns = columns;
+$('servicesContent').innerHTML = '<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:12px"><h3 style="color:var(--navy)">پرسش‌های خدمات</h3><button class="btn btn-primary" onclick="editQuestion()">+ افزودن پرسش</button></div><div class="table-wrap"><table><thead><tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th><th>خدمت</th><th>پرسش</th><th>نوع</th><th>ستون پاسخ</th><th>اجباری</th><th>عملیات</th></tr></thead><tbody>' + list.map(function(q) {
+return '<tr><td><input type="checkbox" class="row-check" data-row="' + q.rowIndex + '" onchange="toggleRow(' + q.rowIndex + ', this)"></td><td>' + q.serviceId + '</td><td>' + q.question + '</td><td>' + q.inputType + '</td><td>' + q.answerColumn + '</td><td>' + (/اجباری|required/i.test(q.fieldType)?'✅':'—') + '</td><td><button class="btn btn-sm btn-secondary" onclick=\'editQuestion(' + JSON.stringify(q).replace(/'/g,"&#39;") + ')\'>✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteSingleQ(' + q.rowIndex + ')">🗑</button></td></tr>';
+}).join('') + '</tbody></table></div></div>';
+}).getOrdersColumns(currentToken);
+}).getServicesList(currentToken);
+}).getQuestionsList(currentToken);
+}
+function deleteSingleQ(idx) { if (!confirm('حذف؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); loadQuestions(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteQuestions([idx], currentToken); }
+function editQuestion(q) {
+q = q || {};
+const services = window._allServices || []; const columns = window._allColumns || [];
+const selectedServices = (q.serviceId || '').split(/[,،;؛]/).map(function(x){return x.trim();}).filter(Boolean);
+const inputTypes = ['text','number','select','date','time','email','tel','textarea','checkbox','radio'];
+openModal('<div class="modal-header"><h2>' + (q.rowIndex?'ویرایش':'افزودن') + ' پرسش</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="form-grid">' +
+'<div class="field full"><label>کد خدمت (چند انتخابی)</label><div class="multi-select"><div class="multi-select-btn" onclick="this.nextElementSibling.classList.toggle(\'open\')"><span id="qServiceLabel">' + (selectedServices.length ? selectedServices.join('، ') : 'انتخاب کنید') + '</span><span>▼</span></div><div class="multi-select-dropdown">' + services.map(function(s){return '<label><input type="checkbox" class="qServiceCheck" value="' + s.id + '" ' + (selectedServices.includes(s.id)?'checked':'') + ' onchange="updateQServiceLabel()"> ' + s.name + ' (' + s.id + ')</label>';}).join('') + '</div></div></div>' +
+'<div class="field"><label>نام فارسی خدمت</label><input id="qServiceName" value="' + (q.serviceName||'') + '"></div>' +
+'<div class="field full"><label>متن پرسش *</label><input id="qQuestion" value="' + (q.question||'') + '"></div>' +
+'<div class="field"><label>نوع ورودی</label><select id="qInputType">' + inputTypes.map(function(t){return '<option value="' + t + '" ' + (q.inputType===t?'selected':'') + '>' + t + '</option>';}).join('') + '</select></div>' +
+'<div class="field"><label>نوع فیلد</label><select id="qFieldType"><option value="اختیاری" ' + (q.fieldType==='اختیاری'?'selected':'') + '>اختیاری</option><option value="اجباری" ' + (q.fieldType==='اجباری'?'selected':'') + '>اجباری</option></select></div>' +
+'<div class="field"><label>نام ستون پاسخ (از Orders)</label><select id="qAnswerCol"><option value="">انتخاب</option>' + columns.map(function(c){return '<option ' + (q.answerColumn===c?'selected':'') + '>' + c + '</option>';}).join('') + '</select></div>' +
+'<div class="field"><label>جایگاه (عدد)</label><input id="qPosition" type="number" value="' + (q.position||0) + '"></div>' +
+'<div class="field full"><label>گزینه‌ها (با کاما)</label><input id="qOptions" value="' + (q.options||'') + '"></div>' +
+'<div class="field full"><label>متن راهنما</label><input id="qHelp" value="' + (q.help||'') + '"></div></div>' +
+'<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveQuestion(' + (q.rowIndex||'null') + ')">ذخیره</button></div>');
+}
+function updateQServiceLabel() { const checked = Array.from(document.querySelectorAll('.qServiceCheck:checked')).map(function(c){return c.value;}); $('qServiceLabel').textContent = checked.length ? checked.join('، ') : 'انتخاب کنید'; }
+function saveQuestion(rowIndex) {
+const serviceId = Array.from(document.querySelectorAll('.qServiceCheck:checked')).map(function(c){return c.value;}).join(', ');
+const data = { serviceId: serviceId, serviceName: $('qServiceName').value, question: $('qQuestion').value, inputType: $('qInputType').value, fieldType: $('qFieldType').value, answerColumn: $('qAnswerCol').value, position: Number($('qPosition').value), options: $('qOptions').value, help: $('qHelp').value };
+if (rowIndex) data.rowIndex = rowIndex;
+google.script.run.withSuccessHandler(function() { closeModal(); toast('ذخیره شد', 'success'); loadQuestions(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).saveQuestion(data, currentToken);
+}
+
+/* ==================== مشتریان ==================== */
+let customersFilters = {};
+function loadCustomers() {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">مدیریت مشتریان</h1></div>' +
+'<div class="bulk-actions" id="bulkActions"><strong id="selectedCount">0</strong> انتخاب شده: <button class="btn btn-sm btn-danger" onclick="bulkDeleteCustomers()">حذف گروهی</button><button class="btn btn-sm btn-secondary" onclick="clearSelection()">انصراف</button></div>' +
+'<div class="card"><div class="filters">' +
+'<div class="field"><label>جستجو</label><input id="cSearch" placeholder="نام، موبایل، کد" oninput="debounceCustomers()"></div>' +
+'<div class="field"><label>سطح</label><select id="cLevel" onchange="applyCustomersFilter()"><option value="">همه</option></select></div>' +
+'<div class="field"><label>وضعیت</label><select id="cStatus" onchange="applyCustomersFilter()"><option value="">همه</option><option>فعال</option><option>غیرفعال</option></select></div>' +
+'<div class="field"><label>استان</label><input id="cProvince" onchange="applyCustomersFilter()"></div>' +
+'<div class="field"><label>شهر</label><input id="cCity" onchange="applyCustomersFilter()"></div>' +
+'<div class="field"><label>از تاریخ عضویت</label><input id="cFromJoin" placeholder="1405/01/01" onchange="applyCustomersFilter()"></div>' +
+'<div class="field"><label>تا تاریخ عضویت</label><input id="cToJoin" placeholder="1405/12/29" onchange="applyCustomersFilter()"></div>' +
+'<div class="field"><label>حداقل سفارشات</label><input id="cMinOrders" type="number" onchange="applyCustomersFilter()"></div>' +
+'<div class="field"><label>حداقل مبلغ کل</label><input id="cMinAmount" type="number" onchange="applyCustomersFilter()"></div>' +
+'</div><div id="customersTable"></div></div>';
+google.script.run.withSuccessHandler(function(levels) { const sel = $('cLevel'); levels.forEach(function(l){ if (l.status === 'فعال') sel.innerHTML += '<option>' + l.name + '</option>'; }); }).getCustomerLevels(currentToken);
+fetchCustomers();
+}
+let cTimer;
+function debounceCustomers() { clearTimeout(cTimer); cTimer = setTimeout(applyCustomersFilter, 400); }
+function applyCustomersFilter() { customersFilters = { search: $('cSearch').value, level: $('cLevel').value, status: $('cStatus').value, province: $('cProvince').value, city: $('cCity').value, fromJoinDate: $('cFromJoin').value, toJoinDate: $('cToJoin').value, minOrders: $('cMinOrders').value ? Number($('cMinOrders').value) : undefined, minAmount: $('cMinAmount').value ? Number($('cMinAmount').value) : undefined }; fetchCustomers(); }
+function fetchCustomers() {
+google.script.run.withSuccessHandler(function(rows) {
+if (!rows.length) { $('customersTable').innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">مشتری یافت نشد</div>'; return; }
+$('customersTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th><th>کد</th><th>نام</th><th>موبایل</th><th>سطح</th><th>عضویت</th><th>سفارشات</th><th>مبلغ کل</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' + rows.map(function(r) {
+return '<tr><td><input type="checkbox" class="row-check" data-row="' + r.rowIndex + '" onchange="toggleRow(' + r.rowIndex + ', this)"></td><td>' + r.code + '</td><td>' + r.fullName + '</td><td style="direction:ltr;text-align:right">' + r.phone + '</td><td>' + r.level + '</td><td>' + r.joinDate + '</td><td>' + toFa(r.totalOrders) + '</td><td>' + money(r.totalAmount) + '</td><td><span class="badge badge-' + (r.status==='فعال'?'active':'inactive') + '">' + r.status + '</span></td><td style="white-space:nowrap"><button class="btn btn-sm btn-secondary" onclick=\'editCustomer(' + JSON.stringify(r).replace(/'/g,"&#39;") + ')\'>✏️</button>' + (r.rowIndex ? ' <button class="btn btn-sm btn-secondary" onclick="uploadFor(\'customers\',\'' + r.code + '\',\'' + (r.username||'') + '\')"></button>' : '') + ' <button class="btn btn-sm btn-secondary" onclick="viewCustomerHistory(\'' + r.code + '\',\'' + r.fullName + '\')">📋</button></td></tr>';
+}).join('') + '</tbody></table></div>';
+}).withFailureHandler(function(e) { $('customersTable').innerHTML = '<div style="color:var(--danger);padding:20px">' + e.message + '</div>'; }).getCustomersList(customersFilters, currentToken);
+}
+function bulkDeleteCustomers() { if (!confirm('حذف ' + selectedRows.size + ' مشتری؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); clearSelection(); fetchCustomers(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteCustomers(Array.from(selectedRows), currentToken); }
+function editCustomer(c) {
+google.script.run.withSuccessHandler(function(levels) {
+openModal('<div class="modal-header"><h2>ویرایش مشتری ' + c.code + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="form-grid"><div class="field"><label>کد اشتراک</label><input id="cuCode" value="' + c.code + '"></div>' +
+'<div class="field"><label>نام کاربری</label><input id="cuUsername" value="' + (c.username||'') + '"></div>' +
+'<div class="field"><label>رمز عبور</label><input id="cuPassword" value="' + (c.password||'') + '"></div>' +
+'<div class="field"><label>نام</label><input id="cuFirstName" value="' + (c.firstName||'') + '"></div>' +
+'<div class="field"><label>نام خانوادگی</label><input id="cuLastName" value="' + (c.lastName||'') + '"></div>' +
+'<div class="field"><label>جنسیت</label><select id="cuGender"><option value="">انتخاب</option><option ' + (c.gender==='مرد'?'selected':'') + '>مرد</option><option ' + (c.gender==='زن'?'selected':'') + '>زن</option></select></div>' +
+'<div class="field"><label>تاریخ تولد (شمسی)</label><input id="cuBirth" value="' + (c.birthDate||'') + '"></div>' +
+'<div class="field"><label>موبایل</label><input id="cuPhone" value="' + c.phone + '"></div>' +
+'<div class="field"><label>ایمیل</label><input id="cuEmail" value="' + (c.email||'') + '"></div>' +
+'<div class="field"><label>استان</label><input id="cuProvince" value="' + (c.province||'') + '"></div>' +
+'<div class="field"><label>شهر</label><input id="cuCity" value="' + (c.city||'') + '"></div>' +
+'<div class="field"><label>سطح</label><select id="cuLevel">' + levels.map(function(l){return '<option ' + (l.name===c.level?'selected':'') + '>' + l.name + '</option>';}).join('') + '</select></div>' +
+'<div class="field"><label>وضعیت</label><select id="cuStatus"><option ' + (c.status==='فعال'?'selected':'') + '>فعال</option><option ' + (c.status==='غیرفعال'?'selected':'') + '>غیرفعال</option></select></div>' +
+'<div class="field"><label>عکس پروفایل (URL)</label><input id="cuAvatar" value="' + (c.avatar||'') + '"></div>' +
+'<div class="field"><label>کد پستی</label><input id="cuPostal" value="' + (c.postalCode||'') + '"></div>' +
+'<div class="field"><label>مدت اعتبار اشتراک</label><input id="cuDuration" value="' + (c.subscriptionDuration||'') + '"></div>' +
+'<div class="field"><label>شروع اشتراک (شمسی)</label><input id="cuSubStart" value="' + (c.subscriptionStart||'') + '"></div>' +
+'<div class="field"><label>پایان اشتراک (شمسی)</label><input id="cuSubEnd" value="' + (c.subscriptionEnd||'') + '"></div>' +
+'<div class="field"><label>بستانکار</label><input id="cuCreditor" type="number" value="' + (c.creditor||0) + '"></div>' +
+'<div class="field"><label>بدهکار</label><input id="cuDebtor" type="number" value="' + (c.debtor||0) + '"></div>' +
+'<div class="field full"><label>آدرس</label><textarea id="cuAddress">' + (c.address||'') + '</textarea></div>' +
+'<div class="field full"><label>توضیحات</label><textarea id="cuNotes">' + (c.notes||'') + '</textarea></div></div>' +
+'<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveCustomer(' + c.rowIndex + ')">ذخیره</button></div>');
+}).getCustomerLevels(currentToken);
+}
+function saveCustomer(rowIndex) {
+const updates = { customerId: $('cuCode').value, username: $('cuUsername').value, password: $('cuPassword').value, firstName: $('cuFirstName').value, lastName: $('cuLastName').value, gender: $('cuGender').value, birthday: $('cuBirth').value, contact: $('cuPhone').value, email: $('cuEmail').value, province: $('cuProvince').value, city: $('cuCity').value, level: $('cuLevel').value, status: $('cuStatus').value, photo: $('cuAvatar').value, postal: $('cuPostal').value, validity: $('cuDuration').value, subStart: $('cuSubStart').value, subEnd: $('cuSubEnd').value, credit: Number($('cuCreditor').value), debit: Number($('cuDebtor').value), address: $('cuAddress').value, notes: $('cuNotes').value };
+google.script.run.withSuccessHandler(function() { closeModal(); toast('ذخیره شد', 'success'); fetchCustomers(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).updateCustomer(rowIndex, updates, currentToken);
+}
+function viewCustomerHistory(code, name) {
+openModal('<div class="modal-header"><h2>سوابق ' + name + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="filters"><div class="field"><label>از تاریخ</label><input id="hFrom" placeholder="1405/01/01"></div><div class="field"><label>تا تاریخ</label><input id="hTo" placeholder="1405/12/29"></div><div class="field" style="justify-content:flex-end"><button class="btn btn-primary" onclick="loadCustomerHistory(\'' + code + '\')">نمایش</button><button class="btn btn-secondary" onclick="window.print()">🖨 پرینت</button></div></div>' +
+'<div id="historyContent"><div class="loading"><div class="spinner"></div></div></div>');
+loadCustomerHistory(code);
+}
+function loadCustomerHistory(code) {
+google.script.run.withSuccessHandler(function(rows) {
+$('historyContent').innerHTML = rows.length ? '<div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>RequestID</th><th>خدمت</th><th>مبلغ</th><th>وضعیت</th></tr></thead><tbody>' + rows.map(function(r){return '<tr><td>' + r.date + '</td><td>' + r.requestId + '</td><td>' + r.service + '</td><td>' + money(r.amount) + '</td><td>' + statusBadge(r.status) + '</td></tr>';}).join('') + '</tbody></table></div>' : '<div style="text-align:center;padding:20px;color:var(--muted)">سابقه‌ای نیست</div>';
+}).getCustomerHistory(code, $('hFrom').value, $('hTo').value, currentToken);
+}
+
+/* ==================== کدهای تخفیف ==================== */
+function loadOffers() {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">کدهای تخفیف</h1><button class="btn btn-primary" onclick="editOffer()">+ کد جدید</button></div>' +
+'<div class="bulk-actions" id="bulkActions"><strong id="selectedCount">0</strong> انتخاب شده: <button class="btn btn-sm btn-danger" onclick="bulkDeleteOffers()">حذف گروهی</button><button class="btn btn-sm btn-secondary" onclick="clearSelection()">انصراف</button></div>' +
+'<div id="offersContent"></div>';
+fetchOffers();
+}
+function fetchOffers() {
+google.script.run.withSuccessHandler(function(list) {
+$('offersContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th><th>کد</th><th>درصد</th><th>شروع</th><th>پایان</th><th>ظرفیت</th><th>استفاده</th><th>باقی</th><th>مبلغ تخفیف</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' + list.map(function(o) {
+return '<tr><td><input type="checkbox" class="row-check" data-row="' + o.rowIndex + '" onchange="toggleRow(' + o.rowIndex + ', this)"></td><td><strong>' + o.code + '</strong></td><td>' + toFa(o.discountRate) + '٪</td><td>' + (o.startDate||'—') + '</td><td>' + (o.endDate||'—') + '</td><td>' + (o.totalLimit>0?toFa(o.totalLimit):'') + '</td><td>' + toFa(o.usedCount) + '</td><td>' + (o.remaining>=0?toFa(o.remaining):'∞') + '</td><td>' + money(o.totalDiscount) + '</td><td><span class="badge badge-' + (o.status==='فعال'?'active':'inactive') + '">' + o.status + '</span></td><td style="white-space:nowrap"><button class="btn btn-sm btn-secondary" onclick=\'editOffer(' + JSON.stringify(o).replace(/'/g,"&#39;") + ')\'>✏️</button> <button class="btn btn-sm btn-secondary" onclick="viewRedemptions(\'' + o.code + '\')">📊</button> <button class="btn btn-sm btn-danger" onclick="deleteSingleOffer(' + o.rowIndex + ')">🗑</button></td></tr>';
+}).join('') + '</tbody></table></div></div>';
+}).withFailureHandler(function(e) { $('offersContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>'; }).getOfferCodesList(currentToken);
+}
+function bulkDeleteOffers() { if (!confirm('حذف ' + selectedRows.size + ' کد؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); clearSelection(); fetchOffers(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteOfferCodes(Array.from(selectedRows), currentToken); }
+function deleteSingleOffer(idx) { if (!confirm('حذف؟')) return; google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); fetchOffers(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteOfferCodes([idx], currentToken); }
+function editOffer(o) {
+o = o || {};
+openModal('<div class="modal-header"><h2>' + (o.rowIndex?'ویرایش':'افزودن') + ' کد تخفیف</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="form-grid"><div class="field"><label>کد *</label><input id="oCode" value="' + (o.code||'') + '" ' + (o.rowIndex?'readonly':'') + ' style="text-transform:uppercase"></div>' +
+'<div class="field"><label>درصد تخفیف *</label><input id="oRate" type="number" min="1" max="100" value="' + (o.discountRate||0) + '"></div>' +
+'<div class="field"><label>تاریخ شروع (شمسی)</label><input id="oStart" value="' + (o.startDate||'') + '" placeholder="1405/07/01"></div>' +
+'<div class="field"><label>تاریخ پایان (شمسی)</label><input id="oEnd" value="' + (o.endDate||'') + '" placeholder="1405/12/29"></div>' +
+'<div class="field"><label>محدودیت فردی (0=نامحدود)</label><input id="oIndLimit" type="number" value="' + (o.individualLimit||0) + '"></div>' +
+'<div class="field"><label>ظرفیت کل (0=نامحدود)</label><input id="oTotalLimit" type="number" value="' + (o.totalLimit||0) + '"></div>' +
+'<div class="field"><label>وضعیت</label><select id="oStatus"><option ' + (o.status==='فعال'?'selected':'') + '>فعال</option><option ' + (o.status==='غیرفعال'?'selected':'') + '>غیرفعال</option></select></div></div>' +
+'<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveOffer(' + (o.rowIndex||'null') + ')">ذخیره</button></div>');
+}
+function saveOffer(rowIndex) {
+const data = { code: $('oCode').value, discountRate: Number($('oRate').value), startDate: $('oStart').value, endDate: $('oEnd').value, individualLimit: Number($('oIndLimit').value), totalLimit: Number($('oTotalLimit').value), status: $('oStatus').value };
+if (rowIndex) data.rowIndex = rowIndex;
+google.script.run.withSuccessHandler(function() { closeModal(); toast('ذخیره شد', 'success'); fetchOffers(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).saveOfferCode(data, currentToken);
+}
+function viewRedemptions(code) {
+google.script.run.withSuccessHandler(function(list) {
+openModal('<div class="modal-header"><h2>گزارش استفاده کد ' + code + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+'<div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>مشتری</th><th>RequestID</th><th>مبلغ تخفیف</th><th>وضعیت</th></tr></thead><tbody>' + (list.length ? list.map(function(r){return '<tr><td>' + r.date + '</td><td>' + r.customerCode + '</td><td>' + r.requestId + '</td><td>' + money(r.discountAmount) + '</td><td>' + r.status + '</td></tr>';}).join('') : '<tr><td colspan="5" style="text-align:center;padding:20px">استفاده‌ای ثبت نشده</td></tr>') + '</tbody></table></div>');
+}).getOfferRedemptions(code, currentToken);
+}
+
+/* ==================== گزارش‌ها ==================== */
+function loadReports() {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">گزارش‌های پیشرفته</h1></div>' +
+'<div class="card"><div class="filters">' +
+'<div class="field"><label>از تاریخ (شمسی)</label><input id="rFrom" placeholder="1405/07/01"></div>' +
+'<div class="field"><label>تا تاریخ (شمسی)</label><input id="rTo" placeholder="1405/07/30"></div>' +
+'<div class="field"><label>نوع خدمت</label><select id="rService"><option value="">همه</option></select></div>' +
+'<div class="field"><label>شهر</label><input id="rCity" placeholder="شهر"></div>' +
+'<div class="field" style="justify-content:flex-end"><button class="btn btn-primary" onclick="generateReport()">📊 تولید گزارش</button> <button class="btn btn-secondary" onclick="window.print()">🖨 پرینت</button></div>' +
+'</div></div><div id="reportContent"></div>';
+google.script.run.withSuccessHandler(function(list) { const sel = $('rService'); list.forEach(function(s){ sel.innerHTML += '<option>' + s.name + '</option>'; }); }).getServicesList(currentToken);
+}
+function generateReport() {
+google.script.run.withSuccessHandler(function(data) {
+$('reportContent').innerHTML = '<div class="stats-grid">' +
+'<div class="stat-card"><div class="stat-label">تعداد سفارشات</div><div class="stat-value">' + toFa(data.count) + '</div></div>' +
+'<div class="stat-card green"><div class="stat-label">درآمد کل</div><div class="stat-value">' + money(data.totalRevenue) + '</div></div>' +
+'<div class="stat-card yellow"><div class="stat-label">مجموع تخفیف</div><div class="stat-value">' + money(data.totalDiscount) + '</div></div>' +
+'<div class="stat-card blue"><div class="stat-label">مالیات</div><div class="stat-value">' + money(data.totalTax) + '</div></div>' +
+'<div class="stat-card"><div class="stat-label">میانگین سفارش</div><div class="stat-value">' + money(data.averageOrder) + '</div></div>' +
+'<div class="stat-card ' + (data.profit>=0?'green':'red') + '"><div class="stat-label">سود خالص</div><div class="stat-value">' + money(data.profit||0) + '</div></div>' +
+'</div>' +
+'<div class="charts-grid"><div class="chart-box"><h3>فروش بر اساس خدمت</h3><canvas id="chartService"></canvas></div>' +
+'<div class="chart-box"><h3>درآمد ماهانه</h3><canvas id="chartMonth"></canvas></div>' +
+'<div class="chart-box"><h3>فروش بر اساس شهر</h3><canvas id="chartCity"></canvas></div></div>' +
+'<div class="card"><h3 style="margin-bottom:12px;color:var(--navy)">توزیع وضعیت</h3>' + Object.entries(data.byStatus).map(function(kv){return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)"><span>' + kv[0] + '</span><strong>' + toFa(kv[1]) + '</strong></div>';}).join('') + '</div>' +
+'<div class="card"><h3 style="margin-bottom:12px;color:var(--navy)">ریز تراکنش‌ها (' + toFa(data.transactions.length) + ' مورد)</h3><div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>RequestID</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>وضعیت</th></tr></thead><tbody>' + data.transactions.map(function(t){return '<tr><td>' + t.date + '</td><td>' + t.requestId + '</td><td>' + t.customer + '</td><td>' + t.service + '</td><td>' + money(t.amount) + '</td><td>' + statusBadge(t.status) + '</td></tr>';}).join('') + '</tbody></table></div></div>';
+new Chart($('chartService'), { type: 'bar', data: { labels: data.byService.map(function(x){return x.name;}), datasets: [{ label: 'تعداد', data: data.byService.map(function(x){return x.count;}), backgroundColor: '#FF6B1A' }] }, options: { responsive: true } });
+new Chart($('chartMonth'), { type: 'line', data: { labels: data.byMonth.map(function(x){return x.month;}), datasets: [{ label: 'درآمد', data: data.byMonth.map(function(x){return x.revenue;}), borderColor: '#067647', fill: true, backgroundColor: '#06764720' }] }, options: { responsive: true } });
+new Chart($('chartCity'), { type: 'doughnut', data: { labels: data.byCity.slice(0,8).map(function(x){return x.city;}), datasets: [{ data: data.byCity.slice(0,8).map(function(x){return x.revenue;}), backgroundColor: ['#FF6B1A','#067647','#1849a9','#f79009','#b42318','#657086','#8b5cf6','#ec4899'] }] }, options: { responsive: true } });
+}).withFailureHandler(function(e) { toast(e.message, 'error'); }).getFinancialReport($('rFrom').value, $('rTo').value, $('rService').value, $('rCity').value, currentToken);
+}
+
+/* ==================== لاگ‌ها ==================== */
+function loadLogs() {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">لاگ‌های سیستم</h1><button class="btn btn-secondary" onclick="window.print()">🖨 پرینت</button></div>' +
+'<div class="card"><div class="filters">' +
+'<div class="field"><label>کد/نام کاربر</label><input id="lgUser" placeholder="EMP-001 یا نام"></div>' +
+'<div class="field"><label>از تاریخ</label><input id="lgFrom" placeholder="1405/01/01"></div>' +
+'<div class="field"><label>تا تاریخ</label><input id="lgTo" placeholder="1405/12/29"></div>' +
+'<div class="field" style="justify-content:flex-end"><button class="btn btn-primary" onclick="fetchLogs()">نمایش</button></div>' +
+'</div><div id="logsTable"></div></div>';
+fetchLogs();
+}
+function fetchLogs() {
+google.script.run.withSuccessHandler(function(logs) {
+$('logsTable').innerHTML = logs.length ? '<div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>کد</th><th>نام</th><th>عملیات</th><th>جزئیات</th><th>نتیجه</th></tr></thead><tbody>' + logs.map(function(l){return '<tr><td>' + l.date + '</td><td>' + l.employeeId + '</td><td>' + l.employeeName + '</td><td>' + l.action + '</td><td>' + (l.details||'—') + '</td><td><span class="badge badge-' + (l.result==='success'?'active':'cancel') + '">' + l.result + '</span></td></tr>';}).join('') + '</tbody></table></div>' : '<div style="text-align:center;padding:40px;color:var(--muted)">لاگی یافت نشد</div>';
+}).withFailureHandler(function(e) { $('logsTable').innerHTML = '<div style="color:var(--danger);padding:20px">' + e.message + '</div>'; }).getEmployeeLogs($('lgUser').value, $('lgFrom').value, $('lgTo').value, currentToken);
+}
+
+/* ==================== تنظیمات ==================== */
+function loadSettings() {
+$('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">تنظیمات سیستم</h1></div><div id="settingsContent"><div class="loading"><div class="spinner"></div></div></div>';
+google.script.run.withSuccessHandler(function(list) {
+window._settingsRows = list;
+$('settingsContent').innerHTML = '<div class="card"><h3 style="margin-bottom:12px;color:var(--navy)">تنظیمات عمومی</h3><div class="form-grid">' + list.map(function(s) {
+return '<div class="field"><label>' + s.key + '</label><input data-key="' + s.key + '" data-orig="' + (s.value || '') + '" value="' + (s.value || '') + '"></div>';
+}).join('') + '</div>' +
+'<div style="margin-top:16px;display:flex;gap:10px"><button class="btn btn-primary" onclick="saveAllSettings()">💾 ذخیره همه</button><button class="btn btn-secondary" onclick="loadSettings()">انصراف</button></div></div>' +
+'<div class="card"><h3 style="margin-bottom:12px;color:var(--navy)">لوگو و تصاویر برند</h3><div class="form-grid">' +
+['LOGO_URL','LANDING_MEDIA_URL','BRAND_SYMBOL_URL'].map(function(k) {
+const cur = (list.find(function(s){ return s.key === k; }) || {}).value || '';
+return '<div class="field"><label>' + k + '</label><input id="img_' + k + '" value="' + cur + '" placeholder="URL تصویر"><input type="file" accept="image/*" onchange="uploadImage(this, \'' + k + '\')" style="margin-top:6px"></div>';
+}).join('') +
+'</div><div style="margin-top:16px;display:flex;gap:10px"><button class="btn btn-primary" onclick="saveImageSettings()">💾 ذخیره</button><button class="btn btn-secondary" onclick="loadSettings()">انصراف</button></div></div>' +
+'<div class="card"><h3 style="margin-bottom:12px;color:var(--navy)">راهنما</h3><ul style="padding-right:20px;line-height:2"><li><strong>SPREADSHEET_ID</strong>: آیدی گوگل شیت</li><li><strong>TRELLO_API_KEY / TRELLO_TOKEN / TRELLO_LIST_ID</strong>: اتصال ترلو</li><li><strong>CURRENCY_LABEL</strong>: واحد پول (ریال)</li></ul></div>';
+}).withFailureHandler(function(e) { $('settingsContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>'; }).getSystemSettings(currentToken);
+}
+function saveAllSettings() {
+const inputs = document.querySelectorAll('#settingsContent input[data-key]');
+let pending = 0;
+inputs.forEach(function(inp) {
+if (inp.value !== inp.dataset.orig) {
+pending++;
+google.script.run.withSuccessHandler(function(){ pending--; if (!pending) toast('تنظیمات ذخیره شد', 'success'); }).withFailureHandler(function(e){ pending--; toast(e.message, 'error'); }).updateSetting(inp.dataset.key, inp.value, currentToken);
+}
+});
+if (!pending) toast('تغییری ثبت نشده است', 'info');
+}
+function saveImageSettings() {
+['LOGO_URL','LANDING_MEDIA_URL','BRAND_SYMBOL_URL'].forEach(function(k) {
+const el = $('img_' + k); if (el) google.script.run.withSuccessHandler(function(){}).withFailureHandler(function(e){ toast(e.message, 'error'); }).updateSetting(k, el.value, currentToken);
+});
+toast('تصاویر ذخیره شد', 'success');
+}
+function uploadImage(input, key) {
+const file = input.files[0]; if (!file) return;
+const reader = new FileReader();
+reader.onload = function(e) {
+google.script.run.withSuccessHandler(function(r) {
+if (r.success) { const el = $('img_' + key); if (el) el.value = r.url; updateSettingDirect(key, r.url); toast('آپلود موفق', 'success'); }
+}).withFailureHandler(function(err) { toast(err.message, 'error'); }).uploadImage(e.target.result, file.name, currentToken);
+};
+reader.readAsDataURL(file);
+}
+function updateSettingDirect(key, value) { google.script.run.withSuccessHandler(function(){}).withFailureHandler(function(e){ toast(e.message, 'error'); }).updateSetting(key, value, currentToken); }
+
+/* ==================== پروفایل ==================== */
+// ==================== پروفایل ====================
+function loadProfile() {
+  google.script.run.withSuccessHandler(function(profile) {
+    $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">پروفایل من</h1><div style="display:flex;gap:8px"><button class="btn btn-primary" onclick=\'editProfile(' + JSON.stringify(profile).replace(/'/g,"&#39;") + ')\'>️ ویرایش</button><button class="btn btn-secondary" onclick="openMyPhotoEditor()">📷 تغییر عکس</button></div></div>' +
+    '<div class="card"><div class="employee-profile"><div class="employee-avatar-large" onclick="openMyPhotoEditor()" title="برای تغییر عکس کلیک کنید">' + 
+    (profile.avatar ? '<img src="'+profile.avatar+'" onerror="this.parentElement.innerHTML=\'' + (profile.fullName||'?').charAt(0) + '\'">' : (profile.fullName||'?').charAt(0)) + 
+    '</div>' +
+    '<div class="employee-details"><div class="detail-item"><div class="detail-label">کد پرسنلی</div><div class="detail-value">' + profile.employeeId + '</div></div><div class="detail-item"><div class="detail-label">نام کامل</div><div class="detail-value">' + profile.fullName + '</div></div><div class="detail-item"><div class="detail-label">نام کاربری</div><div class="detail-value">' + profile.username + '</div></div><div class="detail-item"><div class="detail-label">ایمیل</div><div class="detail-value">' + (profile.email||'—') + '</div></div><div class="detail-item"><div class="detail-label">موبایل</div><div class="detail-value" style="direction:ltr;text-align:right">' + (profile.phone||'—') + '</div></div><div class="detail-item"><div class="detail-label">سمت</div><div class="detail-value">' + (profile.position||'—') + '</div></div><div class="detail-item"><div class="detail-label">تخصص</div><div class="detail-value">' + (profile.specialty||'—') + '</div></div><div class="detail-item"><div class="detail-label">نقش</div><div class="detail-value">ادمین ارشد</div></div><div class="detail-item"><div class="detail-label">تاریخ استخدام</div><div class="detail-value">' + (profile.joinDate||'—') + '</div></div><div class="detail-item"><div class="detail-label">کد ملی</div><div class="detail-value">' + (profile.nationalCode||'—') + '</div></div><div class="detail-item"><div class="detail-label">تماس اضطراری</div><div class="detail-value">' + (profile.emergencyContact||'—') + '</div></div><div class="detail-item" style="grid-column:1/-1"><div class="detail-label">آدرس</div><div class="detail-value">' + (profile.address||'—') + '</div></div></div></div></div>';
+  }).withFailureHandler(function(e) { 
+    $('pageContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>'; 
+  }).getUserProfile(currentToken);
+}
+
+function editProfile(p) {
+  openModal('<div class="modal-header"><h2>ویرایش پروفایل</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+  '<div class="form-grid"><div class="field"><label>نام کامل</label><input id="pFullName" value="' + p.fullName + '"></div><div class="field"><label>موبایل</label><input id="pPhone" value="' + (p.phone||'') + '"></div><div class="field"><label>ایمیل</label><input id="pEmail" value="' + (p.email||'') + '"></div><div class="field"><label>تخصص</label><input id="pSpecialty" value="' + (p.specialty||'') + '"></div><div class="field"><label>عکس پروفایل (URL)</label><input id="pAvatar" value="' + (p.avatar||'') + '"></div><div class="field"><label>کد ملی</label><input id="pNational" value="' + (p.nationalCode||'') + '"></div><div class="field"><label>تماس اضطراری</label><input id="pEmergency" value="' + (p.emergencyContact||'') + '"></div><div class="field full"><label>آدرس</label><textarea id="pAddress">' + (p.address||'') + '</textarea></div></div>' +
+  '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveProfile()">ذخیره</button></div>');
+}
+
+function saveProfile() {
+  const updates = { fullName: $('pFullName').value, contact: $('pPhone').value, email: $('pEmail').value, specialization: $('pSpecialty').value, photo: $('pAvatar').value, nationalId: $('pNational').value, emergency: $('pEmergency').value, address: $('pAddress').value };
+  google.script.run.withSuccessHandler(function() { 
+    closeModal(); 
+    toast('پروفایل بروزرسانی شد', 'success'); 
+    loadProfile(); 
+  }).withFailureHandler(function(e) { 
+    toast(e.message, 'error'); 
+  }).updateUserProfile(updates, currentToken);
+}
+
+// تابع باز کردن PhotoEditor
+function openMyPhotoEditor() {
+  if (!window.ZVPhoto) { 
+    toast('کامپوننت ویرایش عکس بارگذاری نشده', 'error'); 
+    return; 
+  }
+  ZVPhoto.open({
+    endpoint: 'uploadMyProfilePhoto',
+    token: currentToken,
+    onDone: function(url) {
+      currentUser.avatar = url;
+      localStorage.setItem('zv_administrator_user', JSON.stringify(currentUser));
+      const av = $('userAvatar'); 
+      if (av) av.innerHTML = '<img src="' + url + '" onerror="this.style.display=\'none\'">';
+      toast('عکس پروفایل بروزرسانی شد', 'success');
+      loadProfile();
+    }
+  });
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Enter' && $('loginPage').style.display !== 'none') doLogin(); });
+</script>
+</body>
+</html>
