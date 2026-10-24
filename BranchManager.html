@@ -1,22 +1,130 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><base target="_top">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base target="_top">
 <title>پنل مدیر شعبه | ZingoVingo</title>
-<!-- استایل‌ها دقیقاً کپی از Operator.html باشند -->
-<style> /* استایل‌های Operator.html را اینجا کپی کنید */ </style>
+<style>
+:root{--navy:#0B1736;--navy-light:#1a2a4d;--orange:#FF6B1A;--orange-light:#ff8533;--bg:#f4f6fb;--text:#172033;--muted:#657086;--line:#dfe4ee;--white:#fff;--green:#067647;--danger:#b42318;--blue:#1849a9;--yellow:#f79009;--shadow:0 2px 10px #17203308;--radius:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;line-height:1.7;font-size:14px}
+button,input,select,textarea{font-family:inherit;font-size:13px}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy) 0%,#1a2a4d 100%)}
+.login-box{background:#fff;border-radius:20px;padding:40px;width:min(420px,92%);box-shadow:0 20px 60px #0003}
+.login-box h1{color:var(--navy);text-align:center;margin-bottom:8px;font-size:28px}
+.login-box h1 span{color:var(--orange)}
+.login-box .subtitle{text-align:center;color:var(--muted);margin-bottom:24px;font-size:13px}
+.login-box .field{margin-bottom:14px}
+.login-box label{display:block;margin-bottom:6px;font-weight:700;font-size:13px}
+.login-box input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;outline:none}
+.login-box input:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
+.login-box .btn{width:100%;padding:13px;margin-top:8px}
+.login-error{background:#fef3f2;color:var(--danger);padding:10px;border-radius:8px;margin-bottom:12px;font-size:13px;display:none}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:var(--navy);color:#fff;padding:0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.brand{padding:20px;border-bottom:1px solid var(--navy-light)}
+.brand h2{font-size:22px;font-weight:900}
+.brand h2 span{color:var(--orange)}
+.brand small{color:#8896b3;font-size:11px}
+.nav-menu{flex:1;padding:12px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:12px 20px;cursor:pointer;color:#c8d2e6;font-size:14px;border-right:3px solid transparent;transition:all .2s}
+.nav-item:hover{background:var(--navy-light);color:#fff}
+.nav-item.active{background:var(--navy-light);color:#fff;border-right-color:var(--orange)}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--navy-light);font-size:12px}
+.user-info{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:14px;overflow:hidden}
+.user-avatar img{width:100%;height:100%;object-fit:cover}
+.user-name{font-weight:700;font-size:13px}
+.user-role{color:#8896b3;font-size:11px}
+.logout-btn{background:transparent;border:1px solid var(--navy-light);color:#c8d2e6;padding:8px;border-radius:8px;cursor:pointer;width:100%;font-size:12px}
+.logout-btn:hover{background:var(--navy-light);color:#fff}
+.main{padding:24px;overflow-x:hidden}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.page-title{font-size:20px;color:var(--navy);font-weight:900}
+.btn{border:0;border-radius:10px;padding:9px 16px;font:inherit;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{background:var(--orange-light)}
+.btn-secondary{background:#eef1f7;color:var(--navy)}
+.btn-secondary:hover{background:#dfe4ee}
+.btn-danger{background:#fef3f2;color:var(--danger)}
+.btn-danger:hover{background:#fee4e2}
+.btn-success{background:#ecfdf3;color:var(--green)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.stat-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden;transition:transform .2s}
+.stat-card:hover{transform:translateY(-2px)}
+.stat-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:var(--orange)}
+.stat-card.green::before{background:var(--green)}
+.stat-card.blue::before{background:var(--blue)}
+.stat-card.yellow::before{background:var(--yellow)}
+.stat-card.red::before{background:var(--danger)}
+.stat-label{font-size:12px;color:var(--muted);margin-bottom:6px}
+.stat-value{font-size:24px;font-weight:900;color:var(--navy);font-variant-numeric:tabular-nums}
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8f9fc;padding:12px;text-align:right;font-weight:700;color:var(--navy);border-bottom:2px solid var(--line);position:sticky;top:0;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:hover{background:#fafbfd}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-new{background:#eff6ff;color:var(--blue)}
+.badge-progress{background:#fff7ed;color:#9a3412}
+.badge-done{background:#ecfdf3;color:var(--green)}
+.badge-cancel{background:#fef3f2;color:var(--danger)}
+.badge-active{background:#ecfdf3;color:var(--green)}
+.badge-inactive{background:#fef3f2;color:var(--danger)}
+.badge-role{background:var(--navy-light);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:700;color:var(--muted)}
+input,select,textarea{font:inherit;border:1px solid #cfd6e3;border-radius:8px;padding:9px 11px;background:#fff;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
+textarea{min-height:80px;resize:vertical}
+.modal{display:none;position:fixed;inset:0;background:#071127a8;z-index:100;padding:18px;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-box{width:min(800px,100%);background:#fff;border-radius:var(--radius);padding:24px;max-height:90vh;overflow:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.modal-header h2{font-size:18px;color:var(--navy)}
+.modal-close{background:transparent;border:0;font-size:22px;cursor:pointer;color:var(--muted);padding:4px 10px}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.form-grid .full{grid-column:1/-1}
+.toast{position:fixed;bottom:20px;left:20px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;z-index:200;display:none;box-shadow:0 10px 30px #0003;font-size:13px}
+.toast.show{display:block;animation:slideIn .3s}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--danger)}
+@keyframes slideIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.employee-profile{display:grid;grid-template-columns:200px 1fr;gap:20px}
+.employee-avatar-large{width:200px;height:200px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:60px;color:#fff;font-weight:900;overflow:hidden;cursor:pointer}
+.employee-avatar-large img{width:100%;height:100%;object-fit:cover}
+.employee-details{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.detail-item{background:#f8f9fc;padding:12px;border-radius:10px}
+.detail-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.detail-value{font-weight:700;color:var(--navy)}
+.loading{text-align:center;padding:40px;color:var(--muted)}
+.spinner{display:inline-block;width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--orange);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.menu-toggle{display:none;background:var(--navy);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+@media print{.sidebar,.page-header,.btn,.filters,.modal-footer,.menu-toggle{display:none!important}.app{grid-template-columns:1fr}.main{padding:0}}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:fixed;right:-280px;width:260px;z-index:50;transition:right .3s}.sidebar.open{right:0}.menu-toggle{display:block}.form-grid{grid-template-columns:1fr}.employee-profile{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
+
+<!-- صفحه لاگین -->
 <div id="loginPage" class="login-page">
   <div class="login-box">
-    <h1>Zingo<span>Vingo</span></h1><div class="subtitle">پنل مدیر شعبه</div>
+    <h1>Zingo<span>Vingo</span></h1>
+    <div class="subtitle">پنل مدیر شعبه</div>
     <div id="loginError" class="login-error"></div>
-    <div class="field"><label>نام کاربری</label><input id="loginUser"></div>
-    <div class="field"><label>رمز عبور</label><input id="loginPass" type="password"></div>
-    <button class="btn btn-primary" onclick="doLogin('branch')">ورود به پنل</button>
+    <div class="field"><label>نام کاربری یا ایمیل</label><input id="loginUser" placeholder="username" autocomplete="username"></div>
+    <div class="field"><label>رمز عبور</label><input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="btn btn-primary" onclick="doLogin()">ورود به پنل</button>
   </div>
 </div>
 
+<!-- اپلیکیشن اصلی -->
 <div id="appContainer" class="app" style="display:none">
   <aside class="sidebar" id="sidebar">
     <div class="brand"><h2>Zingo<span>Vingo</span></h2><small>پنل مدیر شعبه</small></div>
@@ -31,183 +139,445 @@
     <div id="pageContent"><div class="loading"><div class="spinner"></div></div></div>
   </main>
 </div>
+
 <div id="toast" class="toast"></div>
 <div id="modal" class="modal"><div class="modal-box" id="modalBox"></div></div>
 
 <script>
 const $ = id => document.getElementById(id);
-const toFa = n => new Intl.NumberFormat('fa-IR').format(n);
 const money = n => new Intl.NumberFormat('en-US').format(Math.round(Number(n)||0)) + ' ریال';
-let currentToken = localStorage.getItem('zv_branch_token') || null;
+const toFa = n => new Intl.NumberFormat('fa-IR').format(n);
+let currentToken = localStorage.getItem('zv_branchmanager_token') || null;
 let currentUser = null;
 
 const MENU_ITEMS = [
   { id: 'dashboard', label: '📊 داشبورد' },
-  { id: 'employees', label: '👔 مدیریت کارمندان' },
-  { id: 'reports', label: '📈 گزارشات شعبه' },
+  { id: 'orders', label: '📋 سفارشات شعبه' },
+  { id: 'cards', label: '🎫 کارت‌ها' },
+  { id: 'employees', label: '👔 کارمندان' },
+  { id: 'groups', label: '👥 گروه‌ها' },
+  { id: 'workers', label: '👷 نیروها' },
+  { id: 'reports', label: '📈 گزارشات' },
   { id: 'profile', label: '👤 پروفایل من' }
 ];
 
 function toast(msg, type='info') { const t = $('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => t.classList.remove('show'), 3500); }
 function openModal(html) { $('modalBox').innerHTML = html; $('modal').classList.add('open'); }
 function closeModal() { $('modal').classList.remove('open'); }
+$('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
+function statusBadge(s) { return '<span class="badge badge-' + (/جدید|ثبت اولیه/.test(s)?'new':/تکمیل/.test(s)?'done':/لغو/.test(s)?'cancel':'progress') + '">' + s + '</span>'; }
 
-function doLogin(type) {
+// ==================== لاگین / لاگ‌اوت ====================
+function doLogin() {
   const u = $('loginUser').value.trim(), p = $('loginPass').value;
-  if (!u || !p) return $('loginError').style.display = 'block', $('loginError').textContent = 'نام کاربری و رمز را وارد کنید';
-  
-  const apiCall = type === 'branch' ? 'branchManagerLogin' : 'employeeLogin';
-  google.script.run.withSuccessHandler(r => {
-    if (r.success) {
+  if (!u || !p) { showLoginError('نام کاربری و رمز عبور را وارد کنید'); return; }
+  $('loginError').style.display = 'none';
+  const btn = document.querySelector('.login-box .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'در حال ورود...'; }
+  google.script.run.withSuccessHandler(function(r) {
+    if (btn) { btn.disabled = false; btn.textContent = 'ورود به پنل'; }
+    if (r && r.success) {
       currentToken = r.token; currentUser = r.user;
-      localStorage.setItem('zv_branch_token', r.token);
-      localStorage.setItem('zv_branch_user', JSON.stringify(r.user));
+      localStorage.setItem('zv_branchmanager_token', r.token);
+      localStorage.setItem('zv_branchmanager_user', JSON.stringify(r.user));
       showApp(r.user);
-    } else $('loginError').textContent = r.message || 'خطا';
-  }).withFailureHandler(e => $('loginError').textContent = e.message)[apiCall](u, p);
+    } else showLoginError((r && r.message) || 'خطا در ورود');
+  }).withFailureHandler(function(e) {
+    if (btn) { btn.disabled = false; btn.textContent = 'ورود به پنل'; }
+    showLoginError(e.message || 'خطا در ورود');
+  }).branchManagerLogin(u, p);
 }
-
+function showLoginError(msg) { $('loginError').textContent = msg; $('loginError').style.display = 'block'; }
+function doLogout() {
+  if (currentToken) google.script.run.branchManagerLogout(currentToken);
+  localStorage.removeItem('zv_branchmanager_token');
+  localStorage.removeItem('zv_branchmanager_user');
+  currentToken = null; currentUser = null; location.reload();
+}
 function showApp(user) {
   currentUser = user;
   $('loginPage').style.display = 'none'; $('appContainer').style.display = 'grid';
   $('userName').textContent = user.name;
-  $('userAvatar').textContent = user.name ? user.name.charAt(0) : '?';
-  if (user.avatar) $('userAvatar').innerHTML = '<img src="' + user.avatar + '">';
-  
-  $('navMenu').innerHTML = MENU_ITEMS.map(i => `<div class="nav-item" data-page="${i.id}">${i.label}</div>`).join('');
-  $('navMenu').querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-      $('navMenu').querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      item.classList.add('active');
-      loadPage(item.dataset.page);
-      $('sidebar').classList.remove('open');
-    });
-  });
+  $('userRole').innerHTML = 'مدیر شعبه <span class="badge-role">' + (user.branchId || '—') + '</span>';
+  const avatar = $('userAvatar');
+  if (user.avatar) avatar.innerHTML = '<img src="' + user.avatar + '" onerror="this.style.display=\'none\'">';
+  else avatar.textContent = user.name ? user.name.charAt(0) : '?';
+  renderMenu();
+  const firstNav = document.querySelector('.nav-item[data-page="dashboard"]');
+  if (firstNav) firstNav.classList.add('active');
   loadPage('dashboard');
 }
+(function checkSession() {
+  const saved = localStorage.getItem('zv_branchmanager_user');
+  if (currentToken && saved) { currentUser = JSON.parse(saved); showApp(currentUser); }
+})();
 
+// ==================== منو و بارگذاری صفحات ====================
+function renderMenu() {
+  const menu = $('navMenu');
+  menu.innerHTML = MENU_ITEMS.map(item => '<div class="nav-item" data-page="' + item.id + '">' + item.label + '</div>').join('');
+  menu.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      menu.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+      loadPage(item.dataset.page);
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+}
 function loadPage(page) {
-  $('pageContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  if (page === 'dashboard') loadDashboard();
-  else if (page === 'employees') loadEmployees();
-  else if (page === 'reports') loadReports();
-  else if (page === 'profile') loadProfile();
+  const c = $('pageContent');
+  c.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  const loaders = {
+    dashboard: loadDashboard, orders: loadOrders, cards: loadCards,
+    employees: loadEmployees, groups: loadGroups, workers: loadWorkers,
+    reports: loadReports, profile: loadProfile
+  };
+  (loaders[page] || loadDashboard)();
 }
 
-// --- داشبورد ---
+// ==================== داشبورد ====================
 function loadDashboard() {
-  google.script.run.withSuccessHandler(stats => {
-    $('pageContent').innerHTML = `
-      <div class="page-header"><h1 class="page-title">داشبورد شعبه (کد: ${currentUser.branchId})</h1></div>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-label">کل سفارشات شعبه</div><div class="stat-value">${toFa(stats.totalOrders)}</div></div>
-        <div class="stat-card green"><div class="stat-label">تکمیل شده</div><div class="stat-value">${toFa(stats.completedOrders)}</div></div>
-        <div class="stat-card yellow"><div class="stat-label">در انتظار</div><div class="stat-value">${toFa(stats.pendingOrders)}</div></div>
-        <div class="stat-card blue"><div class="stat-label">درآمد شعبه</div><div class="stat-value">${money(stats.totalRevenue)}</div></div>
-      </div>`;
-  }).getBranchDashboard(currentToken);
+  google.script.run.withSuccessHandler(function(stats) {
+    $('pageContent').innerHTML =
+      '<div class="page-header"><h1 class="page-title">داشبورد شعبه (کد: ' + (currentUser.branchId || '—') + ')</h1></div>' +
+      '<div class="stats-grid">' +
+      '<div class="stat-card"><div class="stat-label">کل سفارشات</div><div class="stat-value">' + toFa(stats.totalOrders) + '</div></div>' +
+      '<div class="stat-card green"><div class="stat-label">امروز</div><div class="stat-value">' + toFa(stats.todayOrders) + '</div></div>' +
+      '<div class="stat-card blue"><div class="stat-label">این ماه</div><div class="stat-value">' + toFa(stats.monthOrders) + '</div><div class="stat-sub">' + money(stats.monthRevenue) + '</div></div>' +
+      '<div class="stat-card yellow"><div class="stat-label">درآمد کل</div><div class="stat-value">' + money(stats.totalRevenue) + '</div></div>' +
+      '<div class="stat-card"><div class="stat-label">در انتظار</div><div class="stat-value">' + toFa(stats.pendingOrders) + '</div></div>' +
+      '<div class="stat-card green"><div class="stat-label">تکمیل شده</div><div class="stat-value">' + toFa(stats.completedOrders) + '</div></div>' +
+      '<div class="stat-card red"><div class="stat-label">لغو شده</div><div class="stat-value">' + toFa(stats.cancelledOrders) + '</div></div>' +
+      '<div class="stat-card"><div class="stat-label">کارت‌های فعال</div><div class="stat-value">' + toFa(stats.activeCards) + '</div></div>' +
+      '<div class="stat-card blue"><div class="stat-label">کارمندان فعال</div><div class="stat-value">' + toFa(stats.totalEmployees) + '</div></div>' +
+      '<div class="stat-card"><div class="stat-label">نیروهای فعال</div><div class="stat-value">' + toFa(stats.totalWorkers) + '</div></div>' +
+      '</div>';
+  }).withFailureHandler(function(e) {
+    $('pageContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>';
+  }).getBranchManagerDashboard(currentToken);
 }
 
-// --- مدیریت کارمندان ---
+// ==================== سفارشات ====================
+let ordersFilters = {};
+function loadOrders() {
+  $('pageContent').innerHTML =
+    '<div class="page-header"><h1 class="page-title">سفارشات شعبه</h1></div>' +
+    '<div class="card"><div class="filters">' +
+    '<div class="field"><label>جستجو</label><input id="fSearch" placeholder="نام، موبایل، کد" oninput="debounceOrders()"></div>' +
+    '<div class="field"><label>وضعیت</label><select id="fStatus" onchange="applyOrdersFilter()"><option value="همه">همه</option><option>جدید</option><option>ثبت اولیه</option><option>در حال بررسی</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option></select></div>' +
+    '<div class="field"><label>از تاریخ</label><input id="fFrom" placeholder="1405/01/01" onchange="applyOrdersFilter()"></div>' +
+    '<div class="field"><label>تا تاریخ</label><input id="fTo" placeholder="1405/12/29" onchange="applyOrdersFilter()"></div>' +
+    '</div><div id="ordersTable"></div></div>';
+  fetchOrders();
+}
+let ordersTimer;
+function debounceOrders() { clearTimeout(ordersTimer); ordersTimer = setTimeout(applyOrdersFilter, 400); }
+function applyOrdersFilter() { ordersFilters = { search: $('fSearch').value, status: $('fStatus').value, fromDate: $('fFrom').value, toDate: $('fTo').value }; fetchOrders(); }
+function fetchOrders() {
+  google.script.run.withSuccessHandler(function(rows) {
+    if (!rows.length) { $('ordersTable').innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">سفارشی برای این شعبه ثبت نشده است.</div>'; return; }
+    $('ordersTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>تاریخ ثبت</th><th>کد سفارش</th><th>مشتری</th><th>موبایل</th><th>خدمت</th><th>مبلغ</th><th>تاریخ اجرا</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      rows.map(function(r) {
+        return '<tr>' +
+          '<td>' + r.date + '</td>' +
+          '<td><strong>' + r.requestId + '</strong></td>' +
+          '<td>' + r.customer + '</td>' +
+          '<td style="direction:ltr;text-align:right">' + r.phone + '</td>' +
+          '<td>' + r.service + '</td>' +
+          '<td>' + money(r.finalPrice) + '</td>' +
+          '<td>' + r.executeDate + '</td>' +
+          '<td>' + statusBadge(r.status) + '</td>' +
+          '<td style="white-space:nowrap">' +
+            '<button class="btn btn-sm btn-secondary" onclick="changeOrderStatus(\'' + r.requestId + '\',\'' + r.status + '\')">تغییر وضعیت</button> ' +
+            '<button class="btn btn-sm btn-primary" onclick="openConvertModal(\'' + r.requestId + '\')">🎫 تبدیل به کارت</button> ' +
+            '<button class="btn btn-sm btn-danger" onclick="deleteOrder(' + r.rowIndex + ',\'' + r.requestId + '\')">🗑</button>' +
+          '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+  }).withFailureHandler(function(e) {
+    $('ordersTable').innerHTML = '<div style="color:var(--danger);padding:20px">' + e.message + '</div>';
+  }).getBranchManagerOrders(ordersFilters, currentToken);
+}
+function changeOrderStatus(requestId, currentStatus) {
+  const statuses = ['جدید', 'ثبت اولیه', 'در حال بررسی', 'در حال انجام', 'تکمیل شده', 'لغو شده'];
+  openModal('<div class="modal-header"><h2>تغییر وضعیت سفارش ' + requestId + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+    '<div class="field"><label>وضعیت جدید</label><select id="newOrderStatus">' +
+    statuses.map(function(s){ return '<option ' + (s===currentStatus?'selected':'') + '>' + s + '</option>'; }).join('') +
+    '</select></div>' +
+    '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="applyOrderStatus(\'' + requestId + '\')">اعمال</button></div>');
+}
+function applyOrderStatus(requestId) {
+  const newStatus = $('newOrderStatus').value;
+  google.script.run.withSuccessHandler(function(r) {
+    closeModal(); toast(r.message, 'success'); fetchOrders();
+  }).withFailureHandler(function(e) { toast(e.message, 'error'); }).updateBranchManagerOrderStatus(requestId, newStatus, currentToken);
+}
+function deleteOrder(rowIndex, requestId) {
+  if (!confirm('حذف سفارش ' + requestId + '؟')) return;
+  google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); fetchOrders(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteBranchManagerOrder(rowIndex, currentToken);
+}
+function openConvertModal(requestId) {
+  $('modalBox').innerHTML = '<div class="loading"><div class="spinner"></div> در حال دریافت لیست نیروها...</div>';
+  $('modal').classList.add('open');
+  google.script.run.withSuccessHandler(function(workers) {
+    let workerOptions = '<option value="">بدون تخصیص (فقط ایجاد کارت در شعبه)</option>';
+    workers.forEach(function(w) {
+      workerOptions += '<option value="' + w.id + '">' + w.name + '</option>';
+    });
+    openModal('<div class="modal-header"><h2>تبدیل سفارش به کارت عملیاتی</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+      '<div class="field"><label>تخصیص به نیرو (اختیاری)</label><select id="targetWorker">' + workerOptions + '</select>' +
+      '<div class="hint" style="margin-top:6px;color:var(--muted);font-size:12px">اگر نیرویی انتخاب نکنید، کارت در استخر شعبه باقی می‌ماند.</div></div>' +
+      '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="executeConvert(\'' + requestId + '\')">تأیید و ایجاد کارت</button></div>');
+  }).withFailureHandler(function(e) {
+    openModal('<div class="modal-header"><h2>خطا</h2><button class="modal-close" onclick="closeModal()">✕</button></div><p style="color:var(--danger)">' + e.message + '</p>');
+  }).getBranchManagerWorkersForDropdown(currentToken);
+}
+function executeConvert(requestId) {
+  const workerId = $('targetWorker').value;
+  google.script.run.withSuccessHandler(function(r) {
+    closeModal(); toast(r.message, 'success'); fetchOrders();
+  }).withFailureHandler(function(e) { toast(e.message, 'error'); }).branchManagerConvertOrderToCard(requestId, workerId, currentToken);
+}
+
+// ==================== کارت‌ها ====================
+let cardsFilters = {};
+function loadCards() {
+  $('pageContent').innerHTML =
+    '<div class="page-header"><h1 class="page-title">کارت‌های شعبه</h1></div>' +
+    '<div class="card"><div class="filters">' +
+    '<div class="field"><label>جستجو</label><input id="cdSearch" placeholder="مشتری، CardID" oninput="debounceCards()"></div>' +
+    '<div class="field"><label>وضعیت</label><select id="cdStatus" onchange="applyCardsFilter()"><option value="همه">همه</option><option>جدید</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option></select></div>' +
+    '</div><div id="cardsTable"></div></div>';
+  fetchCards();
+}
+let cdTimer;
+function debounceCards() { clearTimeout(cdTimer); cdTimer = setTimeout(applyCardsFilter, 400); }
+function applyCardsFilter() { cardsFilters = { search: $('cdSearch').value, status: $('cdStatus').value }; fetchCards(); }
+function fetchCards() {
+  google.script.run.withSuccessHandler(function(rows) {
+    if (!rows.length) { $('cardsTable').innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">کارتی یافت نشد</div>'; return; }
+    $('cardsTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>CardID</th><th>RequestID</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>اجرا</th><th>اجراکننده</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      rows.map(function(r) {
+        return '<tr>' +
+          '<td><strong>' + r.cardId + '</strong></td>' +
+          '<td>' + r.requestId + '</td>' +
+          '<td>' + r.customer + '</td>' +
+          '<td>' + r.details + '</td>' +
+          '<td>' + money(r.amount) + '</td>' +
+          '<td>' + r.executeDateTime + '</td>' +
+          '<td>' + (r.worker || '—') + '</td>' +
+          '<td>' + statusBadge(r.status) + '</td>' +
+          '<td style="white-space:nowrap">' +
+            '<button class="btn btn-sm btn-primary" onclick="changeCardStatus(\'' + r.cardId + '\',\'' + r.status + '\')">تغییر وضعیت</button>' +
+          '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+  }).withFailureHandler(function(e) {
+    $('cardsTable').innerHTML = '<div style="color:var(--danger);padding:20px">' + e.message + '</div>';
+  }).getBranchManagerCards(cardsFilters, currentToken);
+}
+function changeCardStatus(cardId, currentStatus) {
+  const statuses = ['جدید','در حال انجام','تکمیل شده','لغو شده','تعلیق'];
+  google.script.run.withSuccessHandler(function(workers) {
+    openModal('<div class="modal-header"><h2>تغییر وضعیت کارت ' + cardId + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+      '<div class="form-grid"><div class="field"><label>وضعیت جدید</label><select id="newCardStatus">' +
+      statuses.map(function(s){ return '<option ' + (s===currentStatus?'selected':'') + '>' + s + '</option>'; }).join('') +
+      '</select></div>' +
+      '<div class="field"><label>اجراکننده (کارگر)</label><select id="newWorker"><option value="">بدون تغییر</option>' +
+      workers.map(function(w){ return '<option value="' + w.id + '">' + w.name + '</option>'; }).join('') +
+      '</select></div></div>' +
+      '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="applyCardStatus(\'' + cardId + '\')">اعمال</button></div>');
+  }).getBranchManagerWorkersForDropdown(currentToken);
+}
+function applyCardStatus(cardId) {
+  google.script.run.withSuccessHandler(function(r) {
+    closeModal(); toast(r.message, 'success'); fetchCards();
+  }).withFailureHandler(function(e) { toast(e.message, 'error'); }).updateBranchManagerCardStatus(cardId, $('newCardStatus').value, $('newWorker').value, currentToken);
+}
+
+// ==================== کارمندان ====================
 function loadEmployees() {
-  google.script.run.withSuccessHandler(emps => {
-    let html = `<div class="page-header"><h1 class="page-title">کارمندان شعبه</h1><button class="btn btn-primary" onclick="openEmployeeModal()">+ کارمند جدید</button></div>
-    <div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>سمت</th><th>موبایل</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>`;
-    emps.forEach(e => {
-      html += `<tr><td>${e.empId}</td><td>${e.fullName}</td><td>${e.jobTitle}</td><td>${e.phone}</td><td>${e.status}</td>
-      <td><button class="btn btn-sm btn-secondary" onclick='openEmployeeModal(${JSON.stringify(e)})'>✏️</button> 
-      <button class="btn btn-sm btn-danger" onclick="deleteEmp(${e.rowIndex})">🗑</button></td></tr>`;
- });
-    html += `</tbody></table></div></div>`;
-    $('pageContent').innerHTML = html;
-  }).getBranchEmployees(currentToken);
+  $('pageContent').innerHTML =
+    '<div class="page-header"><h1 class="page-title">کارمندان شعبه</h1><button class="btn btn-primary" onclick="editEmployee()">+ کارمند جدید</button></div>' +
+    '<div id="employeesContent"></div>';
+  fetchEmployees();
 }
-
-function openEmployeeModal(e) {
+function fetchEmployees() {
+  google.script.run.withSuccessHandler(function(emps) {
+    $('employeesContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>یوزرنیم</th><th>سمت</th><th>موبایل</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      emps.map(function(e) {
+        return '<tr><td>' + e.empId + '</td><td>' + e.fullName + '</td><td>' + e.username + '</td><td>' + e.jobTitle + '</td><td style="direction:ltr;text-align:right">' + e.phone + '</td><td><span class="badge badge-' + (e.status==='فعال'?'active':'inactive') + '">' + e.status + '</span></td>' +
+          '<td style="white-space:nowrap"><button class="btn btn-sm btn-secondary" onclick=\'editEmployee(' + JSON.stringify(e).replace(/'/g,"&#39;") + ')\'>✏️</button> ' +
+          '<button class="btn btn-sm btn-danger" onclick="deleteEmployee(' + e.rowIndex + ')"></button></td></tr>';
+      }).join('') + '</tbody></table></div></div>';
+  }).withFailureHandler(function(e) {
+    $('employeesContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>';
+  }).getBranchManagerEmployees(currentToken);
+}
+function editEmployee(e) {
   e = e || {};
-  openModal(`<div class="modal-header"><h2>${e.rowIndex ? 'ویرایش' : 'افزودن'} کارمند</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
-    <div class="form-grid">
-      <div class="field"><label>نام</label><input id="eFirst" value="${e.fullName ? e.fullName.split(' ')[0] : ''}"></div>
-      <div class="field"><label>نام خانوادگی</label><input id="eLast" value="${e.fullName ? e.fullName.split(' ').slice(1).join(' ') : ''}"></div>
-      <div class="field"><label>نام کاربری</label><input id="eUser" value="${e.username || ''}" ${e.rowIndex ? 'readonly' : ''}></div>
-      <div class="field"><label>رمز عبور ${e.rowIndex ? '(خالی=بدون تغییر)' : '*'}</label><input id="ePass" type="password"></div>
-      <div class="field"><label>سمت</label><input id="eJob" value="${e.jobTitle || ''}"></div>
-      <div class="field"><label>موبایل</label><input id="ePhone" value="${e.phone || ''}"></div>
-      <div class="field"><label>وضعیت</label><select id="eStatus"><option ${e.status==='فعال'?'selected':''}>فعال</option><option ${e.status==='غیرفعال'?'selected':''}>غیرفعال</option></select></div>
-    </div>
-    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveEmp(${e.rowIndex || 'null'})">ذخیره</button></div>`);
+  openModal('<div class="modal-header"><h2>' + (e.rowIndex?'ویرایش':'افزودن') + ' کارمند</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+    '<div class="form-grid">' +
+    '<div class="field"><label>نام *</label><input id="eFirst" value="' + (e.fullName ? e.fullName.split(' ')[0] : '') + '"></div>' +
+    '<div class="field"><label>نام خانوادگی *</label><input id="eLast" value="' + (e.fullName ? e.fullName.split(' ').slice(1).join(' ') : '') + '"></div>' +
+    '<div class="field"><label>نام کاربری *</label><input id="eUser" value="' + (e.username || '') + '" ' + (e.rowIndex ? 'readonly' : '') + '></div>' +
+    '<div class="field"><label>رمز عبور ' + (e.rowIndex ? '(خالی=بدون تغییر)' : '*') + '</label><input id="ePass" type="password"></div>' +
+    '<div class="field"><label>سمت</label><input id="eJob" value="' + (e.jobTitle || '') + '"></div>' +
+    '<div class="field"><label>موبایل</label><input id="ePhone" value="' + (e.phone || '') + '"></div>' +
+    '<div class="field"><label>وضعیت</label><select id="eStatus"><option ' + (e.status==='فعال'?'selected':'') + '>فعال</option><option ' + (e.status==='غیرفعال'?'selected':'') + '>غیرفعال</option></select></div>' +
+    '</div>' +
+    '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveEmployee(' + (e.rowIndex || 'null') + ')">ذخیره</button></div>');
 }
-
-function saveEmp(rowIndex) {
+function saveEmployee(rowIndex) {
   const data = { rowIndex: rowIndex, firstName: $('eFirst').value, lastName: $('eLast').value, username: $('eUser').value, password: $('ePass').value, jobTitle: $('eJob').value, phone: $('ePhone').value, status: $('eStatus').value };
-  google.script.run.withSuccessHandler(() => { closeModal(); toast('ذخیره شد', 'success'); loadEmployees(); }).withFailureHandler(e => toast(e.message, 'error')).saveBranchEmployee(data, currentToken);
+  google.script.run.withSuccessHandler(function() { closeModal(); toast('ذخیره شد', 'success'); fetchEmployees(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).saveBranchManagerEmployee(data, currentToken);
 }
-
-function deleteEmp(rowIndex) {
+function deleteEmployee(rowIndex) {
   if (!confirm('آیا از حذف این کارمند اطمینان دارید؟')) return;
-  google.script.run.withSuccessHandler(() => { toast('حذف شد', 'success'); loadEmployees(); }).withFailureHandler(e => toast(e.message, 'error')).deleteBranchEmployee(rowIndex, currentToken);
+  google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); fetchEmployees(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteBranchManagerEmployee(rowIndex, currentToken);
 }
 
-// --- گزارشات ---
+// ==================== گروه‌ها ====================
+function loadGroups() {
+  $('pageContent').innerHTML =
+    '<div class="page-header"><h1 class="page-title">گروه‌های شعبه</h1><button class="btn btn-primary" onclick="editGroup()">+ گروه جدید</button></div>' +
+    '<div id="groupsContent"></div>';
+  fetchGroups();
+}
+function fetchGroups() {
+  google.script.run.withSuccessHandler(function(list) {
+    $('groupsContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>سرپرست</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      list.map(function(g) {
+        return '<tr><td>' + g.groupId + '</td><td>' + g.name + '</td><td>' + (g.supervisor||'—') + '</td><td><span class="badge badge-' + (g.status==='فعال'?'active':'inactive') + '">' + g.status + '</span></td>' +
+          '<td style="white-space:nowrap"><button class="btn btn-sm btn-secondary" onclick=\'editGroup(' + JSON.stringify(g).replace(/'/g,"&#39;") + ')\'>✏️</button> ' +
+          '<button class="btn btn-sm btn-danger" onclick="deleteGroup(' + g.rowIndex + ')"></button></td></tr>';
+      }).join('') + '</tbody></table></div></div>';
+  }).withFailureHandler(function(e) {
+    $('groupsContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>';
+  }).getBranchManagerGroups(currentToken);
+}
+function editGroup(g) {
+  g = g || {};
+  openModal('<div class="modal-header"><h2>' + (g.rowIndex?'ویرایش':'افزودن') + ' گروه</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+    '<div class="form-grid">' +
+    '<div class="field"><label>کد گروه</label><input id="gId" value="' + (g.groupId||'') + '" placeholder="GRP-001"></div>' +
+    '<div class="field"><label>نام گروه *</label><input id="gName" value="' + (g.name||'') + '"></div>' +
+    '<div class="field"><label>سرپرست (username)</label><input id="gSupervisor" value="' + (g.supervisor||'') + '"></div>' +
+    '<div class="field"><label>وضعیت</label><select id="gStatus"><option ' + (g.status==='فعال'?'selected':'') + '>فعال</option><option ' + (g.status==='غیرفعال'?'selected':'') + '>غیرفعال</option></select></div>' +
+    '<div class="field full"><label>توضیحات</label><textarea id="gDesc">' + (g.description||'') + '</textarea></div>' +
+    '</div>' +
+    '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveGroup(' + (g.rowIndex||'null') + ')">ذخیره</button></div>');
+}
+function saveGroup(rowIndex) {
+  const data = { groupId: $('gId').value, name: $('gName').value, supervisor: $('gSupervisor').value, status: $('gStatus').value, description: $('gDesc').value };
+  if (rowIndex) data.rowIndex = rowIndex;
+  google.script.run.withSuccessHandler(function() { closeModal(); toast('ذخیره شد', 'success'); fetchGroups(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).saveBranchManagerGroup(data, currentToken);
+}
+function deleteGroup(rowIndex) {
+  if (!confirm('حذف این گروه؟')) return;
+  google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); fetchGroups(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteBranchManagerGroup(rowIndex, currentToken);
+}
+
+// ==================== نیروها ====================
+function loadWorkers() {
+  $('pageContent').innerHTML =
+    '<div class="page-header"><h1 class="page-title">نیروهای شعبه</h1><button class="btn btn-primary" onclick="editWorker()">+ نیروی جدید</button></div>' +
+    '<div id="workersContent"></div>';
+  fetchWorkers();
+}
+function fetchWorkers() {
+  google.script.run.withSuccessHandler(function(list) {
+    $('workersContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>یوزرنیم</th><th>نوع</th><th>سمت</th><th>موبایل</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      list.map(function(w) {
+        return '<tr><td>' + w.workerId + '</td><td>' + w.fullName + '</td><td>' + w.username + '</td><td><span class="badge badge-new">' + w.type + '</span></td><td>' + (w.position||'—') + '</td><td style="direction:ltr;text-align:right">' + w.phone + '</td><td><span class="badge badge-' + (w.status==='فعال'?'active':'inactive') + '">' + w.status + '</span></td>' +
+          '<td style="white-space:nowrap"><button class="btn btn-sm btn-secondary" onclick=\'editWorker(' + JSON.stringify(w).replace(/'/g,"&#39;") + ')\'>✏️</button> ' +
+          '<button class="btn btn-sm btn-danger" onclick="deleteWorker(' + w.rowIndex + ')">🗑</button></td></tr>';
+      }).join('') + '</tbody></table></div></div>';
+  }).withFailureHandler(function(e) {
+    $('workersContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>';
+  }).getBranchManagerWorkers(currentToken);
+}
+function editWorker(w) {
+  w = w || {};
+  openModal('<div class="modal-header"><h2>' + (w.rowIndex?'ویرایش':'افزودن') + ' نیرو</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+    '<div class="form-grid">' +
+    '<div class="field"><label>نام کامل *</label><input id="wFullName" value="' + (w.fullName||'') + '"></div>' +
+    '<div class="field"><label>نام کاربری *</label><input id="wUsername" value="' + (w.username||'') + '" ' + (w.rowIndex?'readonly':'') + '></div>' +
+    '<div class="field"><label>رمز عبور ' + (w.rowIndex?'(خالی=بدون تغییر)':'*') + '</label><input id="wPassword" type="password" value=""></div>' +
+    '<div class="field"><label>نوع *</label><select id="wType"><option value="worker" ' + (w.type==='worker'?'selected':'') + '>کارگر</option><option value="Supervisor" ' + (w.type==='Supervisor'?'selected':'') + '>سرپرست</option><option value="operator" ' + (w.type==='operator'?'selected':'') + '>متصدی</option></select></div>' +
+    '<div class="field"><label>سمت</label><input id="wPosition" value="' + (w.position||'') + '"></div>' +
+    '<div class="field"><label>موبایل</label><input id="wPhone" value="' + (w.phone||'') + '"></div>' +
+    '<div class="field"><label>وضعیت</label><select id="wStatus"><option ' + (w.status==='فعال'?'selected':'') + '>فعال</option><option ' + (w.status==='غیرفعال'?'selected':'') + '>غیرفعال</option></select></div>' +
+    '</div>' +
+    '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveWorker(' + (w.rowIndex||'null') + ')">ذخیره</button></div>');
+}
+function saveWorker(rowIndex) {
+  const data = { fullName: $('wFullName').value, username: $('wUsername').value, type: $('wType').value, position: $('wPosition').value, phone: $('wPhone').value, status: $('wStatus').value };
+  const pass = $('wPassword').value; if (pass) data.password = pass;
+  if (rowIndex) data.rowIndex = rowIndex; else if (!pass) { toast('رمز عبور الزامی است', 'error'); return; }
+  google.script.run.withSuccessHandler(function() { closeModal(); toast('ذخیره شد', 'success'); fetchWorkers(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).saveBranchManagerWorker(data, currentToken);
+}
+function deleteWorker(rowIndex) {
+  if (!confirm('حذف این نیرو؟')) return;
+  google.script.run.withSuccessHandler(function() { toast('حذف شد', 'success'); fetchWorkers(); }).withFailureHandler(function(e) { toast(e.message, 'error'); }).deleteBranchManagerWorker(rowIndex, currentToken);
+}
+
+// ==================== گزارشات ====================
 function loadReports() {
-  $('pageContent').innerHTML = `<div class="page-header"><h1 class="page-title">گزارشات شعبه</h1></div>
-    <div class="card"><div class="filters">
-      <div class="field"><label>از تاریخ</label><input id="repFrom" placeholder="1403/01/01"></div>
-      <div class="field"><label>تا تاریخ</label><input id="repTo" placeholder="1403/12/29"></div>
-      <div class="field" style="justify-content:flex-end"><button class="btn btn-primary" onclick="fetchReports()">نمایش</button></div>
-    </div><div id="repContent"></div></div>`;
+  $('pageContent').innerHTML =
+    '<div class="page-header"><h1 class="page-title">گزارشات شعبه</h1></div>' +
+    '<div class="card"><div class="filters">' +
+    '<div class="field"><label>از تاریخ</label><input id="repFrom" placeholder="1405/01/01"></div>' +
+    '<div class="field"><label>تا تاریخ</label><input id="repTo" placeholder="1405/12/29"></div>' +
+    '<div class="field" style="justify-content:flex-end"><button class="btn btn-primary" onclick="fetchReports()">نمایش</button> <button class="btn btn-secondary" onclick="window.print()">🖨 پرینت</button></div>' +
+    '</div><div id="repContent"></div></div>';
 }
-
 function fetchReports() {
-  google.script.run.withSuccessHandler(rep => {
-    $('repContent').innerHTML = `<div class="stats-grid">
-      <div class="stat-card"><div class="stat-label">تعداد</div><div class="stat-value">${toFa(rep.count)}</div></div>
-      <div class="stat-card green"><div class="stat-label">درآمد</div><div class="stat-value">${money(rep.totalRevenue)}</div></div>
-    </div>
-    <div class="card" style="margin-top:16px"><h3>ریز تراکنش‌ها</h3><div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>کد</th><th>خدمت</th><th>مبلغ</th><th>وضعیت</th></tr></thead><tbody>
-    ${rep.transactions.map(t => `<tr><td>${t.date}</td><td>${t.requestId}</td><td>${t.service}</td><td>${money(t.amount)}</td><td>${t.status}</td></tr>`).join('')}
-    </tbody></table></div></div>`;
-  }).getBranchReports(currentToken, $('repFrom').value, $('repTo').value);
+  google.script.run.withSuccessHandler(function(rep) {
+    $('repContent').innerHTML =
+      '<div class="stats-grid">' +
+      '<div class="stat-card"><div class="stat-label">تعداد سفارشات</div><div class="stat-value">' + toFa(rep.count) + '</div></div>' +
+      '<div class="stat-card green"><div class="stat-label">درآمد کل</div><div class="stat-value">' + money(rep.totalRevenue) + '</div></div>' +
+      '</div>' +
+      '<div class="card" style="margin-top:16px"><h3 style="margin-bottom:12px;color:var(--navy)">توزیع وضعیت</h3>' +
+      Object.entries(rep.byStatus).map(function(kv){ return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)"><span>' + kv[0] + '</span><strong>' + toFa(kv[1]) + '</strong></div>'; }).join('') +
+      '</div>' +
+      '<div class="card" style="margin-top:16px"><h3 style="margin-bottom:12px;color:var(--navy)">ریز تراکنش‌ها (' + toFa(rep.transactions.length) + ' مورد)</h3><div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>کد</th><th>خدمت</th><th>مبلغ</th><th>وضعیت</th></tr></thead><tbody>' +
+      rep.transactions.map(function(t){ return '<tr><td>' + t.date + '</td><td>' + t.requestId + '</td><td>' + t.service + '</td><td>' + money(t.amount) + '</td><td>' + statusBadge(t.status) + '</td></tr>'; }).join('') +
+      '</tbody></table></div></div>';
+  }).withFailureHandler(function(e) {
+    $('repContent').innerHTML = '<div style="color:var(--danger);padding:20px">' + e.message + '</div>';
+  }).getBranchManagerReports(currentToken, $('repFrom').value, $('repTo').value);
 }
 
-// --- پروفایل ---
+// ==================== پروفایل ====================
 function loadProfile() {
-  google.script.run.withSuccessHandler(p => {
-    $('pageContent').innerHTML = `<div class="page-header"><h1 class="page-title">پروفایل من</h1></div>
-      <div class="card"><div class="employee-profile">
-        <div class="employee-avatar-large">${p.avatar ? '<img src="'+p.avatar+'">' : p.name.charAt(0)}</div>
-        <div class="employee-details">
-          <div class="detail-item"><div class="detail-label">شناسه یکتا</div><div class="detail-value">${p.id}</div></div>
-          <div class="detail-item"><div class="detail-label">نام</div><div class="detail-value">${p.name}</div></div>
-          <div class="detail-item"><div class="detail-label">نقش</div><div class="detail-value">${p.role}</div></div>
-          <div class="detail-item"><div class="detail-label">کد شعبه</div><div class="detail-value">${p.branchId}</div></div>
-        </div>
-      </div>
-      <div style="margin-top:20px">
-        <div class="field" style="max-width:300px"><label>تغییر رمز عبور</label><input id="newPass" type="password" placeholder="رمز جدید"></div>
-        <button class="btn btn-primary" style="margin-top:10px" onclick="updateProfile()">بروزرسانی رمز</button>
-      </div></div>`;
-  }).getMyProfile(currentToken);
+  google.script.run.withSuccessHandler(function(p) {
+    $('pageContent').innerHTML =
+      '<div class="page-header"><h1 class="page-title">پروفایل من</h1></div>' +
+      '<div class="card"><div class="employee-profile"><div class="employee-avatar-large">' +
+      (p.avatar ? '<img src="'+p.avatar+'">' : (p.name||'?').charAt(0)) +
+      '</div>' +
+      '<div class="employee-details">' +
+      '<div class="detail-item"><div class="detail-label">شناسه یکتا</div><div class="detail-value">' + p.bnmId + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">نام</div><div class="detail-value">' + p.name + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">نام کاربری</div><div class="detail-value">' + p.username + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">نقش</div><div class="detail-value">' + p.role + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">کد شعبه</div><div class="detail-value">' + p.branchId + '</div></div>' +
+      '</div></div></div>' +
+      '<div class="card" style="margin-top:16px"><h3 style="margin-bottom:12px;color:var(--navy)">تغییر رمز عبور</h3>' +
+      '<div class="field" style="max-width:300px"><label>رمز عبور جدید</label><input id="newPass" type="password" placeholder="رمز جدید"></div>' +
+      '<button class="btn btn-primary" style="margin-top:10px" onclick="updateProfile()">بروزرسانی رمز</button></div>';
+  }).withFailureHandler(function(e) {
+    $('pageContent').innerHTML = '<div class="card" style="color:var(--danger)">' + e.message + '</div>';
+  }).getBranchManagerProfile(currentToken);
 }
-
 function updateProfile() {
   const pass = $('newPass').value;
   if (!pass) return toast('رمز عبور را وارد کنید', 'error');
-  google.script.run.withSuccessHandler(() => { toast('رمز عبور بروزرسانی شد', 'success'); $('newPass').value = ''; }).withFailureHandler(e => toast(e.message, 'error')).updateMyProfile({ password: pass }, currentToken);
+  google.script.run.withSuccessHandler(function() { toast('رمز عبور بروزرسانی شد', 'success'); $('newPass').value = ''; }).withFailureHandler(function(e) { toast(e.message, 'error'); }).updateBranchManagerProfile({ password: pass }, currentToken);
 }
 
-function doLogout() {
-  google.script.run.branchLogout(currentToken);
-  localStorage.removeItem('zv_branch_token');
-  localStorage.removeItem('zv_branch_user');
-  location.reload();
-}
-
-// بررسی نشست ذخیره‌شده
-(function checkSession() {
-  const saved = localStorage.getItem('zv_branch_user');
-  if (currentToken && saved) { currentUser = JSON.parse(saved); showApp(currentUser); }
-})();
+document.addEventListener('keydown', function(e) { if (e.key === 'Enter' && $('loginPage').style.display !== 'none') doLogin(); });
 </script>
 </body>
 </html>
