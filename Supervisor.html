@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base target="_top">
+<title>پنل سوپروایزر | ZingoVingo</title>
+<style>
+:root{--navy:#0B1736;--navy-light:#1a2a4d;--orange:#FF6B1A;--orange-light:#ff8533;--bg:#f4f6fb;--text:#172033;--muted:#657086;--line:#dfe4ee;--white:#fff;--green:#067647;--danger:#b42318;--blue:#1849a9;--yellow:#f79009;--shadow:0 2px 10px #17203308;--radius:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;line-height:1.7;font-size:14px}
+button,input,select,textarea{font-family:inherit;font-size:13px}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy) 0%,#1a2a4d 100%)}
+.login-box{background:#fff;border-radius:20px;padding:40px;width:min(420px,92%);box-shadow:0 20px 60px #0003}
+.login-box h1{color:var(--navy);text-align:center;margin-bottom:8px;font-size:28px}
+.login-box h1 span{color:var(--orange)}
+.login-box .subtitle{text-align:center;color:var(--muted);margin-bottom:24px;font-size:13px}
+.login-box .field{margin-bottom:14px}
+.login-box label{display:block;margin-bottom:6px;font-weight:700;font-size:13px}
+.login-box input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;outline:none}
+.login-box input:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
+.login-box .btn{width:100%;padding:13px;margin-top:8px}
+.login-error{background:#fef3f2;color:var(--danger);padding:10px;border-radius:8px;margin-bottom:12px;font-size:13px;display:none}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{background:var(--navy);color:#fff;padding:0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.brand{padding:20px;border-bottom:1px solid var(--navy-light)}
+.brand h2{font-size:22px;font-weight:900}
+.brand h2 span{color:var(--orange)}
+.brand small{color:#8896b3;font-size:11px}
+.nav-menu{flex:1;padding:12px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:12px 20px;cursor:pointer;color:#c8d2e6;font-size:14px;border-right:3px solid transparent;transition:all .2s}
+.nav-item:hover{background:var(--navy-light);color:#fff}
+.nav-item.active{background:var(--navy-light);color:#fff;border-right-color:var(--orange)}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--navy-light);font-size:12px}
+.user-info{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:14px;overflow:hidden}
+.user-avatar img{width:100%;height:100%;object-fit:cover}
+.user-name{font-weight:700;font-size:13px}
+.user-role{color:#8896b3;font-size:11px}
+.logout-btn{background:transparent;border:1px solid var(--navy-light);color:#c8d2e6;padding:8px;border-radius:8px;cursor:pointer;width:100%;font-size:12px}
+.logout-btn:hover{background:var(--navy-light);color:#fff}
+.main{padding:24px;overflow-x:hidden}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.page-title{font-size:20px;color:var(--navy);font-weight:900}
+.btn{border:0;border-radius:10px;padding:9px 16px;font:inherit;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--orange);color:#fff}.btn-primary:hover{background:var(--orange-light)}
+.btn-secondary{background:#eef1f7;color:var(--navy)}.btn-secondary:hover{background:#dfe4ee}
+.btn-danger{background:#fef3f2;color:var(--danger)}.btn-danger:hover{background:#fee4e2}
+.btn-success{background:#ecfdf3;color:var(--green)}.btn-success:hover{background:#d4f5e2}
+.btn-sm{padding:5px 10px;font-size:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.stat-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:var(--orange)}
+.stat-card.green::before{background:var(--green)}.stat-card.blue::before{background:var(--blue)}.stat-card.yellow::before{background:var(--yellow)}.stat-card.red::before{background:var(--danger)}
+.stat-label{font-size:12px;color:var(--muted);margin-bottom:6px}
+.stat-value{font-size:24px;font-weight:900;color:var(--navy);font-variant-numeric:tabular-nums}
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8f9fc;padding:12px;text-align:right;font-weight:700;color:var(--navy);border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:hover{background:#fafbfd}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-new{background:#eff6ff;color:var(--blue)}.badge-progress{background:#fff7ed;color:#9a3412}
+.badge-done{background:#ecfdf3;color:var(--green)}.badge-cancel{background:#fef3f2;color:var(--danger)}
+.badge-active{background:#ecfdf3;color:var(--green)}.badge-inactive{background:#fef3f2;color:var(--danger)}
+.badge-role{background:var(--navy-light);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:700;color:var(--muted)}
+input,select,textarea{font:inherit;border:1px solid #cfd6e3;border-radius:8px;padding:9px 11px;background:#fff;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
+textarea{min-height:80px;resize:vertical}
+.modal{display:none;position:fixed;inset:0;background:#071127a8;z-index:100;padding:18px;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-box{width:min(900px,100%);background:#fff;border-radius:var(--radius);padding:24px;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.modal-header h2{font-size:18px;color:var(--navy)}
+.modal-close{background:transparent;border:0;font-size:22px;cursor:pointer;color:var(--muted);padding:4px 10px}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.form-grid .full{grid-column:1/-1}
+.toast{position:fixed;bottom:20px;left:20px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;z-index:200;display:none;box-shadow:0 10px 30px #0003;font-size:13px}
+.toast.show{display:block;animation:slideIn .3s}
+.toast.success{background:var(--green)}.toast.error{background:var(--danger)}
+@keyframes slideIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.employee-profile{display:grid;grid-template-columns:200px 1fr;gap:20px}
+.employee-avatar-large{width:200px;height:200px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:60px;color:#fff;font-weight:900;overflow:hidden;cursor:pointer}
+.employee-avatar-large img{width:100%;height:100%;object-fit:cover}
+.employee-details{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.detail-item{background:#f8f9fc;padding:12px;border-radius:10px}
+.detail-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+.detail-value{font-weight:700;color:var(--navy)}
+.loading{text-align:center;padding:40px;color:var(--muted)}
+.spinner{display:inline-block;width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--orange);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.menu-toggle{display:none;background:var(--navy);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+.invoice-box{background:#fff;padding:30px;border-radius:12px}
+.invoice-header{text-align:center;border-bottom:2px solid var(--navy);padding-bottom:15px;margin-bottom:20px}
+.invoice-header h1{color:var(--navy);font-size:24px}
+.invoice-header h1 span{color:var(--orange)}
+.invoice-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line)}
+.invoice-row strong{color:var(--navy)}
+.invoice-total{font-size:18px;font-weight:900;color:var(--orange);margin-top:15px;padding-top:15px;border-top:2px solid var(--navy)}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:fixed;right:-280px;width:260px;z-index:50;transition:right .3s}.sidebar.open{right:0}.menu-toggle{display:block}.form-grid{grid-template-columns:1fr}.employee-profile{grid-template-columns:1fr}}
+@media print{.sidebar,.page-header,.btn,.filters,.modal-footer,.menu-toggle{display:none!important}.app{grid-template-columns:1fr}.main{padding:0}}
+</style>
+</head>
+<body>
+
+<div id="loginPage" class="login-page">
+  <div class="login-box">
+    <h1>Zingo<span>Vingo</span></h1>
+    <div class="subtitle">پنل سوپروایزر</div>
+    <div id="loginError" class="login-error"></div>
+    <div class="field"><label>نام کاربری</label><input id="loginUser" autocomplete="username"></div>
+    <div class="field"><label>رمز عبور</label><input id="loginPass" type="password" autocomplete="current-password"></div>
+    <button class="btn btn-primary" onclick="doLogin()">ورود به پنل</button>
+  </div>
+</div>
+
+<div id="appContainer" class="app" style="display:none">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><h2>Zingo<span>Vingo</span></h2><small>پنل سوپروایزر</small></div>
+    <nav class="nav-menu" id="navMenu"></nav>
+    <div class="sidebar-footer">
+      <div class="user-info"><div class="user-avatar" id="userAvatar">?</div><div><div class="user-name" id="userName">—</div><div class="user-role" id="userRole">سوپروایزر</div></div></div>
+      <button class="logout-btn" onclick="doLogout()"> خروج</button>
+    </div>
+  </aside>
+  <main class="main">
+    <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰ منو</button>
+    <div id="pageContent"><div class="loading"><div class="spinner"></div></div></div>
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+<div id="modal" class="modal"><div class="modal-box" id="modalBox"></div></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const money = n => new Intl.NumberFormat('en-US').format(Math.round(Number(n)||0)) + ' ریال';
+const toFa = n => new Intl.NumberFormat('fa-IR').format(n);
+let currentToken = localStorage.getItem('zv_supervisor_token') || null;
+let currentUser = null;
+
+const MENU_ITEMS = [
+  { id: 'dashboard', label: '📊 داشبورد' },
+  { id: 'groups', label: '👥 گروه‌های من' },
+  { id: 'members', label: '👤 اعضای گروه' },
+  { id: 'cards', label: '🎫 کارت‌ها' },
+  { id: 'returned', label: '🔄 کارت‌های مرجوعی' },
+  { id: 'reports', label: '📈 گزارشات' },
+  { id: 'profile', label: '👤 پروفایل من' }
+];
+
+function toast(msg, type='info') { const t = $('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => t.classList.remove('show'), 3500); }
+function openModal(html) { $('modalBox').innerHTML = html; $('modal').classList.add('open'); }
+function closeModal() { $('modal').classList.remove('open'); }
+$('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
+function statusBadge(s) { return '<span class="badge badge-' + (/جدید/.test(s)?'new':/تکمیل/.test(s)?'done':/لغو|مرجوع/.test(s)?'cancel':'progress') + '">' + s + '</span>'; }
+
+function doLogin() {
+  const u = $('loginUser').value.trim(), p = $('loginPass').value;
+  if (!u || !p) { $('loginError').textContent = 'نام کاربری و رمز را وارد کنید'; $('loginError').style.display = 'block'; return; }
+  $('loginError').style.display = 'none';
+  google.script.run.withSuccessHandler(r => {
+    if (r && r.success) {
+      currentToken = r.token; currentUser = r.user;
+      localStorage.setItem('zv_supervisor_token', r.token);
+      localStorage.setItem('zv_supervisor_user', JSON.stringify(r.user));
+      showApp(r.user);
+    } else { $('loginError').textContent = r.message || 'خطا'; $('loginError').style.display = 'block'; }
+  }).withFailureHandler(e => { $('loginError').textContent = e.message; $('loginError').style.display = 'block'; }).supervisorLogin(u, p);
+}
+
+function doLogout() {
+  if (currentToken) google.script.run.supervisorLogout(currentToken);
+  localStorage.removeItem('zv_supervisor_token'); localStorage.removeItem('zv_supervisor_user');
+  location.reload();
+}
+
+function showApp(user) {
+  currentUser = user;
+  $('loginPage').style.display = 'none'; $('appContainer').style.display = 'grid';
+  $('userName').textContent = user.name;
+  $('userRole').innerHTML = 'سوپروایزر <span class="badge-role">' + (user.branchId || '—') + '</span>';
+  const av = $('userAvatar');
+  if (user.avatar) av.innerHTML = '<img src="' + user.avatar + '">'; else av.textContent = user.name ? user.name.charAt(0) : '?';
+  
+  $('navMenu').innerHTML = MENU_ITEMS.map(i => '<div class="nav-item" data-page="' + i.id + '">' + i.label + '</div>').join('');
+  $('navMenu').querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      $('navMenu').querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+      loadPage(item.dataset.page);
+      $('sidebar').classList.remove('open');
+    });
+  });
+  loadPage('dashboard');
+}
+
+(function checkSession() {
+  const saved = localStorage.getItem('zv_supervisor_user');
+  if (currentToken && saved) { currentUser = JSON.parse(saved); showApp(currentUser); }
+})();
+
+function loadPage(page) {
+  $('pageContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  const loaders = { dashboard: loadDashboard, groups: loadGroups, members: loadMembers, cards: loadCards, returned: loadReturned, reports: loadReports, profile: loadProfile };
+  (loaders[page] || loadDashboard)();
+}
+
+function loadDashboard() {
+  google.script.run.withSuccessHandler(groups => {
+    $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">داشبورد سوپروایزر</h1></div>' +
+      '<div class="stats-grid">' +
+      '<div class="stat-card"><div class="stat-label">تعداد گروه‌ها</div><div class="stat-value">' + toFa(groups.length) + '</div></div>' +
+      '<div class="stat-card blue"><div class="stat-label">گروه فعال</div><div class="stat-value">' + toFa(groups.filter(g => g.status === 'فعال').length) + '</div></div>' +
+      '</div>' +
+      '<div class="card"><h3 style="margin-bottom:12px;color:var(--navy)">گروه‌های تحت مدیریت</h3>' +
+      (groups.length ? groups.map(g => '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)"><span><strong>' + g.name + '</strong> (' + g.groupId + ')</span><span class="badge badge-' + (g.status==='فعال'?'active':'inactive') + '">' + g.status + '</span></div>').join('') : '<div style="color:var(--muted);text-align:center;padding:20px">گروهی یافت نشد</div>') +
+      '</div>';
+  }).getSupervisorGroups(currentToken);
+}
+
+let currentGroupId = null;
+function loadGroups() {
+  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">گروه‌های من</h1></div><div id="groupsContent"></div>';
+  google.script.run.withSuccessHandler(groups => {
+    if (!groups.length) { $('groupsContent').innerHTML = '<div class="card" style="text-align:center;padding:40px;color:var(--muted)">گروهی یافت نشد</div>'; return; }
+    $('groupsContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>منطقه</th><th>نوع</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      groups.map(g => '<tr><td>' + g.groupId + '</td><td>' + g.name + '</td><td>' + (g.area||'—') + '</td><td>' + (g.groupType||'—') + '</td><td><span class="badge badge-' + (g.status==='فعال'?'active':'inactive') + '">' + g.status + '</span></td><td><button class="btn btn-sm btn-primary" onclick="viewMembers(\'' + g.groupId + '\',\'' + g.name + '\')">👤 اعضا</button></td></tr>').join('') + '</tbody></table></div></div>';
+  }).getSupervisorGroups(currentToken);
+}
+
+function viewMembers(groupId, groupName) {
+  currentGroupId = groupId;
+  loadPage('members');
+}
+
+function loadMembers() {
+  if (!currentGroupId) {
+    $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">اعضای گروه</h1></div><div class="card" style="text-align:center;padding:40px;color:var(--muted)">ابتدا یک گروه انتخاب کنید</div>';
+    return;
+  }
+  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">اعضای گروه ' + currentGroupId + '</h1><button class="btn btn-primary" onclick="openAddMember()">+ عضو جدید</button></div><div id="membersContent"></div>';
+  google.script.run.withSuccessHandler(members => {
+    $('membersContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>نام</th><th>یوزرنیم</th><th>نقش</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      members.map(m => '<tr><td>' + m.fullName + '</td><td>' + m.username + '</td><td><span class="badge badge-new">' + m.role + '</span></td><td><span class="badge badge-' + (m.status==='فعال'?'active':'inactive') + '">' + m.status + '</span></td><td><button class="btn btn-sm btn-' + (m.status==='فعال'?'danger':'success') + '" onclick="toggleMember(' + m.rowIndex + ',\'' + (m.status==='فعال'?'غیرفعال':'فعال') + '\')">' + (m.status==='فعال'?'غیرفعال':'فعال') + '</button> <button class="btn btn-sm btn-danger" onclick="removeMember(' + m.rowIndex + ')">🗑</button></td></tr>').join('') + '</tbody></table></div></div>';
+  }).getGroupMembers(currentGroupId, currentToken);
+}
+
+function openAddMember() {
+  openModal('<div class="modal-header"><h2>افزودن عضو به گروه</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+    '<div class="form-grid"><div class="field"><label>نام کاربری عضو *</label><input id="mUsername"></div>' +
+    '<div class="field"><label>نقش</label><select id="mRole"><option value="member">member</option><option value="supervisor">supervisor</option></select></div></div>' +
+    '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveMember()">افزودن</button></div>');
+}
+function saveMember() {
+  const username = $('mUsername').value.trim(), role = $('mRole').value;
+  if (!username) return toast('نام کاربری را وارد کنید', 'error');
+  google.script.run.withSuccessHandler(() => { closeModal(); toast('عضو اضافه شد', 'success'); loadMembers(); }).withFailureHandler(e => toast(e.message, 'error')).addGroupMember(currentGroupId, username, role, currentToken);
+}
+function removeMember(rowIndex) {
+  if (!confirm('حذف این عضو؟')) return;
+  google.script.run.withSuccessHandler(() => { toast('حذف شد', 'success'); loadMembers(); }).withFailureHandler(e => toast(e.message, 'error')).removeGroupMember(rowIndex, currentToken);
+}
+function toggleMember(rowIndex, newStatus) {
+  google.script.run.withSuccessHandler(() => { toast('وضعیت تغییر کرد', 'success'); loadMembers(); }).withFailureHandler(e => toast(e.message, 'error')).toggleMemberStatus(rowIndex, newStatus, currentToken);
+}
+
+function loadCards() {
+  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">کارت‌های گروه</h1></div>' +
+    '<div class="card"><div class="filters"><div class="field"><label>جستجو</label><input id="cdSearch" placeholder="مشتری، CardID" oninput="debounceCards()"></div>' +
+    '<div class="field"><label>وضعیت</label><select id="cdStatus" onchange="applyCardsFilter()"><option value="همه">همه</option><option>جدید</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option><option>ارجاع به سرپرست</option></select></div></div><div id="cardsTable"></div></div>';
+  fetchCards();
+}
+let cdTimer;
+function debounceCards() { clearTimeout(cdTimer); cdTimer = setTimeout(fetchCards, 400); }
+function applyCardsFilter() { fetchCards(); }
+function fetchCards() {
+  const filters = { search: $('cdSearch')?.value || '', status: $('cdStatus')?.value || 'همه' };
+  google.script.run.withSuccessHandler(rows => {
+    if (!rows.length) { $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">کارتی یافت نشد</div>'; return; }
+    $('cardsTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>CardID</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>اجراکننده</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      rows.map(r => '<tr><td><strong>' + r.cardId + '</strong></td><td>' + r.customer + '</td><td>' + r.details + '</td><td>' + money(r.amount) + '</td><td>' + r.workerName + '</td><td>' + statusBadge(r.status) + '</td><td style="white-space:nowrap"><button class="btn btn-sm btn-primary" onclick="changeCardStatus(\'' + r.cardId + '\',\'' + r.status + '\')">تغییر وضعیت</button> <button class="btn btn-sm btn-secondary" onclick="assignCard(\'' + r.cardId + '\')">تخصیص</button> <button class="btn btn-sm btn-secondary" onclick="viewInvoice(\'' + r.requestId + '\')">🧾</button></td></tr>').join('') + '</tbody></table></div>';
+  }).getSupervisorCards(filters, currentToken);
+}
+
+function changeCardStatus(cardId, currentStatus) {
+  const statuses = ['جدید','در حال انجام','تکمیل شده','لغو شده','ارجاع به سرپرست'];
+  openModal('<div class="modal-header"><h2>تغییر وضعیت کارت</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+    '<div class="field"><label>وضعیت جدید</label><select id="newCardStatus">' + statuses.map(s => '<option ' + (s===currentStatus?'selected':'') + '>' + s + '</option>').join('') + '</select></div>' +
+    '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="applyCardStatus(\'' + cardId + '\')">اعمال</button></div>');
+}
+function applyCardStatus(cardId) {
+  google.script.run.withSuccessHandler(() => { closeModal(); toast('بروزرسانی شد', 'success'); fetchCards(); }).withFailureHandler(e => toast(e.message, 'error')).updateSupervisorCardStatus(cardId, $('newCardStatus').value, currentToken);
+}
+
+function assignCard(cardId) {
+  google.script.run.withSuccessHandler(workers => {
+    let opts = '<option value="">بازگشت به استخر</option>';
+    workers.forEach(w => opts += '<option value="' + w.id + '">' + w.name + ' (' + w.operations + ')</option>');
+    openModal('<div class="modal-header"><h2>تخصیص کارت</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+      '<div class="field"><label>تخصیص به</label><select id="targetWorker">' + opts + '</select></div>' +
+      '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="executeAssign(\'' + cardId + '\')">تأیید</button></div>');
+  }).getSupervisorWorkersForDropdown(currentToken);
+}
+function executeAssign(cardId) {
+  google.script.run.withSuccessHandler(() => { closeModal(); toast('تخصیص انجام شد', 'success'); fetchCards(); }).withFailureHandler(e => toast(e.message, 'error')).assignCardToWorker(cardId, $('targetWorker').value, currentToken);
+}
+
+function viewInvoice(requestId) {
+  google.script.run.withSuccessHandler(o => {
+    openModal('<div class="modal-header"><h2>فاکتور ' + o.requestId + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+      '<div class="invoice-box"><div class="invoice-header"><h1>Zingo<span>Vingo</span></h1><div>فاکتور نهایی خدمات</div></div>' +
+      '<div class="invoice-row"><span>تاریخ ثبت:</span><strong>' + o.date + '</strong></div>' +
+      '<div class="invoice-row"><span>مشتری:</span><strong>' + o.customer + '</strong></div>' +
+      '<div class="invoice-row"><span>موبایل:</span><strong style="direction:ltr">' + o.phone + '</strong></div>' +
+      '<div class="invoice-row"><span>خدمت:</span><strong>' + o.service + ' × ' + toFa(o.qty) + '</strong></div>' +
+      '<div class="invoice-row"><span>تاریخ اجرا:</span><strong>' + o.executeDate + ' ساعت ' + o.executeTime + '</strong></div>' +
+      '<div class="invoice-row"><span>آدرس:</span><strong>' + o.address + '</strong></div>' +
+      '<div class="invoice-row"><span>خدمات جانبی:</span><strong>' + (o.sideServices||'ندارد') + '</strong></div>' +
+      '<div class="invoice-row"><span>نوع اقدام:</span><strong>' + o.actionType + '</strong></div>' +
+      '<div class="invoice-row"><span>توضیحات:</span><strong>' + (o.notes||'—') + '</strong></div>' +
+      '<hr style="margin:15px 0">' +
+      '<div class="invoice-row"><span>قیمت پایه:</span><strong>' + money(o.basePrice) + '</strong></div>' +
+      '<div class="invoice-row"><span>تخفیف:</span><strong style="color:var(--green)">− ' + money(o.discount) + '</strong></div>' +
+      '<div class="invoice-row"><span>مالیات:</span><strong>' + money(o.tax) + '</strong></div>' +
+      '<div class="invoice-row invoice-total"><span>مبلغ نهایی:</span><strong>' + money(o.finalPrice) + '</strong></div>' +
+      '</div>' +
+      '<div class="modal-footer"><button class="btn btn-primary" onclick="window.print()">🖨 پرینت</button><button class="btn btn-secondary" onclick="closeModal()">بستن</button></div>');
+  }).getSupervisorOrderInvoice(requestId, currentToken);
+}
+
+function loadReturned() {
+  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">کارت‌های مرجوعی</h1></div><div id="returnedContent"></div>';
+  google.script.run.withSuccessHandler(rows => {
+    $('returnedContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>CardID</th><th>مشتری</th><th>خدمت</th><th>اجراکننده</th><th>وضعیت</th><th>آخرین بروزرسانی</th><th>عملیات</th></tr></thead><tbody>' +
+      (rows.length ? rows.map(r => '<tr><td><strong>' + r.cardId + '</strong></td><td>' + r.customer + '</td><td>' + r.details + '</td><td>' + r.workerId + '</td><td>' + statusBadge(r.status) + '</td><td>' + r.updatedAt + '</td><td><button class="btn btn-sm btn-primary" onclick="changeCardStatus(\'' + r.cardId + '\',\'' + r.status + '\')">تغییر وضعیت</button> <button class="btn btn-sm btn-secondary" onclick="assignCard(\'' + r.cardId + '\')">تخصیص مجدد</button></td></tr>').join('') : '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--muted)">کارت مرجوعی نیست</td></tr>') + '</tbody></table></div></div>';
+  }).getSupervisorReturnedCards(currentToken);
+}
+
+function loadReports() {
+  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">گزارشات گروه</h1></div>' +
+    '<div class="card"><div class="filters"><div class="field"><label>از تاریخ</label><input id="repFrom" placeholder="1405/01/01"></div><div class="field"><label>تا تاریخ</label><input id="repTo" placeholder="1405/12/29"></div><div class="field" style="justify-content:flex-end"><button class="btn btn-primary" onclick="fetchReports()">نمایش</button></div></div><div id="repContent"></div></div>';
+}
+function fetchReports() {
+  google.script.run.withSuccessHandler(rep => {
+    $('repContent').innerHTML = '<div class="stats-grid"><div class="stat-card"><div class="stat-label">کل کارت‌ها</div><div class="stat-value">' + toFa(rep.totalCards) + '</div></div><div class="stat-card green"><div class="stat-label">تکمیل شده</div><div class="stat-value">' + toFa(rep.completedCards) + '</div></div><div class="stat-card yellow"><div class="stat-label">در حال انجام</div><div class="stat-value">' + toFa(rep.inProgressCards) + '</div></div><div class="stat-card blue"><div class="stat-label">درآمد کل</div><div class="stat-value">' + money(rep.totalRevenue) + '</div></div></div>' +
+      '<div class="card" style="margin-top:16px"><h3>عملکرد اعضا</h3><div class="table-wrap"><table><thead><tr><th>نام</th><th>کل</th><th>تکمیل شده</th><th>درآمد</th></tr></thead><tbody>' +
+      rep.byWorker.map(w => '<tr><td>' + w.name + '</td><td>' + toFa(w.total) + '</td><td>' + toFa(w.completed) + '</td><td>' + money(w.revenue) + '</td></tr>').join('') + '</tbody></table></div></div>' +
+      '<div class="card" style="margin-top:16px"><h3>ریز تراکنش‌ها</h3><div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>CardID</th><th>مشتری</th><th>مبلغ</th><th>وضعیت</th></tr></thead><tbody>' +
+      rep.transactions.map(t => '<tr><td>' + t.date + '</td><td>' + t.cardId + '</td><td>' + t.customer + '</td><td>' + money(t.amount) + '</td><td>' + statusBadge(t.status) + '</td></tr>').join('') + '</tbody></table></div></div>';
+  }).getSupervisorReports(currentToken, $('repFrom').value, $('repTo').value);
+}
+
+function loadProfile() {
+  google.script.run.withSuccessHandler(p => {
+    $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">پروفایل من</h1></div>' +
+      '<div class="card"><div class="employee-profile"><div class="employee-avatar-large">' + (p.avatar ? '<img src="'+p.avatar+'">' : (p.name||'?').charAt(0)) + '</div>' +
+      '<div class="employee-details">' +
+      '<div class="detail-item"><div class="detail-label">شناسه یکتا</div><div class="detail-value">' + p.workerId + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">نام</div><div class="detail-value">' + p.name + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">نام کاربری</div><div class="detail-value">' + p.username + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">نقش</div><div class="detail-value">' + p.role + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">کد شعبه</div><div class="detail-value">' + p.branchId + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">کد گروه</div><div class="detail-value">' + p.groupId + '</div></div>' +
+      '</div></div></div>' +
+      '<div class="card" style="margin-top:16px"><h3 style="margin-bottom:12px;color:var(--navy)">ویرایش پروفایل</h3>' +
+      '<div class="form-grid"><div class="field"><label>نام کاربری جدید</label><input id="newUsername" value="' + p.username + '"></div>' +
+      '<div class="field"><label>رمز عبور جدید</label><input id="newPassword" type="password" placeholder="خالی = بدون تغییر"></div>' +
+      '<div class="field full"><label>عکس پروفایل (URL)</label><input id="newAvatar" value="' + (p.avatar||'') + '"></div></div>' +
+      '<button class="btn btn-primary" style="margin-top:10px" onclick="updateProfile()">بروزرسانی</button></div>';
+  }).getSupervisorProfile(currentToken);
+}
+function updateProfile() {
+  const updates = { username: $('newUsername').value, password: $('newPassword').value, avatar: $('newAvatar').value };
+  google.script.run.withSuccessHandler(() => { toast('پروفایل بروزرسانی شد', 'success'); loadProfile(); }).withFailureHandler(e => toast(e.message, 'error')).updateSupervisorProfile(updates, currentToken);
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && $('loginPage').style.display !== 'none') doLogin(); });
+</script>
+</body>
+</html>
