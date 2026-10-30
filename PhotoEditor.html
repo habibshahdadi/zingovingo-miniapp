@@ -1,108 +1,40 @@
+<!-- ZingoVingo Shared Photo Editor V2 | Requires ZV-UI.html + ProfilePhoto_MultiRole_Addition.gs -->
 <style>
-.zv-pe-overlay{display:none;position:fixed;inset:0;background:#071127cc;z-index:120;align-items:center;justify-content:center;padding:16px}
-.zv-pe-overlay.open{display:flex}
-.zv-pe-box{background:#fff;border-radius:16px;padding:18px;width:min(430px,100%);max-height:90vh;overflow:auto}
-.zv-pe-frame{position:relative;width:300px;height:300px;margin:12px auto;border-radius:14px;overflow:hidden;background:#0b1736;touch-action:none;cursor:grab}
-.zv-pe-frame.drag{cursor:grabbing}
-.zv-pe-frame img{position:absolute;max-width:none;user-select:none;-webkit-user-drag:none;pointer-events:none}
-.zv-pe-row{display:flex;align-items:center;gap:10px;margin-top:10px}
-.zv-pe-row input[type=range]{flex:1}
-.zv-pe-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
-.zv-pe-hint{font-size:12px;color:#657086;margin-top:6px}
-.zv-pe-btn{border:0;border-radius:10px;padding:9px 16px;font:inherit;font-weight:700;cursor:pointer}
-.zv-pe-btn.primary{background:#FF6B1A;color:#fff}
-.zv-pe-btn.secondary{background:#eef1f7;color:#0B1736}
+.zv-pe-overlay{display:none;position:fixed;inset:0;background:rgba(7,17,39,.78);z-index:130;align-items:center;justify-content:center;padding:14px;backdrop-filter:blur(3px)}
+.zv-pe-overlay.open{display:flex;animation:zvPeFade .18s ease}
+.zv-pe-box{background:#fff;color:#17213b;border:1px solid #e7eaf1;border-radius:18px;padding:18px;width:min(430px,100%);max-height:92vh;overflow:auto;box-shadow:0 22px 70px #0004;font-family:IRANSans,Tahoma,Arial,sans-serif}
+.zv-pe-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.zv-pe-head h3{font-size:16px;margin:0;color:#0B1736}.zv-pe-close{border:0;background:#eef1f7;color:#0B1736;width:34px;height:34px;border-radius:9px;cursor:pointer}
+.zv-pe-frame{position:relative;width:min(300px,100%);aspect-ratio:1/1;margin:12px auto;border-radius:14px;overflow:hidden;background:#0B1736;touch-action:none;cursor:grab;box-shadow:inset 0 0 0 1px #ffffff22}.zv-pe-frame.drag{cursor:grabbing}.zv-pe-frame img{position:absolute;max-width:none;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.zv-pe-row{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:12px}.zv-pe-row input[type=range]{flex:1;accent-color:#FF6B1A}.zv-pe-file{width:100%;margin-top:12px;padding:10px;border:1px solid #dfe4ed;border-radius:10px;font-size:12px}.zv-pe-hint{font-size:11px;color:#74809a;margin-top:9px;line-height:1.9}.zv-pe-actions{display:flex;gap:8px;justify-content:flex-start;flex-wrap:wrap;margin-top:16px}.zv-pe-btn{border:0;border-radius:10px;padding:10px 16px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;transition:all .18s ease}.zv-pe-btn:hover{transform:translateY(-1px)}.zv-pe-btn:disabled{opacity:.55;cursor:wait;transform:none}.zv-pe-btn.primary{background:#FF6B1A;color:#fff}.zv-pe-btn.primary:hover{background:#e95b10}.zv-pe-btn.secondary{background:#eef1f7;color:#0B1736}
+@keyframes zvPeFade{from{opacity:0}to{opacity:1}}@media(max-width:480px){.zv-pe-box{padding:14px}.zv-pe-frame{width:min(270px,100%)}}
 </style>
-
-<div id="zvPeOverlay" class="zv-pe-overlay" role="dialog" aria-modal="true">
-  <div class="zv-pe-box">
-    <h3 style="margin:0 0 6px;font-size:16px">ویرایش عکس پروفایل</h3>
-    <div class="zv-pe-frame" id="zvPeFrame"><img id="zvPeImg" alt="عکس پروفایل"></div>
-    <div class="zv-pe-row"><span>زوم</span><input type="range" id="zvPeZoom" min="0.3" max="5" step="0.01" value="1"><span id="zvPeZoomVal">100%</span></div>
-    <div class="zv-pe-row"><input type="file" id="zvPeFile" accept="image/*" style="flex:1"></div>
-    <div class="zv-pe-hint">عکس را با کشیدن (موس یا انگشت) جابه‌جا کنید؛ با اسلایدر یا چرخ موس زوم کنید. کادر مربعی، ناحیه نهایی است.</div>
-    <div class="zv-pe-actions">
-      <button class="zv-pe-btn secondary" type="button" id="zvPeCancel">انصراف</button>
-      <button class="zv-pe-btn primary" type="button" id="zvPeSave">ذخیره و بارگذاری</button>
-    </div>
-  </div>
+<div id="zvPeOverlay" class="zv-pe-overlay" role="dialog" aria-modal="true" aria-labelledby="zvPeTitle">
+ <div class="zv-pe-box"><div class="zv-pe-head"><h3 id="zvPeTitle">ویرایش عکس پروفایل</h3><button class="zv-pe-close" type="button" id="zvPeX" aria-label="بستن">×</button></div>
+  <div class="zv-pe-frame" id="zvPeFrame"><img id="zvPeImg" alt="پیش‌نمایش عکس پروفایل"></div>
+  <div class="zv-pe-row"><span>زوم</span><input type="range" id="zvPeZoom" min="1" max="5" step="0.01" value="1"><span id="zvPeZoomVal">۱۰۰٪</span></div>
+  <input class="zv-pe-file" type="file" id="zvPeFile" accept="image/jpeg,image/png,image/webp,image/gif">
+  <div class="zv-pe-hint">تصویر را با ماوس یا انگشت جابه‌جا کنید و با اسلایدر یا چرخ ماوس بزرگ‌نمایی کنید. محدوده مربعی، تصویر نهایی خواهد بود.</div>
+  <div class="zv-pe-actions"><button class="zv-pe-btn secondary" type="button" id="zvPeCancel">انصراف</button><button class="zv-pe-btn primary" type="button" id="zvPeSave">ذخیره و بارگذاری</button></div>
+ </div>
 </div>
-
 <script>
-window.ZVPhoto = (function(){
-  const FRAME = 300, OUT = 480;
-  const ov = document.getElementById('zvPeOverlay');
-  const frame = document.getElementById('zvPeFrame');
-  const img = document.getElementById('zvPeImg');
-  const zoom = document.getElementById('zvPeZoom');
-  const zoomVal = document.getElementById('zvPeZoomVal');
-  const fileIn = document.getElementById('zvPeFile');
-  let st = { x:0, y:0, z:1, w:0, h:0, ready:false, opts:null, dragging:false, sx:0, sy:0 };
-  function layout(){
-    if (!st.ready) return;
-    const w = st.w * st.z, h = st.h * st.z;
-    img.style.width = w + 'px'; img.style.height = h + 'px';
-    img.style.left = ((FRAME - w) / 2 + st.x) + 'px';
-    img.style.top = ((FRAME - h) / 2 + st.y) + 'px';
-    zoomVal.textContent = Math.round(st.z * 100) + '%';
-    zoom.value = st.z;
-  }
-  function loadFile(file){
-    if (!file || !file.type || file.type.indexOf('image/') !== 0) { alert('فایل باید تصویر باشد.'); return; }
-    const rd = new FileReader();
-    rd.onload = function(e){
-      const im = new Image();
-      im.onload = function(){
-        img.src = im.src;
-        const aspect = im.naturalWidth / im.naturalHeight;
-        st.w = aspect >= 1 ? FRAME * aspect : FRAME;
-        st.h = st.w / aspect;
-        st.x = 0; st.y = 0; st.z = 1; st.ready = true;
-        layout();
-      };
-      im.src = e.target.result;
-    };
-    rd.readAsDataURL(file);
-  }
-  function exportCanvas(){
-    const c = document.createElement('canvas');
-    c.width = OUT; c.height = OUT;
-    const ctx = c.getContext('2d');
-    const s = OUT / FRAME;
-    const w = st.w * st.z, h = st.h * st.z;
-    const left = (FRAME - w) / 2 + st.x, top = (FRAME - h) / 2 + st.y;
-    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, OUT, OUT);
-    ctx.drawImage(img, left * s, top * s, w * s, h * s);
-    return c.toDataURL('image/jpeg', 0.92);
-  }
-  frame.addEventListener('pointerdown', function(e){ st.dragging = true; st.sx = e.clientX - st.x; st.sy = e.clientY - st.y; frame.classList.add('drag'); frame.setPointerCapture(e.pointerId); e.preventDefault(); });
-  frame.addEventListener('pointermove', function(e){ if (!st.dragging) return; st.x = e.clientX - st.sx; st.y = e.clientY - st.sy; layout(); });
-  frame.addEventListener('pointerup', function(){ st.dragging = false; frame.classList.remove('drag'); });
-  frame.addEventListener('pointercancel', function(){ st.dragging = false; frame.classList.remove('drag'); });
-  frame.addEventListener('wheel', function(e){ if (!st.ready) return; e.preventDefault(); st.z = Math.min(5, Math.max(0.3, st.z * (e.deltaY < 0 ? 1.08 : 0.92))); layout(); }, { passive: false });
-  zoom.addEventListener('input', function(){ st.z = Number(zoom.value); layout(); });
-  fileIn.addEventListener('change', function(){ loadFile(fileIn.files[0]); fileIn.value = ''; });
-  document.getElementById('zvPeCancel').addEventListener('click', function(){ ov.classList.remove('open'); });
-  ov.addEventListener('click', function(e){ if (e.target === ov) ov.classList.remove('open'); });
-  document.getElementById('zvPeSave').addEventListener('click', function(){
-    if (!st.ready) { alert('ابتدا یک تصویر انتخاب کنید.'); return; }
-    const opts = st.opts || {};
-    const btn = document.getElementById('zvPeSave');
-    btn.disabled = true; btn.textContent = 'در حال بارگذاری…';
-    const dataUrl = exportCanvas();
-    const args = opts.target ? [dataUrl, opts.target, opts.token] : [dataUrl, opts.token];
-    google.script.run
-      .withSuccessHandler(function(r){
-        btn.disabled = false; btn.textContent = 'ذخیره و بارگذاری';
-        ov.classList.remove('open');
-        if (opts.onDone) opts.onDone(r.url);
-      })
-      .withFailureHandler(function(e){
-        btn.disabled = false; btn.textContent = 'ذخیره و بارگذاری';
-        alert('خطا در بارگذاری عکس: ' + (e && e.message ? e.message : e));
-      })
-      [opts.endpoint || 'uploadMyProfilePhoto'].apply(null, args);
-  });
-  return { open: function(opts){ st.opts = opts; st.ready = false; img.src = ''; st.x = 0; st.y = 0; st.z = 1; layout(); ov.classList.add('open'); } };
+(function(){
+ if(window.ZVPhoto && window.ZVPhoto.__v2) return;
+ var FRAME=300,OUT=480,ov=document.getElementById('zvPeOverlay'),frame=document.getElementById('zvPeFrame'),img=document.getElementById('zvPeImg'),zoom=document.getElementById('zvPeZoom'),zoomVal=document.getElementById('zvPeZoomVal'),fileIn=document.getElementById('zvPeFile'),saveBtn=document.getElementById('zvPeSave');
+ if(!ov||!frame||!img) return;
+ var st={x:0,y:0,z:1,w:0,h:0,ready:false,opts:null,dragging:false,sx:0,sy:0};
+ function notify(msg,type){if(window.toast){window.toast(msg,type||'info');}else alert(msg);}
+ function layout(){if(!st.ready)return;var w=st.w*st.z,h=st.h*st.z;img.style.width=w+'px';img.style.height=h+'px';img.style.left=((FRAME-w)/2+st.x)+'px';img.style.top=((FRAME-h)/2+st.y)+'px';zoomVal.textContent=Math.round(st.z*100)+'٪';zoom.value=st.z;}
+ function loadFile(file){if(!file)return;if(!/^image\/(jpeg|png|webp|gif)$/i.test(file.type||'')){notify('فرمت تصویر پشتیبانی نمی‌شود.','error');return;}if(file.size>8*1024*1024){notify('حجم تصویر باید کمتر از ۸ مگابایت باشد.','error');return;}var rd=new FileReader();rd.onload=function(e){var im=new Image();im.onload=function(){img.src=im.src;var a=im.naturalWidth/im.naturalHeight;st.w=a>=1?FRAME*a:FRAME;st.h=st.w/a;st.x=0;st.y=0;st.z=1;st.ready=true;zoom.min=1;layout();};im.onerror=function(){notify('خواندن تصویر ناموفق بود.','error');};im.src=e.target.result;};rd.onerror=function(){notify('خواندن فایل ناموفق بود.','error');};rd.readAsDataURL(file);}
+ function exportCanvas(){var c=document.createElement('canvas');c.width=OUT;c.height=OUT;var ctx=c.getContext('2d'),s=OUT/FRAME,w=st.w*st.z,h=st.h*st.z,left=(FRAME-w)/2+st.x,top=(FRAME-h)/2+st.y;ctx.fillStyle='#fff';ctx.fillRect(0,0,OUT,OUT);ctx.drawImage(img,left*s,top*s,w*s,h*s);return c.toDataURL('image/jpeg',.9);}
+ function close(){ov.classList.remove('open');st.dragging=false;}
+ frame.addEventListener('pointerdown',function(e){if(!st.ready)return;st.dragging=true;st.sx=e.clientX-st.x;st.sy=e.clientY-st.y;frame.classList.add('drag');frame.setPointerCapture(e.pointerId);e.preventDefault();});
+ frame.addEventListener('pointermove',function(e){if(!st.dragging)return;st.x=e.clientX-st.sx;st.y=e.clientY-st.sy;layout();});
+ ['pointerup','pointercancel','lostpointercapture'].forEach(function(n){frame.addEventListener(n,function(){st.dragging=false;frame.classList.remove('drag');});});
+ frame.addEventListener('wheel',function(e){if(!st.ready)return;e.preventDefault();st.z=Math.min(5,Math.max(1,st.z*(e.deltaY<0?1.08:.92)));layout();},{passive:false});
+ zoom.addEventListener('input',function(){st.z=Number(zoom.value);layout();});fileIn.addEventListener('change',function(){loadFile(fileIn.files&&fileIn.files[0]);fileIn.value='';});
+ document.getElementById('zvPeCancel').addEventListener('click',close);document.getElementById('zvPeX').addEventListener('click',close);ov.addEventListener('click',function(e){if(e.target===ov)close();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.classList.contains('open'))close();});
+ saveBtn.addEventListener('click',function(){if(!st.ready){notify('ابتدا یک تصویر انتخاب کنید.','error');return;}var o=st.opts||{};if(!o.token){notify('نشست کاربری معتبر نیست؛ دوباره وارد شوید.','error');return;}saveBtn.disabled=true;saveBtn.textContent='در حال بارگذاری…';var data=exportCanvas();var endpoint=o.endpoint||'uploadMyProfilePhotoV2';google.script.run.withSuccessHandler(function(r){saveBtn.disabled=false;saveBtn.textContent='ذخیره و بارگذاری';if(!r||r.success===false||!r.url){notify((r&&r.message)||'پاسخ نامعتبر از سرور.','error');return;}close();if(typeof o.onDone==='function')o.onDone(r.url,r);notify('عکس پروفایل با موفقیت ذخیره شد.','success');}).withFailureHandler(function(err){saveBtn.disabled=false;saveBtn.textContent='ذخیره و بارگذاری';notify('خطا در بارگذاری عکس: '+(err&&err.message?err.message:err),'error');})[endpoint](data,o.token);});
+ window.ZVPhoto={__v2:true,open:function(opts){st.opts=opts||{};st.ready=false;st.x=0;st.y=0;st.z=1;img.removeAttribute('src');zoom.value=1;zoomVal.textContent='۱۰۰٪';fileIn.value='';saveBtn.disabled=false;saveBtn.textContent='ذخیره و بارگذاری';ov.classList.add('open');}};
 })();
 </script>
