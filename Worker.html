@@ -142,6 +142,15 @@ fetch('PhotoEditor.html').then(function (r) { return r.text(); }).then(function 
 const $ = id => document.getElementById(id);
 const money = n => new Intl.NumberFormat('en-US').format(Math.round(Number(n)||0)) + ' ریال';
 const toFa = n => new Intl.NumberFormat('fa-IR').format(n);
+// Render untrusted values as text, never as executable HTML.
+function escapeHtml(value) {
+  return String(value == null ? '' : value).replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]));
+}
+function encodedArg(value) { return encodeURIComponent(String(value == null ? '' : value)); }
+function safeImageUrl(value) {
+  const url = String(value || '').trim();
+  return /^(https:\/\/|data:image\/(png|jpeg|jpg|gif|webp);base64,)/i.test(url) ? url : '';
+}
 let currentToken = localStorage.getItem('zv_worker_token') || null;
 let currentUser = null;
 
@@ -156,7 +165,7 @@ function toast(msg, type='info') { const t = $('toast'); t.textContent = msg; t.
 function openModal(html) { $('modalBox').innerHTML = html; $('modal').classList.add('open'); }
 function closeModal() { $('modal').classList.remove('open'); }
 $('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
-function statusBadge(s) { return '<span class="badge badge-' + (/جدید/.test(s)?'new':/تکمیل/.test(s)?'done':/لغو|مرجوع|ارجاع/.test(s)?'cancel':'progress') + '">' + s + '</span>'; }
+function statusBadge(s) { s = String(s || ''); return '<span class="badge badge-' + (/جدید/.test(s)?'new':/تکمیل/.test(s)?'done':/لغو|مرجوع|ارجاع/.test(s)?'cancel':'progress') + '">' + escapeHtml(s) + '</span>'; }
 
 function doLogin() {
   const u = $('loginUser').value.trim(), p = $('loginPass').value;
@@ -182,9 +191,10 @@ function showApp(user) {
   currentUser = user;
   $('loginPage').style.display = 'none'; $('appContainer').style.display = 'grid';
   $('userName').textContent = user.name;
-  $('userRole').innerHTML = 'متخصص <span class="badge-role">' + (user.workerId || '—') + '</span>';
+  $('userRole').textContent = 'متخصص ' + (user.workerId || '—');
   const av = $('userAvatar');
-  if (user.avatar) av.innerHTML = '<img src="' + user.avatar + '">'; else av.textContent = user.name ? user.name.charAt(0) : '?';
+  const avatarUrl = safeImageUrl(user.avatar);
+  if (avatarUrl) { const img = document.createElement('img'); img.src = avatarUrl; img.alt = 'تصویر پروفایل'; av.replaceChildren(img); } else av.textContent = user.name ? user.name.charAt(0) : '?';
   
   $('navMenu').innerHTML = MENU_ITEMS.map(i => '<div class="nav-item" data-page="' + i.id + '">' + i.label + '</div>').join('');
   $('navMenu').querySelectorAll('.nav-item').forEach(item => {
@@ -216,7 +226,7 @@ function loadDashboard() {
       '<div class="stat-card"><div class="stat-label">کل کارت‌ها</div><div class="stat-value">' + toFa(rep.totalCards) + '</div></div>' +
       '<div class="stat-card green"><div class="stat-label">تکمیل شده</div><div class="stat-value">' + toFa(rep.completedCards) + '</div></div>' +
       '<div class="stat-card yellow"><div class="stat-label">در حال انجام</div><div class="stat-value">' + toFa(rep.inProgressCards) + '</div></div>' +
-      '<div class="stat-card blue"><div class="stat-label">درآمد من</div><div class="stat-value">' + money(rep.totalRevenue) + '</div></div>' +
+      '<div class="stat-card blue"><div class="stat-label">ارزش سفارش‌های من (نه دستمزد)</div><div class="stat-value">' + money(rep.orderValueTotal) + '</div></div>' +
       '</div>';
   }).getWorkerReports(currentToken, '', '');
 }
@@ -231,16 +241,16 @@ function fetchCards() {
   google.script.run.withSuccessHandler(rows => {
     if (!rows.length) { $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">کارتی یافت نشد</div>'; return; }
     $('cardsTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>CardID</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>تاریخ اجرا</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
-      rows.map(r => '<tr><td><strong>' + r.cardId + '</strong></td><td>' + r.customer + '</td><td>' + r.details + '</td><td>' + money(r.amount) + '</td><td>' + r.executeDateTime + '</td><td>' + statusBadge(r.status) + '</td><td style="white-space:nowrap"><button class="btn btn-sm btn-primary" onclick="changeCardStatus(\'' + r.cardId + '\',\'' + r.status + '\',\'' + (r.description||'').replace(/'/g,"&#39;") + '\')">تغییر وضعیت</button> <button class="btn btn-sm btn-warning" onclick="referToSupervisor(\'' + r.cardId + '\')">🔄 ارجاع</button></td></tr>').join('') + '</tbody></table></div>';
+      rows.map(r => '<tr><td><strong>' + escapeHtml(r.cardId) + '</strong></td><td>' + escapeHtml(r.customer) + '</td><td>' + escapeHtml(r.details) + '</td><td>' + money(r.amount) + '</td><td>' + escapeHtml(r.executeDateTime) + '</td><td>' + statusBadge(r.status) + '</td><td style="white-space:nowrap"><button class="btn btn-sm btn-primary" onclick="changeCardStatus(decodeURIComponent(\'' + encodedArg(r.cardId) + '\'),decodeURIComponent(\'' + encodedArg(r.status) + '\'),decodeURIComponent(\'' + encodedArg(r.description || '') + '\'))">تغییر وضعیت</button> <button class="btn btn-sm btn-warning" onclick="referToSupervisor(decodeURIComponent(\'' + encodedArg(r.cardId) + '\'))">🔄 ارجاع</button></td></tr>').join('') + '</tbody></table></div>';
   }).getWorkerCards(filters, currentToken);
 }
 
 function changeCardStatus(cardId, currentStatus, currentDesc) {
   const statuses = ['جدید','در حال انجام','تکمیل شده','لغو شده'];
   openModal('<div class="modal-header"><h2>تغییر وضعیت کارت</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
-    '<div class="form-grid"><div class="field"><label>وضعیت جدید</label><select id="newCardStatus">' + statuses.map(s => '<option ' + (s===currentStatus?'selected':'') + '>' + s + '</option>').join('') + '</select></div>' +
-    '<div class="field"><label>توضیحات (اختیاری)</label><textarea id="cardNotes" placeholder="توضیحات تکمیلی...">' + currentDesc + '</textarea></div></div>' +
-    '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="applyCardStatus(\'' + cardId + '\')">اعمال</button></div>');
+    '<div class="form-grid"><div class="field"><label>وضعیت جدید</label><select id="newCardStatus">' + statuses.map(s => '<option ' + (s===currentStatus?'selected':'') + '>' + escapeHtml(s) + '</option>').join('') + '</select></div>' +
+    '<div class="field"><label>توضیحات (اختیاری)</label><textarea id="cardNotes" placeholder="توضیحات تکمیلی...">' + escapeHtml(currentDesc) + '</textarea></div></div>' +
+    '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="applyCardStatus(decodeURIComponent(\'' + encodedArg(cardId) + '\'))">اعمال</button></div>');
 }
 function applyCardStatus(cardId) {
   const newStatus = $('newCardStatus').value;
@@ -251,7 +261,7 @@ function applyCardStatus(cardId) {
 function referToSupervisor(cardId) {
   openModal('<div class="modal-header"><h2>ارجاع کارت به سرپرست</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
     '<div class="form-grid"><div class="field"><label>دلیل ارجاع *</label><textarea id="referReason" placeholder="دلیل ارجاع این کارت را شرح دهید..."></textarea></div></div>' +
-    '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-warning" onclick="executeRefer(\'' + cardId + '\')">ارجاع</button></div>');
+    '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-warning" onclick="executeRefer(decodeURIComponent(\'' + encodedArg(cardId) + '\'))">ارجاع</button></div>');
 }
 function executeRefer(cardId) {
   const reason = $('referReason').value.trim();
@@ -265,29 +275,29 @@ function loadReports() {
 }
 function fetchReports() {
   google.script.run.withSuccessHandler(rep => {
-    $('repContent').innerHTML = '<div class="stats-grid"><div class="stat-card"><div class="stat-label">کل کارت‌ها</div><div class="stat-value">' + toFa(rep.totalCards) + '</div></div><div class="stat-card green"><div class="stat-label">تکمیل شده</div><div class="stat-value">' + toFa(rep.completedCards) + '</div></div><div class="stat-card yellow"><div class="stat-label">در حال انجام</div><div class="stat-value">' + toFa(rep.inProgressCards) + '</div></div><div class="stat-card blue"><div class="stat-label">درآمد</div><div class="stat-value">' + money(rep.totalRevenue) + '</div></div></div>' +
+    $('repContent').innerHTML = '<div class="stats-grid"><div class="stat-card"><div class="stat-label">کل کارت‌ها</div><div class="stat-value">' + toFa(rep.totalCards) + '</div></div><div class="stat-card green"><div class="stat-label">تکمیل شده</div><div class="stat-value">' + toFa(rep.completedCards) + '</div></div><div class="stat-card yellow"><div class="stat-label">در حال انجام</div><div class="stat-value">' + toFa(rep.inProgressCards) + '</div></div><div class="stat-card blue"><div class="stat-label">ارزش سفارش‌ها (نه دستمزد)</div><div class="stat-value">' + money(rep.orderValueTotal) + '</div></div></div>' +
       '<div class="card" style="margin-top:16px"><h3>توزیع وضعیت</h3>' + Object.entries(rep.byStatus).map(kv => '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)"><span>' + kv[0] + '</span><strong>' + toFa(kv[1]) + '</strong></div>').join('') + '</div>' +
       '<div class="card" style="margin-top:16px"><h3>ریز تراکنش‌ها</h3><div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>CardID</th><th>مشتری</th><th>مبلغ</th><th>وضعیت</th></tr></thead><tbody>' +
-      rep.transactions.map(t => '<tr><td>' + t.date + '</td><td>' + t.cardId + '</td><td>' + t.customer + '</td><td>' + money(t.amount) + '</td><td>' + statusBadge(t.status) + '</td></tr>').join('') + '</tbody></table></div></div>';
+      rep.transactions.map(t => '<tr><td>' + escapeHtml(t.date) + '</td><td>' + escapeHtml(t.cardId) + '</td><td>' + escapeHtml(t.customer) + '</td><td>' + money(t.amount) + '</td><td>' + statusBadge(t.status) + '</td></tr>').join('') + '</tbody></table></div></div>';
   }).getWorkerReports(currentToken, $('repFrom').value, $('repTo').value);
 }
 
 function loadProfile() {
   google.script.run.withSuccessHandler(p => {
     $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">پروفایل من</h1></div>' +
-      '<div class="card"><div class="employee-profile"><div class="employee-avatar-large">' + (p.avatar ? '<img src="'+p.avatar+'">' : (p.name||'?').charAt(0)) + '</div>' +
+      '<div class="card"><div class="employee-profile"><div class="employee-avatar-large">' + (safeImageUrl(p.avatar) ? '<img src="'+escapeHtml(safeImageUrl(p.avatar))+'" alt="تصویر پروفایل">' : escapeHtml((p.name||'?').charAt(0))) + '</div>' +
       '<div class="employee-details">' +
-      '<div class="detail-item"><div class="detail-label">شناسه یکتا</div><div class="detail-value">' + p.workerId + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">نام</div><div class="detail-value">' + p.name + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">نام کاربری</div><div class="detail-value">' + p.username + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">نقش</div><div class="detail-value">' + p.role + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">کد شعبه</div><div class="detail-value">' + p.branchId + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">کد گروه</div><div class="detail-value">' + p.groupId + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">شناسه یکتا</div><div class="detail-value">' + escapeHtml(p.workerId) + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">نام</div><div class="detail-value">' + escapeHtml(p.name) + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">نام کاربری</div><div class="detail-value">' + escapeHtml(p.username) + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">نقش</div><div class="detail-value">' + escapeHtml(p.role) + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">کد شعبه</div><div class="detail-value">' + escapeHtml(p.branchId) + '</div></div>' +
+      '<div class="detail-item"><div class="detail-label">کد گروه</div><div class="detail-value">' + escapeHtml(p.groupId) + '</div></div>' +
       '</div></div></div>' +
       '<div class="card" style="margin-top:16px"><h3 style="margin-bottom:12px;color:var(--navy)">ویرایش پروفایل</h3>' +
-      '<div class="form-grid"><div class="field"><label>نام کاربری جدید</label><input id="newUsername" value="' + p.username + '"></div>' +
+      '<div class="form-grid"><div class="field"><label>نام کاربری جدید</label><input id="newUsername" value="' + escapeHtml(p.username) + '"></div>' +
       '<div class="field"><label>رمز عبور جدید</label><input id="newPassword" type="password" placeholder="خالی = بدون تغییر"></div>' +
-      '<div class="field"><label>عکس پروفایل (URL)</label><input id="newAvatar" value="' + (p.avatar||'') + '"></div></div>' +
+      '<div class="field"><label>عکس پروفایل (URL)</label><input id="newAvatar" value="' + escapeHtml(p.avatar||'') + '"></div></div>' +
       '<button class="btn btn-primary" style="margin-top:10px" onclick="updateProfile()">بروزرسانی</button></div>';
   }).getWorkerProfile(currentToken);
 }
