@@ -218,7 +218,7 @@ button,[role=button],a{-webkit-tap-highlight-color:transparent}
 .zv-branch-name{display:block;color:var(--zv-navy);font-size:12px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .zv-branch-id{display:block;color:var(--zv-muted);font-size:10px;direction:ltr;text-align:right}
 .zv-app-topbar .menu-toggle{order:1}
-.zv-identity-stamp{position:fixed;right:calc(16px + 260px);bottom:14px;z-index:35;direction:rtl;display:flex;align-items:center;gap:9px;max-width:min(360px,calc(100vw - 32px));padding:9px 13px;background:rgba(11,23,54,.96);color:#fff;border:1px solid #ffffff20;border-radius:14px;box-shadow:0 12px 32px rgba(11,23,54,.22);backdrop-filter:blur(12px)}
+
 .zv-identity-avatar{width:34px;height:34px;flex:0 0 34px;border-radius:50%;display:grid;place-items:center;background:var(--zv-orange);font-size:13px;font-weight:900;color:#fff}
 .zv-identity-meta{min-width:0;line-height:1.5}
 .zv-identity-name{display:block;font-size:11px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -257,13 +257,26 @@ tbody tr:hover{background:#fafbfe}
  .zv-branch-chip{max-width:calc(100vw - 105px)}
  .zv-branch-name{font-size:10px}
  .zv-branch-id{font-size:9px}
- .zv-identity-stamp{right:10px;bottom:10px;padding:7px 10px;max-width:calc(100vw - 20px)}
+
  .zv-identity-avatar{width:30px;height:30px;flex-basis:30px}
 }
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 
+.zv-sidebar-person-id{display:block;margin-top:4px;color:#aebbd3;font-size:10px;direction:ltr;text-align:right;white-space:nowrap}.sidebar-footer .user-info{align-items:center}.sidebar-footer .user-meta{min-width:0;flex:1}
+@media(max-width:900px){.sidebar-footer{padding-bottom:18px}}
+
+/* ZV profile + unread conversation indicators */
+.zv-unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;margin-right:auto;border-radius:20px;background:#d92d3a;color:#fff;font-size:10px;font-weight:900;line-height:1;box-shadow:0 0 0 2px var(--zv-navy,#0B1736)}
+.zv-unread-badge[hidden]{display:none!important}
+.zv-thread-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border:1px solid var(--line);border-radius:12px;margin:9px 0;background:#fff}
+.zv-thread-meta{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:6px 0;font-size:11px;color:var(--muted)}
+.zv-thread-state{display:inline-flex;padding:4px 8px;border-radius:20px;font-size:10px;font-weight:800}
+.zv-thread-state.unread{background:#ffebed;color:#c62836}.zv-thread-state.read{background:#e8f7f0;color:#13835d}.zv-thread-state.open{background:#edf2ff;color:#4567bb}.zv-thread-state.closed{background:#f0f1f4;color:#687386}
+.zv-profile-layout{display:grid;grid-template-columns:minmax(220px,280px) 1fr;gap:22px;align-items:start}
+.zv-profile-photo-card{text-align:center;padding:22px}.zv-profile-photo-large{width:136px;height:136px;margin:0 auto 14px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#fff0e7;color:#bd4a0d;font-size:42px;font-weight:900;border:4px solid #fff;box-shadow:0 0 0 1px var(--line),0 8px 24px #0b17361a}.zv-profile-photo-large img{width:100%;height:100%;object-fit:cover;display:block}.zv-profile-photo-actions{display:flex;flex-direction:column;gap:8px}.zv-profile-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.zv-profile-form .field{min-width:0}.zv-profile-form .full{grid-column:1/-1}
+@media(max-width:700px){.zv-profile-layout{grid-template-columns:1fr}.zv-profile-form{grid-template-columns:1fr}.zv-profile-form .full{grid-column:auto}.zv-thread-row{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
@@ -284,7 +297,7 @@ tbody tr:hover{background:#fafbfe}
     <div class="brand"><h2>Zingo<span>Vingo</span></h2><small>پنل سوپروایزر</small></div>
     <nav class="nav-menu" id="navMenu"></nav>
     <div class="sidebar-footer">
-      <div class="user-info"><div class="user-avatar" id="userAvatar">?</div><div><div class="user-name" id="userName">—</div><div class="user-role" id="userRole">سوپروایزر</div></div></div>
+      <div class="user-info"><div class="user-avatar" id="userAvatar">?</div><div class="user-meta"><div class="user-name" id="userName">—</div><div class="user-role" id="userRole">سوپروایزر</div><div class="zv-sidebar-person-id" id="zvIdentityId">شناسه: —</div></div></div>
       <button class="logout-btn" onclick="doLogout()"> خروج</button>
     </div>
   </aside>
@@ -303,15 +316,6 @@ tbody tr:hover{background:#fafbfe}
   </main>
 </div>
 
-<div class="zv-identity-stamp" id="zvIdentityStamp" aria-label="کاربر وارد شده">
-  <div class="zv-identity-avatar" id="zvIdentityAvatar">?</div>
-  <div class="zv-identity-meta">
-    <span class="zv-identity-name"><span id="zvIdentityName">—</span><span class="zv-identity-role">سرپرست</span></span>
-    <span class="zv-identity-id" id="zvIdentityId">—</span>
-  </div>
-</div>
-<div id="toast" class="toast"></div>
-<div id="modal" class="modal"><div class="modal-box" id="modalBox"></div></div>
 
 <script>
 fetch('PhotoEditor.html').then(function (r) { return r.text(); }).then(function (html) {
@@ -376,7 +380,7 @@ function showApp(user) {
   const av = $('userAvatar');
   if (user.avatar) av.innerHTML = '<img src="' + user.avatar + '">'; else av.textContent = user.name ? user.name.charAt(0) : '?';
   
-  $('navMenu').innerHTML = MENU_ITEMS.map(i => '<div class="nav-item" data-page="' + i.id + '">' + i.label + '</div>').join('');
+  $('navMenu').innerHTML = MENU_ITEMS.map(i => '<div class="nav-item" data-page="' + i.id + '">' + i.label + (i.id === 'messages' ? '<span class="zv-unread-badge" id="zvUnreadMessages" hidden>0</span>' : '') + '</div>').join('');
   $('navMenu').querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', () => {
       $('navMenu').querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -386,6 +390,7 @@ function showApp(user) {
     });
   });
   loadPage('dashboard');
+  zvRefreshUnreadMessages_();
 }
 
 
@@ -396,12 +401,11 @@ function zvUpdateSharedIdentity_(user) {
   const fullName = user.name || user.username || 'کاربر';
   const personId = user.workerId || user.username || 'شناسه ثبت نشده';
   const branchNameEl = $('zvBranchName'), branchIdEl = $('zvBranchId');
-  const nameEl = $('zvIdentityName'), idEl = $('zvIdentityId'), avatarEl = $('zvIdentityAvatar');
+  const idEl = $('zvIdentityId'), avatarEl = $('userAvatar');
   if (branchNameEl) branchNameEl.textContent = branchName;
   if (branchIdEl) branchIdEl.textContent = 'شناسه شعبه: ' + branchId;
-  if (nameEl) nameEl.textContent = fullName;
   if (idEl) idEl.textContent = 'شناسه: ' + personId;
-  if (avatarEl) avatarEl.textContent = fullName.trim().charAt(0) || '?';
+  if (avatarEl && !user.avatar) avatarEl.textContent = fullName.trim().charAt(0) || '?';
 }
 
 (function checkSession() {
@@ -409,10 +413,14 @@ function zvUpdateSharedIdentity_(user) {
   if (currentToken && saved) { currentUser = JSON.parse(saved); showApp(currentUser); }
 })();
 
+function zvSetUnreadMessages_(rows){const n=(rows||[]).reduce((sum,t)=>sum+Math.max(0,Number(t.unreadCount)||0),0);const b=$('zvUnreadMessages');if(b){b.textContent=toFa(n);b.hidden=n<=0;}}
+function zvRefreshUnreadMessages_(){const api=google.script.run.withSuccessHandler(zvSetUnreadMessages_).withFailureHandler(e=>console.warn('Unread messages count:',e));api.supervisorGetConversations(currentToken);}
 function loadPage(page) {
+  const branchChip = $('zvBranchChip'); if (branchChip) branchChip.style.display = page === 'dashboard' ? 'flex' : 'none';
   $('pageContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   const loaders = { dashboard: loadDashboard, groups: loadGroups, members: loadMembers, cards: loadCards, messages: loadSupervisorMessages, returned: loadReturned, reports: loadReports, profile: loadProfile };
   (loaders[page] || loadDashboard)();
+  if (page !== 'messages') zvRefreshUnreadMessages_();
 }
 
 function loadDashboard() {
@@ -493,11 +501,20 @@ function fetchCards() {
 }
 
 function changeCardStatus(cardId, currentStatus) {
-  const statuses = ['جدید','در حال انجام','تکمیل شده','لغو شده','ارجاع به سرپرست'];
   openModal('<div class="modal-header"><h2>تغییر وضعیت کارت</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
-    '<div class="field"><label>وضعیت جدید</label><select id="newCardStatus">' + statuses.map(s => '<option ' + (s===currentStatus?'selected':'') + '>' + s + '</option>').join('') + '</select></div>' +
-    '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="applyCardStatus(\'' + cardId + '\')">اعمال</button></div>');
+    '<div class="field"><label>وضعیت جدید</label><select id="newCardStatus" disabled><option>در حال دریافت وضعیت‌ها…</option></select></div>' +
+    '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" id="applyCardStatusBtn" disabled onclick="applyCardStatus(\'' + cardId + '\')">اعمال</button></div>');
+  google.script.run.withSuccessHandler(function(statuses) {
+    const select = $('newCardStatus');
+    if (!select) return;
+    const list = Array.isArray(statuses) ? statuses : [];
+    if (!list.length) { select.innerHTML = '<option value="">وضعیتی در شیت Status_Roles تعریف نشده است</option>'; return; }
+    select.innerHTML = list.map(function(st) { return '<option value="' + zvEsc(st) + '"' + (st === currentStatus ? ' selected' : '') + '>' + zvEsc(st) + '</option>'; }).join('');
+    select.disabled = false;
+    $('applyCardStatusBtn').disabled = false;
+  }).withFailureHandler(function(e) { const select=$('newCardStatus'); if(select) select.innerHTML='<option value="">خطا در دریافت وضعیت‌ها</option>'; toast(e.message || 'دریافت وضعیت‌ها ناموفق بود','error'); }).getSupervisorCardStatuses(cardId, currentToken);
 }
+
 function applyCardStatus(cardId) {
   google.script.run.withSuccessHandler(() => { closeModal(); toast('بروزرسانی شد', 'success'); fetchCards(); }).withFailureHandler(e => toast(e.message, 'error')).updateSupervisorCardStatus(cardId, $('newCardStatus').value, currentToken);
 }
@@ -550,14 +567,10 @@ function loadReturned() {
 function zvEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function loadSupervisorMessages(){
  $('pageContent').innerHTML='<div class="page-header"><h1 class="page-title">مکاتبات متخصصان</h1><button class="btn btn-secondary" onclick="loadSupervisorMessages()">بروزرسانی</button></div><div class="card"><div id="supervisorThreads">در حال دریافت…</div></div><div id="supervisorThreadDetail"></div>';
- google.script.run.withSuccessHandler(rows=>{const h=$('supervisorThreads');if(!rows.length){h.textContent='مکاتبه‌ای ثبت نشده است.';return;}
- h.innerHTML=rows.map(t=>'<div class="detail-item" style="margin:8px 0;cursor:pointer" onclick="openSupervisorThread(\''+zvEsc(t.threadId)+'\')"><b>'+zvEsc(t.subject)+'</b><div>متخصص: '+zvEsc(t.workerUsername)+' | کارت: '+zvEsc(t.cardId)+' | خوانده‌نشده: '+toFa(t.unreadCount)+'</div><small>'+zvEsc(t.preview)+'</small></div>').join('');})
+ google.script.run.withSuccessHandler(rows=>{zvSetUnreadMessages_(rows);const h=$('supervisorThreads');if(!rows.length){h.textContent='مکاتبه‌ای ثبت نشده است.';return;}
+ h.innerHTML=rows.map(t=>'<div class="zv-thread-row"><div><b>'+zvEsc(t.subject)+'</b><div class="zv-thread-meta"><span>متخصص: '+zvEsc(t.workerUsername)+'</span><span>کارت: '+zvEsc(t.cardId)+'</span><span class="zv-thread-state '+(Number(t.unreadCount)>0?'unread':'read')+'">'+(Number(t.unreadCount)>0?'● خوانده‌نشده':'✓ خوانده‌شده')+'</span><span class="zv-thread-state '+(String(t.status).toUpperCase()==='CLOSED'?'closed':'open')+'">'+(String(t.status).toUpperCase()==='CLOSED'?'بسته':'باز')+'</span><span>پیام جدید: '+toFa(t.unreadCount||0)+'</span></div><small>'+zvEsc(t.preview||'')+'</small></div><button class="btn btn-primary btn-sm" onclick="openSupervisorThread(\''+zvEsc(t.threadId)+'\')">نمایش پیام</button></div>').join('');})
  .withFailureHandler(e=>{$('supervisorThreads').textContent=e.message;}).supervisorGetConversations(currentToken);
 }
-function openSupervisorThread(id){google.script.run.withSuccessHandler(d=>{const h=$('supervisorThreadDetail');h.innerHTML='<div class="card"><h3>'+zvEsc(d.thread.subject)+' — '+zvEsc(d.thread.cardId)+'</h3><div id="supervisorMessages"></div><textarea id="supervisorReply" maxlength="4000" placeholder="پاسخ به متخصص…"></textarea><button class="btn btn-primary" onclick="replySupervisorThread(\''+zvEsc(id)+'\')">ارسال پاسخ</button> <button class="btn btn-secondary" onclick="changeSupervisorThreadStatus(\''+zvEsc(id)+'\',\''+(d.thread.status==='CLOSED'?'OPEN':'CLOSED')+'\')">'+(d.thread.status==='CLOSED'?'بازگشایی':'بستن مکاتبه')+'</button></div>';
- $('supervisorMessages').innerHTML=d.messages.map(m=>'<div class="detail-item" style="margin:8px 0"><b>'+zvEsc(m.senderUsername)+'</b><div style="white-space:pre-wrap">'+zvEsc(m.body)+'</div><small>'+zvEsc(m.createdAt)+'</small></div>').join('');}).withFailureHandler(e=>toast(e.message,'error')).supervisorGetConversation(id,currentToken);}
-function replySupervisorThread(id){const b=$('supervisorReply').value.trim();if(!b)return toast('متن پاسخ را وارد کنید','error');google.script.run.withSuccessHandler(()=>openSupervisorThread(id)).withFailureHandler(e=>toast(e.message,'error')).supervisorCreateConversationReply(id,b,currentToken);}
-function changeSupervisorThreadStatus(id,s){google.script.run.withSuccessHandler(()=>openSupervisorThread(id)).withFailureHandler(e=>toast(e.message,'error')).supervisorSetConversationStatus(id,s,currentToken);}
 function loadReports() {
   $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">گزارشات گروه</h1></div>' +
     '<div class="card"><div class="filters"><div class="field"><label>از تاریخ</label><input id="repFrom" placeholder="1405/01/01"></div><div class="field"><label>تا تاریخ</label><input id="repTo" placeholder="1405/12/29"></div><div class="field" style="justify-content:flex-end"><button class="btn btn-primary" onclick="fetchReports()">نمایش</button></div></div><div id="repContent"></div></div>';
@@ -574,26 +587,20 @@ function fetchReports() {
 
 function loadProfile() {
   google.script.run.withSuccessHandler(p => {
-    $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">پروفایل من</h1></div>' +
-      '<div class="card"><div class="employee-profile"><div class="employee-avatar-large">' + (p.avatar ? '<img src="'+p.avatar+'">' : (p.name||'?').charAt(0)) + '</div>' +
-      '<div class="employee-details">' +
-      '<div class="detail-item"><div class="detail-label">شناسه یکتا</div><div class="detail-value">' + p.workerId + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">نام</div><div class="detail-value">' + p.name + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">نام کاربری</div><div class="detail-value">' + p.username + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">نقش</div><div class="detail-value">' + p.role + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">کد شعبه</div><div class="detail-value">' + p.branchId + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">کد گروه</div><div class="detail-value">' + p.groupId + '</div></div>' +
-      '</div></div></div>' +
-      '<div class="card" style="margin-top:16px"><h3 style="margin-bottom:12px;color:var(--navy)">ویرایش پروفایل</h3>' +
-      '<div class="form-grid"><div class="field"><label>نام کاربری جدید</label><input id="newUsername" value="' + p.username + '"></div>' +
-      '<div class="field"><label>رمز عبور جدید</label><input id="newPassword" type="password" placeholder="خالی = بدون تغییر"></div>' +
-      '<div class="field full"><label>عکس پروفایل (URL)</label><input id="newAvatar" value="' + (p.avatar||'') + '"></div></div>' +
-      '<button class="btn btn-primary" style="margin-top:10px" onclick="updateProfile()">بروزرسانی</button></div>';
-  }).getSupervisorProfile(currentToken);
+    const photo = p.avatar ? '<img src="'+zvEsc(p.avatar)+'" alt="تصویر پروفایل">' : zvEsc((p.name||'?').trim().charAt(0)||'?');
+    $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">پروفایل من</h1></div>'+
+      '<div class="zv-profile-layout"><div class="card zv-profile-photo-card"><div class="zv-profile-photo-large" id="zvProfilePhoto">'+photo+'</div><h3>'+zvEsc(p.name||'—')+'</h3><div class="zv-muted">'+zvEsc(p.role||'')+' · '+zvEsc(p.workerId||'')+'</div><div class="zv-profile-photo-actions" style="margin-top:16px"><button class="btn btn-primary" type="button" onclick="zvOpenProfilePhoto_()">📷 تغییر تصویر پروفایل</button><small>فرمت JPG، PNG یا WEBP؛ حداکثر ۸ مگابایت</small></div></div>'+
+      '<div class="card"><h3 style="margin-bottom:16px;color:var(--navy)">اطلاعات حساب</h3><div class="detail-grid"><div class="detail-item"><div class="detail-label">شناسه یکتا</div><div class="detail-value">'+zvEsc(p.workerId||'—')+'</div></div><div class="detail-item"><div class="detail-label">نام و نام خانوادگی</div><div class="detail-value">'+zvEsc(p.name||'—')+'</div></div><div class="detail-item"><div class="detail-label">نقش</div><div class="detail-value">'+zvEsc(p.role||'—')+'</div></div><div class="detail-item"><div class="detail-label">شناسه شعبه</div><div class="detail-value">'+zvEsc(p.branchId||'—')+'</div></div><div class="detail-item"><div class="detail-label">شناسه گروه</div><div class="detail-value">'+zvEsc(p.groupId||'—')+'</div></div></div><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><h3 style="margin-bottom:12px;color:var(--navy)">ویرایش اطلاعات ورود</h3><div class="zv-profile-form"><div class="field"><label>نام کاربری</label><input id="newUsername" value="'+zvEsc(p.username||'')+'"></div><div class="field"><label>رمز عبور جدید</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="خالی = بدون تغییر"></div></div><button class="btn btn-primary" style="margin-top:16px" onclick="updateProfile()">ذخیره تغییرات</button></div></div>';
+  }).withFailureHandler(e=>toast(e.message||'دریافت پروفایل ناموفق بود','error')).getSupervisorProfile(currentToken);
+}
+function zvOpenProfilePhoto_(){
+  if(!window.ZVPhoto||!window.ZVPhoto.__v2){toast('ویرایشگر تصویر بارگذاری نشده است؛ صفحه را تازه‌سازی کنید.','error');return;}
+  window.ZVPhoto.open({token:currentToken,endpoint:'uploadSupervisorProfilePhotoV2',onDone:function(url){if(currentUser)currentUser.avatar=url;const av=$('userAvatar');if(av)av.innerHTML='<img src="'+zvEsc(url)+'" alt="">';loadProfile();}});
 }
 function updateProfile() {
-  const updates = { username: $('newUsername').value, password: $('newPassword').value, avatar: $('newAvatar').value };
-  google.script.run.withSuccessHandler(() => { toast('پروفایل بروزرسانی شد', 'success'); loadProfile(); }).withFailureHandler(e => toast(e.message, 'error')).updateSupervisorProfile(updates, currentToken);
+  const updates = { username: $('newUsername').value.trim(), password: $('newPassword').value };
+  if(!updates.username) return toast('نام کاربری نمی‌تواند خالی باشد','error');
+  google.script.run.withSuccessHandler(() => { if(currentUser){currentUser.username=updates.username;localStorage.setItem('zv_supervisor_user',JSON.stringify(currentUser));} toast('پروفایل بروزرسانی شد','success'); loadProfile(); }).withFailureHandler(e => toast(e.message, 'error')).updateSupervisorProfile(updates, currentToken);
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Enter' && $('loginPage').style.display !== 'none') doLogin(); });
