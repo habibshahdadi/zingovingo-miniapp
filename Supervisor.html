@@ -22,6 +22,7 @@ button,input,select,textarea{font-family:inherit;font-size:13px}
 .login-box input:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
 .login-box .btn{width:100%;padding:13px;margin-top:8px}
 .login-error{background:#fef3f2;color:var(--danger);padding:10px;border-radius:8px;margin-bottom:12px;font-size:13px;display:none}
+.login-progress{display:none;margin-top:12px;text-align:center;color:var(--muted);font-size:12px}.login-progress.show{display:block}.login-spinner{display:inline-block;width:15px;height:15px;vertical-align:middle;margin-left:7px;border:2px solid #e5e9f0;border-top-color:var(--orange);border-radius:50%;animation:zvLoginSpin .7s linear infinite}@keyframes zvLoginSpin{to{transform:rotate(360deg)}}
 .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
 .sidebar{background:var(--navy);color:#fff;padding:0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
 .brand{padding:20px;border-bottom:1px solid var(--navy-light)}
@@ -288,7 +289,7 @@ tbody tr:hover{background:#fafbfe}
     <div id="loginError" class="login-error"></div>
     <div class="field"><label>نام کاربری</label><input id="loginUser" autocomplete="username"></div>
     <div class="field"><label>رمز عبور</label><input id="loginPass" type="password" autocomplete="current-password"></div>
-    <button class="btn btn-primary" onclick="doLogin()">ورود به پنل</button>
+    <button id="loginButton" class="btn btn-primary" onclick="doLogin()">ورود به پنل</button><div id="loginProgress" class="login-progress"><span class="login-spinner"></span>در حال ورود به حساب...</div>
   </div>
 </div>
 
@@ -351,23 +352,34 @@ function closeModal() { $('modal').classList.remove('open'); }
 $('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
 function statusBadge(s) { return '<span class="badge badge-' + (/جدید/.test(s)?'new':/تکمیل/.test(s)?'done':/لغو|مرجوع/.test(s)?'cancel':'progress') + '">' + s + '</span>'; }
 
+function zvSetLoginBusy_(busy) {
+  const b = $('loginButton'), p = $('loginProgress');
+  if (b) { b.disabled = !!busy; b.textContent = busy ? 'در حال ورود...' : 'ورود به پنل'; }
+  if (p) p.classList.toggle('show', !!busy);
+}
+function zvSaveSupervisorSession_(token, user) {
+  try { localStorage.setItem('zv_supervisor_token', token); localStorage.setItem('zv_supervisor_user', JSON.stringify(user)); } catch(e) {}
+  try { sessionStorage.setItem('zv_supervisor_token', token); sessionStorage.setItem('zv_supervisor_user', JSON.stringify(user)); } catch(e) {}
+}
 function doLogin() {
   const u = $('loginUser').value.trim(), p = $('loginPass').value;
   if (!u || !p) { $('loginError').textContent = 'نام کاربری و رمز را وارد کنید'; $('loginError').style.display = 'block'; return; }
   $('loginError').style.display = 'none';
+  zvSetLoginBusy_(true);
   google.script.run.withSuccessHandler(r => {
     if (r && r.success) {
       currentToken = r.token; currentUser = r.user;
-      localStorage.setItem('zv_supervisor_token', r.token);
-      localStorage.setItem('zv_supervisor_user', JSON.stringify(r.user));
+      zvSaveSupervisorSession_(r.token, r.user);
       showApp(r.user);
     } else { $('loginError').textContent = r.message || 'خطا'; $('loginError').style.display = 'block'; }
-  }).withFailureHandler(e => { $('loginError').textContent = e.message; $('loginError').style.display = 'block'; }).supervisorLogin(u, p);
+    zvSetLoginBusy_(false);
+  }).withFailureHandler(e => { zvSetLoginBusy_(false); $('loginError').textContent = e.message; $('loginError').style.display = 'block'; }).supervisorLogin(u, p);
 }
 
 function doLogout() {
   if (currentToken) google.script.run.supervisorLogout(currentToken);
   localStorage.removeItem('zv_supervisor_token'); localStorage.removeItem('zv_supervisor_user');
+  sessionStorage.removeItem('zv_supervisor_token'); sessionStorage.removeItem('zv_supervisor_user');
   location.reload();
 }
 
@@ -405,12 +417,29 @@ function zvUpdateSharedIdentity_(user) {
   if (branchNameEl) branchNameEl.textContent = branchName;
   if (branchIdEl) branchIdEl.textContent = 'شناسه شعبه: ' + branchId;
   if (idEl) idEl.textContent = 'شناسه: ' + personId;
-  if (avatarEl && !user.avatar) avatarEl.textContent = fullName.trim().charAt(0) || '?';
+  if (avatarEl) { if (user.avatar) avatarEl.innerHTML = '<img src="'+zvEsc(zvPhotoDisplayUrl_(user.avatar))+'" alt="تصویر پروفایل">'; else avatarEl.textContent = fullName.trim().charAt(0) || '?'; }
+}
+
+function zvPhotoDisplayUrl_(url) {
+  const value = String(url || '').trim();
+  if (!value) return '';
+  const id = (value.match(/[?&]id=([^&]+)/) || value.match(/\/d\/([^/]+)/));
+  return id ? 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(decodeURIComponent(id[1])) + '&sz=w400' : value;
 }
 
 (function checkSession() {
-  const saved = localStorage.getItem('zv_supervisor_user');
-  if (currentToken && saved) { currentUser = JSON.parse(saved); showApp(currentUser); }
+  let saved = null;
+  try { saved = localStorage.getItem('zv_supervisor_user') || sessionStorage.getItem('zv_supervisor_user'); } catch(e) {}
+  if (!currentToken) { try { currentToken = sessionStorage.getItem('zv_supervisor_token') || null; } catch(e) {} }
+  if (!saved || !currentToken) return;
+  try {
+    currentUser = JSON.parse(saved);
+    showApp(currentUser); // نشست ذخیره‌شده بلافاصله بازیابی می‌شود؛ Refresh باعث خروج ظاهری نمی‌شود.
+    const api = google.script.run.withSuccessHandler(function(r){
+      if (r && r.success && r.user) { currentUser = r.user; zvSaveSupervisorSession_(currentToken, currentUser); showApp(currentUser); }
+    }).withFailureHandler(function(err){ console.warn('Supervisor session restore validation:', err); });
+    api.supervisorValidateSession(currentToken);
+  } catch(e) { console.warn('Supervisor session cache invalid:', e); }
 })();
 
 function zvSetUnreadMessages_(rows){const n=(rows||[]).reduce((sum,t)=>sum+Math.max(0,Number(t.unreadCount)||0),0);const b=$('zvUnreadMessages');if(b){b.textContent=toFa(n);b.hidden=n<=0;}}
@@ -587,7 +616,7 @@ function fetchReports() {
 
 function loadProfile() {
   google.script.run.withSuccessHandler(p => {
-    const photo = p.avatar ? '<img src="'+zvEsc(p.avatar)+'" alt="تصویر پروفایل">' : zvEsc((p.name||'?').trim().charAt(0)||'?');
+    const photo = p.avatar ? '<img src="'+zvEsc(zvPhotoDisplayUrl_(p.avatar))+'" alt="تصویر پروفایل">' : zvEsc((p.name||'?').trim().charAt(0)||'?');
     $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">پروفایل من</h1></div>'+
       '<div class="zv-profile-layout"><div class="card zv-profile-photo-card"><div class="zv-profile-photo-large" id="zvProfilePhoto">'+photo+'</div><h3>'+zvEsc(p.name||'—')+'</h3><div class="zv-muted">'+zvEsc(p.role||'')+' · '+zvEsc(p.workerId||'')+'</div><div class="zv-profile-photo-actions" style="margin-top:16px"><button class="btn btn-primary" type="button" onclick="zvOpenProfilePhoto_()">📷 تغییر تصویر پروفایل</button><small>فرمت JPG، PNG یا WEBP؛ حداکثر ۸ مگابایت</small></div></div>'+
       '<div class="card"><h3 style="margin-bottom:16px;color:var(--navy)">اطلاعات حساب</h3><div class="detail-grid"><div class="detail-item"><div class="detail-label">شناسه یکتا</div><div class="detail-value">'+zvEsc(p.workerId||'—')+'</div></div><div class="detail-item"><div class="detail-label">نام و نام خانوادگی</div><div class="detail-value">'+zvEsc(p.name||'—')+'</div></div><div class="detail-item"><div class="detail-label">نقش</div><div class="detail-value">'+zvEsc(p.role||'—')+'</div></div><div class="detail-item"><div class="detail-label">شناسه شعبه</div><div class="detail-value">'+zvEsc(p.branchId||'—')+'</div></div><div class="detail-item"><div class="detail-label">شناسه گروه</div><div class="detail-value">'+zvEsc(p.groupId||'—')+'</div></div></div><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><h3 style="margin-bottom:12px;color:var(--navy)">ویرایش اطلاعات ورود</h3><div class="zv-profile-form"><div class="field"><label>نام کاربری</label><input id="newUsername" value="'+zvEsc(p.username||'')+'"></div><div class="field"><label>رمز عبور جدید</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="خالی = بدون تغییر"></div></div><button class="btn btn-primary" style="margin-top:16px" onclick="updateProfile()">ذخیره تغییرات</button></div></div>';
@@ -595,7 +624,7 @@ function loadProfile() {
 }
 function zvOpenProfilePhoto_(){
   if(!window.ZVPhoto||!window.ZVPhoto.__v2){toast('ویرایشگر تصویر بارگذاری نشده است؛ صفحه را تازه‌سازی کنید.','error');return;}
-  window.ZVPhoto.open({token:currentToken,endpoint:'uploadSupervisorProfilePhotoV2',onDone:function(url){if(currentUser)currentUser.avatar=url;const av=$('userAvatar');if(av)av.innerHTML='<img src="'+zvEsc(url)+'" alt="">';loadProfile();}});
+  window.ZVPhoto.open({token:currentToken,endpoint:'uploadSupervisorProfilePhotoV2',onDone:function(url){if(currentUser){currentUser.avatar=url;zvSaveSupervisorSession_(currentToken,currentUser);}zvUpdateSharedIdentity_(currentUser);loadProfile();}});
 }
 function updateProfile() {
   const updates = { username: $('newUsername').value.trim(), password: $('newPassword').value };
