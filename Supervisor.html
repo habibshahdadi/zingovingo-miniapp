@@ -439,43 +439,23 @@ function zvPhotoDisplayUrl_(url) {
   return id ? 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(decodeURIComponent(id[1])) + '&sz=w400' : value;
 }
 
-function zvRestoreSupervisorSession_() {
-  let saved = null, token = null;
+// بازیابی نشست دقیقاً مطابق الگوی پنل متخصص؛ بدون فراخوانی API اعتبارسنجی
+// چون نسخه Backend نصب‌شده تابع supervisorValidateSession ندارد.
+(function checkSession() {
+  let saved = null;
   try {
-    token = localStorage.getItem('zv_supervisor_token') || sessionStorage.getItem('zv_supervisor_token') || zvCookieGet_('zv_supervisor_token') || null;
-    saved = localStorage.getItem('zv_supervisor_user') || sessionStorage.getItem('zv_supervisor_user') || zvCookieGet_('zv_supervisor_user') || null;
-  } catch (e) { console.warn('Supervisor storage read:', e); }
-  if (token) currentToken = token;
-  if (!currentToken) return;
-  if (saved) {
-    try { currentUser = JSON.parse(saved); if (currentUser) showApp(currentUser); }
-    catch (e) { console.warn('Supervisor cached user parse:', e); }
-  }
-  zvSetLoginBusy_(true);
-  const progress = $('loginProgress');
-  if (progress) progress.innerHTML = '<span class="login-spinner"></span>در حال بازیابی نشست...';
-  google.script.run.withSuccessHandler(function(r) {
-    zvSetLoginBusy_(false);
-    if (r && r.success && r.user) {
-      currentUser = r.user;
-      zvSaveSupervisorSession_(currentToken, currentUser);
-      if ($('loginPage').style.display !== 'none') showApp(currentUser);
-      else { $('userName').textContent = currentUser.name || currentUser.username || '—'; zvUpdateSharedIdentity_(currentUser); }
-    } else {
-      // پاسخ نامعتبر/نشست منقضی: فقط در صورت تأیید صریح سرور نشست را پاک کن.
-      const message = (r && r.message) || 'نشست معتبر نیست؛ لطفاً دوباره وارد شوید.';
-      if (currentUser) { showApp(currentUser); toast(message, 'error'); }
-      else { $('loginPage').style.display = 'flex'; $('loginError').textContent = message; $('loginError').style.display = 'block'; }
+    currentToken = localStorage.getItem('zv_supervisor_token') || null;
+    saved = localStorage.getItem('zv_supervisor_user');
+  } catch (e) { console.warn('Supervisor session read failed:', e); }
+  if (currentToken && saved) {
+    try {
+      currentUser = JSON.parse(saved);
+      if (currentUser) showApp(currentUser);
+    } catch (e) {
+      console.warn('Supervisor saved user parse failed:', e);
     }
-  }).withFailureHandler(function(err) {
-    zvSetLoginBusy_(false);
-    console.warn('Supervisor session restore validation:', err);
-    if (currentUser) showApp(currentUser);
-    else { $('loginPage').style.display = 'flex'; $('loginError').textContent = 'بازیابی نشست ناموفق بود؛ اتصال را بررسی و دوباره تلاش کنید.'; $('loginError').style.display = 'block'; }
-  }).supervisorValidateSession(currentToken);
-}
-
-(function checkSession() { zvRestoreSupervisorSession_(); })();
+  }
+})();
 
 function zvSetUnreadMessages_(rows){const n=(rows||[]).reduce((sum,t)=>sum+Math.max(0,Number(t.unreadCount)||0),0);const b=$('zvUnreadMessages');if(b){b.textContent=toFa(n);b.hidden=n<=0;}}
 function zvRefreshUnreadMessages_(){const api=google.script.run.withSuccessHandler(zvSetUnreadMessages_).withFailureHandler(e=>console.warn('Unread messages count:',e));api.supervisorGetConversations(currentToken);}
@@ -651,20 +631,38 @@ function replySupervisorThread(id){
  if(!body)return toast('متن پاسخ را وارد کنید','error');
  if(btn){btn.disabled=true;btn.textContent='در حال ارسال…';}
  google.script.run.withSuccessHandler(function(result){
-   if(result && result.success===false){if(btn){btn.disabled=false;btn.textContent='ارسال پاسخ';}toast(result.message||'ارسال پیام تأیید نشد','error');return;}
+   if(result && result.success===false){
+     if(btn){btn.disabled=false;btn.textContent='ارسال پاسخ';}
+     toast(result.message||'ارسال پیام تأیید نشد','error'); return;
+   }
+   // پیام پس از تأیید سرور فوراً در گفتگو نشان داده می‌شود؛ منتظر refresh نمی‌مانیم.
    toast('پیام با موفقیت ارسال شد','success');
-   // پاک‌سازی ورودی و واکشی مجدد همان گفتگو؛ فهرست پس از دریافت جزئیات تازه می‌شود.
-   if(el)el.value='';
+   if(el) el.value='';
+   const box=$('supervisorMessages');
+   if(box){
+     const item=document.createElement('div');
+     item.className='detail-item';
+     item.style.cssText='margin:8px 0;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff';
+     const who=document.createElement('b'); who.textContent=(currentUser&&currentUser.username)||'شما';
+     const msg=document.createElement('div'); msg.style.whiteSpace='pre-wrap'; msg.style.margin='6px 0'; msg.textContent=body;
+     const stamp=document.createElement('small'); stamp.textContent='هم‌اکنون';
+     item.appendChild(who); item.appendChild(msg); item.appendChild(stamp); box.appendChild(item);
+     item.scrollIntoView({behavior:'smooth',block:'nearest'});
+   }
+   if(btn){btn.disabled=false;btn.textContent='ارسال پاسخ';}
+   // همگام‌سازی قطعی تاریخچه و فهرست در پس‌زمینه
    google.script.run.withSuccessHandler(function(d){
      zvRenderSupervisorThread_(id,d);
      loadSupervisorMessages();
      zvRefreshUnreadMessages_();
    }).withFailureHandler(function(e){
-     toast('پیام ثبت شد؛ دریافت تاریخچه ناموفق بود. دکمه بروزرسانی را بزنید.','error');
-     if(btn){btn.disabled=false;btn.textContent='ارسال پاسخ';}
+     console.warn('Supervisor conversation refresh failed:',e);
+     toast('پیام ارسال شد؛ بروزرسانی تاریخچه با تأخیر مواجه شد.','info');
    }).supervisorGetConversation(id,currentToken);
- }).withFailureHandler(function(e){if(btn){btn.disabled=false;btn.textContent='ارسال پاسخ';}toast(e.message||'ارسال پیام ناموفق بود','error');})
- .supervisorCreateConversationReply(id,body,currentToken);
+ }).withFailureHandler(function(e){
+   if(btn){btn.disabled=false;btn.textContent='ارسال پاسخ';}
+   toast((e&&e.message)||'ارسال پیام ناموفق بود','error');
+ }).supervisorCreateConversationReply(id,body,currentToken);
 }
 
 function changeSupervisorThreadStatus(id,status){
