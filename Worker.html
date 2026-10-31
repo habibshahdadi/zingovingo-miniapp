@@ -254,6 +254,17 @@ tbody tr:hover{background:#fafbfe}
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 
+
+/* ZV profile + unread conversation indicators */
+.zv-unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;margin-right:auto;border-radius:20px;background:#d92d3a;color:#fff;font-size:10px;font-weight:900;line-height:1;box-shadow:0 0 0 2px var(--zv-navy,#0B1736)}
+.zv-unread-badge[hidden]{display:none!important}
+.zv-thread-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border:1px solid var(--line);border-radius:12px;margin:9px 0;background:#fff}
+.zv-thread-meta{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:6px 0;font-size:11px;color:var(--muted)}
+.zv-thread-state{display:inline-flex;padding:4px 8px;border-radius:20px;font-size:10px;font-weight:800}
+.zv-thread-state.unread{background:#ffebed;color:#c62836}.zv-thread-state.read{background:#e8f7f0;color:#13835d}.zv-thread-state.open{background:#edf2ff;color:#4567bb}.zv-thread-state.closed{background:#f0f1f4;color:#687386}
+.zv-profile-layout{display:grid;grid-template-columns:minmax(220px,280px) 1fr;gap:22px;align-items:start}
+.zv-profile-photo-card{text-align:center;padding:22px}.zv-profile-photo-large{width:136px;height:136px;margin:0 auto 14px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#fff0e7;color:#bd4a0d;font-size:42px;font-weight:900;border:4px solid #fff;box-shadow:0 0 0 1px var(--line),0 8px 24px #0b17361a}.zv-profile-photo-large img{width:100%;height:100%;object-fit:cover;display:block}.zv-profile-photo-actions{display:flex;flex-direction:column;gap:8px}.zv-profile-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.zv-profile-form .field{min-width:0}.zv-profile-form .full{grid-column:1/-1}
+@media(max-width:700px){.zv-profile-layout{grid-template-columns:1fr}.zv-profile-form{grid-template-columns:1fr}.zv-profile-form .full{grid-column:auto}.zv-thread-row{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
@@ -364,7 +375,7 @@ function showApp(user) {
   const av = $('userAvatar');
   if (user.avatar) av.innerHTML = '<img src="' + user.avatar + '">'; else av.textContent = user.name ? user.name.charAt(0) : '?';
   
-  $('navMenu').innerHTML = MENU_ITEMS.map(i => '<div class="nav-item" data-page="' + i.id + '">' + i.label + '</div>').join('');
+  $('navMenu').innerHTML = MENU_ITEMS.map(i => '<div class="nav-item" data-page="' + i.id + '">' + i.label + (i.id === 'messages' ? '<span class="zv-unread-badge" id="zvUnreadMessages" hidden>0</span>' : '') + '</div>').join('');
   $('navMenu').querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', () => {
       $('navMenu').querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -374,6 +385,7 @@ function showApp(user) {
     });
   });
   loadPage('dashboard');
+  zvRefreshUnreadMessages_();
 }
 
 
@@ -397,10 +409,14 @@ function zvUpdateSharedIdentity_(user) {
   if (currentToken && saved) { currentUser = JSON.parse(saved); showApp(currentUser); }
 })();
 
+function zvSetUnreadMessages_(rows){const n=(rows||[]).reduce((sum,t)=>sum+Math.max(0,Number(t.unreadCount)||0),0);const b=$('zvUnreadMessages');if(b){b.textContent=toFa(n);b.hidden=n<=0;}}
+function zvRefreshUnreadMessages_(){const api=google.script.run.withSuccessHandler(zvSetUnreadMessages_).withFailureHandler(e=>console.warn('Unread messages count:',e));api.workerGetConversations(currentToken);}
 function loadPage(page) {
+  const branchChip = $('zvBranchChip'); if (branchChip) branchChip.style.display = page === 'dashboard' ? 'flex' : 'none';
   $('pageContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   const loaders = { dashboard: loadDashboard, cards: loadCards, schedule: loadWorkerSchedule, messages: loadWorkerMessages, reports: loadReports, profile: loadProfile };
   (loaders[page] || loadDashboard)();
+  if (page !== 'messages') zvRefreshUnreadMessages_();
 }
 
 function loadDashboard() {
@@ -463,8 +479,8 @@ function loadWorkerSchedule(){
 }
 function loadWorkerMessages(){
   $('pageContent').innerHTML='<div class="page-header"><h1 class="page-title">ارتباط با سرپرست</h1><button class="btn btn-secondary" onclick="loadWorkerMessages()">بروزرسانی</button></div><div class="card"><div id="workerThreads">در حال دریافت…</div></div><div id="workerThreadDetail"></div>';
-  google.script.run.withSuccessHandler(rows=>{const h=$('workerThreads');if(!rows.length){h.textContent='مکاتبه‌ای ثبت نشده است. از کارت‌های کاری خود می‌توانید پیام جدید ارسال کنید.';return;}
-  h.innerHTML=rows.map(t=>'<div class="detail-item" style="margin:8px 0;cursor:pointer" onclick="openWorkerThread(\''+zvEsc(t.threadId)+'\')"><b>'+zvEsc(t.subject)+'</b><div>کارت '+zvEsc(t.cardId)+' | خوانده‌نشده: '+toFa(t.unreadCount)+'</div><small>'+zvEsc(t.preview)+'</small></div>').join('');})
+  google.script.run.withSuccessHandler(rows=>{zvSetUnreadMessages_(rows);const h=$('workerThreads');if(!rows.length){h.textContent='مکاتبه‌ای ثبت نشده است. از کارت‌های کاری خود می‌توانید پیام جدید ارسال کنید.';return;}
+  h.innerHTML=rows.map(t=>'<div class="zv-thread-row"><div><b>'+zvEsc(t.subject)+'</b><div class="zv-thread-meta"><span>کارت '+zvEsc(t.cardId)+'</span><span class="zv-thread-state '+(Number(t.unreadCount)>0?'unread':'read')+'">'+(Number(t.unreadCount)>0?'● خوانده‌نشده':'✓ خوانده‌شده')+'</span><span class="zv-thread-state '+(String(t.status).toUpperCase()==='CLOSED'?'closed':'open')+'">'+(String(t.status).toUpperCase()==='CLOSED'?'بسته':'باز')+'</span><span>پیام جدید: '+toFa(t.unreadCount||0)+'</span></div><small>'+zvEsc(t.preview||'')+'</small></div><button class="btn btn-primary btn-sm" onclick="openWorkerThread(\''+zvEsc(t.threadId)+'\')">نمایش پیام</button></div>').join('');})
   .withFailureHandler(e=>{$('workerThreads').textContent=e.message;}).workerGetConversations(currentToken);
 }
 function startWorkerConversation(cardId){
@@ -472,8 +488,8 @@ function startWorkerConversation(cardId){
 }
 function sendWorkerConversation(cardId){const b=$('msgBody').value.trim();if(!b)return toast('متن پیام را وارد کنید','error');
  google.script.run.withSuccessHandler(()=>{closeModal();toast('پیام ارسال شد','success');loadWorkerMessages();}).withFailureHandler(e=>toast(e.message,'error')).workerCreateConversation(cardId,$('msgSubject').value,b,currentToken);}
-function openWorkerThread(id){google.script.run.withSuccessHandler(d=>{const h=$('workerThreadDetail');h.innerHTML='<div class="card"><h3>'+zvEsc(d.thread.subject)+'</h3><div id="workerMessages"></div><textarea id="workerReply" maxlength="4000" placeholder="پاسخ…"></textarea><button class="btn btn-primary" onclick="replyWorkerThread(\''+zvEsc(id)+'\')">ارسال پاسخ</button></div>';
- $('workerMessages').innerHTML=d.messages.map(m=>'<div class="detail-item" style="margin:8px 0"><b>'+zvEsc(m.senderUsername)+'</b><div style="white-space:pre-wrap">'+zvEsc(m.body)+'</div><small>'+zvEsc(m.createdAt)+'</small></div>').join('');}).withFailureHandler(e=>toast(e.message,'error')).workerGetConversation(id,currentToken);}
+function openWorkerThread(id){google.script.run.withSuccessHandler(d=>{const h=$('workerThreadDetail');h.innerHTML='<div class="card"><h3>'+zvEsc(d.thread.subject)+'</h3><div class="zv-thread-meta"><span class="zv-thread-state '+(String(d.thread.status).toUpperCase()==='CLOSED'?'closed':'open')+'">'+(String(d.thread.status).toUpperCase()==='CLOSED'?'بسته':'باز')+'</span></div><div id="workerMessages"></div><textarea id="workerReply" maxlength="4000" placeholder="پاسخ…"></textarea><button class="btn btn-primary" onclick="replyWorkerThread(\''+zvEsc(id)+'\')">ارسال پاسخ</button></div>';
+ $('workerMessages').innerHTML=d.messages.map(m=>'<div class="detail-item" style="margin:8px 0"><b>'+zvEsc(m.senderUsername)+'</b><div style="white-space:pre-wrap">'+zvEsc(m.body)+'</div><small>'+zvEsc(m.createdAt)+'</small></div>').join('');zvRefreshUnreadMessages_();}).withFailureHandler(e=>toast(e.message,'error')).workerGetConversation(id,currentToken);}
 function replyWorkerThread(id){const b=$('workerReply').value.trim();if(!b)return toast('متن پاسخ را وارد کنید','error');google.script.run.withSuccessHandler(()=>openWorkerThread(id)).withFailureHandler(e=>toast(e.message,'error')).workerReplyConversation(id,b,currentToken);}
 function loadReports() {
   $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">گزارشات من</h1></div>' +
@@ -490,26 +506,20 @@ function fetchReports() {
 
 function loadProfile() {
   google.script.run.withSuccessHandler(p => {
-    $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">پروفایل من</h1></div>' +
-      '<div class="card"><div class="employee-profile"><div class="employee-avatar-large">' + (p.avatar ? '<img src="'+p.avatar+'">' : (p.name||'?').charAt(0)) + '</div>' +
-      '<div class="employee-details">' +
-      '<div class="detail-item"><div class="detail-label">شناسه یکتا</div><div class="detail-value">' + p.workerId + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">نام</div><div class="detail-value">' + p.name + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">نام کاربری</div><div class="detail-value">' + p.username + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">نقش</div><div class="detail-value">' + p.role + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">کد شعبه</div><div class="detail-value">' + p.branchId + '</div></div>' +
-      '<div class="detail-item"><div class="detail-label">کد گروه</div><div class="detail-value">' + p.groupId + '</div></div>' +
-      '</div></div></div>' +
-      '<div class="card" style="margin-top:16px"><h3 style="margin-bottom:12px;color:var(--navy)">ویرایش پروفایل</h3>' +
-      '<div class="form-grid"><div class="field"><label>نام کاربری جدید</label><input id="newUsername" value="' + p.username + '"></div>' +
-      '<div class="field"><label>رمز عبور جدید</label><input id="newPassword" type="password" placeholder="خالی = بدون تغییر"></div>' +
-      '<div class="field"><label>عکس پروفایل (URL)</label><input id="newAvatar" value="' + (p.avatar||'') + '"></div></div>' +
-      '<button class="btn btn-primary" style="margin-top:10px" onclick="updateProfile()">بروزرسانی</button></div>';
-  }).getWorkerProfile(currentToken);
+    const photo = p.avatar ? '<img src="'+zvEsc(p.avatar)+'" alt="تصویر پروفایل">' : zvEsc((p.name||'?').trim().charAt(0)||'?');
+    $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">پروفایل من</h1></div>'+
+      '<div class="zv-profile-layout"><div class="card zv-profile-photo-card"><div class="zv-profile-photo-large" id="zvProfilePhoto">'+photo+'</div><h3>'+zvEsc(p.name||'—')+'</h3><div class="zv-muted">'+zvEsc(p.role||'')+' · '+zvEsc(p.workerId||'')+'</div><div class="zv-profile-photo-actions" style="margin-top:16px"><button class="btn btn-primary" type="button" onclick="zvOpenProfilePhoto_()">📷 تغییر تصویر پروفایل</button><small>فرمت JPG، PNG یا WEBP؛ حداکثر ۸ مگابایت</small></div></div>'+
+      '<div class="card"><h3 style="margin-bottom:16px;color:var(--navy)">اطلاعات حساب</h3><div class="detail-grid"><div class="detail-item"><div class="detail-label">شناسه یکتا</div><div class="detail-value">'+zvEsc(p.workerId||'—')+'</div></div><div class="detail-item"><div class="detail-label">نام و نام خانوادگی</div><div class="detail-value">'+zvEsc(p.name||'—')+'</div></div><div class="detail-item"><div class="detail-label">نقش</div><div class="detail-value">'+zvEsc(p.role||'—')+'</div></div><div class="detail-item"><div class="detail-label">شناسه شعبه</div><div class="detail-value">'+zvEsc(p.branchId||'—')+'</div></div><div class="detail-item"><div class="detail-label">شناسه گروه</div><div class="detail-value">'+zvEsc(p.groupId||'—')+'</div></div></div><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><h3 style="margin-bottom:12px;color:var(--navy)">ویرایش اطلاعات ورود</h3><div class="zv-profile-form"><div class="field"><label>نام کاربری</label><input id="newUsername" value="'+zvEsc(p.username||'')+'"></div><div class="field"><label>رمز عبور جدید</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="خالی = بدون تغییر"></div></div><button class="btn btn-primary" style="margin-top:16px" onclick="updateProfile()">ذخیره تغییرات</button></div></div>';
+  }).withFailureHandler(e=>toast(e.message||'دریافت پروفایل ناموفق بود','error')).getWorkerProfile(currentToken);
+}
+function zvOpenProfilePhoto_(){
+  if(!window.ZVPhoto||!window.ZVPhoto.__v2){toast('ویرایشگر تصویر بارگذاری نشده است؛ صفحه را تازه‌سازی کنید.','error');return;}
+  window.ZVPhoto.open({token:currentToken,endpoint:'uploadWorkerProfilePhotoV2',onDone:function(url){if(currentUser)currentUser.avatar=url;const av=$('userAvatar');if(av)av.innerHTML='<img src="'+zvEsc(url)+'" alt="">';loadProfile();}});
 }
 function updateProfile() {
-  const updates = { username: $('newUsername').value, password: $('newPassword').value, avatar: $('newAvatar').value };
-  google.script.run.withSuccessHandler(() => { toast('پروفایل بروزرسانی شد', 'success'); loadProfile(); }).withFailureHandler(e => toast(e.message, 'error')).updateWorkerProfile(updates, currentToken);
+  const updates = { username: $('newUsername').value.trim(), password: $('newPassword').value };
+  if(!updates.username) return toast('نام کاربری نمی‌تواند خالی باشد','error');
+  google.script.run.withSuccessHandler(() => { if(currentUser){currentUser.username=updates.username;localStorage.setItem('zv_worker_user',JSON.stringify(currentUser));} toast('پروفایل بروزرسانی شد','success'); loadProfile(); }).withFailureHandler(e => toast(e.message, 'error')).updateWorkerProfile(updates, currentToken);
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Enter' && $('loginPage').style.display !== 'none') doLogin(); });
