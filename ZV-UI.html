@@ -602,14 +602,7 @@ button,[role=button],a{ -webkit-tap-highlight-color:transparent }
 
 <script>
 /* ==================== توابع کمکی سراسری ==================== */
-const $ = id => document.getElementById(id);
-const money = n => new Intl.NumberFormat('en-US').format(Math.round(Number(n)||0)) + ' ریال';
-const toFa = n => new Intl.NumberFormat('fa-IR').format(Number(n)||0);
-const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-let currentToken = '';
-let currentUser = null;
-let currentPage = 'dashboard';
 
 function toast(msg, type='info') {
   const t = $('toast');
