@@ -1,5 +1,6 @@
-<!-- ZingoVingo Shared UI System V1 | Shared visual layer only; panel layout stays in each panel -->
+<!-- ZingoVingo Shared UI System V1.1 | Shared visual layer -->
 <style>
+/* ==================== استایل‌های موجود V1 (بدون تغییر) ==================== */
 :root{
  --zv-navy:#0B1736;--zv-navy-2:#172747;--zv-orange:#FF6B1A;--zv-orange-hover:#e95b10;
  --zv-white:#fff;--zv-bg:#f3f5f9;--zv-surface:#fff;--zv-ink:#17213b;--zv-muted:#74809a;
@@ -37,6 +38,694 @@ button,[role=button],a{ -webkit-tap-highlight-color:transparent }
 .zv-toast{position:fixed;left:18px;bottom:18px;z-index:150;padding:12px 16px;border-radius:11px;background:var(--zv-navy);color:#fff;box-shadow:var(--zv-shadow);font-size:12px;opacity:0;transform:translateY(8px);pointer-events:none;transition:all var(--zv-transition)}.zv-toast.show{opacity:1;transform:translateY(0)}
 .zv-loading{display:flex;align-items:center;justify-content:center;gap:10px;color:var(--zv-muted);padding:25px}.zv-spinner{width:22px;height:22px;border:3px solid #e7eaf1;border-top-color:var(--zv-orange);border-radius:50%;animation:zv-spin .8s linear infinite}@keyframes zv-spin{to{transform:rotate(360deg)}}
 .zv-profile-head{display:flex;align-items:center;gap:16px}.zv-profile-avatar{width:112px;height:112px;flex:0 0 112px;border-radius:50%;overflow:hidden;background:#fff0e7;color:#bd4a0d;display:grid;place-items:center;font-size:36px;font-weight:900;cursor:pointer;border:3px solid #fff;box-shadow:0 0 0 1px var(--zv-line);transition:box-shadow var(--zv-transition),transform var(--zv-transition)}.zv-profile-avatar:hover{box-shadow:0 0 0 3px rgba(255,107,26,.35);transform:scale(1.02)}.zv-profile-avatar img{width:100%;height:100%;object-fit:cover}
-@media(max-width:700px){.zv-card{padding:14px}.zv-stat{padding:14px}.zv-stat-value{font-size:21px}.zv-profile-head{align-items:flex-start;flex-direction:column}.zv-profile-avatar{width:92px;height:92px;flex-basis:92px}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* ==================== افزودنی‌های جدید (فقط برای ساختار صفحه و لوگو) ==================== */
+
+/* ساختار اصلی اپ */
+.app {
+  display: grid;
+  grid-template-columns: 255px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+/* سایدبار */
+.sidebar {
+  width: 255px;
+  background: var(--zv-navy);
+  padding: 0;
+  position: sticky;
+  right: auto;
+  top: 0;
+  height: 100vh;
+  min-height: 100vh;
+  box-shadow: 4px 0 22px rgba(11,23,54,.06);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.brand {
+  padding: 22px 18px 24px;
+  border-bottom: 1px solid #ffffff20;
+  text-align: right;
+  min-height: 112px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* لوگوی برند - متناسب با لوگوی 1400x350 */
+.brand-logo {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  max-height: 60px;
+  object-fit: contain;
+  object-position: center;
+  margin: 0 auto 8px;
+  display: block;
+}
+
+.brand h2 {
+  font-size: 20px;
+  line-height: 1.3;
+  color: #fff;
+  letter-spacing: -.3px;
+}
+
+.brand h2 span { color: var(--zv-orange); }
+.brand small { font-size: 10px; color: #b9c2d6; }
+
+.nav-menu {
+  padding: 12px 12px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.nav-section-label {
+  font-size: 10px;
+  color: #8995b0;
+  margin: 18px 10px 7px;
+  letter-spacing: .1px;
+}
+
+.sidebar-footer {
+  padding: 14px 16px;
+  border-top: 1px solid #ffffff20;
+  background: #ffffff09;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: #ffeadf;
+  color: #bd4a0d;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.user-name { font-size: 12px; color: #fff; }
+.user-role { font-size: 10px; color: #b9c2d6; }
+
+.badge-role {
+  background: #ffffff17;
+  color: #dbe3f2;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+}
+
+.logout-btn {
+  border: 1px solid #ffffff25;
+  border-radius: 9px;
+  color: #d4dced;
+  padding: 9px 12px;
+  font-size: 11px;
+  transition: .2s;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+}
+
+.logout-btn:hover {
+  background: #ffffff17;
+  color: #fff;
+  border-color: #ffffff40;
+}
+
+/* محتوای اصلی */
+.main {
+  padding: 24px 30px 42px;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.main-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 23px;
+  min-height: 48px;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.topbar-crumb {
+  font-size: 11px;
+  color: var(--zv-muted);
+  margin-bottom: 2px;
+}
+
+.topbar-title {
+  font-size: 21px;
+  font-weight: 900;
+  color: var(--zv-navy);
+  line-height: 1.45;
+}
+
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid var(--zv-line);
+  padding: 7px 12px;
+  border-radius: 12px;
+  box-shadow: 0 5px 18px rgba(11,23,54,.035);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.menu-toggle {
+  display: none;
+  background: #fff;
+  color: var(--zv-navy);
+  border: 1px solid var(--zv-line);
+  padding: 9px 11px;
+  border-radius: 9px;
+  box-shadow: 0 4px 12px rgba(11,23,54,.05);
+  cursor: pointer;
+}
+
+/* هدر صفحه */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 17px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.page-title {
+  font-size: 18px;
+  color: var(--zv-navy);
+  font-weight: 900;
+}
+
+/* آمار - گرید ۳ ستونه */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+/* Chip شعبه */
+.branch-chip {
+  min-width: 190px;
+  justify-content: flex-start;
+  border: 1px solid var(--zv-line);
+  background: #fff;
+  border-radius: 13px;
+  padding: 8px 12px;
+  box-shadow: var(--zv-shadow);
+}
+
+.branch-chip-icon {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #fff0e7;
+  color: var(--zv-orange);
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.branch-chip .user-role { display: block !important; font-size: 10px; color: var(--zv-muted); }
+
+/* فرم‌ها */
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.form-grid .full { grid-column: 1 / -1; }
+
+/* مودال */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--zv-line);
+}
+
+.modal-header h2 { font-size: 16px; color: var(--zv-navy); }
+
+.modal-close {
+  background: #eef1f7;
+  border: 0;
+  color: var(--zv-navy);
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: .2s;
+}
+
+.modal-close:hover { background: #f1f3f7; }
+
+.modal-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--zv-line);
+}
+
+/* بنر خوش‌آمدگویی */
+.welcome-banner {
+  background: linear-gradient(115deg, #0B1736, #203968);
+  color: #fff;
+  border-radius: 18px;
+  padding: 22px 25px;
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  overflow: hidden;
+  position: relative;
+}
+
+.welcome-banner h2 { font-size: 17px; margin: 0 0 7px; color: #fff; }
+.welcome-banner p { font-size: 11px; color: #d2d9e8; margin: 0; line-height: 1.9; }
+.welcome-banner .welcome-icon { font-size: 48px; opacity: .8; padding: 0 10px; }
+
+/* پروفایل */
+.zv-profile-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.zv-profile-photo-card { text-align: center; padding: 22px; }
+
+.zv-profile-photo-large {
+  width: 136px;
+  height: 136px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #fff0e7;
+  color: #bd4a0d;
+  font-size: 42px;
+  font-weight: 900;
+  border: 4px solid #fff;
+  box-shadow: 0 0 0 1px var(--zv-line), 0 8px 24px #0b17361a;
+  cursor: pointer;
+  transition: transform var(--zv-transition), box-shadow var(--zv-transition);
+}
+
+.zv-profile-photo-large:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 0 3px rgba(255,107,26,.35);
+}
+
+.zv-profile-photo-large img { width: 100%; height: 100%; object-fit: cover; }
+
+.detail-item {
+  background: #f8f9fc;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.detail-label { font-size: 11px; color: var(--zv-muted); margin-bottom: 4px; }
+.detail-value { font-weight: 700; color: var(--zv-navy); }
+
+/* صفحه لاگین */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--zv-navy) 0%, #1a2a4d 100%);
+}
+
+.login-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px;
+  width: min(420px, 92%);
+  box-shadow: 0 20px 60px #0003;
+}
+
+.login-box h1 {
+  color: var(--zv-navy);
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: 28px;
+}
+
+.login-box h1 span { color: var(--zv-orange); }
+
+.login-box .subtitle {
+  text-align: center;
+  color: var(--zv-muted);
+  margin-bottom: 24px;
+  font-size: 13px;
+}
+
+.login-box .field { margin-bottom: 14px; }
+
+.login-box label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--zv-line);
+  border-radius: 10px;
+  outline: none;
+}
+
+.login-box input:focus {
+  border-color: var(--zv-orange);
+  box-shadow: 0 0 0 3px #ff6b1a1c;
+}
+
+.login-box .btn { width: 100%; padding: 13px; margin-top: 8px; }
+
+.login-error {
+  background: #fef3f2;
+  color: var(--zv-red);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  display: none;
+}
+
+.login-logo {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  max-height: 80px;
+  object-fit: contain;
+  margin: 0 auto 14px;
+}
+
+/* منوی موبایل */
+.menu-backdrop {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .menu-backdrop.show {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: #07112770;
+    z-index: 40;
+  }
+  
+  .app { grid-template-columns: 1fr; }
+  
+  .sidebar {
+    position: fixed;
+    right: -280px;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    width: 270px;
+    min-height: 0;
+    z-index: 50;
+    transition: right .28s;
+    box-shadow: none;
+  }
+  
+  .sidebar.open {
+    right: 0;
+    box-shadow: -12px 0 35px rgba(0,0,0,.16);
+  }
+  
+  .menu-toggle { display: inline-flex; align-items: center; gap: 7px; }
+  
+  .main { padding: 17px 18px 35px; }
+  .main-topbar { margin-bottom: 18px; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .main { padding: 14px; }
+  .topbar-title { font-size: 17px; }
+  .topbar-user { padding: 6px 8px; font-size: 10px; }
+  .topbar-user .user-role { display: none; }
+  .zv-profile-layout { grid-template-columns: 1fr; }
+  .zv-profile-photo-large { width: 92px; height: 92px; }
+  .branch-chip { min-width: 0; max-width: 180px; padding: 6px 8px; }
+  .branch-chip .user-role { font-size: 9px; }
+}
+
+@media (max-width: 390px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .topbar-user { max-width: 145px; overflow: hidden; }
+  .topbar-user > div:last-child { overflow: hidden; text-overflow: ellipsis; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
 </style>
+
+<!-- فavicon -->
+<link rel="icon" type="image/png" href="favicon.png">
+
+<!-- ساختار HTML پایه (اختیاری) -->
+<div id="loginPage" class="login-page" style="display:none">
+  <div class="login-box">
+    <img id="loginLogo" class="login-logo" alt="ZingoVingo" src="LOGO.png">
+    <h1>Zingo<span>Vingo</span></h1>
+    <div class="subtitle" id="loginSubtitle">پنل کاربری</div>
+    <div id="loginError" class="login-error"></div>
+    <div class="field"><label>نام کاربری</label><input id="loginUser" autocomplete="username"></div>
+    <div class="field"><label>رمز عبور</label><input id="loginPass" type="password" autocomplete="current-password"></div>
+    <button class="btn btn-primary zv-btn zv-btn-primary" onclick="doLogin()">ورود به پنل</button>
+  </div>
+</div>
+
+<div id="appContainer" class="app" style="display:none">
+  <aside class="sidebar zv-sidebar" id="sidebar">
+    <div class="brand">
+      <img id="brandLogo" class="brand-logo" alt="ZingoVingo" src="LOGO.png">
+      <h2>Zingo<span>Vingo</span></h2>
+      <small id="brandSubtitle">پنل کاربری</small>
+    </div>
+    <nav class="nav-menu" id="navMenu"></nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar zv-profile-avatar" id="userAvatar">?</div>
+        <div>
+          <div class="user-name" id="userName">—</div>
+          <div class="user-role" id="userRole">—</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">🚪 خروج</button>
+    </div>
+  </aside>
+  <div id="menuBackdrop" class="menu-backdrop" onclick="closeMobileMenu()"></div>
+  <main class="main">
+    <header class="main-topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMobileMenu()">☰ منو</button>
+        <div>
+          <div class="topbar-crumb">ZingoVingo / <span id="topbarCrumb">پنل</span></div>
+          <div class="topbar-title" id="topbarPageTitle">داشبورد</div>
+        </div>
+      </div>
+      <div class="topbar-user branch-chip" id="branchChip">
+        <div class="branch-chip-icon"></div>
+        <div>
+          <b id="topbarBranchName">شعبه</b>
+          <div class="user-role" id="topbarBranchId">شناسه شعبه: —</div>
+        </div>
+      </div>
+    </header>
+    <div id="pageContent">
+      <div class="loading zv-loading"><div class="spinner zv-spinner"></div><p>در حال بارگذاری…</p></div>
+    </div>
+  </main>
+</div>
+
+<div id="toast" class="toast zv-toast"></div>
+<div id="modal" class="modal zv-modal-backdrop"><div class="modal-box zv-modal" id="modalBox"></div></div>
+
+<script>
+/* ==================== توابع کمکی سراسری ==================== */
+const $ = id => document.getElementById(id);
+const money = n => new Intl.NumberFormat('en-US').format(Math.round(Number(n)||0)) + ' ریال';
+const toFa = n => new Intl.NumberFormat('fa-IR').format(Number(n)||0);
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+let currentToken = '';
+let currentUser = null;
+let currentPage = 'dashboard';
+
+function toast(msg, type='info') {
+  const t = $('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className = 'toast show ' + (type === 'error' ? 'zv-badge-danger' : type === 'success' ? 'zv-badge-success' : '');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function openModal(html) {
+  $('modalBox').innerHTML = html;
+  $('modal').classList.add('is-open');
+}
+
+function closeModal() {
+  $('modal').classList.remove('is-open');
+}
+
+$('modal').addEventListener('click', e => {
+  if (e.target === $('modal')) closeModal();
+});
+
+function statusBadge(s) {
+  const x = String(s || '');
+  const c = /تکمیل|انجام شده|completed/i.test(x) ? 'zv-badge-success'
+          : /لغو|مرجوع|cancel/i.test(x) ? 'zv-badge-danger'
+          : /جدید|new/i.test(x) ? 'zv-badge-info'
+          : 'zv-badge-warning';
+  return '<span class="badge zv-badge ' + c + '">'+esc(x||'—')+'</span>';
+}
+
+function closeMobileMenu() {
+  $('sidebar').classList.remove('open');
+  $('menuBackdrop').classList.remove('show');
+}
+
+function toggleMobileMenu() {
+  $('sidebar').classList.toggle('open');
+  $('menuBackdrop').classList.toggle('show', $('sidebar').classList.contains('open'));
+}
+
+function renderAvatar(el, url, name) {
+  if (url) {
+    el.innerHTML = '<img alt="" src="'+esc(url)+'">';
+  } else {
+    el.textContent = (name || '?').charAt(0);
+  }
+}
+
+function handleError(e) {
+  const m = e && e.message ? e.message : String(e || 'خطای نامشخص');
+  toast(m, 'error');
+  if (/نشست منقضی|ابتدا وارد شوید|دسترسی غیرمجاز/i.test(m)) {
+    forceLogout();
+  }
+}
+
+function forceLogout() {
+  localStorage.removeItem('zv_token');
+  localStorage.removeItem('zv_user');
+  currentToken = '';
+  currentUser = null;
+  location.reload();
+}
+
+function callServer(name, args, success, failure) {
+  const runner = google.script.run
+    .withSuccessHandler(v => { if (success) success(v); })
+    .withFailureHandler(e => { if (failure) failure(e); else handleError(e); });
+  runner[name].apply(runner, args || []);
+}
+
+/* ==================== توابع پیش‌فرض ==================== */
+function doLogin() {
+  const u = $('loginUser').value.trim();
+  const p = $('loginPass').value;
+  if (!u || !p) {
+    $('loginError').textContent = 'نام کاربری و رمز عبور را وارد کنید';
+    $('loginError').style.display = 'block';
+    return;
+  }
+  $('loginError').style.display = 'none';
+  if (typeof window._doLogin === 'function') {
+    window._doLogin(u, p);
+  } else {
+    toast('تابع ورود تعریف نشده است', 'error');
+  }
+}
+
+function doLogout() {
+  const t = currentToken;
+  forceLogout();
+  if (t && typeof window._doLogout === 'function') {
+    window._doLogout(t);
+  }
+}
+
+/* ==================== رویدادهای سراسری ==================== */
+document.addEventListener('click', e => {
+  if (window.innerWidth <= 900 && 
+      $('sidebar').classList.contains('open') &&
+      !$('sidebar').contains(e.target) &&
+      !$('menuBackdrop').contains(e.target) &&
+      !e.target.closest('.menu-toggle')) {
+    closeMobileMenu();
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    closeMobileMenu();
+  }
+  if (e.key === 'Enter' && $('loginPage').style.display !== 'none') {
+    doLogin();
+  }
+});
+</script>
