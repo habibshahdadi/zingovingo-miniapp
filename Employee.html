@@ -229,12 +229,42 @@ function loadDashboard() {
 }
 
 function loadOrders() {
-  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">سفارشات شعبه</h1></div><div class="card"><div id="ordersTable"></div></div>';
+  $('pageContent').innerHTML = 
+    '<div class="page-header"><h1 class="page-title">سفارشات شعبه</h1></div>' +
+    '<div class="card">' +
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' +
+    '<div class="field"><label>از تاریخ</label><input id="ordFrom" class="zv-input" placeholder="1405/01/01"></div>' +
+    '<div class="field"><label>تا تاریخ</label><input id="ordTo" class="zv-input" placeholder="1405/12/29"></div>' +
+    '<div class="field"><label>شناسه مشتری</label><input id="ordCustId" class="zv-input" placeholder="کد اشتراک"></div>' +
+    '<div class="field"><label>شناسه سفارش</label><input id="ordReqId" class="zv-input" placeholder="Request-ID"></div>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' +
+    '<div class="field"><label>شناسه گروه</label><input id="ordGroupId" class="zv-input" placeholder="Group-ID"></div>' +
+    '<div class="field"><label>وضعیت</label><select id="ordStatus" class="zv-select"><option value="همه">همه</option><option>جدید</option><option>تبدیل به کارت</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option></select></div>' +
+    '<div class="field" style="grid-column:span 2;display:flex;align-items:flex-end"><button class="btn btn-primary" style="width:100%" onclick="fetchOrders()">🔍 جستجو</button></div>' +
+    '</div>' +
+    '<div id="ordersTable"></div></div>';
+  fetchOrders();
+}
+
+function fetchOrders() {
+  const filters = {
+    fromDate: $('ordFrom')?.value || '',
+    toDate: $('ordTo')?.value || '',
+    customerId: $('ordCustId')?.value || '',
+    requestId: $('ordReqId')?.value || '',
+    groupId: $('ordGroupId')?.value || '',
+    status: $('ordStatus')?.value || 'همه'
+  };
+  $('ordersTable').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   google.script.run.withSuccessHandler(rows => {
-    if (!rows.length) { $('ordersTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">سفارشی یافت نشد</div>'; return; }
-    $('ordersTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>کد</th><th>مشتری</th><th>موبایل</th><th>خدمت</th><th>مبلغ</th><th>گروه</th><th>ثبت‌کننده</th><th>عملیات</th></tr></thead><tbody>' +
-      rows.map(r => '<tr><td>' + r.date + '</td><td><strong>' + r.requestId + '</strong></td><td>' + r.customer + '</td><td style="direction:ltr">' + r.phone + '</td><td>' + r.service + '</td><td>' + money(r.finalPrice) + '</td><td>' + (r.groupName || '—') + '</td><td>' + (r.operatorName || 'مشتری') + '</td><td><button class="btn btn-sm btn-secondary" onclick="changeOrderStatus(\'' + r.requestId + '\',\'' + r.status + '\')">تغییر وضعیت</button> <button class="btn btn-sm btn-primary" onclick="openConvertModal(\'' + r.requestId + '\')">🎫</button></td></tr>').join('') + '</tbody></table></div>';
-  }).withFailureHandler(e => toast(e.message, 'error')).getEmployeeOrders({}, currentToken);
+    if (!rows.length) { 
+      $('ordersTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">سفارشی با این فیلترها یافت نشد</div>'; 
+      return; 
+    }
+    $('ordersTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>کد</th><th>مشتری</th><th>موبایل</th><th>خدمت</th><th>مبلغ</th><th>گروه</th><th>ثبت‌کننده</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      rows.map(r => '<tr><td>' + r.date + '</td><td><strong>' + r.requestId + '</strong></td><td>' + r.customer + '</td><td style="direction:ltr">' + r.phone + '</td><td>' + r.service + '</td><td>' + money(r.finalPrice) + '</td><td>' + (r.groupName || '—') + '</td><td>' + (r.operatorName || 'مشتری') + '</td><td>' + statusBadge(r.status) + '</td><td><button class="btn btn-sm btn-secondary" onclick="changeOrderStatus(\'' + r.requestId + '\',\'' + r.status + '\')">تغییر وضعیت</button> <button class="btn btn-sm btn-primary" onclick="openConvertModal(\'' + r.requestId + '\')">🎫</button></td></tr>').join('') + '</tbody></table></div>';
+  }).withFailureHandler(e => { $('ordersTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger)">' + e.message + '</div>'; }).getEmployeeOrders(filters, currentToken);
 }
 
 function changeOrderStatus(requestId, currentStatus) {
@@ -309,8 +339,62 @@ function executeConvert(requestId) {
 }
 
 function loadCards() {
-  // برای سادگی، در این نسخه کارت‌ها را از همان تابع عمومی می‌خوانیم یا می‌توانید تابع جداگانه بسازید
-  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">کارت‌های شعبه</h1></div><div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">مدیریت کارت‌ها از طریق بخش سفارشات انجام می‌شود.</div></div>';
+  $('pageContent').innerHTML = 
+    '<div class="page-header"><h1 class="page-title">کارت‌های شعبه</h1></div>' +
+    '<div class="card">' +
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' +
+    '<div class="field"><label>از تاریخ</label><input id="cdFrom" class="zv-input" placeholder="1405/01/01"></div>' +
+    '<div class="field"><label>تا تاریخ</label><input id="cdTo" class="zv-input" placeholder="1405/12/29"></div>' +
+    '<div class="field"><label>شناسه مشتری</label><input id="cdCustId" class="zv-input" placeholder="کد اشتراک"></div>' +
+    '<div class="field"><label>شناسه کارت</label><input id="cdCardId" class="zv-input" placeholder="Card-ID"></div>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' +
+    '<div class="field"><label>شناسه گروه</label><input id="cdGroupId" class="zv-input" placeholder="Group-ID"></div>' +
+    '<div class="field"><label>وضعیت</label><select id="cdStatus" class="zv-select"><option value="همه">همه</option><option>جدید</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option><option>ارجاع به سرپرست</option></select></div>' +
+    '<div class="field" style="grid-column:span 2;display:flex;align-items:flex-end"><button class="btn btn-primary" style="width:100%" onclick="fetchCards()">🔍 جستجو</button></div>' +
+    '</div>' +
+    '<div id="cardsTable"></div></div>';
+  fetchCards();
+}
+
+function fetchCards() {
+  const filters = {
+    fromDate: $('cdFrom')?.value || '',
+    toDate: $('cdTo')?.value || '',
+    customerId: $('cdCustId')?.value || '',
+    cardId: $('cdCardId')?.value || '',
+    groupId: $('cdGroupId')?.value || '',
+    status: $('cdStatus')?.value || 'همه'
+  };
+  $('cardsTable').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  google.script.run.withSuccessHandler(rows => {
+    if (!rows.length) { 
+      $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">کارتی با این فیلترها یافت نشد</div>'; 
+      return; 
+    }
+    $('cardsTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>CardID</th><th>RequestID</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>اجراکننده</th><th>گروه</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      rows.map(r => '<tr><td><strong>' + r.cardId + '</strong></td><td>' + r.requestId + '</td><td>' + r.customer + '</td><td>' + r.details + '</td><td>' + money(r.amount) + '</td><td>' + (r.workerName || '—') + '</td><td>' + (r.groupName || '—') + '</td><td>' + statusBadge(r.status) + '</td><td><button class="btn btn-sm btn-primary" onclick="changeCardStatus(\'' + r.cardId + '\',\'' + r.status + '\')">تغییر وضعیت</button></td></tr>').join('') + '</tbody></table></div>';
+  }).withFailureHandler(e => { $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger)">' + e.message + '</div>'; }).getEmployeeCards(filters, currentToken);
+}
+
+function fetchCards() {
+  const filters = {
+    fromDate: $('cdFrom')?.value || '',
+    toDate: $('cdTo')?.value || '',
+    customerId: $('cdCustId')?.value || '',
+    cardId: $('cdCardId')?.value || '',
+    groupId: $('cdGroupId')?.value || '',
+    status: $('cdStatus')?.value || 'همه'
+  };
+  $('cardsTable').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  google.script.run.withSuccessHandler(rows => {
+    if (!rows.length) { 
+      $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">کارتی با این فیلترها یافت نشد</div>'; 
+      return; 
+    }
+    $('cardsTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>CardID</th><th>RequestID</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>اجراکننده</th><th>گروه</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      rows.map(r => '<tr><td><strong>' + r.cardId + '</strong></td><td>' + r.requestId + '</td><td>' + r.customer + '</td><td>' + r.details + '</td><td>' + money(r.amount) + '</td><td>' + (r.workerName || '—') + '</td><td>' + (r.groupName || '—') + '</td><td>' + statusBadge(r.status) + '</td><td><button class="btn btn-sm btn-primary" onclick="changeCardStatus(\'' + r.cardId + '\',\'' + r.status + '\')">تغییر وضعیت</button></td></tr>').join('') + '</tbody></table></div>';
+  }).withFailureHandler(e => { $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger)">' + e.message + '</div>'; }).getEmployeeCards(filters, currentToken);
 }
 
 // --- توابع گروه و نیرو (مشابه مدیر شعبه، اما با فراخوانی توابع کارمند در صورت وجود، یا توابع مشترک) ---
