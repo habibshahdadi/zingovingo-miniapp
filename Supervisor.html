@@ -326,15 +326,17 @@ function toggleMember(row,status,el){
   callServer('toggleMemberStatus',[row,status,currentToken],()=>{toast('وضعیت عضو تغییر کرد','success');fetchMembers();},e=>{if(el)el.value='';handleError(e);});
 }
 
+// 2. اصلاح چیدمان فیلترهای کارت‌ها (رفع روی هم افتادگی)
 function loadCards(){
-  callServer('getSupervisorCardStatuses',[currentToken],s=>{
-    cardStatuses=s||[];
-    $('pageContent').innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;flex-wrap:wrap;gap:10px"><h1 style="font-size:18px;color:#0B1736;font-weight:900;margin:0">کارت‌ها و سفارش‌ها</h1></div>'+
-    '<div class="zv-card"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">'+
-    '<div class="zv-field" style="min-width:0"><label>جستجو</label><input id="cdSearch" class="zv-input" placeholder="مشتری یا CardID" oninput="debounceCards()" style="width:100%"></div>'+
-    '<div class="zv-field" style="min-width:0"><label>وضعیت</label><select id="cdStatus" class="zv-select" onchange="fetchCards()" style="width:100%"><option value="همه">همه</option>'+cardStatuses.map(s=>'<option>'+esc(s)+'</option>').join('')+'</select></div></div><div id="cardsTable"></div></div>';
+  callServer('getSupervisorCardStatuses', [currentToken], s => {
+    cardStatuses = s || [];
+    $('pageContent').innerHTML = 
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;flex-wrap:wrap;gap:10px"><h1 style="font-size:18px;color:#0B1736;font-weight:900;margin:0">کارت‌ها و سفارش‌ها</h1></div>' +
+      '<div class="zv-card"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">' +
+      '<div class="zv-field" style="min-width:0"><label>جستجو</label><input id="cdSearch" class="zv-input" placeholder="مشتری یا CardID" oninput="debounceCards()" style="width:100%"></div>' +
+      '<div class="zv-field" style="min-width:0"><label>وضعیت</label><select id="cdStatus" class="zv-select" onchange="fetchCards()" style="width:100%"><option value="همه">همه</option>' + cardStatuses.map(s => '<option>' + esc(s) + '</option>').join('') + '</select></div></div><div id="cardsTable"></div></div>';
     fetchCards();
-  },handleError);
+  }, handleError);
 }
 
 function debounceCards(){clearTimeout(cdTimer);cdTimer=setTimeout(fetchCards,350);}
@@ -390,28 +392,33 @@ function loadReturned(){
   },handleError);
 }
 
+// 3. اصلاح چیدمان فیلترهای گزارشات
 function loadReports(){
-  $('pageContent').innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;flex-wrap:wrap;gap:10px"><h1 style="font-size:18px;color:#0B1736;font-weight:900;margin:0">گزارشات گروه</h1></div>'+
-  '<div class="zv-card"><div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;margin-bottom:16px;align-items:end">'+
-  '<div class="zv-field" style="min-width:0"><label>از تاریخ شمسی</label><input id="repFrom" class="zv-input" placeholder="1405/01/01" style="width:100%"></div>'+
-  '<div class="zv-field" style="min-width:0"><label>تا تاریخ شمسی</label><input id="repTo" class="zv-input" placeholder="1405/12/29" style="width:100%"></div>'+
-  '<div class="zv-field" style="min-width:0"><button class="zv-btn zv-btn-primary" onclick="fetchReports()" style="width:100%;white-space:nowrap">نمایش گزارش</button></div></div><div id="repContent"></div></div>';
+  $('pageContent').innerHTML = 
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;flex-wrap:wrap;gap:10px"><h1 style="font-size:18px;color:#0B1736;font-weight:900;margin:0">گزارشات گروه</h1></div>' +
+    '<div class="zv-card"><div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;margin-bottom:16px;align-items:end">' +
+    '<div class="zv-field" style="min-width:0"><label>از تاریخ شمسی</label><input id="repFrom" class="zv-input" placeholder="1405/01/01" style="width:100%"></div>' +
+    '<div class="zv-field" style="min-width:0"><label>تا تاریخ شمسی</label><input id="repTo" class="zv-input" placeholder="1405/12/29" style="width:100%"></div>' +
+    '<div class="zv-field" style="min-width:0"><button class="zv-btn zv-btn-primary" onclick="fetchReports()" style="width:100%;white-space:nowrap">نمایش گزارش</button></div></div><div id="repContent"></div></div>';
   fetchReports();
 }
 
+// 4. اصلاح چیدمان کارت‌های آمار در گزارشات
 function fetchReports(){
-  callServer('getSupervisorReports',[currentToken,$('repFrom')?.value||'',$('repTo')?.value||''],rep=>{
-    $('repContent').innerHTML=
-    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">'+
-    [['کل کارت‌ها',rep.totalCards],['تکمیل‌شده',rep.completedCards],['در حال انجام',rep.inProgressCards],['درآمد ثبت‌شده',money(rep.totalRevenue)]].map(x=>'<div class="zv-stat"><div><div class="zv-stat-label">'+x[0]+'</div><div class="zv-stat-value">'+(typeof x[1]==='number'?toFa(x[1]):x[1])+'</div></div><div class="zv-stat-icon">▦</div></div>').join('')+
-    '</div>'+
-    '<div class="zv-card" style="margin-bottom:17px"><h3 class="zv-card-title">عملکرد اعضا</h3><div class="zv-table-wrap"><table class="zv-table"><thead><tr><th>نام</th><th>کل کارت</th><th>تکمیل‌شده</th><th>مبلغ کارت‌ها</th></tr></thead><tbody>'+
-    (rep.byWorker||[]).map(w=>'<tr><td>'+esc(w.name)+'</td><td>'+toFa(w.total)+'</td><td>'+toFa(w.completed)+'</td><td>'+money(w.revenue)+'</td></tr>').join('')+
-    '</tbody></table></div></div>'+
-    '<div class="zv-card"><h3 class="zv-card-title">ریز کارت‌ها</h3><div class="zv-table-wrap"><table class="zv-table"><thead><tr><th>تاریخ</th><th>CardID</th><th>مشتری</th><th>مبلغ</th><th>وضعیت</th></tr></thead><tbody>'+
-    (rep.transactions||[]).map(t=>'<tr><td>'+esc(t.date)+'</td><td>'+esc(t.cardId)+'</td><td>'+esc(t.customer)+'</td><td>'+money(t.amount)+'</td><td>'+statusBadge(t.status)+'</td></tr>').join('')+
-    '</tbody></table></div></div>';
-  },handleError);
+  callServer('getSupervisorReports', [currentToken, $('repFrom')?.value || '', $('repTo')?.value || ''], rep => {
+    $('repContent').innerHTML =
+      '<div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:14px;margin-bottom:20px">' +
+      [['کل کارت‌ها', rep.totalCards], ['تکمیل‌شده', rep.completedCards], ['در حال انجام', rep.inProgressCards], ['درآمد ثبت‌شده', money(rep.totalRevenue)]].map(x => 
+        '<div class="zv-stat"><div><div class="zv-stat-label">' + x[0] + '</div><div class="zv-stat-value">' + (typeof x[1] === 'number' ? toFa(x[1]) : x[1]) + '</div></div><div class="zv-stat-icon">▦</div></div>'
+      ).join('') +
+      '</div>' +
+      '<div class="zv-card" style="margin-bottom:17px"><h3 class="zv-card-title">عملکرد اعضا</h3><div class="zv-table-wrap"><table class="zv-table"><thead><tr><th>نام</th><th>کل کارت</th><th>تکمیل‌شده</th><th>مبلغ کارت‌ها</th></tr></thead><tbody>' +
+      (rep.byWorker || []).map(w => '<tr><td>' + esc(w.name) + '</td><td>' + toFa(w.total) + '</td><td>' + toFa(w.completed) + '</td><td>' + money(w.revenue) + '</td></tr>').join('') +
+      '</tbody></table></div></div>' +
+      '<div class="zv-card"><h3 class="zv-card-title">ریز کارت‌ها</h3><div class="zv-table-wrap"><table class="zv-table"><thead><tr><th>تاریخ</th><th>CardID</th><th>مشتری</th><th>مبلغ</th><th>وضعیت</th></tr></thead><tbody>' +
+      (rep.transactions || []).map(t => '<tr><td>' + esc(t.date) + '</td><td>' + esc(t.cardId) + '</td><td>' + esc(t.customer) + '</td><td>' + money(t.amount) + '</td><td>' + statusBadge(t.status) + '</td></tr>').join('') +
+      '</tbody></table></div></div>';
+  }, handleError);
 }
 
 function loadSubmissions(){
@@ -516,17 +523,16 @@ function changeSupervisorThreadStatus(id,status){
   callServer('supervisorSetConversationStatus',[id,status,currentToken],()=>openSupervisorThread(id),handleError);
 }
 
+// 1. اصلاح تابع جلوگیری از خطای null
 function zvSetUnreadMessages_(rows){
   try {
-    const n=(rows||[]).reduce((sum,t)=>sum+Math.max(0,Number(t.unreadCount)||0),0);
-    const b=$('zvUnreadMessages');
-    if(b && b !== null){
-      b.textContent=toFa(n);
-      b.hidden=n<=0;
+    const n = (rows || []).reduce((sum, t) => sum + Math.max(0, Number(t.unreadCount) || 0), 0);
+    const b = $('zvUnreadMessages');
+    if (b && b !== null) {
+      b.textContent = toFa(n);
+      b.hidden = (n <= 0);
     }
-  } catch(e) {
-    console.warn('zvSetUnreadMessages error:', e);
-  }
+  } catch (e) { console.warn('Unread msg error:', e); }
 }
 
 function zvRefreshUnreadMessages_(){
