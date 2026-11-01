@@ -248,16 +248,64 @@ function applyOrderStatus(requestId) {
 }
 
 function openConvertModal(requestId) {
-  google.script.run.withSuccessHandler(workers => {
-    let opts = '<option value="">بدون تخصیص (استخر شعبه)</option>';
-    workers.forEach(w => opts += '<option value="' + w.id + '">' + w.name + '</option>');
-    openModal('<div class="modal-header"><h2>تبدیل به کارت</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
-      '<div class="field"><label>تخصیص به نیرو</label><select id="targetWorker">' + opts + '</select></div>' +
-      '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="executeConvert(\'' + requestId + '\')">تأیید</button></div>');
-  }).getEmployeeWorkersForDropdown(currentToken);
+  // ابتدا گروه‌ها را دریافت کن
+  google.script.run.withSuccessHandler(groups => {
+    let groupOpts = '<option value="">-- انتخاب گروه --</option>';
+    groups.forEach(g => groupOpts += '<option value="' + g.groupId + '">' + g.name + ' (' + g.groupId + ')</option>');
+    
+    openModal(
+      '<div class="modal-header"><h2>تبدیل به کارت</h2><button class="modal-close" onclick="closeModal()"></button></div>' +
+      '<div class="form-grid">' +
+      '<div class="field"><label>تخصیص به گروه *</label><select id="targetGroup" onchange="loadGroupWorkers()">' + groupOpts + '</select></div>' +
+      '<div class="field"><label>تخصیص به نیرو (اختیاری)</label><select id="targetWorker" disabled><option value="">ابتدا گروه را انتخاب کنید</option></select></div>' +
+      '</div>' +
+      '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="executeConvert(\'' + requestId + '\')">تأیید</button></div>'
+    );
+    }).withFailureHandler(e => toast(e.message, 'error')).getGroupsForDropdownEmp(currentToken);
 }
+
+// تابع کمکی برای لود کردن نیروهای گروه انتخاب‌شده
+function loadGroupWorkers() {
+  const groupId = $('targetGroup').value;
+  if (!groupId) {
+    $('targetWorker').disabled = true;
+    $('targetWorker').innerHTML = '<option value="">ابتدا گروه را انتخاب کنید</option>';
+    return;
+  }
+  
+  google.script.run.withSuccessHandler(workers => {
+    let workerOpts = '<option value="">بدون تخصیص (استخر گروه)</option>';
+    workers.forEach(w => workerOpts += '<option value="' + w.id + '">' + w.name + ' (' + w.operations + ')</option>');
+    $('targetWorker').innerHTML = workerOpts;
+    $('targetWorker').disabled = false;
+    }).withFailureHandler(e => toast(e.message, 'error')).getWorkersByGroupEmp(groupId, currentToken);
+}
+
 function executeConvert(requestId) {
-  google.script.run.withSuccessHandler(r => { closeModal(); toast(r.message, 'success'); loadOrders(); }).withFailureHandler(e => toast(e.message, 'error')).employeeConvertOrderToCard(requestId, $('targetWorker').value, currentToken);
+  const groupId = $('targetGroup').value;
+  const workerId = $('targetWorker').value;
+  
+  if (!groupId) {
+    toast('لطفاً یک گروه انتخاب کنید', 'error');
+    return;
+  }
+  
+  // برای پنل کارمند
+  if (window.location.href.includes('Employee')) {
+    google.script.run.withSuccessHandler(r => { 
+      closeModal(); 
+      toast(r.message, 'success'); 
+      loadOrders(); 
+    }).withFailureHandler(e => toast(e.message, 'error')).employeeConvertOrderToCard(requestId, groupId, workerId, currentToken);
+  } 
+  // برای پنل مدیر شعبه
+  else {
+    google.script.run.withSuccessHandler(r => { 
+      closeModal(); 
+      toast(r.message, 'success'); 
+      loadOrders(); 
+    }).withFailureHandler(e => toast(e.message, 'error')).branchManagerConvertOrderToCard(requestId, groupId, workerId, currentToken);
+  }
 }
 
 function loadCards() {
