@@ -147,25 +147,55 @@ textarea{min-height:80px;resize:vertical}
   </aside>
   <main class="main">
     <header class="page-header">
-      <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰ منو</button>
-      <div style="display:flex;align-items:center;gap:12px">
-        <div class="topbar-branch-chip">
-          <div class="topbar-branch-icon">⌂</div>
-          <div>
-            <span class="topbar-branch-name" id="topbarBranchName">شعبه</span>
-            <span class="topbar-branch-id" id="topbarBranchId">شناسه: —</span>
-          </div>
-        </div>
-        <h1 class="page-title" id="topbarPageTitle">داشبورد</h1>
-      </div>
-    </header>
+  <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰ منو</button>
+  <h1 class="page-title" id="topbarPageTitle">داشبورد</h1>
+</header>
     <div id="pageContent"><div class="loading"><div class="spinner"></div></div></div>
   </main>
 </div>
 
 <div id="toast" class="toast"></div>
 <div id="modal" class="modal"><div class="modal-box" id="modalBox"></div></div>
+// بارگذاری PhotoEditor
+(function loadPhotoEditor() {
+  fetch('PhotoEditor.html').then(function(r) { 
+    return r.text(); 
+  }).then(function(html) {
+    var wrap = document.createElement('div'); 
+    wrap.innerHTML = html; 
+    document.body.appendChild(wrap);
+    Array.prototype.slice.call(wrap.querySelectorAll('script')).forEach(function(old) {
+      var s = document.createElement('script'); 
+      s.textContent = old.textContent; 
+      document.body.appendChild(s);
+    });
+  }).catch(function(e) { 
+    console.warn('PhotoEditor بارگذاری نشد:', e); 
+  });
+})();
 
+// باز کردن ویرایشگر عکس
+function openPhotoEditor() {
+  if (!window.ZVPhoto || !window.ZVPhoto.__v2) {
+    toast('ویرایشگر تصویر در حال بارگذاری است. لطفاً چند لحظه صبر کنید.', 'warning');
+    return;
+  }
+  window.ZVPhoto.open({
+    token: currentToken,
+    endpoint: 'uploadMyProfilePhotoV2',
+    onDone: function(url) {
+      if (currentUser) {
+        currentUser.avatar = url;
+        localStorage.setItem('zv_supervisor_user', JSON.stringify(currentUser));
+      }
+      // به‌روزرسانی آواتار در سایدبار
+      const av = $('userAvatar');
+      if (av) av.innerHTML = '<img src="' + url + '">';
+      toast('تصویر پروفایل با موفقیت تغییر کرد', 'success');
+      loadProfile(); // رفرش صفحه پروفایل
+    }
+  });
+}
 <script>
 const $ = id => document.getElementById(id);
 const money = n => new Intl.NumberFormat('en-US').format(Math.round(Number(n)||0)) + ' ریال';
@@ -269,7 +299,8 @@ function loadPage(page) {
 function loadDashboard() {
   google.script.run.withSuccessHandler(d => {
     $('pageContent').innerHTML = 
-      '<div class="welcome-banner"><div><h2>خوش آمدید، ' + (currentUser?.name || 'سرپرست عزیز') + ' 👋</h2><p>وضعیت گروه‌ها و عملیات تحت نظارت شما در یک نگاه.</p></div><div class="welcome-icon"></div></div>' +
+      '<div class="topbar-branch-chip" style="margin-bottom:18px;display:inline-flex"><div class="topbar-branch-icon">⌂</div><div><span class="topbar-branch-name">' + (currentUser?.branchName || 'شعبه') + '</span><span class="topbar-branch-id">شناسه: ' + (currentUser?.branchId || '—') + '</span></div></div>' +
+      '<div class="welcome-banner"><div><h2>خوش آمدید، ' + (currentUser?.name || 'سرپرست عزیز') + ' </h2><p>وضعیت گروه‌ها و عملیات تحت نظارت شما در یک نگاه.</p></div><div class="welcome-icon"></div></div>' +
       '<div class="stats-grid">' +
       '<div class="stat-card"><div class="stat-label">تعداد گروه‌ها</div><div class="stat-value">' + toFa(d.groups) + '</div></div>' +
       '<div class="stat-card green"><div class="stat-label">اعضای فعال</div><div class="stat-value">' + toFa(d.activeMembers) + '</div></div>' +
@@ -462,12 +493,12 @@ function fetchReports() {
 
 function loadProfile() {
   google.script.run.withSuccessHandler(p => {
-    const photo = p.avatar ? '<img src="'+p.avatar+'" alt="تصویر پروفایل">' : (p.name||'?').charAt(0);
+    const photo = p.avatar ? '<img src="' + p.avatar + '" alt="تصویر پروفایل" style="width:100%;height:100%;object-fit:cover">' : (p.name || '?').charAt(0);
     $('pageContent').innerHTML = 
-      '<div class="page-header"><h1 class="page-title">پروفایل من</h1></div>'+
-      '<div class="profile-layout"><div class="card profile-photo-card"><div class="profile-photo-large">'+photo+'</div><h3>'+p.name+'</h3><div class="zv-muted">'+p.role+' · شناسه: '+p.workerId+'</div><div class="profile-photo-actions" style="margin-top:16px"><button class="btn btn-primary" type="button" onclick="changeProfilePhoto()"> تغییر تصویر پروفایل</button><small>فرمت JPG، PNG یا WEBP؛ حداکثر ۸ مگابایت</small></div></div>'+
-      '<div class="card"><h3 style="margin-bottom:16px;color:var(--navy)">اطلاعات حساب</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px"><div class="field"><label>شناسه یکتا</label><input class="zv-input" value="'+p.workerId+'" disabled></div><div class="field"><label>نام و نام خانوادگی</label><input class="zv-input" value="'+p.name+'" disabled></div><div class="field"><label>نقش</label><input class="zv-input" value="'+p.role+'" disabled></div><div class="field"><label>شناسه شعبه</label><input class="zv-input" value="'+p.branchId+'" disabled></div></div><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><h3 style="margin-bottom:12px;color:var(--navy)">ویرایش اطلاعات ورود</h3><div class="profile-form"><div class="field"><label>نام کاربری</label><input id="newUsername" class="zv-input" value="'+p.username+'"></div><div class="field"><label>رمز عبور جدید</label><input id="newPassword" class="zv-input" type="password" placeholder="خالی = بدون تغییر"></div></div><button class="btn btn-primary" style="margin-top:16px" onclick="updateProfile()">ذخیره تغییرات</button></div></div>';
-  }).withFailureHandler(e => toast(e.message, 'error')).getSupervisorProfile(currentToken);
+      '<div class="page-header"><h1 class="page-title">پروفایل من</h1></div>' +
+      '<div class="profile-layout"><div class="card profile-photo-card"><div class="profile-photo-large" id="profilePhoto">' + photo + '</div><h3>' + p.name + '</h3><div class="zv-muted">' + p.role + ' · شناسه: ' + p.workerId + '</div><div class="profile-photo-actions" style="margin-top:16px"><button class="btn btn-primary" type="button" onclick="openPhotoEditor()"> تغییر تصویر پروفایل</button><small>فرمت JPG، PNG یا WEBP؛ حداکثر ۸ مگابایت</small></div></div>' +
+      '<div class="card"><h3 style="margin-bottom:16px;color:var(--navy)">اطلاعات حساب</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px"><div class="field"><label>شناسه یکتا</label><input class="zv-input" value="' + p.workerId + '" disabled></div><div class="field"><label>نام و نام خانوادگی</label><input class="zv-input" value="' + p.name + '" disabled></div><div class="field"><label>نقش</label><input class="zv-input" value="' + p.role + '" disabled></div><div class="field"><label>شناسه شعبه</label><input class="zv-input" value="' + p.branchId + '" disabled></div></div><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><h3 style="margin-bottom:12px;color:var(--navy)">ویرایش اطلاعات ورود</h3><div class="profile-form"><div class="field"><label>نام کاربری</label><input id="newUsername" class="zv-input" value="' + p.username + '"></div><div class="field"><label>رمز عبور جدید</label><input id="newPassword" class="zv-input" type="password" placeholder="خالی = بدون تغییر"></div></div><button class="btn btn-primary" style="margin-top:16px" onclick="updateProfile()">💾 ذخیره تغییرات</button></div></div>';
+  }).withFailureHandler(e => toast(e.message || 'دریافت پروفایل ناموفق بود', 'error')).getSupervisorProfile(currentToken);
 }
 
 function changeProfilePhoto() {
