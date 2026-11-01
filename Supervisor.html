@@ -282,7 +282,7 @@ function loadMembers(){
 
 function fetchMembers(){
   const host=$('membersContent');
-  if(!host)return;
+  if(!host) return;
   host.innerHTML='<div class="zv-loading"><div class="zv-spinner"></div>در حال دریافت اعضا…</div>';
   callServer('getGroupMembers',[currentGroupId,currentToken],rows=>{
     rows=Array.isArray(rows)?rows:[];
@@ -330,7 +330,7 @@ function loadCards(){
   callServer('getSupervisorCardStatuses',[currentToken],s=>{
     cardStatuses=s||[];
     $('pageContent').innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;flex-wrap:wrap;gap:10px"><h1 style="font-size:18px;color:#0B1736;font-weight:900;margin:0">کارت‌ها و سفارش‌ها</h1></div>'+
-    '<div class="zv-card"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px">'+
+    '<div class="zv-card"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">'+
     '<div class="zv-field"><label>جستجو</label><input id="cdSearch" class="zv-input" placeholder="مشتری یا CardID" oninput="debounceCards()"></div>'+
     '<div class="zv-field"><label>وضعیت</label><select id="cdStatus" class="zv-select" onchange="fetchCards()"><option value="همه">همه</option>'+cardStatuses.map(s=>'<option>'+esc(s)+'</option>').join('')+'</select></div></div><div id="cardsTable"></div></div>';
     fetchCards();
@@ -341,7 +341,7 @@ function debounceCards(){clearTimeout(cdTimer);cdTimer=setTimeout(fetchCards,350
 
 function fetchCards(){
   const host=$('cardsTable');
-  if(!host)return;
+  if(!host) return;
   callServer('getSupervisorCards',[{search:$('cdSearch')?.value||'',status:$('cdStatus')?.value||'همه'},currentToken],rows=>{
     rows=rows||[];
     host.innerHTML=rows.length?'<div class="zv-table-wrap"><table class="zv-table"><thead><tr><th>CardID</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>اجراکننده</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>'+
@@ -392,17 +392,17 @@ function loadReturned(){
 
 function loadReports(){
   $('pageContent').innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;flex-wrap:wrap;gap:10px"><h1 style="font-size:18px;color:#0B1736;font-weight:900;margin:0">گزارشات گروه</h1></div>'+
-  '<div class="zv-card"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px">'+
+  '<div class="zv-card"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">'+
   '<div class="zv-field"><label>از تاریخ شمسی</label><input id="repFrom" class="zv-input" placeholder="1405/01/01"></div>'+
   '<div class="zv-field"><label>تا تاریخ شمسی</label><input id="repTo" class="zv-input" placeholder="1405/12/29"></div>'+
-  '<div class="zv-field" style="justify-content:flex-end"><button class="zv-btn zv-btn-primary" onclick="fetchReports()">نمایش گزارش</button></div></div><div id="repContent"></div></div>';
+  '<div class="zv-field" style="display:flex;align-items:flex-end"><button class="zv-btn zv-btn-primary" style="width:100%" onclick="fetchReports()">نمایش گزارش</button></div></div><div id="repContent"></div></div>';
   fetchReports();
 }
 
 function fetchReports(){
   callServer('getSupervisorReports',[currentToken,$('repFrom')?.value||'',$('repTo')?.value||''],rep=>{
     $('repContent').innerHTML=
-    '<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:20px">'+
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">'+
     [['کل کارت‌ها',rep.totalCards],['تکمیل‌شده',rep.completedCards],['در حال انجام',rep.inProgressCards],['درآمد ثبت‌شده',money(rep.totalRevenue)]].map(x=>'<div class="zv-stat"><div><div class="zv-stat-label">'+x[0]+'</div><div class="zv-stat-value">'+(typeof x[1]==='number'?toFa(x[1]):x[1])+'</div></div><div class="zv-stat-icon">▦</div></div>').join('')+
     '</div>'+
     '<div class="zv-card" style="margin-bottom:17px"><h3 class="zv-card-title">عملکرد اعضا</h3><div class="zv-table-wrap"><table class="zv-table"><thead><tr><th>نام</th><th>کل کارت</th><th>تکمیل‌شده</th><th>مبلغ کارت‌ها</th></tr></thead><tbody>'+
@@ -492,6 +492,7 @@ function loadSupervisorMessages(){
   $('pageContent').innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;flex-wrap:wrap;gap:10px"><h1 style="font-size:18px;color:#0B1736;font-weight:900;margin:0">مکاتبات متخصصان</h1><button class="zv-btn zv-btn-secondary" onclick="loadSupervisorMessages()">بروزرسانی</button></div><div class="zv-card"><div id="supervisorThreads">در حال دریافت…</div></div><div id="supervisorThreadDetail"></div>';
   callServer('supervisorGetConversations',[currentToken],rows=>{
     const h=$('supervisorThreads');
+    if(!h) return;
     if(!rows||!rows.length){h.textContent='مکاتبه‌ای ثبت نشده است.';return;}
     h.innerHTML=rows.map(t=>'<div class="zv-thread-row"><div><b>'+esc(t.subject)+'</b><div class="zv-thread-meta"><span>متخصص: '+esc(t.workerUsername)+'</span><span>کارت: '+esc(t.cardId)+'</span><span class="zv-thread-state '+(Number(t.unreadCount)>0?'unread':'read')+'">'+(Number(t.unreadCount)>0?'● خوانده‌نشده':'✓ خوانده‌شده')+'</span><span class="zv-thread-state '+(String(t.status).toUpperCase()==='CLOSED'?'closed':'open')+'">'+(String(t.status).toUpperCase()==='CLOSED'?'بسته':'باز')+'</span></div><small>'+esc(t.preview||'')+'</small></div><button class="zv-btn zv-btn-primary zv-btn-sm" onclick="openSupervisorThread(\''+esc(t.threadId)+'\')">نمایش پیام</button></div>').join('');
   },handleError);
@@ -516,9 +517,13 @@ function changeSupervisorThreadStatus(id,status){
 }
 
 function zvSetUnreadMessages_(rows){
-  const n=(rows||[]).reduce((sum,t)=>sum+Math.max(0,Number(t.unreadCount)||0),0);
-  const b=$('zvUnreadMessages');
-  if(b){b.textContent=toFa(n);b.hidden=n<=0;}
+  try {
+    const n=(rows||[]).reduce((sum,t)=>sum+Math.max(0,Number(t.unreadCount)||0),0);
+    const b=$('zvUnreadMessages');
+    if(b){b.textContent=toFa(n);b.hidden=n<=0;}
+  } catch(e) {
+    console.warn('zvSetUnreadMessages error:', e);
+  }
 }
 
 function zvRefreshUnreadMessages_(){
