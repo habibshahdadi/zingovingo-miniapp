@@ -331,8 +331,8 @@ function loadCards(){
     cardStatuses=s||[];
     $('pageContent').innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;flex-wrap:wrap;gap:10px"><h1 style="font-size:18px;color:#0B1736;font-weight:900;margin:0">کارت‌ها و سفارش‌ها</h1></div>'+
     '<div class="zv-card"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">'+
-    '<div class="zv-field"><label>جستجو</label><input id="cdSearch" class="zv-input" placeholder="مشتری یا CardID" oninput="debounceCards()"></div>'+
-    '<div class="zv-field"><label>وضعیت</label><select id="cdStatus" class="zv-select" onchange="fetchCards()"><option value="همه">همه</option>'+cardStatuses.map(s=>'<option>'+esc(s)+'</option>').join('')+'</select></div></div><div id="cardsTable"></div></div>';
+    '<div class="zv-field" style="min-width:0"><label>جستجو</label><input id="cdSearch" class="zv-input" placeholder="مشتری یا CardID" oninput="debounceCards()" style="width:100%"></div>'+
+    '<div class="zv-field" style="min-width:0"><label>وضعیت</label><select id="cdStatus" class="zv-select" onchange="fetchCards()" style="width:100%"><option value="همه">همه</option>'+cardStatuses.map(s=>'<option>'+esc(s)+'</option>').join('')+'</select></div></div><div id="cardsTable"></div></div>';
     fetchCards();
   },handleError);
 }
@@ -392,10 +392,10 @@ function loadReturned(){
 
 function loadReports(){
   $('pageContent').innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;flex-wrap:wrap;gap:10px"><h1 style="font-size:18px;color:#0B1736;font-weight:900;margin:0">گزارشات گروه</h1></div>'+
-  '<div class="zv-card"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">'+
-  '<div class="zv-field"><label>از تاریخ شمسی</label><input id="repFrom" class="zv-input" placeholder="1405/01/01"></div>'+
-  '<div class="zv-field"><label>تا تاریخ شمسی</label><input id="repTo" class="zv-input" placeholder="1405/12/29"></div>'+
-  '<div class="zv-field" style="display:flex;align-items:flex-end"><button class="zv-btn zv-btn-primary" style="width:100%" onclick="fetchReports()">نمایش گزارش</button></div></div><div id="repContent"></div></div>';
+  '<div class="zv-card"><div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;margin-bottom:16px;align-items:end">'+
+  '<div class="zv-field" style="min-width:0"><label>از تاریخ شمسی</label><input id="repFrom" class="zv-input" placeholder="1405/01/01" style="width:100%"></div>'+
+  '<div class="zv-field" style="min-width:0"><label>تا تاریخ شمسی</label><input id="repTo" class="zv-input" placeholder="1405/12/29" style="width:100%"></div>'+
+  '<div class="zv-field" style="min-width:0"><button class="zv-btn zv-btn-primary" onclick="fetchReports()" style="width:100%;white-space:nowrap">نمایش گزارش</button></div></div><div id="repContent"></div></div>';
   fetchReports();
 }
 
@@ -520,15 +520,22 @@ function zvSetUnreadMessages_(rows){
   try {
     const n=(rows||[]).reduce((sum,t)=>sum+Math.max(0,Number(t.unreadCount)||0),0);
     const b=$('zvUnreadMessages');
-    if(b){b.textContent=toFa(n);b.hidden=n<=0;}
+    if(b && b !== null){
+      b.textContent=toFa(n);
+      b.hidden=n<=0;
+    }
   } catch(e) {
     console.warn('zvSetUnreadMessages error:', e);
   }
 }
 
 function zvRefreshUnreadMessages_(){
-  const api=google.script.run.withSuccessHandler(zvSetUnreadMessages_).withFailureHandler(e=>console.warn('Unread messages count:',e));
-  api.supervisorGetUnreadConversationCount(currentToken);
+  try {
+    const api=google.script.run.withSuccessHandler(zvSetUnreadMessages_).withFailureHandler(e=>console.warn('Unread messages count:',e));
+    api.supervisorGetUnreadConversationCount(currentToken);
+  } catch(e) {
+    console.warn('zvRefreshUnreadMessages error:', e);
+  }
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Enter' && $('loginPage').style.display !== 'none') doLogin(); });
