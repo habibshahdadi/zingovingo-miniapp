@@ -89,6 +89,29 @@ textarea{min-height:80px;resize:vertical}
 @keyframes spin{to{transform:rotate(360deg)}}
 .menu-toggle{display:none;background:var(--navy);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
 @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:fixed;right:-280px;width:260px;z-index:50;transition:right .3s}.sidebar.open{right:0}.menu-toggle{display:block}.form-grid{grid-template-columns:1fr}}
+
+/* Branch Chip Topbar */
+.topbar-branch-chip{display:flex;align-items:center;gap:10px;padding:8px 13px;background:#fff;border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);min-width:200px}
+.topbar-branch-icon{width:36px;height:36px;border-radius:50%;background:#fff0e7;color:var(--orange);display:grid;place-items:center;font-size:18px;font-weight:900}
+.topbar-branch-name{display:block;color:var(--navy);font-size:12px;font-weight:900}
+.topbar-branch-id{display:block;color:var(--muted);font-size:10px}
+
+/* Welcome Banner */
+.welcome-banner{background:linear-gradient(115deg,#0B1736,#203968);color:#fff;border-radius:18px;padding:22px 25px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:15px;overflow:hidden;position:relative}
+.welcome-banner h2{font-size:17px;margin:0 0 7px;color:#fff}
+.welcome-banner p{font-size:11px;color:#d2d9e8;margin:0;line-height:1.9}
+.welcome-icon{font-size:48px;opacity:.8;padding:0 10px}
+
+/* Profile Layout */
+.profile-layout{display:grid;grid-template-columns:minmax(220px,280px) 1fr;gap:22px;align-items:start}
+.profile-photo-card{text-align:center;padding:22px}
+.profile-photo-large{width:136px;height:136px;margin:0 auto 14px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#fff0e7;color:#bd4a0d;font-size:42px;font-weight:900;border:4px solid #fff;box-shadow:0 0 0 1px var(--line),0 8px 24px #0b17361a}
+.profile-photo-large img{width:100%;height:100%;object-fit:cover;display:block}
+.profile-photo-actions{display:flex;flex-direction:column;gap:8px}
+.profile-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.profile-form .field{min-width:0}
+.profile-form .full{grid-column:1/-1}
+@media(max-width:700px){.profile-layout{grid-template-columns:1fr}.profile-form{grid-template-columns:1fr}.profile-form .full{grid-column:auto}}
 </style>
 </head>
 <body>
@@ -125,7 +148,16 @@ textarea{min-height:80px;resize:vertical}
   <main class="main">
     <header class="page-header">
       <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰ منو</button>
-      <h1 class="page-title" id="topbarPageTitle">داشبورد</h1>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="topbar-branch-chip">
+          <div class="topbar-branch-icon">⌂</div>
+          <div>
+            <span class="topbar-branch-name" id="topbarBranchName">شعبه</span>
+            <span class="topbar-branch-id" id="topbarBranchId">شناسه: —</span>
+          </div>
+        </div>
+        <h1 class="page-title" id="topbarPageTitle">داشبورد</h1>
+      </div>
     </header>
     <div id="pageContent"><div class="loading"><div class="spinner"></div></div></div>
   </main>
@@ -148,7 +180,7 @@ const MENU_ITEMS = [
   { id: 'cards', label: '🎫 کارت‌ها و سفارش‌ها' },
   { id: 'messages', label: '✉️ مکاتبات متخصصان' },
   { id: 'returned', label: '🔄 کارت‌های مرجوعی' },
-  { id: 'reports', label: '📈 گزارش عملکرد' },
+  { id: 'reports', label: ' گزارش عملکرد' },
   { id: 'profile', label: '👤 پروفایل من' }
 ];
 
@@ -202,6 +234,10 @@ function showApp(user) {
   const av = $('userAvatar');
   if (user.avatar) av.innerHTML = '<img src="' + user.avatar + '">'; else av.textContent = user.name ? user.name.charAt(0) : '?';
   
+  // نمایش اطلاعات شعبه
+  $('topbarBranchName').textContent = user.branchName || 'شعبه';
+  $('topbarBranchId').textContent = 'شناسه: ' + (user.branchId || '—');
+  
   $('navMenu').innerHTML = MENU_ITEMS.map(i => '<div class="nav-item" data-page="' + i.id + '">' + i.label + '</div>').join('');
   $('navMenu').querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', () => {
@@ -232,7 +268,8 @@ function loadPage(page) {
 
 function loadDashboard() {
   google.script.run.withSuccessHandler(d => {
-    $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">نمای کلی عملیات</h1></div>' +
+    $('pageContent').innerHTML = 
+      '<div class="welcome-banner"><div><h2>خوش آمدید، ' + (currentUser?.name || 'سرپرست عزیز') + ' 👋</h2><p>وضعیت گروه‌ها و عملیات تحت نظارت شما در یک نگاه.</p></div><div class="welcome-icon"></div></div>' +
       '<div class="stats-grid">' +
       '<div class="stat-card"><div class="stat-label">تعداد گروه‌ها</div><div class="stat-value">' + toFa(d.groups) + '</div></div>' +
       '<div class="stat-card green"><div class="stat-label">اعضای فعال</div><div class="stat-value">' + toFa(d.activeMembers) + '</div></div>' +
@@ -265,16 +302,20 @@ function viewMembers(groupId) {
 function loadMembers() {
   const groupId = localStorage.getItem('sv_current_group') || '';
   if (!groupId) { loadPage('groups'); return; }
-  google.script.run.withSuccessHandler(rows => {
-    let html = '<div class="page-header"><h1 class="page-title">اعضای گروه</h1><button class="btn btn-primary" onclick="openAddMember()">＋ افزودن عضو</button></div><div class="card"><div class="table-wrap"><table><thead><tr><th>شناسه</th><th>نام کامل</th><th>نام کاربری</th><th>نقش</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>';
-    if (rows.length) {
-      html += rows.map(m => '<tr><td>'+(m.workerId||'—')+'</td><td>'+m.fullName+'</td><td>'+m.username+'</td><td>'+m.role+'</td><td>'+statusBadge(m.status)+'</td><td><button class="btn btn-sm btn-danger" onclick="removeMember('+m.rowIndex+')">حذف</button></td></tr>').join('');
-    } else {
-      html += '<tr><td colspan="6" style="text-align:center;padding:20px">عضوی ثبت نشده است.</td></tr>';
-    }
-    html += '</tbody></table></div></div>';
-    $('pageContent').innerHTML = html;
-  }).withFailureHandler(e => toast(e.message, 'error')).getGroupMembers(groupId, currentToken);
+  
+  // دریافت وضعیت‌های مجاز
+  google.script.run.withSuccessHandler(statuses => {
+    google.script.run.withSuccessHandler(rows => {
+      let html = '<div class="page-header"><h1 class="page-title">اعضای گروه</h1><button class="btn btn-primary" onclick="openAddMember()">＋ افزودن عضو</button></div><div class="card"><div class="table-wrap"><table><thead><tr><th>شناسه</th><th>نام کامل</th><th>نام کاربری</th><th>نقش</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>';
+      if (rows.length) {
+        html += rows.map(m => '<tr><td>'+(m.workerId||'—')+'</td><td>'+m.fullName+'</td><td>'+m.username+'</td><td>'+m.role+'</td><td>'+statusBadge(m.status)+'</td><td><select class="zv-select" style="min-width:120px" onchange="toggleMemberStatus('+m.rowIndex+',this.value)"><option value="">تغییر وضعیت...</option>'+statuses.map(s => '<option value="'+s+'" '+(s===m.status?'selected':'')+'>'+s+'</option>').join('')+'</select> <button class="btn btn-sm btn-danger" onclick="removeMember('+m.rowIndex+')">حذف</button></td></tr>').join('');
+      } else {
+        html += '<tr><td colspan="6" style="text-align:center;padding:20px">عضوی ثبت نشده است.</td></tr>';
+      }
+      html += '</tbody></table></div></div>';
+      $('pageContent').innerHTML = html;
+    }).withFailureHandler(e => toast(e.message, 'error')).getGroupMembers(groupId, currentToken);
+  }).withFailureHandler(e => toast(e.message, 'error')).getSupervisorMemberStatuses(currentToken);
 }
 
 function openAddMember() {
@@ -296,6 +337,12 @@ function removeMember(rowIndex) {
   if (!confirm('حذف شود؟')) return;
   google.script.run.withSuccessHandler(() => { toast('حذف شد', 'success'); loadMembers(); })
   .withFailureHandler(e => toast(e.message, 'error')).removeGroupMember(rowIndex, currentToken);
+}
+
+function toggleMemberStatus(rowIndex, newStatus) {
+  if (!newStatus) return;
+  google.script.run.withSuccessHandler(() => { toast('وضعیت تغییر کرد', 'success'); loadMembers(); })
+  .withFailureHandler(e => toast(e.message, 'error')).toggleMemberStatus(rowIndex, newStatus, currentToken);
 }
 
 function loadCards() {
@@ -415,15 +462,16 @@ function fetchReports() {
 
 function loadProfile() {
   google.script.run.withSuccessHandler(p => {
-    $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">پروفایل من</h1></div>' +
-      '<div class="card"><div style="display:grid;grid-template-columns:200px 1fr;gap:20px">' +
-      '<div style="width:112px;height:112px;border-radius:50%;background:var(--orange);display:grid;place-items:center;font-size:42px;color:#fff;font-weight:900;overflow:hidden">'+(p.avatar?'<img src="'+p.avatar+'" style="width:100%;height:100%;object-fit:cover">':(p.name||'?').charAt(0))+'</div>' +
-      '<div><h3>'+p.name+'</h3><p class="zv-muted">'+p.role+' · شناسه: '+p.workerId+'</p>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">' +
-      '<div class="field"><label>نام کاربری</label><input id="newUsername" value="'+p.username+'"></div>' +
-      '<div class="field"><label>رمز عبور جدید</label><input id="newPassword" type="password" placeholder="خالی = بدون تغییر"></div>' +
-      '</div><button class="btn btn-primary" style="margin-top:16px" onclick="updateProfile()">ذخیره تغییرات</button></div></div></div>';
+    const photo = p.avatar ? '<img src="'+p.avatar+'" alt="تصویر پروفایل">' : (p.name||'?').charAt(0);
+    $('pageContent').innerHTML = 
+      '<div class="page-header"><h1 class="page-title">پروفایل من</h1></div>'+
+      '<div class="profile-layout"><div class="card profile-photo-card"><div class="profile-photo-large">'+photo+'</div><h3>'+p.name+'</h3><div class="zv-muted">'+p.role+' · شناسه: '+p.workerId+'</div><div class="profile-photo-actions" style="margin-top:16px"><button class="btn btn-primary" type="button" onclick="changeProfilePhoto()"> تغییر تصویر پروفایل</button><small>فرمت JPG، PNG یا WEBP؛ حداکثر ۸ مگابایت</small></div></div>'+
+      '<div class="card"><h3 style="margin-bottom:16px;color:var(--navy)">اطلاعات حساب</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px"><div class="field"><label>شناسه یکتا</label><input class="zv-input" value="'+p.workerId+'" disabled></div><div class="field"><label>نام و نام خانوادگی</label><input class="zv-input" value="'+p.name+'" disabled></div><div class="field"><label>نقش</label><input class="zv-input" value="'+p.role+'" disabled></div><div class="field"><label>شناسه شعبه</label><input class="zv-input" value="'+p.branchId+'" disabled></div></div><hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><h3 style="margin-bottom:12px;color:var(--navy)">ویرایش اطلاعات ورود</h3><div class="profile-form"><div class="field"><label>نام کاربری</label><input id="newUsername" class="zv-input" value="'+p.username+'"></div><div class="field"><label>رمز عبور جدید</label><input id="newPassword" class="zv-input" type="password" placeholder="خالی = بدون تغییر"></div></div><button class="btn btn-primary" style="margin-top:16px" onclick="updateProfile()">ذخیره تغییرات</button></div></div>';
   }).withFailureHandler(e => toast(e.message, 'error')).getSupervisorProfile(currentToken);
+}
+
+function changeProfilePhoto() {
+  toast('این قابلیت در حال توسعه است', 'info');
 }
 
 function updateProfile() {
@@ -439,3 +487,5 @@ document.addEventListener('keydown', e => { if (e.key === 'Enter' && $('loginPag
 </script>
 </body>
 </html>
+
+
