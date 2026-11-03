@@ -257,6 +257,43 @@ tbody tr:hover{background:#fafbfe}
 .zv-profile-layout{display:grid;grid-template-columns:minmax(220px,280px) 1fr;gap:22px;align-items:start}
 .zv-profile-photo-card{text-align:center;padding:22px}.zv-profile-photo-large{width:136px;height:136px;margin:0 auto 14px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#fff0e7;color:#bd4a0d;font-size:42px;font-weight:900;border:4px solid #fff;box-shadow:0 0 0 1px var(--line),0 8px 24px #0b17361a}.zv-profile-photo-large img{width:100%;height:100%;object-fit:cover;display:block}.zv-profile-photo-actions{display:flex;flex-direction:column;gap:8px}.zv-profile-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.zv-profile-form .field{min-width:0}.zv-profile-form .full{grid-column:1/-1}
 @media(max-width:700px){.zv-profile-layout{grid-template-columns:1fr}.zv-profile-form{grid-template-columns:1fr}.zv-profile-form .full{grid-column:auto}.zv-thread-row{align-items:flex-start;flex-direction:column}}
+
+/* ZingoVingo Weekly Planner — scoped styles only */
+.zv-planner{direction:rtl}
+.zv-planner-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.zv-planner-nav{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.zv-planner-week{font-weight:800;color:var(--navy);min-width:190px;text-align:center}
+.zv-planner-btn{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:9px;padding:8px 12px;cursor:pointer;font-size:12px;font-weight:700}
+.zv-planner-btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}
+.zv-planner-filter{min-width:190px;max-width:260px}
+.zv-planner-legend{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 14px;color:var(--muted);font-size:11px}
+.zv-planner-legend span{display:inline-flex;align-items:center;gap:5px}
+.zv-planner-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.zv-planner-scroll{overflow:auto;border:1px solid var(--line);border-radius:13px;background:#fff}
+.zv-planner-grid{display:grid;grid-template-columns:66px repeat(7,minmax(142px,1fr));min-width:1060px}
+.zv-planner-head{position:sticky;top:0;z-index:3;background:#f8f9fc;border-bottom:1px solid var(--line);padding:10px 7px;text-align:center;min-height:63px}
+.zv-planner-head.today{background:#fff0e7}
+.zv-planner-head strong{display:block;color:var(--navy);font-size:12px}
+.zv-planner-head small{color:var(--muted);font-size:11px}
+.zv-planner-timehead{background:#f8f9fc;border-bottom:1px solid var(--line)}
+.zv-planner-time{height:72px;padding:6px 7px;border-bottom:1px solid #edf0f5;color:var(--muted);font-size:10px;text-align:center;background:#fafbfc}
+.zv-planner-cell{height:72px;padding:4px;border-bottom:1px solid #edf0f5;border-right:1px solid #f0f2f6;min-width:0;position:relative}
+.zv-planner-cell.today{background:#fffdfa}
+.zv-planner-event{display:block;width:100%;text-align:right;border:0;border-right:3px solid var(--orange);border-radius:7px;background:#fff2e9;padding:5px 6px;margin:0 0 4px;color:var(--navy);font:inherit;cursor:default;overflow:hidden}
+.zv-planner-event strong{display:block;font-size:10px;line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zv-planner-event small{display:block;font-size:9px;color:#657086;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zv-planner-event.status-new{border-right-color:#4775d1;background:#edf3ff}
+.zv-planner-event.status-progress{border-right-color:#c98721;background:#fff7e8}
+.zv-planner-event.status-done{border-right-color:#15966b;background:#eaf8f2}
+.zv-planner-event.status-cancel{border-right-color:#d94c55;background:#fff0f0}
+.zv-planner-event.status-other{border-right-color:#7b61a8;background:#f4effb}
+.zv-planner-unscheduled{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line);background:#fcfcfd}
+.zv-planner-unscheduled-title{font-size:11px;color:var(--muted);font-weight:800;min-width:80px;padding-top:5px}
+.zv-planner-unscheduled .zv-planner-event{width:190px;margin:0}
+.zv-planner-empty{padding:30px;text-align:center;color:var(--muted);font-size:12px}
+.zv-planner-summary{font-size:11px;color:var(--muted);margin:0 0 10px}
+@media(max-width:700px){.zv-planner-toolbar{align-items:stretch}.zv-planner-week{min-width:130px;font-size:11px}.zv-planner-filter{max-width:none;width:100%}.zv-planner-nav{justify-content:space-between}}
+
 </style>
 </head>
 <body>
@@ -465,12 +502,116 @@ function executeRefer(cardId) {
 
 
 function zvEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+let zvWorkerPlannerState_={week:new Date(),cards:[],prevFn:'zvWorkerPlannerPrev',todayFn:'zvWorkerPlannerToday',nextFn:'zvWorkerPlannerNext'};
 function loadWorkerSchedule(){
-  $('pageContent').innerHTML='<div class="page-header"><h1 class="page-title">برنامه کاری من</h1></div><div class="card"><div id="workerSchedule"></div></div>';
-  google.script.run.withSuccessHandler(rows=>{const h=$('workerSchedule');if(!rows.length){h.textContent='برنامه کاری ثبت‌شده‌ای ندارید.';return;}
-  h.innerHTML='<div class="table-wrap"><table><thead><tr><th>کارت</th><th>شرح</th><th>زمان اجرا</th><th>وضعیت</th></tr></thead><tbody>'+rows.map(c=>'<tr><td>'+zvEsc(c.cardId)+'</td><td>'+zvEsc(c.details)+'</td><td>'+zvEsc(c.executeDateTime)+'</td><td>'+zvEsc(c.status)+'</td></tr>').join('')+'</tbody></table></div>';})
-  .withFailureHandler(e=>toast(e.message,'error')).getWorkerCards({status:'همه'},currentToken);
+  $('pageContent').innerHTML='<div class="page-header"><h1 class="page-title">برنامه کاری من</h1><p class="zv-muted">تقویم هفتگی کارت‌های تخصیص‌یافته به شما</p></div><div class="card"><div id="workerSchedule"><div class="loading"><div class="spinner"></div></div></div></div>';
+  google.script.run.withSuccessHandler(rows=>{
+    zvWorkerPlannerState_.cards=Array.isArray(rows)?rows:[];
+    zvPlannerRender_('workerSchedule',zvWorkerPlannerState_.cards,zvWorkerPlannerState_);
+  }).withFailureHandler(e=>toast(e.message||'دریافت برنامه کاری ناموفق بود','error')).getWorkerPlannerCards(currentToken);
 }
+function zvWorkerPlannerPrev(){zvWorkerPlannerState_.week.setDate(zvWorkerPlannerState_.week.getDate()-7);zvPlannerRender_('workerSchedule',zvWorkerPlannerState_.cards,zvWorkerPlannerState_);}
+function zvWorkerPlannerNext(){zvWorkerPlannerState_.week.setDate(zvWorkerPlannerState_.week.getDate()+7);zvPlannerRender_('workerSchedule',zvWorkerPlannerState_.cards,zvWorkerPlannerState_);}
+function zvWorkerPlannerToday(){zvWorkerPlannerState_.week=new Date();zvPlannerRender_('workerSchedule',zvWorkerPlannerState_.cards,zvWorkerPlannerState_);}
+
+
+// ===== Shared weekly Jalali planner renderer =====
+function zvPlannerDigits_(v){
+  return String(v==null?'':v).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+}
+function zvPlannerPad_(n){return String(n).padStart(2,'0');}
+function zvPlannerIso_(d){return d.getFullYear()+'-'+zvPlannerPad_(d.getMonth()+1)+'-'+zvPlannerPad_(d.getDate());}
+function zvPlannerParseIso_(s){
+  const m=String(s||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m?new Date(Number(m[1]),Number(m[2])-1,Number(m[3]),12,0,0):null;
+}
+function zvPlannerJalali_(d){
+  try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}).format(d);}
+  catch(e){return new Intl.DateTimeFormat('fa-IR',{year:'numeric',month:'2-digit',day:'2-digit'}).format(d);}
+}
+function zvPlannerWeekday_(d){
+  return new Intl.DateTimeFormat('fa-IR',{weekday:'long'}).format(d);
+}
+function zvPlannerTime_(s){
+  const m=zvPlannerDigits_(s).match(/(\d{1,2}):(\d{2})/);
+  return m?zvPlannerPad_(Number(m[1]))+':'+m[2]:'';
+}
+function zvPlannerStatusClass_(s){
+  s=String(s||'');
+  if(/تکمیل|انجام شده|completed/i.test(s))return 'status-done';
+  if(/لغو|مرجوع|cancel/i.test(s))return 'status-cancel';
+  if(/جدید|new/i.test(s))return 'status-new';
+  if(/در حال|progress|اجرا/i.test(s))return 'status-progress';
+  return 'status-other';
+}
+function zvPlannerEsc_(s){
+  return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function zvPlannerWeekStart_(d){
+  const x=new Date(d.getFullYear(),d.getMonth(),d.getDate(),12,0,0);
+  x.setDate(x.getDate()-((x.getDay()+1)%7)); // شنبه
+  return x;
+}
+function zvPlannerCardHtml_(c){
+  const tm=zvPlannerTime_(c.execTimeKey);
+  const title=c.details||c.serviceType||c.customer||'کارت کاری';
+  const who=c.workerName&&c.workerName!=='—'?' · '+c.workerName:'';
+  return '<div class="zv-planner-event '+zvPlannerStatusClass_(c.status)+'" title="'+zvPlannerEsc_(c.cardId+' | '+title+' | '+(tm||'بدون ساعت')+' | '+c.status)+'">'+
+    '<strong>'+zvPlannerEsc_(tm?tm+' · ':'')+zvPlannerEsc_(c.cardId)+'</strong>'+
+    '<small>'+zvPlannerEsc_(title)+zvPlannerEsc_(who)+'</small>'+
+    '<small>'+zvPlannerEsc_(c.status||'—')+'</small></div>';
+}
+function zvPlannerRender_(rootId, cards, state, options){
+  const root=$(rootId); if(!root)return;
+  const start=zvPlannerWeekStart_(state.week);
+  const days=Array.from({length:7},(_,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);return d;});
+  const end=new Date(start);end.setDate(end.getDate()+6);
+  const fmt=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'long'});
+  const weekLabel=fmt.format(start)+' · '+zvPlannerJalali_(start)+' تا '+zvPlannerJalali_(end);
+  const todayKey=zvPlannerIso_(new Date());
+  const inWeek=(cards||[]).filter(c=>c.execDateKey&&days.some(d=>zvPlannerIso_(d)===c.execDateKey));
+  const noTime=inWeek.filter(c=>!zvPlannerTime_(c.execTimeKey));
+  const hours=Array.from({length:18},(_,i)=>i+6); // 06:00 تا 23:00
+  const grid=[];
+  grid.push('<div class="zv-planner-grid"><div class="zv-planner-head zv-planner-timehead">ساعت</div>');
+  days.forEach(d=>grid.push('<div class="zv-planner-head '+(zvPlannerIso_(d)===todayKey?'today':'')+'"><strong>'+zvPlannerEsc_(zvPlannerWeekday_(d))+'</strong><small>'+zvPlannerEsc_(zvPlannerJalali_(d))+'</small></div>'));
+  const byDayHour={};
+  inWeek.forEach(c=>{
+    const t=zvPlannerTime_(c.execTimeKey); if(!t)return;
+    const h=Number(t.slice(0,2)); const key=c.execDateKey+'_'+h;
+    (byDayHour[key]=byDayHour[key]||[]).push(c);
+  });
+  hours.forEach(h=>{
+    grid.push('<div class="zv-planner-time">'+zvPlannerPad_(h)+':۰۰</div>');
+    days.forEach(d=>{
+      const key=zvPlannerIso_(d)+'_'+h;
+      const list=(byDayHour[key]||[]).sort((a,b)=>zvPlannerTime_(a.execTimeKey).localeCompare(zvPlannerTime_(b.execTimeKey)));
+      grid.push('<div class="zv-planner-cell '+(zvPlannerIso_(d)===todayKey?'today':'')+'">'+list.map(zvPlannerCardHtml_).join('')+'</div>');
+    });
+  });
+  grid.push('</div>');
+  const count=inWeek.length;
+  let filterHtml='';
+  if(options&&options.filterHtml)filterHtml=options.filterHtml;
+  root.innerHTML='<div class="zv-planner">'+
+    '<div class="zv-planner-toolbar"><div class="zv-planner-nav">'+
+    '<button class="zv-planner-btn" type="button" onclick="'+state.prevFn+'()">هفته قبل</button>'+
+    '<button class="zv-planner-btn primary" type="button" onclick="'+state.todayFn+'()">هفته جاری</button>'+
+    '<button class="zv-planner-btn" type="button" onclick="'+state.nextFn+'()">هفته بعد</button>'+
+    '<span class="zv-planner-week">'+weekLabel+'</span></div>'+filterHtml+'</div>'+
+    '<div class="zv-planner-summary">تعداد کارت‌های این هفته: '+toFa(count)+' · کارت‌های بدون تاریخ اجرا در تقویم زمان‌بندی نمایش داده نمی‌شوند.</div>'+
+    '<div class="zv-planner-legend">'+
+    '<span><i class="zv-planner-dot" style="background:#4775d1"></i>جدید</span>'+
+    '<span><i class="zv-planner-dot" style="background:#c98721"></i>در حال انجام</span>'+
+    '<span><i class="zv-planner-dot" style="background:#15966b"></i>تکمیل شده</span>'+
+    '<span><i class="zv-planner-dot" style="background:#d94c55"></i>لغو / مرجوع</span></div>'+
+    '<div class="zv-planner-scroll">'+
+    (noTime.length?'<div class="zv-planner-unscheduled"><span class="zv-planner-unscheduled-title">بدون ساعت</span>'+noTime.map(zvPlannerCardHtml_).join('')+'</div>':'')+
+    grid.join('')+
+    '</div></div>';
+}
+
 function loadWorkerMessages(){
   $('pageContent').innerHTML='<div class="page-header"><h1 class="page-title">ارتباط با سرپرست</h1><button class="btn btn-secondary" onclick="loadWorkerMessages()">بروزرسانی</button></div><div class="card"><div id="workerThreads">در حال دریافت…</div></div><div id="workerThreadDetail"></div>';
   google.script.run.withSuccessHandler(rows=>{zvSetUnreadMessages_(rows);const h=$('workerThreads');if(!rows.length){h.textContent='مکاتبه‌ای ثبت نشده است. از کارت‌های کاری خود می‌توانید پیام جدید ارسال کنید.';return;}
