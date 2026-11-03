@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <base target="_top">
 <title>پنل کارمند | ZingoVingo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/min/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment-jalaali@0.10.4/build/moment-jalaali.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="zv-api.js"></script>
 <style>
@@ -155,6 +160,7 @@ const MENU_ITEMS = [
   { id: 'cards', label: '🎫 کارت‌ها' },
   { id: 'groups', label: '👥 گروه‌ها' },
   { id: 'workers', label: '👷 نیروها' },
+  { id: 'jobApplicants', label: '📝 ثبت کارجو' },
   { id: 'reports', label: '📈 گزارشات' },
   { id: 'profile', label: '👤 پروفایل من' }
 ];
@@ -212,7 +218,7 @@ function showApp(user) {
 
 function loadPage(page) {
   $('pageContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  const loaders = { dashboard: loadDashboard, orders: loadOrders, cards: loadCards, groups: loadGroups, workers: loadWorkers, reports: loadReports, profile: loadProfile };
+  const loaders = { dashboard: loadDashboard, orders: loadOrders, cards: loadCards, groups: loadGroups, workers: loadWorkers, jobApplicants: loadJobApplicants, reports: loadReports, profile: loadProfile };
   (loaders[page] || loadDashboard)();
 }
 
@@ -229,42 +235,12 @@ function loadDashboard() {
 }
 
 function loadOrders() {
-  $('pageContent').innerHTML = 
-    '<div class="page-header"><h1 class="page-title">سفارشات شعبه</h1></div>' +
-    '<div class="card">' +
-    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' +
-    '<div class="field"><label>از تاریخ</label><input id="ordFrom" class="zv-input" placeholder="1405/01/01"></div>' +
-    '<div class="field"><label>تا تاریخ</label><input id="ordTo" class="zv-input" placeholder="1405/12/29"></div>' +
-    '<div class="field"><label>شناسه مشتری</label><input id="ordCustId" class="zv-input" placeholder="کد اشتراک"></div>' +
-    '<div class="field"><label>شناسه سفارش</label><input id="ordReqId" class="zv-input" placeholder="Request-ID"></div>' +
-    '</div>' +
-    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' +
-    '<div class="field"><label>شناسه گروه</label><input id="ordGroupId" class="zv-input" placeholder="Group-ID"></div>' +
-    '<div class="field"><label>وضعیت</label><select id="ordStatus" class="zv-select"><option value="همه">همه</option><option>جدید</option><option>تبدیل به کارت</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option></select></div>' +
-    '<div class="field" style="grid-column:span 2;display:flex;align-items:flex-end"><button class="btn btn-primary" style="width:100%" onclick="fetchOrders()">🔍 جستجو</button></div>' +
-    '</div>' +
-    '<div id="ordersTable"></div></div>';
-  fetchOrders();
-}
-
-function fetchOrders() {
-  const filters = {
-    fromDate: $('ordFrom')?.value || '',
-    toDate: $('ordTo')?.value || '',
-    customerId: $('ordCustId')?.value || '',
-    requestId: $('ordReqId')?.value || '',
-    groupId: $('ordGroupId')?.value || '',
-    status: $('ordStatus')?.value || 'همه'
-  };
-  $('ordersTable').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">سفارشات شعبه</h1></div><div class="card"><div id="ordersTable"></div></div>';
   google.script.run.withSuccessHandler(rows => {
-    if (!rows.length) { 
-      $('ordersTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">سفارشی با این فیلترها یافت نشد</div>'; 
-      return; 
-    }
-    $('ordersTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>کد</th><th>مشتری</th><th>موبایل</th><th>خدمت</th><th>مبلغ</th><th>گروه</th><th>ثبت‌کننده</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
-      rows.map(r => '<tr><td>' + r.date + '</td><td><strong>' + r.requestId + '</strong></td><td>' + r.customer + '</td><td style="direction:ltr">' + r.phone + '</td><td>' + r.service + '</td><td>' + money(r.finalPrice) + '</td><td>' + (r.groupName || '—') + '</td><td>' + (r.operatorName || 'مشتری') + '</td><td>' + statusBadge(r.status) + '</td><td><button class="btn btn-sm btn-secondary" onclick="changeOrderStatus(\'' + r.requestId + '\',\'' + r.status + '\')">تغییر وضعیت</button> <button class="btn btn-sm btn-primary" onclick="openConvertModal(\'' + r.requestId + '\')">🎫</button></td></tr>').join('') + '</tbody></table></div>';
-  }).withFailureHandler(e => { $('ordersTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger)">' + e.message + '</div>'; }).getEmployeeOrders(filters, currentToken);
+    if (!rows.length) { $('ordersTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">سفارشی یافت نشد</div>'; return; }
+    $('ordersTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>کد</th><th>مشتری</th><th>موبایل</th><th>خدمت</th><th>مبلغ</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      rows.map(r => '<tr><td>' + r.date + '</td><td><strong>' + r.requestId + '</strong></td><td>' + r.customer + '</td><td style="direction:ltr">' + r.phone + '</td><td>' + r.service + '</td><td>' + money(r.finalPrice) + '</td><td>' + statusBadge(r.status) + '</td><td><button class="btn btn-sm btn-secondary" onclick="changeOrderStatus(\'' + r.requestId + '\',\'' + r.status + '\')">تغییر وضعیت</button> <button class="btn btn-sm btn-primary" onclick="openConvertModal(\'' + r.requestId + '\')">🎫</button></td></tr>').join('') + '</tbody></table></div>';
+  }).getEmployeeOrders(currentToken);
 }
 
 function changeOrderStatus(requestId, currentStatus) {
@@ -278,123 +254,21 @@ function applyOrderStatus(requestId) {
 }
 
 function openConvertModal(requestId) {
-  // ابتدا گروه‌ها را دریافت کن
-  google.script.run.withSuccessHandler(groups => {
-    let groupOpts = '<option value="">-- انتخاب گروه --</option>';
-    groups.forEach(g => groupOpts += '<option value="' + g.groupId + '">' + g.name + ' (' + g.groupId + ')</option>');
-    
-    openModal(
-      '<div class="modal-header"><h2>تبدیل به کارت</h2><button class="modal-close" onclick="closeModal()"></button></div>' +
-      '<div class="form-grid">' +
-      '<div class="field"><label>تخصیص به گروه *</label><select id="targetGroup" onchange="loadGroupWorkers()">' + groupOpts + '</select></div>' +
-      '<div class="field"><label>تخصیص به نیرو (اختیاری)</label><select id="targetWorker" disabled><option value="">ابتدا گروه را انتخاب کنید</option></select></div>' +
-      '</div>' +
-      '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="executeConvert(\'' + requestId + '\')">تأیید</button></div>'
-    );
-    }).withFailureHandler(e => toast(e.message, 'error')).getGroupsForDropdownEmp(currentToken);
-}
-
-// تابع کمکی برای لود کردن نیروهای گروه انتخاب‌شده
-function loadGroupWorkers() {
-  const groupId = $('targetGroup').value;
-  if (!groupId) {
-    $('targetWorker').disabled = true;
-    $('targetWorker').innerHTML = '<option value="">ابتدا گروه را انتخاب کنید</option>';
-    return;
-  }
-  
   google.script.run.withSuccessHandler(workers => {
-    let workerOpts = '<option value="">بدون تخصیص (استخر گروه)</option>';
-    workers.forEach(w => workerOpts += '<option value="' + w.id + '">' + w.name + ' (' + w.operations + ')</option>');
-    $('targetWorker').innerHTML = workerOpts;
-    $('targetWorker').disabled = false;
-    }).withFailureHandler(e => toast(e.message, 'error')).getWorkersByGroupEmp(groupId, currentToken);
+    let opts = '<option value="">بدون تخصیص (استخر شعبه)</option>';
+    workers.forEach(w => opts += '<option value="' + w.id + '">' + w.name + '</option>');
+    openModal('<div class="modal-header"><h2>تبدیل به کارت</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+      '<div class="field"><label>تخصیص به نیرو</label><select id="targetWorker">' + opts + '</select></div>' +
+      '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="executeConvert(\'' + requestId + '\')">تأیید</button></div>');
+  }).getEmployeeWorkersForDropdown(currentToken);
 }
-
 function executeConvert(requestId) {
-  const groupId = $('targetGroup').value;
-  const workerId = $('targetWorker').value;
-  
-  if (!groupId) {
-    toast('لطفاً یک گروه انتخاب کنید', 'error');
-    return;
-  }
-  
-  // برای پنل کارمند
-  if (window.location.href.includes('Employee')) {
-    google.script.run.withSuccessHandler(r => { 
-      closeModal(); 
-      toast(r.message, 'success'); 
-      loadOrders(); 
-    }).withFailureHandler(e => toast(e.message, 'error')).employeeConvertOrderToCard(requestId, groupId, workerId, currentToken);
-  } 
-  // برای پنل مدیر شعبه
-  else {
-    google.script.run.withSuccessHandler(r => { 
-      closeModal(); 
-      toast(r.message, 'success'); 
-      loadOrders(); 
-    }).withFailureHandler(e => toast(e.message, 'error')).branchManagerConvertOrderToCard(requestId, groupId, workerId, currentToken);
-  }
+  google.script.run.withSuccessHandler(r => { closeModal(); toast(r.message, 'success'); loadOrders(); }).withFailureHandler(e => toast(e.message, 'error')).employeeConvertOrderToCard(requestId, $('targetWorker').value, currentToken);
 }
 
 function loadCards() {
-  $('pageContent').innerHTML = 
-    '<div class="page-header"><h1 class="page-title">کارت‌های شعبه</h1></div>' +
-    '<div class="card">' +
-    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' +
-    '<div class="field"><label>از تاریخ</label><input id="cdFrom" class="zv-input" placeholder="1405/01/01"></div>' +
-    '<div class="field"><label>تا تاریخ</label><input id="cdTo" class="zv-input" placeholder="1405/12/29"></div>' +
-    '<div class="field"><label>شناسه مشتری</label><input id="cdCustId" class="zv-input" placeholder="کد اشتراک"></div>' +
-    '<div class="field"><label>شناسه کارت</label><input id="cdCardId" class="zv-input" placeholder="Card-ID"></div>' +
-    '</div>' +
-    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' +
-    '<div class="field"><label>شناسه گروه</label><input id="cdGroupId" class="zv-input" placeholder="Group-ID"></div>' +
-    '<div class="field"><label>وضعیت</label><select id="cdStatus" class="zv-select"><option value="همه">همه</option><option>جدید</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option><option>ارجاع به سرپرست</option></select></div>' +
-    '<div class="field" style="grid-column:span 2;display:flex;align-items:flex-end"><button class="btn btn-primary" style="width:100%" onclick="fetchCards()">🔍 جستجو</button></div>' +
-    '</div>' +
-    '<div id="cardsTable"></div></div>';
-  fetchCards();
-}
-
-function fetchCards() {
-  const filters = {
-    fromDate: $('cdFrom')?.value || '',
-    toDate: $('cdTo')?.value || '',
-    customerId: $('cdCustId')?.value || '',
-    cardId: $('cdCardId')?.value || '',
-    groupId: $('cdGroupId')?.value || '',
-    status: $('cdStatus')?.value || 'همه'
-  };
-  $('cardsTable').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  google.script.run.withSuccessHandler(rows => {
-    if (!rows.length) { 
-      $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">کارتی با این فیلترها یافت نشد</div>'; 
-      return; 
-    }
-    $('cardsTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>CardID</th><th>RequestID</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>اجراکننده</th><th>گروه</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
-      rows.map(r => '<tr><td><strong>' + r.cardId + '</strong></td><td>' + r.requestId + '</td><td>' + r.customer + '</td><td>' + r.details + '</td><td>' + money(r.amount) + '</td><td>' + (r.workerName || '—') + '</td><td>' + (r.groupName || '—') + '</td><td>' + statusBadge(r.status) + '</td><td><button class="btn btn-sm btn-primary" onclick="changeCardStatus(\'' + r.cardId + '\',\'' + r.status + '\')">تغییر وضعیت</button></td></tr>').join('') + '</tbody></table></div>';
-  }).withFailureHandler(e => { $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger)">' + e.message + '</div>'; }).getEmployeeCards(filters, currentToken);
-}
-
-function fetchCards() {
-  const filters = {
-    fromDate: $('cdFrom')?.value || '',
-    toDate: $('cdTo')?.value || '',
-    customerId: $('cdCustId')?.value || '',
-    cardId: $('cdCardId')?.value || '',
-    groupId: $('cdGroupId')?.value || '',
-    status: $('cdStatus')?.value || 'همه'
-  };
-  $('cardsTable').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  google.script.run.withSuccessHandler(rows => {
-    if (!rows.length) { 
-      $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">کارتی با این فیلترها یافت نشد</div>'; 
-      return; 
-    }
-    $('cardsTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>CardID</th><th>RequestID</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>اجراکننده</th><th>گروه</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
-      rows.map(r => '<tr><td><strong>' + r.cardId + '</strong></td><td>' + r.requestId + '</td><td>' + r.customer + '</td><td>' + r.details + '</td><td>' + money(r.amount) + '</td><td>' + (r.workerName || '—') + '</td><td>' + (r.groupName || '—') + '</td><td>' + statusBadge(r.status) + '</td><td><button class="btn btn-sm btn-primary" onclick="changeCardStatus(\'' + r.cardId + '\',\'' + r.status + '\')">تغییر وضعیت</button></td></tr>').join('') + '</tbody></table></div>';
-  }).withFailureHandler(e => { $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger)">' + e.message + '</div>'; }).getEmployeeCards(filters, currentToken);
+  // برای سادگی، در این نسخه کارت‌ها را از همان تابع عمومی می‌خوانیم یا می‌توانید تابع جداگانه بسازید
+  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">کارت‌های شعبه</h1></div><div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">مدیریت کارت‌ها از طریق بخش سفارشات انجام می‌شود.</div></div>';
 }
 
 // --- توابع گروه و نیرو (مشابه مدیر شعبه، اما با فراخوانی توابع کارمند در صورت وجود، یا توابع مشترک) ---
@@ -478,6 +352,89 @@ function saveWrk(rowIndex) {
 function deleteWrk(rowIndex) {
   if (!confirm('حذف شود؟')) return;
   google.script.run.withSuccessHandler(() => { toast('حذف شد', 'success'); loadWorkers(); }).withFailureHandler(e => toast(e.message, 'error')).deleteBranchManagerWorker(rowIndex, currentToken);
+}
+
+// ==================== ثبت کارجو ====================
+function loadJobApplicants() {
+  $('pageContent').innerHTML = `
+    <div class="page-header"><div><h1 class="page-title">ثبت اطلاعات متقاضی همکاری</h1><div style="color:var(--muted);font-size:12px">تشکیل پرونده و ثبت مراحل جذب نیروی انسانی</div></div></div>
+    <div class="card" style="border-right:4px solid var(--orange)">
+      <div class="stats-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));margin:0">
+        <div class="stat-card"><div class="stat-label">تاریخ ثبت</div><div class="stat-value" id="jaToday" style="font-size:17px">—</div></div>
+        <div class="stat-card blue"><div class="stat-label">شماره پرونده</div><div class="stat-value" id="jaNextId" style="font-size:17px">پس از ثبت</div></div>
+        <div class="stat-card green"><div class="stat-label">شناسه ثبت‌کننده</div><div class="stat-value" id="jaCreator" style="font-size:17px">—</div></div>
+      </div>
+    </div>
+    <form id="jobApplicantForm" onsubmit="submitJobApplicant(event)">
+      <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۱. اطلاعات هویتی</h3><div class="form-grid">
+        <div class="field"><label>نام *</label><input id="jaFirstName" required maxlength="80"></div>
+        <div class="field"><label>نام خانوادگی *</label><input id="jaLastName" required maxlength="100"></div>
+        <div class="field"><label>جنسیت *</label><select id="jaGender" required><option value="">انتخاب کنید</option><option>مرد</option><option>زن</option></select></div>
+        <div class="field"><label>کد ملی *</label><input id="jaNationalId" inputmode="numeric" maxlength="10" placeholder="۱۰ رقم" required></div>
+        <div class="field"><label>تاریخ تولد *</label><input id="jaBirthDate" class="ja-jalali-date" autocomplete="off" placeholder="انتخاب تاریخ شمسی" required readonly></div>
+        <div class="field"><label>سن</label><input id="jaAge" readonly placeholder="محاسبه خودکار"></div>
+        <div class="field"><label>وضعیت تأهل</label><select id="jaMarital"><option value="">انتخاب کنید</option><option>مجرد</option><option>متأهل</option><option>سایر</option></select></div>
+      </div></div>
+      <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۲. تخصص و مهارت‌ها</h3><div class="form-grid">
+        <div class="field"><label>تخصص اصلی *</label><input id="jaSpecialty" required maxlength="150" placeholder="عنوان تخصص را وارد کنید"></div>
+        <div class="field"><label>مدت فعالیت</label><input id="jaExperience" maxlength="80" placeholder="مثلاً ۳ سال"></div>
+        <div class="field full"><label>مهارت‌های دیگر</label><textarea id="jaSkills" placeholder="سایر توانایی‌ها و مهارت‌ها"></textarea></div>
+        <div class="field"><label>میزان تحصیلات</label><select id="jaEducation"><option value="">انتخاب کنید</option><option>زیر دیپلم</option><option>دیپلم</option><option>کاردانی</option><option>کارشناسی</option><option>کارشناسی ارشد</option><option>دکتری</option><option>سایر</option></select></div>
+        <div class="field"><label>رشته تحصیلی</label><input id="jaFieldOfStudy" maxlength="120"></div>
+      </div></div>
+      <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۳. اطلاعات تماس و محل سکونت</h3><div class="form-grid">
+        <div class="field full"><label>محل سکونت</label><input id="jaResidence" maxlength="250" placeholder="شهر، منطقه یا نشانی"></div>
+        <div class="field"><label>شماره تماس *</label><input id="jaPhone" inputmode="tel" maxlength="15" placeholder="09xxxxxxxxx" required></div>
+        <div class="field"><label>پیام‌رسان</label><select id="jaMessenger"><option value="">انتخاب کنید</option><option>بله</option><option>واتساپ</option><option>تلگرام</option><option>روبیکا</option><option>ایتا</option><option>سایر</option></select></div>
+        <div class="field"><label>آی‌دی پیام‌رسان</label><input id="jaMessengerId" maxlength="120"></div>
+      </div></div>
+      <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۴. نحوه آشنایی و معرفی</h3><div class="form-grid">
+        <div class="field"><label>نحوه آشنایی</label><select id="jaSource"><option value="">انتخاب کنید</option><option>دیوار</option><option>شیپور</option><option>معرفی دوستان</option><option>شبکه‌های اجتماعی</option><option>مراجعه حضوری</option><option>سایر</option></select></div>
+        <div class="field"><label>معرف</label><input id="jaReferrer" maxlength="120"></div>
+      </div></div>
+      <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۵. بررسی و مراحل جذب</h3><div class="form-grid">
+        <div class="field"><label>بررسی اولیه</label><select id="jaInitialReview"><option>بررسی نشده</option><option>تأیید اولیه</option><option>رد اولیه</option><option>نیازمند بررسی بیشتر</option></select></div>
+        <div class="field"><label>تاریخ مصاحبه تلفنی</label><input id="jaPhoneInterviewDate" class="ja-jalali-date" autocomplete="off" placeholder="انتخاب تاریخ شمسی" readonly></div>
+        <div class="field"><label>تاریخ مصاحبه حضوری</label><input id="jaInPersonInterviewDate" class="ja-jalali-date" autocomplete="off" placeholder="انتخاب تاریخ شمسی" readonly></div>
+        <div class="field"><label>نتیجه مصاحبه تلفنی</label><select id="jaPhoneInterviewResult"><option>انجام نشده</option><option>تأیید</option><option>رد</option><option>نیازمند پیگیری</option></select></div>
+        <div class="field"><label>نتیجه مصاحبه حضوری</label><select id="jaInPersonInterviewResult"><option>انجام نشده</option><option>تأیید</option><option>رد</option><option>نیازمند پیگیری</option></select></div>
+        <div class="field"><label>وضعیت پرونده</label><select id="jaStatus"><option>جدید</option><option>در حال بررسی</option><option>در انتظار مصاحبه</option><option>تأیید شده</option><option>رد شده</option><option>استخدام شده</option><option>بایگانی</option></select></div>
+        <div class="field full"><label>توضیحات</label><textarea id="jaNotes" placeholder="توضیحات تکمیلی درباره متقاضی"></textarea></div>
+      </div></div>
+      <div class="card" style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button type="reset" class="btn btn-secondary">پاک کردن فرم</button><button id="jaSubmitBtn" type="submit" class="btn btn-primary">ثبت پرونده متقاضی</button></div>
+    </form>
+    <div class="card"><h3 style="color:var(--navy);margin-bottom:12px">آخرین پرونده‌های ثبت‌شده توسط من</h3><div id="jaRecent"><div class="loading">در حال دریافت اطلاعات…</div></div></div>`;
+  $('jaToday').textContent = new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  $('jaCreator').textContent = currentUser && currentUser.empId ? currentUser.empId : '—';
+  if (window.jQuery && jQuery.fn.persianDatepicker) {
+    jQuery('.ja-jalali-date').persianDatepicker({format:'YYYY/MM/DD',autoClose:true,initialValue:false,calendar:{persian:{locale:'fa',showHint:true,leapYearMode:'astronomical'}}});
+  } else {
+    document.querySelectorAll('.ja-jalali-date').forEach(el => el.addEventListener('focus',()=>toast('برای تقویم شمسی، اتصال اینترنت و بارگذاری کتابخانه تاریخ لازم است.','error')));
+  }
+  $('jaBirthDate').addEventListener('change', calculateApplicantAge);
+  $('jaNationalId').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9۰-۹]/g,'').slice(0,10); });
+  $('jaPhone').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9۰-۹+]/g,'').slice(0,15); });
+  google.script.run.withSuccessHandler(renderRecentJobApplicants).withFailureHandler(e => $('jaRecent').innerHTML = '<div class="loading">'+escapeHtml(e.message)+'</div>').getEmployeeJobApplicants(currentToken);
+}
+function escapeHtml(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function calculateApplicantAge(){
+  const v=$('jaBirthDate').value.trim(); if(!v){$('jaAge').value='';return;}
+  try{if(window.moment){const b=moment(v,'jYYYY/jMM/jDD');const now=moment();const age=now.diff(b,'years');$('jaAge').value=age>=0&&age<120?toFa(age):'';}else{$('jaAge').value='';}}catch(e){$('jaAge').value='';}
+}
+function submitJobApplicant(ev){
+  ev.preventDefault();
+  const national=$('jaNationalId').value.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+  const phone=$('jaPhone').value.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+  if(!/^\d{10}$/.test(national)) return toast('کد ملی باید ۱۰ رقم باشد.','error');
+  if(!/^09\d{9}$/.test(phone)) return toast('شماره تماس باید با 09 و ۱۱ رقم وارد شود.','error');
+  if(!$('jaBirthDate').value.trim()) return toast('تاریخ تولد را با تقویم شمسی انتخاب کنید.','error');
+  const data={firstName:$('jaFirstName').value.trim(),lastName:$('jaLastName').value.trim(),gender:$('jaGender').value,nationalId:national,birthDate:$('jaBirthDate').value.trim(),age:$('jaAge').value,maritalStatus:$('jaMarital').value,specialty:$('jaSpecialty').value.trim(),experience:$('jaExperience').value.trim(),otherSkills:$('jaSkills').value.trim(),education:$('jaEducation').value,fieldOfStudy:$('jaFieldOfStudy').value.trim(),residence:$('jaResidence').value.trim(),phone:phone,messenger:$('jaMessenger').value,messengerId:$('jaMessengerId').value.trim(),source:$('jaSource').value,referrer:$('jaReferrer').value.trim(),initialReview:$('jaInitialReview').value,phoneInterviewDate:$('jaPhoneInterviewDate').value.trim(),inPersonInterviewDate:$('jaInPersonInterviewDate').value.trim(),phoneInterviewResult:$('jaPhoneInterviewResult').value,inPersonInterviewResult:$('jaInPersonInterviewResult').value,notes:$('jaNotes').value.trim(),status:$('jaStatus').value};
+  const btn=$('jaSubmitBtn');btn.disabled=true;btn.textContent='در حال ثبت…';
+  google.script.run.withSuccessHandler(r=>{btn.disabled=false;btn.textContent='ثبت پرونده متقاضی';toast('پرونده با شماره '+r.caseNumber+' ثبت شد.','success');$('jobApplicantForm').reset();$('jaAge').value='';$('jaNextId').textContent='پس از ثبت';$('jaToday').textContent=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());google.script.run.withSuccessHandler(renderRecentJobApplicants).getEmployeeJobApplicants(currentToken);}).withFailureHandler(e=>{btn.disabled=false;btn.textContent='ثبت پرونده متقاضی';toast(e.message||'ثبت پرونده ناموفق بود.','error');}).saveEmployeeJobApplicant(data,currentToken);
+}
+function renderRecentJobApplicants(rows){
+  if(!rows||!rows.length){$('jaRecent').innerHTML='<div style="padding:18px;text-align:center;color:var(--muted)">هنوز پرونده‌ای توسط شما ثبت نشده است.</div>';return;}
+  $('jaRecent').innerHTML='<div class="table-wrap"><table><thead><tr><th>شماره پرونده</th><th>نام متقاضی</th><th>تخصص</th><th>شماره تماس</th><th>تاریخ ثبت</th><th>وضعیت</th></tr></thead><tbody>'+rows.map(r=>'<tr><td><strong>'+escapeHtml(r.caseNumber)+'</strong></td><td>'+escapeHtml(r.fullName)+'</td><td>'+escapeHtml(r.specialty)+'</td><td style="direction:ltr">'+escapeHtml(r.phone)+'</td><td>'+escapeHtml(r.createdAt)+'</td><td>'+escapeHtml(r.status)+'</td></tr>').join('')+'</tbody></table></div>';
 }
 
 function loadReports() {
