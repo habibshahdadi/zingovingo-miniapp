@@ -294,6 +294,35 @@ tbody tr:hover{background:#fafbfe}
 .zv-planner-summary{font-size:11px;color:var(--muted);margin:0 0 10px}
 @media(max-width:700px){.zv-planner-toolbar{align-items:stretch}.zv-planner-week{min-width:130px;font-size:11px}.zv-planner-filter{max-width:none;width:100%}.zv-planner-nav{justify-content:space-between}}
 
+
+/* ZingoVingo expandable operational cards */
+.zv-card-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,390px),1fr));gap:16px;margin-top:14px}
+.zv-work-card{background:#fff;border:1px solid var(--line);border-radius:17px;overflow:hidden;box-shadow:0 7px 22px rgba(11,23,54,.07);transition:.2s}
+.zv-work-card:hover{box-shadow:0 12px 28px rgba(11,23,54,.11);transform:translateY(-1px)}
+.zv-work-card-head{padding:16px 18px 12px;display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+.zv-work-card-title{font-size:16px;font-weight:900;color:var(--navy);margin:0 0 4px}
+.zv-work-card-id{font-size:10px;color:var(--muted);direction:ltr;text-align:right}
+.zv-work-card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.zv-work-card-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:0 18px 15px}
+.zv-work-card-stat{background:#f7f8fb;border-radius:10px;padding:9px 11px;min-width:0}
+.zv-work-card-stat small{display:block;color:var(--muted);font-size:10px}
+.zv-work-card-stat b{display:block;color:var(--navy);font-size:12px;overflow-wrap:anywhere}
+.zv-work-card-toggle{width:calc(100% - 36px);margin:0 18px 16px;border:1px solid #dfe4ed;background:#f7f8fb;color:var(--navy);border-radius:10px;padding:10px 12px;font-weight:800;cursor:pointer}
+.zv-work-card-toggle:hover{border-color:var(--orange);color:var(--orange)}
+.zv-work-card-detail{border-top:1px solid var(--line);padding:16px 18px 18px;background:#fff}
+.zv-detail-section{margin-bottom:15px}.zv-detail-title{font-size:12px;font-weight:900;color:var(--navy);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.zv-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.zv-detail-item{background:#fafbfc;border:1px solid #edf0f5;border-radius:9px;padding:9px 10px;min-width:0}
+.zv-detail-item small{display:block;color:var(--muted);font-size:10px}.zv-detail-item b{display:block;color:var(--text);font-size:12px;overflow-wrap:anywhere;white-space:pre-wrap}
+.zv-detail-wide{grid-column:1/-1}
+.zv-detail-money{background:#fff7f1;border:1px solid #ffe0ce;border-radius:11px;padding:12px}
+.zv-detail-total{display:flex;justify-content:space-between;align-items:center;color:var(--navy);font-weight:900;margin-top:8px;padding-top:8px;border-top:1px solid #ffd6bf}
+.zv-card-actions{border-top:1px dashed #dfe4ed;padding-top:13px;margin-top:14px}
+.zv-card-actions-title{font-size:12px;font-weight:900;color:var(--navy);margin-bottom:10px}
+.zv-card-actions-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.zv-card-actions-grid .btn{width:100%;justify-content:center}
+@media(max-width:600px){.zv-card-list{grid-template-columns:1fr}.zv-work-card-head{padding:14px}.zv-work-card-summary{padding:0 14px 13px}.zv-work-card-toggle{width:calc(100% - 28px);margin:0 14px 14px}.zv-work-card-detail{padding:14px}.zv-detail-grid{grid-template-columns:1fr 1fr}.zv-card-actions-grid{grid-template-columns:1fr 1fr}}
+
 </style>
 </head>
 <body>
@@ -467,14 +496,17 @@ function loadCards() {
     '<div class="card"><div class="filters"><div class="field"><label>وضعیت</label><select id="cdStatus" onchange="fetchCards()"><option value="همه">همه</option><option>جدید</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option><option>ارجاع به سرپرست</option></select></div></div><div id="cardsTable"></div></div>';
   fetchCards();
 }
+function zvCardEsc(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function zvCardField(label,value,wide){if(value===undefined||value===null||String(value).trim()==='')return '';return '<div class="zv-detail-item '+(wide?'zv-detail-wide':'')+'"><small>'+zvCardEsc(label)+'</small><b>'+zvCardEsc(value)+'</b></div>';}
+function zvRenderWorkerCard(r){const id=zvCardEsc(r.cardId),status=zvCardEsc(r.status||'نامشخص');return '<article class="zv-work-card" id="zv-card-'+id+'"><div class="zv-work-card-head"><div style="min-width:0"><h3 class="zv-work-card-title">'+zvCardEsc(r.details||r.serviceType||'درخواست خدمت')+'</h3><div class="zv-work-card-id">'+id+(r.requestId?' · '+zvCardEsc(r.requestId):'')+'</div><div class="zv-work-card-tags">'+statusBadge(status)+(r.actionType?'<span class="badge badge-new">'+zvCardEsc(r.actionType)+'</span>':'')+'</div></div></div><div class="zv-work-card-summary"><div class="zv-work-card-stat"><small>مشتری</small><b>'+zvCardEsc(r.customer||'—')+'</b></div><div class="zv-work-card-stat"><small>مبلغ سفارش</small><b>'+money(r.amount)+'</b></div><div class="zv-work-card-stat"><small>زمان اجرا</small><b>'+zvCardEsc(r.executeDateTime||'ثبت نشده')+'</b></div><div class="zv-work-card-stat"><small>مدت اجرا</small><b>'+zvCardEsc(r.duration||'—')+'</b></div></div><button class="zv-work-card-toggle" type="button" onclick="toggleWorkerCard(\''+id+'\')">نمایش تمام اطلاعات کارت　⌄</button><div class="zv-work-card-detail" id="zv-detail-'+id+'" hidden><div style="text-align:center;padding:18px;color:var(--muted)">در حال دریافت اطلاعات کارت…</div></div></article>';}
 function fetchCards() {
-  const filters = { status: $('cdStatus')?.value || 'همه' };
-  google.script.run.withSuccessHandler(rows => {
-    if (!rows.length) { $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">کارتی یافت نشد</div>'; return; }
-    $('cardsTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>CardID</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>تاریخ اجرا</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
-      rows.map(r => '<tr><td><strong>' + r.cardId + '</strong></td><td>' + r.customer + '</td><td>' + r.details + '</td><td>' + money(r.amount) + '</td><td>' + r.executeDateTime + '</td><td>' + statusBadge(r.status) + '</td><td style="white-space:nowrap"><button class="btn btn-sm btn-primary" onclick="changeCardStatus(\'' + r.cardId + '\',\'' + r.status + '\',\'' + (r.description||'').replace(/'/g,"&#39;") + '\')">تغییر وضعیت</button> <button class="btn btn-sm btn-warning" onclick="referToSupervisor(\'' + r.cardId + '\')">🔄 ارجاع</button> <button class="btn btn-sm btn-secondary" onclick="startWorkerConversation(\'' + r.cardId + '\')">✉️ پیام</button></td></tr>').join('') + '</tbody></table></div>';
-  }).getWorkerCards(filters, currentToken);
+ const filters={status:$('cdStatus')?.value||'همه'};
+ google.script.run.withSuccessHandler(rows=>{$('cardsTable').innerHTML=rows&&rows.length?'<div class="zv-card-list">'+rows.map(zvRenderWorkerCard).join('')+'</div>':'<div style="padding:24px;text-align:center;color:var(--muted)">کارتی یافت نشد</div>';})
+ .withFailureHandler(e=>toast(e.message,'error')).getWorkerCards(filters,currentToken);
 }
+function toggleWorkerCard(cardId){const panel=$('zv-detail-'+cardId),btn=document.querySelector('#zv-card-'+cardId+' .zv-work-card-toggle');if(!panel)return;if(!panel.hidden){panel.hidden=true;btn.textContent='نمایش تمام اطلاعات کارت　⌄';return;}panel.hidden=false;btn.textContent='بستن اطلاعات کارت　⌃';if(panel.dataset.loaded==='1')return;google.script.run.withSuccessHandler(d=>{panel.innerHTML=zvWorkerDetailsHtml_(d,cardId);panel.dataset.loaded='1';}).withFailureHandler(e=>{panel.innerHTML='<div style="color:#d94c55;padding:12px">'+zvCardEsc(e.message||'خطا در دریافت اطلاعات')+'</div>';}).getWorkerCardDetails(cardId,currentToken);}
+function zvWorkerDetailsHtml_(d,id){let html='<div class="zv-detail-section"><div class="zv-detail-title">👤 اطلاعات مشتری</div><div class="zv-detail-grid">'+zvCardField('نام مشتری',d.customer)+zvCardField('شماره تماس',d.phone)+zvCardField('تاریخ ثبت',d.createdAt)+zvCardField('شناسه درخواست',d.requestId)+'</div></div>';html+='<div class="zv-detail-section"><div class="zv-detail-title">🛠 مشخصات اجرا</div><div class="zv-detail-grid">'+zvCardField('خدمت اصلی',d.service)+zvCardField('نوع اقدام',d.actionType)+zvCardField('تعداد',d.quantity)+zvCardField('مدت اجرا',d.duration?d.duration+' ساعت':'')+zvCardField('تاریخ اجرا',d.executeDate)+zvCardField('ساعت اجرا',d.executeTime)+zvCardField('آدرس محل اجرا',d.address,true)+zvCardField('خدمات جانبی',d.sideServices,true)+zvCardField('شرح درخواست',d.details,true)+zvCardField('توضیحات',d.notes,true)+'</div></div>';html+='<div class="zv-detail-section"><div class="zv-detail-title">💳 اطلاعات مالی</div><div class="zv-detail-money">'+(d.basePrice?'<div>مبلغ پایه: '+money(d.basePrice)+'</div>':'')+(d.discount?'<div>تخفیف: '+money(d.discount)+'</div>':'')+(d.tax?'<div>مالیات: '+money(d.tax)+'</div>':'')+'<div class="zv-detail-total"><span>مبلغ نهایی سفارش</span><strong>'+money(d.finalPrice)+'</strong></div></div></div>';html+='<div class="zv-detail-section"><div class="zv-detail-title">📌 وضعیت کارت</div><div class="zv-detail-grid">'+zvCardField('وضعیت فعلی',d.status)+zvCardField('آخرین بروزرسانی',d.updatedAt)+'</div></div>';html+='<div class="zv-card-actions"><div class="zv-card-actions-title">عملیات کارت</div><div class="zv-card-actions-grid"><button class="btn btn-primary" onclick="changeCardStatus(\''+zvCardEsc(id)+'\',\''+zvCardEsc(d.status)+'\',\''+zvCardEsc(d.notes)+'\')">تغییر وضعیت</button><button class="btn btn-secondary" onclick="referToSupervisor(\''+zvCardEsc(id)+'\')">ارجاع به سرپرست</button><button class="btn btn-secondary" onclick="startWorkerConversation(\''+zvCardEsc(id)+'\')">ارسال پیام</button><button class="btn btn-secondary" onclick="printWorkerCard(\''+zvCardEsc(id)+'\')">چاپ کارت</button></div></div>';return html;}
+function printWorkerCard(cardId){const el=$('zv-detail-'+cardId);if(!el)return;const w=window.open('','_blank');if(!w)return toast('مرورگر پنجره چاپ را مسدود کرده است','error');w.document.write('<html lang="fa" dir="rtl"><meta charset="utf-8"><title>کارت '+zvCardEsc(cardId)+'</title><body style="font-family:Tahoma;padding:24px">'+el.innerHTML+'</body></html>');w.document.close();w.print();}
 
 function changeCardStatus(cardId, currentStatus, currentDesc) {
   const statuses = ['جدید','در حال انجام','تکمیل شده','لغو شده'];
