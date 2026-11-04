@@ -103,7 +103,7 @@ textarea{min-height:80px;resize:vertical}
 .spinner{display:inline-block;width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--orange);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .menu-toggle{display:none;background:var(--navy);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
-@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:fixed;right:-280px;width:260px;z-index:50;transition:right .3s}.sidebar.open{right:0}.menu-toggle{display:block}.form-grid{grid-template-columns:1fr}.employee-profile{grid-template-columns:1fr}}
+@media(max-width:900px){body.employee-menu-open{overflow:hidden}body.employee-menu-open:after{content:"";position:fixed;inset:0;background:#07112780;z-index:40}.app{grid-template-columns:1fr}.sidebar{position:fixed;right:-280px;width:260px;z-index:50;transition:right .3s}.sidebar.open{right:0}.menu-toggle{display:block}.form-grid{grid-template-columns:1fr}.employee-profile{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -129,7 +129,7 @@ textarea{min-height:80px;resize:vertical}
     </div>
   </aside>
   <main class="main">
-    <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰ منو</button>
+    <button class="menu-toggle" id="mobileMenuToggle" type="button" onclick="toggleEmployeeMenu()">☰ منو</button>
     <div id="pageContent"><div class="loading"><div class="spinner"></div></div></div>
   </main>
 </div>
@@ -191,6 +191,25 @@ function doLogout() {
   location.reload();
 }
 
+function toggleEmployeeMenu() {
+  const side = $('sidebar');
+  if (!side) return;
+  side.classList.toggle('open');
+  document.body.classList.toggle('employee-menu-open', side.classList.contains('open'));
+}
+function closeEmployeeMenu() {
+  const side = $('sidebar');
+  if (side) side.classList.remove('open');
+  document.body.classList.remove('employee-menu-open');
+}
+// بستن منوی موبایل با لمس بیرون از منو یا انتخاب هر بخش
+ document.addEventListener('click', function(e) {
+  const side = $('sidebar');
+  if (!side || !side.classList.contains('open')) return;
+  if (e.target.closest('#sidebar') || e.target.closest('#mobileMenuToggle')) return;
+  closeEmployeeMenu();
+}, true);
+
 function showApp(user) {
   currentUser = user;
   $('loginPage').style.display = 'none'; $('appContainer').style.display = 'grid';
@@ -204,8 +223,9 @@ function showApp(user) {
     item.addEventListener('click', () => {
       $('navMenu').querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       item.classList.add('active');
-      loadPage(item.dataset.page);
-      $('sidebar').classList.remove('open');
+      const selectedPage = item.dataset.page;
+      closeEmployeeMenu();
+      loadPage(selectedPage);
     });
   });
   loadPage('dashboard');
@@ -371,7 +391,7 @@ function loadJobApplicants() {
         <div class="field"><label>نام خانوادگی *</label><input id="jaLastName" required maxlength="100"></div>
         <div class="field"><label>جنسیت *</label><select id="jaGender" required><option value="">انتخاب کنید</option><option>مرد</option><option>زن</option></select></div>
         <div class="field"><label>کد ملی *</label><input id="jaNationalId" inputmode="numeric" maxlength="10" placeholder="۱۰ رقم" required></div>
-        <div class="field"><label>تاریخ تولد *</label><input id="jaBirthDate" class="ja-jalali-date" autocomplete="off" placeholder="انتخاب تاریخ شمسی" required readonly></div>
+        <div class="field"><label>تاریخ تولد *</label><input id="jaBirthDate" class="ja-jalali-date" autocomplete="off" placeholder="مثلاً ۱۳۷۵/۰۵/۲۲ یا انتخاب از تقویم" required></div>
         <div class="field"><label>سن</label><input id="jaAge" readonly placeholder="محاسبه خودکار"></div>
         <div class="field"><label>وضعیت تأهل</label><select id="jaMarital"><option value="">انتخاب کنید</option><option>مجرد</option><option>متأهل</option><option>سایر</option></select></div>
       </div></div>
@@ -394,8 +414,8 @@ function loadJobApplicants() {
       </div></div>
       <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۵. بررسی و مراحل جذب</h3><div class="form-grid">
         <div class="field"><label>بررسی اولیه</label><select id="jaInitialReview"><option>بررسی نشده</option><option>تأیید اولیه</option><option>رد اولیه</option><option>نیازمند بررسی بیشتر</option></select></div>
-        <div class="field"><label>تاریخ مصاحبه تلفنی</label><input id="jaPhoneInterviewDate" class="ja-jalali-date" autocomplete="off" placeholder="انتخاب تاریخ شمسی" readonly></div>
-        <div class="field"><label>تاریخ مصاحبه حضوری</label><input id="jaInPersonInterviewDate" class="ja-jalali-date" autocomplete="off" placeholder="انتخاب تاریخ شمسی" readonly></div>
+        <div class="field"><label>تاریخ مصاحبه تلفنی</label><input id="jaPhoneInterviewDate" class="ja-jalali-date" autocomplete="off" placeholder="مثلاً ۱۴۰۵/۰۸/۱۲ یا انتخاب از تقویم"></div>
+        <div class="field"><label>تاریخ مصاحبه حضوری</label><input id="jaInPersonInterviewDate" class="ja-jalali-date" autocomplete="off" placeholder="مثلاً ۱۴۰۵/۰۸/۱۲ یا انتخاب از تقویم"></div>
         <div class="field"><label>نتیجه مصاحبه تلفنی</label><select id="jaPhoneInterviewResult"><option>انجام نشده</option><option>تأیید</option><option>رد</option><option>نیازمند پیگیری</option></select></div>
         <div class="field"><label>نتیجه مصاحبه حضوری</label><select id="jaInPersonInterviewResult"><option>انجام نشده</option><option>تأیید</option><option>رد</option><option>نیازمند پیگیری</option></select></div>
         <div class="field"><label>وضعیت پرونده</label><select id="jaStatus"><option>جدید</option><option>در حال بررسی</option><option>در انتظار مصاحبه</option><option>تأیید شده</option><option>رد شده</option><option>استخدام شده</option><option>بایگانی</option></select></div>
@@ -406,10 +426,25 @@ function loadJobApplicants() {
     <div class="card"><h3 style="color:var(--navy);margin-bottom:12px">آخرین پرونده‌های ثبت‌شده توسط من</h3><div id="jaRecent"><div class="loading">در حال دریافت اطلاعات…</div></div></div>`;
   $('jaToday').textContent = new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   $('jaCreator').textContent = currentUser && currentUser.empId ? currentUser.empId : '—';
-  if (window.jQuery && jQuery.fn.persianDatepicker) {
-    jQuery('.ja-jalali-date').persianDatepicker({format:'YYYY/MM/DD',autoClose:true,initialValue:false,calendar:{persian:{locale:'fa',showHint:true,leapYearMode:'astronomical'}}});
-  } else {
-    document.querySelectorAll('.ja-jalali-date').forEach(el => el.addEventListener('focus',()=>toast('برای تقویم شمسی، اتصال اینترنت و بارگذاری کتابخانه تاریخ لازم است.','error')));
+  // تقویم شمسی در صورت بارگذاری کتابخانه فعال می‌شود؛ در غیر این صورت ورود دستی آزاد است.
+  document.querySelectorAll('.ja-jalali-date').forEach(el => {
+    el.readOnly = false;
+    el.setAttribute('inputmode','numeric');
+    el.setAttribute('dir','ltr');
+    el.addEventListener('blur', function(){
+      const v = this.value.trim();
+      if (!v) return;
+      const normalized = v.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[.\-]/g,'/');
+      const m = normalized.match(/^(13\d{2}|14\d{2})\/(0?[1-9]|1[0-2])\/(0?[1-9]|[12]\d|3[01])$/);
+      if (!m) { toast('تاریخ را به شکل ۱۴۰۵/۰۸/۱۲ وارد کنید.','error'); this.focus(); return; }
+      this.value = m[1] + '/' + String(m[2]).padStart(2,'0') + '/' + String(m[3]).padStart(2,'0');
+      this.dispatchEvent(new Event('change',{bubbles:true}));
+    });
+  });
+  if (window.jQuery && jQuery.fn && jQuery.fn.persianDatepicker) {
+    try {
+      jQuery('.ja-jalali-date').persianDatepicker({format:'YYYY/MM/DD',autoClose:true,initialValue:false,calendar:{persian:{locale:'fa',showHint:true,leapYearMode:'astronomical'}}});
+    } catch (pickerError) { console.warn('تقویم شمسی بارگذاری نشد؛ ورود دستی فعال است.', pickerError); }
   }
   $('jaBirthDate').addEventListener('change', calculateApplicantAge);
   $('jaNationalId').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9۰-۹]/g,'').slice(0,10); });
