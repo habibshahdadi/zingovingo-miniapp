@@ -257,11 +257,21 @@ function loadDashboard() {
 
 function loadOrders() {
   $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">سفارشات شعبه</h1></div><div class="card"><div id="ordersTable"></div></div>';
+  fetchOrders();
+}
+
+function fetchOrders() {
+  const filters = {
+    fromDate: $('ordFrom')?.value || '', toDate: $('ordTo')?.value || '',
+    customerId: $('ordCustId')?.value || '', requestId: $('ordReqId')?.value || '',
+    groupId: $('ordGroupId')?.value || '', status: $('ordStatus')?.value || 'همه'
+  };
+  $('ordersTable').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   google.script.run.withSuccessHandler(rows => {
-    if (!rows.length) { $('ordersTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">سفارشی یافت نشد</div>'; return; }
-    $('ordersTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>کد</th><th>مشتری</th><th>موبایل</th><th>خدمت</th><th>مبلغ</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
-      rows.map(r => '<tr><td>' + r.date + '</td><td><strong>' + r.requestId + '</strong></td><td>' + r.customer + '</td><td style="direction:ltr">' + r.phone + '</td><td>' + r.service + '</td><td>' + money(r.finalPrice) + '</td><td>' + statusBadge(r.status) + '</td><td><button class="btn btn-sm btn-secondary" onclick="changeOrderStatus(\'' + r.requestId + '\',\'' + r.status + '\')">تغییر وضعیت</button> <button class="btn btn-sm btn-primary" onclick="openConvertModal(\'' + r.requestId + '\')">🎫</button></td></tr>').join('') + '</tbody></table></div>';
-  }).getEmployeeOrders(currentToken);
+    if (!rows.length) { $('ordersTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">سفارشی با این فیلترها یافت نشد</div>'; return; }
+    $('ordersTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>کد</th><th>مشتری</th><th>موبایل</th><th>خدمت</th><th>مبلغ</th><th>گروه</th><th>ثبت‌کننده</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      rows.map(r => '<tr><td>' + r.date + '</td><td><strong>' + r.requestId + '</strong></td><td>' + r.customer + '</td><td style="direction:ltr">' + r.phone + '</td><td>' + r.service + '</td><td>' + money(r.finalPrice) + '</td><td>' + (r.groupName || '—') + '</td><td>' + (r.operatorName || 'مشتری') + '</td><td>' + statusBadge(r.status) + '</td><td><button class="btn btn-sm btn-secondary" onclick="changeOrderStatus(\'' + r.requestId + '\',\'' + r.status + '\')">تغییر وضعیت</button> <button class="btn btn-sm btn-primary" onclick="openConvertModal(\'' + r.requestId + '\')">🎫</button></td></tr>').join('') + '</tbody></table></div>';
+  }).withFailureHandler(e => { $('ordersTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger)">' + e.message + '</div>'; }).getEmployeeOrders(filters, currentToken);
 }
 
 function changeOrderStatus(requestId, currentStatus) {
@@ -288,18 +298,51 @@ function executeConvert(requestId) {
 }
 
 function loadCards() {
-  // برای سادگی، در این نسخه کارت‌ها را از همان تابع عمومی می‌خوانیم یا می‌توانید تابع جداگانه بسازید
-  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">کارت‌های شعبه</h1></div><div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">مدیریت کارت‌ها از طریق بخش سفارشات انجام می‌شود.</div></div>';
+  $('pageContent').innerHTML = 
+    '<div class="page-header"><h1 class="page-title">کارت‌های شعبه</h1></div>' +
+    '<div class="card">' +
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' +
+    '<div class="field"><label>از تاریخ</label><input id="cdFrom" class="zv-input" placeholder="1405/01/01"></div>' +
+    '<div class="field"><label>تا تاریخ</label><input id="cdTo" class="zv-input" placeholder="1405/12/29"></div>' +
+    '<div class="field"><label>شناسه مشتری</label><input id="cdCustId" class="zv-input" placeholder="کد اشتراک"></div>' +
+    '<div class="field"><label>شناسه کارت</label><input id="cdCardId" class="zv-input" placeholder="Card-ID"></div>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' +
+    '<div class="field"><label>شناسه گروه</label><input id="cdGroupId" class="zv-input" placeholder="Group-ID"></div>' +
+    '<div class="field"><label>وضعیت</label><select id="cdStatus" class="zv-select"><option value="همه">همه</option><option>جدید</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option><option>ارجاع به سرپرست</option></select></div>' +
+    '<div class="field" style="grid-column:span 2;display:flex;align-items:flex-end"><button class="btn btn-primary" style="width:100%" onclick="fetchCards()">🔍 جستجو</button></div>' +
+    '</div>' +
+    '<div id="cardsTable"></div></div>';
+  fetchCards();
+}
+
+function fetchCards() {
+  const filters = {
+    fromDate: $('cdFrom')?.value || '', toDate: $('cdTo')?.value || '',
+    customerId: $('cdCustId')?.value || '', cardId: $('cdCardId')?.value || '',
+    groupId: $('cdGroupId')?.value || '', status: $('cdStatus')?.value || 'همه'
+  };
+  $('cardsTable').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  google.script.run.withSuccessHandler(rows => {
+    if (!rows.length) { $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">کارتی با این فیلترها یافت نشد</div>'; return; }
+    $('cardsTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>CardID</th><th>RequestID</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>اجراکننده</th><th>گروه</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      rows.map(r => '<tr><td><strong>' + r.cardId + '</strong></td><td>' + r.requestId + '</td><td>' + r.customer + '</td><td>' + r.details + '</td><td>' + money(r.amount) + '</td><td>' + (r.workerName || '—') + '</td><td>' + (r.groupName || '—') + '</td><td>' + statusBadge(r.status) + '</td><td><button class="btn btn-sm btn-primary" onclick="changeCardStatus(\'' + r.cardId + '\',\'' + r.status + '\')">تغییر وضعیت</button></td></tr>').join('') + '</tbody></table></div>';
+  }).withFailureHandler(e => { $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger)">' + e.message + '</div>'; }).getEmployeeCards(filters, currentToken);
 }
 
 // --- توابع گروه و نیرو (مشابه مدیر شعبه، اما با فراخوانی توابع کارمند در صورت وجود، یا توابع مشترک) ---
 function loadGroups() {
-  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">گروه‌های شعبه</h1><button class="btn btn-primary" onclick="editGroup()">+ گروه جدید</button></div><div id="grpContent"></div>';
+  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">گروه‌های شعبه</h1></div><div id="grpContent"></div>';
   google.script.run.withSuccessHandler(list => {
-    $('grpContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>سرپرست</th><th>منطقه</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
-      list.map(g => '<tr><td>' + g.groupId + '</td><td>' + g.name + '</td><td>' + (g.supervisorName||'—') + '</td><td>' + (g.area||'—') + '</td><td><span class="badge badge-' + (g.status==='فعال'?'active':'inactive') + '">' + g.status + '</span></td><td><button class="btn btn-sm btn-secondary" onclick=\'editGroup(' + JSON.stringify(g).replace(/'/g,"&#39;") + ')\'>✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteGrp(' + g.rowIndex + ')">🗑</button></td></tr>').join('') + '</tbody></table></div></div>';
-  }).getBranchManagerGroups(currentToken); // از تابع مشترک استفاده می‌کند که branchId را چک می‌کند
+    if (!list || !list.length) {
+      $('grpContent').innerHTML = '<div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">گروهی ثبت نشده است.</div></div>';
+      return;
+    }
+    $('grpContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>سرپرست</th><th>منطقه</th><th>وضعیت</th></tr></thead><tbody>' +
+      list.map(g => '<tr><td>' + g.groupId + '</td><td>' + g.name + '</td><td>' + (g.supervisorName||'—') + '</td><td>' + (g.area||'—') + '</td><td><span class="badge badge-' + (g.status==='فعال'?'active':'inactive') + '">' + g.status + '</span></td></tr>').join('') + '</tbody></table></div></div>';
+  }).withFailureHandler(e => toast(e.message, 'error')).getEmployeeGroups(currentToken);
 }
+
 function editGroup(g) {
   g = g || {};
   openModal('<div class="modal-header"><h2>' + (g.rowIndex?'ویرایش':'افزودن') + ' گروه</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
@@ -328,12 +371,17 @@ function deleteGrp(rowIndex) {
 }
 
 function loadWorkers() {
-  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">نیروهای شعبه</h1><button class="btn btn-primary" onclick="editWorker()">+ نیروی جدید</button></div><div id="wrkContent"></div>';
+  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">نیروهای شعبه</h1></div><div id="wrkContent"></div>';
   google.script.run.withSuccessHandler(list => {
-    $('wrkContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>یوزرنیم</th><th>نوع</th><th>سمت</th><th>موبایل</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
-      list.map(w => '<tr><td>' + w.workerId + '</td><td>' + w.firstName + ' ' + w.lastName + '</td><td>' + w.username + '</td><td><span class="badge badge-new">' + w.operations + '</span></td><td>' + (w.jobTitle||'—') + '</td><td style="direction:ltr">' + w.contact + '</td><td><span class="badge badge-' + (w.status==='فعال'?'active':'inactive') + '">' + w.status + '</span></td><td><button class="btn btn-sm btn-secondary" onclick=\'editWorker(' + JSON.stringify(w).replace(/'/g,"&#39;") + ')\'>✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteWrk(' + w.rowIndex + ')">🗑</button></td></tr>').join('') + '</tbody></table></div></div>';
-  }).getBranchManagerWorkers(currentToken);
+    if (!list || !list.length) {
+      $('wrkContent').innerHTML = '<div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">نیرویی ثبت نشده است.</div></div>';
+      return;
+    }
+    $('wrkContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>یوزرنیم</th><th>نوع</th><th>سمت</th><th>موبایل</th><th>وضعیت</th></tr></thead><tbody>' +
+      list.map(w => '<tr><td>' + w.workerId + '</td><td>' + w.firstName + ' ' + w.lastName + '</td><td>' + w.username + '</td><td><span class="badge badge-new">' + w.operations + '</span></td><td>' + (w.jobTitle||'—') + '</td><td style="direction:ltr">' + w.contact + '</td><td><span class="badge badge-' + (w.status==='فعال'?'active':'inactive') + '">' + w.status + '</span></td></tr>').join('') + '</tbody></table></div></div>';
+  }).withFailureHandler(e => toast(e.message, 'error')).getEmployeeWorkers(currentToken);
 }
+
 function editWorker(w) {
   w = w || {};
   openModal('<div class="modal-header"><h2>' + (w.rowIndex?'ویرایش':'افزودن') + ' نیرو</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
@@ -378,74 +426,65 @@ function deleteWrk(rowIndex) {
 // ==================== ثبت کارجو ====================
 function loadJobApplicants() {
   $('pageContent').innerHTML = `
-    <div class="page-header"><div><h1 class="page-title">ثبت اطلاعات متقاضی همکاری</h1><div style="color:var(--muted);font-size:12px">تشکیل پرونده و ثبت مراحل جذب نیروی انسانی</div></div></div>
-    <div class="card" style="border-right:4px solid var(--orange)">
-      <div class="stats-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));margin:0">
-        <div class="stat-card"><div class="stat-label">تاریخ ثبت</div><div class="stat-value" id="jaToday" style="font-size:17px">—</div></div>
-        <div class="stat-card blue"><div class="stat-label">شماره پرونده</div><div class="stat-value" id="jaNextId" style="font-size:17px">پس از ثبت</div></div>
-        <div class="stat-card green"><div class="stat-label">شناسه ثبت‌کننده</div><div class="stat-value" id="jaCreator" style="font-size:17px">—</div></div>
-      </div>
+  <div class="page-header"><div><h1 class="page-title">ثبت اطلاعات متقاضی همکاری</h1><div style="color:var(--muted);font-size:12px">تشکیل پرونده و ثبت مراحل جذب نیروی انسانی</div></div></div>
+  <div class="card" style="border-right:4px solid var(--orange)">
+    <div class="stats-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));margin:0">
+      <div class="stat-card"><div class="stat-label">تاریخ ثبت</div><div class="stat-value" id="jaToday" style="font-size:17px">—</div></div>
+      <div class="stat-card blue"><div class="stat-label">شماره پرونده</div><div class="stat-value" id="jaNextId" style="font-size:17px">پس از ثبت</div></div>
+      <div class="stat-card green"><div class="stat-label">شناسه ثبت‌کننده</div><div class="stat-value" id="jaCreator" style="font-size:17px">—</div></div>
     </div>
-    <form id="jobApplicantForm" onsubmit="submitJobApplicant(event)">
-      <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۱. اطلاعات هویتی</h3><div class="form-grid">
-        <div class="field"><label>نام *</label><input id="jaFirstName" required maxlength="80"></div>
-        <div class="field"><label>نام خانوادگی *</label><input id="jaLastName" required maxlength="100"></div>
-        <div class="field"><label>جنسیت *</label><select id="jaGender" required><option value="">انتخاب کنید</option><option>مرد</option><option>زن</option></select></div>
-        <div class="field"><label>کد ملی *</label><input id="jaNationalId" inputmode="numeric" maxlength="10" placeholder="۱۰ رقم" required></div>
-        <div class="field"><label>تاریخ تولد *</label><input id="jaBirthDate" class="ja-jalali-date" autocomplete="off" placeholder="مثلاً ۱۳۷۵/۰۵/۲۲ یا انتخاب از تقویم" required></div>
-        <div class="field"><label>سن</label><input id="jaAge" readonly placeholder="محاسبه خودکار"></div>
-        <div class="field"><label>وضعیت تأهل</label><select id="jaMarital"><option value="">انتخاب کنید</option><option>مجرد</option><option>متأهل</option><option>سایر</option></select></div>
-      </div></div>
-      <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۲. تخصص و مهارت‌ها</h3><div class="form-grid">
-        <div class="field"><label>تخصص اصلی *</label><input id="jaSpecialty" required maxlength="150" placeholder="عنوان تخصص را وارد کنید"></div>
-        <div class="field"><label>مدت فعالیت</label><input id="jaExperience" maxlength="80" placeholder="مثلاً ۳ سال"></div>
-        <div class="field full"><label>مهارت‌های دیگر</label><textarea id="jaSkills" placeholder="سایر توانایی‌ها و مهارت‌ها"></textarea></div>
-        <div class="field"><label>میزان تحصیلات</label><select id="jaEducation"><option value="">انتخاب کنید</option><option>زیر دیپلم</option><option>دیپلم</option><option>کاردانی</option><option>کارشناسی</option><option>کارشناسی ارشد</option><option>دکتری</option><option>سایر</option></select></div>
-        <div class="field"><label>رشته تحصیلی</label><input id="jaFieldOfStudy" maxlength="120"></div>
-      </div></div>
-      <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۳. اطلاعات تماس و محل سکونت</h3><div class="form-grid">
-        <div class="field full"><label>محل سکونت</label><input id="jaResidence" maxlength="250" placeholder="شهر، منطقه یا نشانی"></div>
-        <div class="field"><label>شماره تماس *</label><input id="jaPhone" inputmode="tel" maxlength="15" placeholder="09xxxxxxxxx" required></div>
-        <div class="field"><label>پیام‌رسان</label><select id="jaMessenger"><option value="">انتخاب کنید</option><option>بله</option><option>واتساپ</option><option>تلگرام</option><option>روبیکا</option><option>ایتا</option><option>سایر</option></select></div>
-        <div class="field"><label>آی‌دی پیام‌رسان</label><input id="jaMessengerId" maxlength="120"></div>
-      </div></div>
-      <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۴. نحوه آشنایی و معرفی</h3><div class="form-grid">
-        <div class="field"><label>نحوه آشنایی</label><select id="jaSource"><option value="">انتخاب کنید</option><option>دیوار</option><option>شیپور</option><option>معرفی دوستان</option><option>شبکه‌های اجتماعی</option><option>مراجعه حضوری</option><option>سایر</option></select></div>
-        <div class="field"><label>معرف</label><input id="jaReferrer" maxlength="120"></div>
-        <div class="field"><label>موقعیت درخواستی</label><input id="jaRequestedPosition" maxlength="150" placeholder="مثلاً نیروی خدمات، اپراتور، سرپرست"></div>
-      </div></div>
-      <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۵. بررسی و مراحل جذب</h3><div class="form-grid">
-        <div class="field"><label>بررسی اولیه</label><select id="jaInitialReview"><option>بررسی نشده</option><option>تأیید اولیه</option><option>رد اولیه</option><option>نیازمند بررسی بیشتر</option></select></div>
-        <div class="field"><label>تاریخ مصاحبه تلفنی</label><input id="jaPhoneInterviewDate" class="ja-jalali-date" autocomplete="off" placeholder="مثلاً ۱۴۰۵/۰۸/۱۲ یا انتخاب از تقویم"></div>
-        <div class="field"><label>تاریخ مصاحبه حضوری</label><input id="jaInPersonInterviewDate" class="ja-jalali-date" autocomplete="off" placeholder="مثلاً ۱۴۰۵/۰۸/۱۲ یا انتخاب از تقویم"></div>
-        <div class="field"><label>نتیجه مصاحبه تلفنی</label><select id="jaPhoneInterviewResult"><option>انجام نشده</option><option>تأیید</option><option>رد</option><option>نیازمند پیگیری</option></select></div>
-        <div class="field"><label>نتیجه مصاحبه حضوری</label><select id="jaInPersonInterviewResult"><option>انجام نشده</option><option>تأیید</option><option>رد</option><option>نیازمند پیگیری</option></select></div>
-        <div class="field"><label>وضعیت پرونده</label><select id="jaStatus"><option>جدید</option><option>در حال بررسی</option><option>در انتظار مصاحبه</option><option>تأیید شده</option><option>رد شده</option><option>استخدام شده</option><option>بایگانی</option></select></div>
-        <div class="field full"><label>توضیحات</label><textarea id="jaNotes" placeholder="توضیحات تکمیلی درباره متقاضی"></textarea></div>
-      </div></div>
-      <div class="card" style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button type="reset" class="btn btn-secondary">پاک کردن فرم</button><button id="jaSubmitBtn" type="submit" class="btn btn-primary">ثبت پرونده متقاضی</button></div>
-    </form>
-    <div class="card" style="margin-top:18px">
-      <h3 style="color:var(--navy);margin-bottom:14px">جستجو و مدیریت پرونده‌های کارجویان</h3>
-      <div class="filters" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
-        <div class="field"><label>شناسه پرونده</label><input id="jaFilterCase" placeholder="JA.000001"></div>
-        <div class="field"><label>تاریخ ثبت از</label><input id="jaFilterFrom" class="ja-jalali-date" placeholder="۱۴۰۵/۰۱/۰۱"></div>
-        <div class="field"><label>تاریخ ثبت تا</label><input id="jaFilterTo" class="ja-jalali-date" placeholder="۱۴۰۵/۱۲/۲۹"></div>
-        <div class="field"><label>وضعیت پرونده</label><select id="jaFilterStatus"><option value="">همه وضعیت‌ها</option><option>جدید</option><option>در حال بررسی</option><option>در انتظار مصاحبه</option><option>تأیید شده</option><option>رد شده</option><option>استخدام شده</option><option>بایگانی</option></select></div>
-        <div class="field"><label>تخصص</label><input id="jaFilterSpecialty" placeholder="جستجوی تخصص"></div>
-        <div class="field"><label>موقعیت درخواستی</label><input id="jaFilterPosition" placeholder="جستجوی موقعیت"></div>
-        <div class="field"><label>حداقل سن</label><input id="jaFilterAgeFrom" inputmode="numeric" placeholder="مثلاً ۱۸"></div>
-        <div class="field"><label>حداکثر سن</label><input id="jaFilterAgeTo" inputmode="numeric" placeholder="مثلاً ۴۰"></div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px">
-        <button class="btn btn-primary" type="button" onclick="searchJobApplicants()">جستجو</button>
-        <button class="btn btn-secondary" type="button" onclick="resetJobApplicantFilters()">پاک کردن فیلترها</button>
-      </div>
-      <div id="jaRecent"><div class="loading">برای نمایش پرونده‌ها دکمه جستجو را بزنید.</div></div>
-    </div>`;
+  </div>
+  <form id="jobApplicantForm" onsubmit="submitJobApplicant(event)">
+    <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۱. اطلاعات هویتی</h3><div class="form-grid">
+      <div class="field"><label>نام *</label><input id="jaFirstName" required maxlength="80"></div>
+      <div class="field"><label>نام خانوادگی *</label><input id="jaLastName" required maxlength="100"></div>
+      <div class="field"><label>جنسیت *</label><select id="jaGender" required><option value="">انتخاب کنید</option><option>مرد</option><option>زن</option></select></div>
+      <div class="field"><label>کد ملی *</label><input id="jaNationalId" inputmode="numeric" maxlength="10" placeholder="۱۰ رقم" required></div>
+      <div class="field"><label>تاریخ تولد *</label><input id="jaBirthDate" class="ja-jalali-date" autocomplete="off" placeholder="مثلاً ۱۳۷۵/۰۵/۲۲" required></div>
+      <div class="field"><label>سن</label><input id="jaAge" readonly placeholder="محاسبه خودکار"></div>
+      <div class="field"><label>وضعیت تأهل</label><select id="jaMarital"><option value="">انتخاب کنید</option><option>مجرد</option><option>متأهل</option><option>سایر</option></select></div>
+    </div></div>
+    <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۲. تخصص و مهارت‌ها</h3><div class="form-grid">
+      <div class="field"><label>تخصص اصلی *</label><input id="jaSpecialty" required maxlength="150" placeholder="عنوان تخصص را وارد کنید"></div>
+      <div class="field"><label>مدت فعالیت</label><input id="jaExperience" maxlength="80" placeholder="مثلاً ۳ سال"></div>
+      <div class="field full"><label>مهارت‌های دیگر</label><textarea id="jaSkills" placeholder="سایر توانایی‌ها و مهارت‌ها"></textarea></div>
+      <div class="field"><label>میزان تحصیلات</label><select id="jaEducation"><option value="">انتخاب کنید</option><option>زیر دیپلم</option><option>دیپلم</option><option>کاردانی</option><option>کارشناسی</option><option>کارشناسی ارشد</option><option>دکتری</option><option>سایر</option></select></div>
+      <div class="field"><label>رشته تحصیلی</label><input id="jaFieldOfStudy" maxlength="120"></div>
+    </div></div>
+    <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۳. اطلاعات تماس و محل سکونت</h3><div class="form-grid">
+      <div class="field full"><label>محل سکونت</label><input id="jaResidence" maxlength="250" placeholder="شهر، منطقه یا نشانی"></div>
+      <div class="field"><label>شماره تماس *</label><input id="jaPhone" inputmode="tel" maxlength="15" placeholder="09xxxxxxxxx" required></div>
+      <div class="field"><label>پیام‌رسان</label><select id="jaMessenger"><option value="">انتخاب کنید</option><option>بله</option><option>واتساپ</option><option>تلگرام</option><option>روبیکا</option><option>ایتا</option><option>سایر</option></select></div>
+      <div class="field"><label>آی‌دی پیام‌رسان</label><input id="jaMessengerId" maxlength="120"></div>
+    </div></div>
+    <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۴. نحوه آشنایی و معرفی</h3><div class="form-grid">
+      <div class="field"><label>نحوه آشنایی</label><select id="jaSource"><option value="">انتخاب کنید</option><option>دیوار</option><option>شیپور</option><option>معرفی دوستان</option><option>شبکه‌های اجتماعی</option><option>مراجعه حضوری</option><option>سایر</option></select></div>
+      <div class="field"><label>معرف</label><input id="jaReferrer" maxlength="120"></div>
+      <div class="field"><label>موقعیت درخواستی</label><input id="jaRequestedPosition" maxlength="150" placeholder="مثلاً نیروی خدمات، اپراتور، سرپرست"></div>
+    </div></div>
+    <div class="card" style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+      <button type="reset" class="btn btn-secondary">پاک کردن فرم</button>
+      <button id="jaSubmitBtn" type="submit" class="btn btn-primary">ثبت پرونده متقاضی</button>
+    </div>
+  </form>
+  <div class="card" style="margin-top:18px">
+    <h3 style="color:var(--navy);margin-bottom:14px">جستجو و مدیریت پرونده‌های کارجویان</h3>
+    <div class="filters" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
+      <div class="field"><label>شناسه پرونده</label><input id="jaFilterCase" placeholder="JA.000001"></div>
+      <div class="field"><label>تاریخ ثبت از</label><input id="jaFilterFrom" class="ja-jalali-date" placeholder="۱۴۰۵/۰۱/۰۱"></div>
+      <div class="field"><label>تاریخ ثبت تا</label><input id="jaFilterTo" class="ja-jalali-date" placeholder="۱۴۰۵/۱۲/۲۹"></div>
+      <div class="field"><label>وضعیت پرونده</label><select id="jaFilterStatus"><option value="">همه وضعیت‌ها</option><option>جدید</option><option>در حال بررسی</option><option>در انتظار مصاحبه</option><option>تأیید شده</option><option>رد شده</option><option>استخدام شده</option><option>بایگانی</option></select></div>
+      <div class="field"><label>تخصص</label><input id="jaFilterSpecialty" placeholder="جستجوی تخصص"></div>
+      <div class="field"><label>موقعیت درخواستی</label><input id="jaFilterPosition" placeholder="جستجوی موقعیت"></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px">
+      <button class="btn btn-primary" type="button" onclick="searchJobApplicants()">جستجو</button>
+      <button class="btn btn-secondary" type="button" onclick="resetJobApplicantFilters()">پاک کردن فیلترها</button>
+    </div>
+    <div id="jaRecent"><div class="loading">برای نمایش پرونده‌ها دکمه جستجو را بزنید.</div></div>
+  </div>`;
   $('jaToday').textContent = new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   $('jaCreator').textContent = currentUser && currentUser.empId ? currentUser.empId : '—';
-  // تقویم شمسی داخلی؛ مستقل از CDN و قابل استفاده در موبایل و دسکتاپ
   $('jaBirthDate').addEventListener('input', calculateApplicantAge);
   $('jaBirthDate').addEventListener('change', calculateApplicantAge);
   $('jaNationalId').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9۰-۹]/g,'').slice(0,10); });
@@ -453,6 +492,7 @@ function loadJobApplicants() {
   initApplicantJalaliDates();
   searchJobApplicants();
 }
+
 function escapeHtml(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function applicantNormalizeDigits(v){return String(v||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));}
 function applicantG2J(gy,gm,gd){const gdm=[0,31,((gy%4===0&&gy%100!==0)||gy%400===0)?29:28,31,30,31,30,31,31,30,31,30,31];let gy2=gm>2?gy+1:gy;let days=355666+365*gy+Math.floor((gy2+3)/4)-Math.floor((gy2+99)/100)+Math.floor((gy2+399)/400)+gd;for(let i=1;i<gm;i++)days+=gdm[i];let jy=-1595+33*Math.floor(days/12053);days%=12053;jy+=4*Math.floor(days/1461);days%=1461;if(days>365){jy+=Math.floor((days-1)/365);days=(days-1)%365}let jm,jd;if(days<186){jm=1+Math.floor(days/31);jd=1+days%31}else{jm=7+Math.floor((days-186)/30);jd=1+(days-186)%30}return[jy,jm,jd]}
@@ -490,19 +530,40 @@ function initApplicantJalaliDates(){
  });
  document.addEventListener('click',e=>{if(!e.target.closest('.ja-date-wrap'))document.querySelectorAll('.ja-date-pop.open').forEach(x=>x.classList.remove('open'));});
 }
+
+
 function submitJobApplicant(ev){
   ev.preventDefault();
   const national=$('jaNationalId').value.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
   const phone=$('jaPhone').value.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
   if(!/^\d{10}$/.test(national)) return toast('کد ملی باید ۱۰ رقم باشد.','error');
   if(!/^09\d{9}$/.test(phone)) return toast('شماره تماس باید با 09 و ۱۱ رقم وارد شود.','error');
-  if(!applicantJalaliParts($('jaBirthDate').value)) return toast('تاریخ تولد را با تقویم شمسی انتخاب کنید یا به شکل ۱۴۰۵/۰۸/۱۲ وارد کنید.','error');
-  for(const id of ['jaPhoneInterviewDate','jaInPersonInterviewDate']) if($(id).value.trim()&&!applicantJalaliParts($(id).value)) return toast('تاریخ مصاحبه باید معتبر و به شکل ۱۴۰۵/۰۸/۱۲ باشد.','error');
+  if(!applicantJalaliParts($('jaBirthDate').value)) return toast('تاریخ تولد را با تقویم شمسی انتخاب کنید.','error');
+  
   calculateApplicantAge();
-  const data={firstName:$('jaFirstName').value.trim(),lastName:$('jaLastName').value.trim(),gender:$('jaGender').value,nationalId:national,birthDate:$('jaBirthDate').value.trim(),age:$('jaAge').value,maritalStatus:$('jaMarital').value,specialty:$('jaSpecialty').value.trim(),experience:$('jaExperience').value.trim(),otherSkills:$('jaSkills').value.trim(),education:$('jaEducation').value,fieldOfStudy:$('jaFieldOfStudy').value.trim(),residence:$('jaResidence').value.trim(),phone:phone,messenger:$('jaMessenger').value,messengerId:$('jaMessengerId').value.trim(),source:$('jaSource').value,referrer:$('jaReferrer').value.trim(),requestedPosition:$('jaRequestedPosition').value.trim(),initialReview:$('jaInitialReview').value,phoneInterviewDate:$('jaPhoneInterviewDate').value.trim(),inPersonInterviewDate:$('jaInPersonInterviewDate').value.trim(),phoneInterviewResult:$('jaPhoneInterviewResult').value,inPersonInterviewResult:$('jaInPersonInterviewResult').value,notes:$('jaNotes').value.trim(),status:$('jaStatus').value};
-  const btn=$('jaSubmitBtn');btn.disabled=true;btn.textContent='در حال ثبت…';
-  google.script.run.withSuccessHandler(r=>{btn.disabled=false;btn.textContent='ثبت پرونده متقاضی';toast('پرونده با شماره '+r.caseNumber+' ثبت شد.','success');$('jobApplicantForm').reset();$('jaAge').value='';$('jaNextId').textContent='پس از ثبت';$('jaToday').textContent=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());searchJobApplicants();}).withFailureHandler(e=>{btn.disabled=false;btn.textContent='ثبت پرونده متقاضی';toast(e.message||'ثبت پرونده ناموفق بود.','error');}).saveEmployeeJobApplicant(data,currentToken);
+
+  const data={
+    firstName:$('jaFirstName').value.trim(), lastName:$('jaLastName').value.trim(), gender:$('jaGender').value,
+    nationalId:national, birthDate:$('jaBirthDate').value.trim(), age:$('jaAge').value, maritalStatus:$('jaMarital').value,
+    specialty:$('jaSpecialty').value.trim(), experience:$('jaExperience').value.trim(), otherSkills:$('jaSkills').value.trim(),
+    education:$('jaEducation').value, fieldOfStudy:$('jaFieldOfStudy').value.trim(), residence:$('jaResidence').value.trim(),
+    phone:phone, messenger:$('jaMessenger').value, messengerId:$('jaMessengerId').value.trim(),
+    source:$('jaSource').value, referrer:$('jaReferrer').value.trim(), requestedPosition:$('jaRequestedPosition').value.trim()
+  };
+  
+  const btn=$('jaSubmitBtn'); btn.disabled=true; btn.textContent='در حال ثبت…';
+  google.script.run.withSuccessHandler(r=>{
+    btn.disabled=false; btn.textContent='ثبت پرونده متقاضی';
+    toast('پرونده با شماره '+r.caseNumber+' ثبت شد.','success');
+    $('jobApplicantForm').reset(); $('jaAge').value=''; $('jaNextId').textContent='پس از ثبت';
+    $('jaToday').textContent=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+    searchJobApplicants();
+  }).withFailureHandler(e=>{
+    btn.disabled=false; btn.textContent='ثبت پرونده متقاضی';
+    toast(e.message||'ثبت پرونده ناموفق بود.','error');
+  }).saveEmployeeJobApplicant(data, currentToken);
 }
+
 function searchJobApplicants(){
   const filters={caseNumber:$('jaFilterCase').value.trim(),dateFrom:$('jaFilterFrom').value.trim(),dateTo:$('jaFilterTo').value.trim(),status:$('jaFilterStatus').value,specialty:$('jaFilterSpecialty').value.trim(),requestedPosition:$('jaFilterPosition').value.trim(),ageFrom:applicantNormalizeDigits($('jaFilterAgeFrom').value.trim()),ageTo:applicantNormalizeDigits($('jaFilterAgeTo').value.trim())};
   $('jaRecent').innerHTML='<div class="loading">در حال جستجوی پرونده‌ها…</div>';
