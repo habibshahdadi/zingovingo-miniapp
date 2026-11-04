@@ -8,7 +8,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="zv-api.js"></script>
 <style>
-/* دقیقاً همان استایل‌های BranchManager.html در اینجا کپی شده‌اند تا ظاهر یکسان باشد */
 :root{--navy:#0B1736;--navy-light:#1a2a4d;--orange:#FF6B1A;--orange-light:#ff8533;--bg:#f4f6fb;--text:#172033;--muted:#657086;--line:#dfe4ee;--white:#fff;--green:#067647;--danger:#b42318;--blue:#1849a9;--yellow:#f79009;--shadow:0 2px 10px #17203308;--radius:14px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;line-height:1.7;font-size:14px}
@@ -99,8 +98,6 @@ textarea{min-height:80px;resize:vertical}
 @keyframes spin{to{transform:rotate(360deg)}}
 .menu-toggle{display:none;background:var(--navy);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
 @media(max-width:900px){body.employee-menu-open{overflow:hidden}body.employee-menu-open:after{content:"";position:fixed;inset:0;background:#07112780;z-index:40}.app{grid-template-columns:1fr}.sidebar{position:fixed;right:-280px;width:260px;z-index:50;transition:right .3s}.sidebar.open{right:0}.menu-toggle{display:block}.form-grid{grid-template-columns:1fr}.employee-profile{grid-template-columns:1fr}}
-
-/* انتخابگر مستقل تقویم شمسی؛ بدون وابستگی به CDN */
 .ja-date-wrap{position:relative;width:100%}.ja-date-input{padding-left:48px!important;direction:ltr;text-align:right;unicode-bidi:plaintext}
 .ja-date-btn{position:absolute;left:6px;top:50%;transform:translateY(-50%);border:0;border-radius:8px;background:#eef1f7;color:var(--navy);padding:6px 9px;cursor:pointer;z-index:2}
 .ja-date-pop{display:none;position:absolute;top:calc(100% + 7px);right:0;width:min(300px,calc(100vw - 48px));background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px;box-shadow:0 12px 32px #17203325;z-index:120}
@@ -146,7 +143,6 @@ fetch('PhotoEditor.html').then(function (r) { return r.text(); }).then(function 
   });
 }).catch(function (e) { console.warn('PhotoEditor بارگذاری نشد:', e); });
 </script>
-
 
 <script>
 const $ = id => document.getElementById(id);
@@ -203,8 +199,7 @@ function closeEmployeeMenu() {
   if (side) side.classList.remove('open');
   document.body.classList.remove('employee-menu-open');
 }
-// بستن منوی موبایل با لمس بیرون از منو یا انتخاب هر بخش
- document.addEventListener('click', function(e) {
+document.addEventListener('click', function(e) {
   const side = $('sidebar');
   if (!side || !side.classList.contains('open')) return;
   if (e.target.closest('#sidebar') || e.target.closest('#mobileMenuToggle')) return;
@@ -224,9 +219,8 @@ function showApp(user) {
     item.addEventListener('click', () => {
       $('navMenu').querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       item.classList.add('active');
-      const selectedPage = item.dataset.page;
       closeEmployeeMenu();
-      loadPage(selectedPage);
+      loadPage(item.dataset.page);
     });
   });
   loadPage('dashboard');
@@ -285,64 +279,54 @@ function applyOrderStatus(requestId) {
 }
 
 function openConvertModal(requestId) {
-  google.script.run.withSuccessHandler(workers => {
-    let opts = '<option value="">بدون تخصیص (استخر شعبه)</option>';
-    workers.forEach(w => opts += '<option value="' + w.id + '">' + w.name + '</option>');
-    openModal('<div class="modal-header"><h2>تبدیل به کارت</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
-      '<div class="field"><label>تخصیص به نیرو</label><select id="targetWorker">' + opts + '</select></div>' +
-      '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="executeConvert(\'' + requestId + '\')">تأیید</button></div>');
-  }).getEmployeeWorkersForDropdown(currentToken);
+  google.script.run.withSuccessHandler(groups => {
+    let groupOpts = '<option value="">-- انتخاب گروه --</option>';
+    groups.forEach(g => groupOpts += '<option value="' + g.groupId + '">' + g.name + ' (' + g.groupId + ')</option>');
+    openModal(
+      '<div class="modal-header"><h2>تبدیل به کارت</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
+      '<div class="form-grid">' +
+      '<div class="field"><label>تخصیص به گروه *</label><select id="targetGroup" onchange="loadGroupWorkers()">' + groupOpts + '</select></div>' +
+      '<div class="field"><label>تخصیص به نیرو (اختیاری)</label><select id="targetWorker" disabled><option value="">ابتدا گروه را انتخاب کنید</option></select></div>' +
+      '</div>' +
+      '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="executeConvert(\'' + requestId + '\')">تأیید</button></div>'
+    );
+  }).withFailureHandler(e => toast(e.message, 'error')).getGroupsForDropdownEmp(currentToken);
 }
+
+function loadGroupWorkers() {
+  const groupId = $('targetGroup').value;
+  if (!groupId) {
+    $('targetWorker').disabled = true;
+    $('targetWorker').innerHTML = '<option value="">ابتدا گروه را انتخاب کنید</option>';
+    return;
+  }
+  google.script.run.withSuccessHandler(workers => {
+    let workerOpts = '<option value="">بدون تخصیص (استخر گروه)</option>';
+    workers.forEach(w => workerOpts += '<option value="' + w.id + '">' + w.name + ' (' + w.operations + ')</option>');
+    $('targetWorker').innerHTML = workerOpts;
+    $('targetWorker').disabled = false;
+  }).withFailureHandler(e => toast(e.message, 'error')).getWorkersByGroupEmp(groupId, currentToken);
+}
+
 function executeConvert(requestId) {
-  google.script.run.withSuccessHandler(r => { closeModal(); toast(r.message, 'success'); loadOrders(); }).withFailureHandler(e => toast(e.message, 'error')).employeeConvertOrderToCard(requestId, $('targetWorker').value, currentToken);
+  const groupId = $('targetGroup').value;
+  const workerId = $('targetWorker').value;
+  if (!groupId) { toast('لطفاً یک گروه انتخاب کنید', 'error'); return; }
+  google.script.run.withSuccessHandler(r => { closeModal(); toast(r.message, 'success'); loadOrders(); }).withFailureHandler(e => toast(e.message, 'error')).employeeConvertOrderToCard(requestId, groupId, workerId, currentToken);
 }
 
 function loadCards() {
-  $('pageContent').innerHTML = 
-    '<div class="page-header"><h1 class="page-title">کارت‌های شعبه</h1></div>' +
-    '<div class="card">' +
-    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' +
-    '<div class="field"><label>از تاریخ</label><input id="cdFrom" class="zv-input" placeholder="1405/01/01"></div>' +
-    '<div class="field"><label>تا تاریخ</label><input id="cdTo" class="zv-input" placeholder="1405/12/29"></div>' +
-    '<div class="field"><label>شناسه مشتری</label><input id="cdCustId" class="zv-input" placeholder="کد اشتراک"></div>' +
-    '<div class="field"><label>شناسه کارت</label><input id="cdCardId" class="zv-input" placeholder="Card-ID"></div>' +
-    '</div>' +
-    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">' +
-    '<div class="field"><label>شناسه گروه</label><input id="cdGroupId" class="zv-input" placeholder="Group-ID"></div>' +
-    '<div class="field"><label>وضعیت</label><select id="cdStatus" class="zv-select"><option value="همه">همه</option><option>جدید</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option><option>ارجاع به سرپرست</option></select></div>' +
-    '<div class="field" style="grid-column:span 2;display:flex;align-items:flex-end"><button class="btn btn-primary" style="width:100%" onclick="fetchCards()">🔍 جستجو</button></div>' +
-    '</div>' +
-    '<div id="cardsTable"></div></div>';
-  fetchCards();
+  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">کارت‌های شعبه</h1></div><div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">مدیریت کارت‌ها از طریق بخش سفارشات انجام می‌شود.</div></div>';
 }
 
-function fetchCards() {
-  const filters = {
-    fromDate: $('cdFrom')?.value || '', toDate: $('cdTo')?.value || '',
-    customerId: $('cdCustId')?.value || '', cardId: $('cdCardId')?.value || '',
-    groupId: $('cdGroupId')?.value || '', status: $('cdStatus')?.value || 'همه'
-  };
-  $('cardsTable').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  google.script.run.withSuccessHandler(rows => {
-    if (!rows.length) { $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">کارتی با این فیلترها یافت نشد</div>'; return; }
-    $('cardsTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>CardID</th><th>RequestID</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>اجراکننده</th><th>گروه</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
-      rows.map(r => '<tr><td><strong>' + r.cardId + '</strong></td><td>' + r.requestId + '</td><td>' + r.customer + '</td><td>' + r.details + '</td><td>' + money(r.amount) + '</td><td>' + (r.workerName || '—') + '</td><td>' + (r.groupName || '—') + '</td><td>' + statusBadge(r.status) + '</td><td><button class="btn btn-sm btn-primary" onclick="changeCardStatus(\'' + r.cardId + '\',\'' + r.status + '\')">تغییر وضعیت</button></td></tr>').join('') + '</tbody></table></div>';
-  }).withFailureHandler(e => { $('cardsTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger)">' + e.message + '</div>'; }).getEmployeeCards(filters, currentToken);
-}
-
-// --- توابع گروه و نیرو (مشابه مدیر شعبه، اما با فراخوانی توابع کارمند در صورت وجود، یا توابع مشترک) ---
 function loadGroups() {
-  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">گروه‌های شعبه</h1></div><div id="grpContent"></div>';
+  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">گروه‌های شعبه</h1><button class="btn btn-primary" onclick="editGroup()">+ گروه جدید</button></div><div id="grpContent"></div>';
   google.script.run.withSuccessHandler(list => {
-    if (!list || !list.length) {
-      $('grpContent').innerHTML = '<div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">گروهی ثبت نشده است.</div></div>';
-      return;
-    }
-    $('grpContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>سرپرست</th><th>منطقه</th><th>وضعیت</th></tr></thead><tbody>' +
-      list.map(g => '<tr><td>' + g.groupId + '</td><td>' + g.name + '</td><td>' + (g.supervisorName||'—') + '</td><td>' + (g.area||'—') + '</td><td><span class="badge badge-' + (g.status==='فعال'?'active':'inactive') + '">' + g.status + '</span></td></tr>').join('') + '</tbody></table></div></div>';
+    if (!list || !list.length) { $('grpContent').innerHTML = '<div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">گروهی ثبت نشده است.</div></div>'; return; }
+    $('grpContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>سرپرست</th><th>منطقه</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      list.map(g => '<tr><td>' + g.groupId + '</td><td>' + g.name + '</td><td>' + (g.supervisorName||'—') + '</td><td>' + (g.area||'—') + '</td><td><span class="badge badge-' + (g.status==='فعال'?'active':'inactive') + '">' + g.status + '</span></td><td><button class="btn btn-sm btn-secondary" onclick=\'editGroup(' + JSON.stringify(g).replace(/'/g,"&#39;") + ')\'>✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteGrp(' + g.rowIndex + ')">🗑</button></td></tr>').join('') + '</tbody></table></div></div>';
   }).withFailureHandler(e => toast(e.message, 'error')).getEmployeeGroups(currentToken);
 }
-
 function editGroup(g) {
   g = g || {};
   openModal('<div class="modal-header"><h2>' + (g.rowIndex?'ویرایش':'افزودن') + ' گروه</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
@@ -363,25 +347,21 @@ function editGroup(g) {
 }
 function saveGrp(rowIndex) {
   const data = { rowIndex: rowIndex, groupId: $('gId').value, name: $('gName').value, supervisorName: $('gSup').value, province: $('gProv').value, city: $('gCity').value, area: $('gArea').value, groupType: $('gType').value, totalMembers: $('gMembers').value, rank: $('gRank').value, status: $('gStatus').value, description: $('gDesc').value, notes: $('gNotes').value };
-  google.script.run.withSuccessHandler(() => { closeModal(); toast('ذخیره شد', 'success'); loadGroups(); }).withFailureHandler(e => toast(e.message, 'error')).saveBranchManagerGroup(data, currentToken);
+  google.script.run.withSuccessHandler(() => { closeModal(); toast('ذخیره شد', 'success'); loadGroups(); }).withFailureHandler(e => toast(e.message, 'error')).saveEmployeeGroup(data, currentToken);
 }
 function deleteGrp(rowIndex) {
   if (!confirm('حذف شود؟')) return;
-  google.script.run.withSuccessHandler(() => { toast('حذف شد', 'success'); loadGroups(); }).withFailureHandler(e => toast(e.message, 'error')).deleteBranchManagerGroup(rowIndex, currentToken);
+  google.script.run.withSuccessHandler(() => { toast('حذف شد', 'success'); loadGroups(); }).withFailureHandler(e => toast(e.message, 'error')).deleteEmployeeGroup(rowIndex, currentToken);
 }
 
 function loadWorkers() {
-  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">نیروهای شعبه</h1></div><div id="wrkContent"></div>';
+  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">نیروهای شعبه</h1><button class="btn btn-primary" onclick="editWorker()">+ نیروی جدید</button></div><div id="wrkContent"></div>';
   google.script.run.withSuccessHandler(list => {
-    if (!list || !list.length) {
-      $('wrkContent').innerHTML = '<div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">نیرویی ثبت نشده است.</div></div>';
-      return;
-    }
-    $('wrkContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>یوزرنیم</th><th>نوع</th><th>سمت</th><th>موبایل</th><th>وضعیت</th></tr></thead><tbody>' +
-      list.map(w => '<tr><td>' + w.workerId + '</td><td>' + w.firstName + ' ' + w.lastName + '</td><td>' + w.username + '</td><td><span class="badge badge-new">' + w.operations + '</span></td><td>' + (w.jobTitle||'—') + '</td><td style="direction:ltr">' + w.contact + '</td><td><span class="badge badge-' + (w.status==='فعال'?'active':'inactive') + '">' + w.status + '</span></td></tr>').join('') + '</tbody></table></div></div>';
+    if (!list || !list.length) { $('wrkContent').innerHTML = '<div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">نیرویی ثبت نشده است.</div></div>'; return; }
+    $('wrkContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>یوزرنیم</th><th>نوع</th><th>سمت</th><th>موبایل</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
+      list.map(w => '<tr><td>' + w.workerId + '</td><td>' + w.firstName + ' ' + w.lastName + '</td><td>' + w.username + '</td><td><span class="badge badge-new">' + w.operations + '</span></td><td>' + (w.jobTitle||'—') + '</td><td style="direction:ltr">' + w.contact + '</td><td><span class="badge badge-' + (w.status==='فعال'?'active':'inactive') + '">' + w.status + '</span></td><td><button class="btn btn-sm btn-secondary" onclick=\'editWorker(' + JSON.stringify(w).replace(/'/g,"&#39;") + ')\'>✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteWrk(' + w.rowIndex + ')">🗑</button></td></tr>').join('') + '</tbody></table></div></div>';
   }).withFailureHandler(e => toast(e.message, 'error')).getEmployeeWorkers(currentToken);
 }
-
 function editWorker(w) {
   w = w || {};
   openModal('<div class="modal-header"><h2>' + (w.rowIndex?'ویرایش':'افزودن') + ' نیرو</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
@@ -416,11 +396,11 @@ function editWorker(w) {
 function saveWrk(rowIndex) {
   const data = { rowIndex: rowIndex, workerId: $('wId').value, firstName: $('wFirst').value, lastName: $('wLast').value, fatherName: $('wFather').value, gender: $('wGender').value, nationalId: $('wNat').value, birthCert: $('wBirthCert').value, birthday: $('wBirthday').value, username: $('wUser').value, password: $('wPass').value, operations: $('wOps').value, jobTitle: $('wJob').value, specialization: $('wSpec').value, email: $('wEmail').value, contact: $('wContact').value, photo: $('wPhoto').value, province: $('wProv').value, city: $('wCity').value, hireDate: $('wHire').value, status: $('wStatus').value, emergencyName: $('wEmergName').value, emergency: $('wEmerg').value, address: $('wAddr').value, description: $('wDesc').value, notes: $('wNotes').value };
   if (!rowIndex && !data.password) { toast('رمز عبور الزامی است', 'error'); return; }
-  google.script.run.withSuccessHandler(() => { closeModal(); toast('ذخیره شد', 'success'); loadWorkers(); }).withFailureHandler(e => toast(e.message, 'error')).saveBranchManagerWorker(data, currentToken);
+  google.script.run.withSuccessHandler(() => { closeModal(); toast('ذخیره شد', 'success'); loadWorkers(); }).withFailureHandler(e => toast(e.message, 'error')).saveEmployeeWorker(data, currentToken);
 }
 function deleteWrk(rowIndex) {
   if (!confirm('حذف شود؟')) return;
-  google.script.run.withSuccessHandler(() => { toast('حذف شد', 'success'); loadWorkers(); }).withFailureHandler(e => toast(e.message, 'error')).deleteBranchManagerWorker(rowIndex, currentToken);
+  google.script.run.withSuccessHandler(() => { toast('حذف شد', 'success'); loadWorkers(); }).withFailureHandler(e => toast(e.message, 'error')).deleteEmployeeWorker(rowIndex, currentToken);
 }
 
 // ==================== ثبت کارجو ====================
@@ -531,7 +511,6 @@ function initApplicantJalaliDates(){
  document.addEventListener('click',e=>{if(!e.target.closest('.ja-date-wrap'))document.querySelectorAll('.ja-date-pop.open').forEach(x=>x.classList.remove('open'));});
 }
 
-
 function submitJobApplicant(ev){
   ev.preventDefault();
   const national=$('jaNationalId').value.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
@@ -541,7 +520,6 @@ function submitJobApplicant(ev){
   if(!applicantJalaliParts($('jaBirthDate').value)) return toast('تاریخ تولد را با تقویم شمسی انتخاب کنید.','error');
   
   calculateApplicantAge();
-
   const data={
     firstName:$('jaFirstName').value.trim(), lastName:$('jaLastName').value.trim(), gender:$('jaGender').value,
     nationalId:national, birthDate:$('jaBirthDate').value.trim(), age:$('jaAge').value, maritalStatus:$('jaMarital').value,
@@ -565,11 +543,11 @@ function submitJobApplicant(ev){
 }
 
 function searchJobApplicants(){
-  const filters={caseNumber:$('jaFilterCase').value.trim(),dateFrom:$('jaFilterFrom').value.trim(),dateTo:$('jaFilterTo').value.trim(),status:$('jaFilterStatus').value,specialty:$('jaFilterSpecialty').value.trim(),requestedPosition:$('jaFilterPosition').value.trim(),ageFrom:applicantNormalizeDigits($('jaFilterAgeFrom').value.trim()),ageTo:applicantNormalizeDigits($('jaFilterAgeTo').value.trim())};
+  const filters={caseNumber:$('jaFilterCase').value.trim(),dateFrom:$('jaFilterFrom').value.trim(),dateTo:$('jaFilterTo').value.trim(),status:$('jaFilterStatus').value,specialty:$('jaFilterSpecialty').value.trim(),requestedPosition:$('jaFilterPosition').value.trim()};
   $('jaRecent').innerHTML='<div class="loading">در حال جستجوی پرونده‌ها…</div>';
   google.script.run.withSuccessHandler(renderAllJobApplicants).withFailureHandler(e=>$('jaRecent').innerHTML='<div class="loading" style="color:var(--danger)">'+escapeHtml(e.message||'جستجو ناموفق بود')+'</div>').searchEmployeeJobApplicants(filters,currentToken);
 }
-function resetJobApplicantFilters(){['jaFilterCase','jaFilterFrom','jaFilterTo','jaFilterSpecialty','jaFilterPosition','jaFilterAgeFrom','jaFilterAgeTo'].forEach(id=>$(id).value='');$('jaFilterStatus').value='';searchJobApplicants();}
+function resetJobApplicantFilters(){['jaFilterCase','jaFilterFrom','jaFilterTo','jaFilterSpecialty','jaFilterPosition'].forEach(id=>$(id).value='');$('jaFilterStatus').value='';searchJobApplicants();}
 function renderAllJobApplicants(rows){
   if(!rows||!rows.length){$('jaRecent').innerHTML='<div style="padding:18px;text-align:center;color:var(--muted)">پرونده‌ای با این فیلترها پیدا نشد.</div>';return;}
   $('jaRecent').innerHTML=`<div class="small" style="margin-bottom:8px">تعداد پرونده‌های پیدا شده: ${toFa(rows.length)}</div><div class="table-wrap"><table><thead><tr><th>شماره پرونده</th><th>نام متقاضی</th><th>تخصص</th><th>موقعیت درخواستی</th><th>سن</th><th>تاریخ ثبت</th><th>بررسی اولیه</th><th>وضعیت پرونده</th><th>عملیات</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td><strong>${escapeHtml(r.caseNumber)}</strong></td><td>${escapeHtml(r.fullName)}</td><td>${escapeHtml(r.specialty)}</td><td>${escapeHtml(r.requestedPosition)}</td><td>${escapeHtml(r.age)}</td><td>${escapeHtml(r.createdAt)}</td><td>${escapeHtml(r.initialReview)}</td><td>${escapeHtml(r.status)}</td><td><button class="btn btn-secondary btn-sm" type="button" onclick="toggleApplicantOperation('${escapeHtml(r.caseNumber)}')">عملیات</button></td></tr><tr id="ja-op-${i}" style="display:none"><td colspan="9"><div class="card" style="margin:8px 0;background:#f8f9fc"><strong>عملیات پرونده ${escapeHtml(r.caseNumber)}</strong><div class="form-grid" style="margin-top:12px">
@@ -590,11 +568,6 @@ function saveApplicantOperation(i,caseNo){
  for(const key of ['phoneInterviewDate','inPersonInterviewDate'])if(changes[key]&&!applicantJalaliParts(changes[key]))return toast('تاریخ مصاحبه معتبر نیست.','error');
  const btn=$('ja-op-'+i).querySelector('.btn-primary');btn.disabled=true;btn.textContent='در حال ذخیره…';
  google.script.run.withSuccessHandler(()=>{toast('تغییرات پرونده ذخیره شد.','success');searchJobApplicants();}).withFailureHandler(e=>{btn.disabled=false;btn.textContent='ذخیره تغییرات';toast(e.message||'ذخیره تغییرات ناموفق بود.','error');}).updateEmployeeJobApplicantOperations(caseNo,changes,currentToken);
-}
-
-function renderRecentJobApplicants(rows){
-  if(!rows||!rows.length){$('jaRecent').innerHTML='<div style="padding:18px;text-align:center;color:var(--muted)">هنوز پرونده‌ای توسط شما ثبت نشده است.</div>';return;}
-  $('jaRecent').innerHTML='<div class="table-wrap"><table><thead><tr><th>شماره پرونده</th><th>نام متقاضی</th><th>تخصص</th><th>شماره تماس</th><th>تاریخ ثبت</th><th>وضعیت</th></tr></thead><tbody>'+rows.map(r=>'<tr><td><strong>'+escapeHtml(r.caseNumber)+'</strong></td><td>'+escapeHtml(r.fullName)+'</td><td>'+escapeHtml(r.specialty)+'</td><td style="direction:ltr">'+escapeHtml(r.phone)+'</td><td>'+escapeHtml(r.createdAt)+'</td><td>'+escapeHtml(r.status)+'</td></tr>').join('')+'</tbody></table></div>';
 }
 
 function loadReports() {
