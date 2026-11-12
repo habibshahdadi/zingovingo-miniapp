@@ -462,8 +462,13 @@ function loadNewOrder(){
   '<button class="btn btn-primary" style="min-height:44px;font-size:13px" onclick="openNewOrderForm()">➕ باز کردن فرم سفارش</button>'+
   '</div>';
 }
+
 function openNewOrderForm(){
-  window.open('?page=user&membershipCode='+encodeURIComponent(currentUser.customerId),'_blank');
+  // ساخت URL مطلق برای فرم ثبت درخواست
+  const currentUrl = window.location.href;
+  const baseUrl = currentUrl.split('?')[0]; // حذف پارامترهای فعلی
+  const newUrl = baseUrl + '?page=user&membershipCode=' + encodeURIComponent(currentUser.customerId);
+  window.open(newUrl, '_blank');
 }
 
 function loadProfile(){
