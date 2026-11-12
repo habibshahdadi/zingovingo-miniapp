@@ -152,6 +152,7 @@ const MENU_ITEMS = [
 { id: 'groups', label: '👥 گروه‌ها' },
 { id: 'workers', label: '👷 نیروها' },
 { id: 'jobApplicants', label: '📝 ثبت کارجو' },
+{ id: 'customerSupport', label: '💬 پشتیبانی مشتریان', badge: true }
 { id: 'reports', label: '📈 گزارشات' },
 { id: 'profile', label: '👤 پروفایل من' }
 ];
@@ -202,7 +203,12 @@ $('userName').textContent = user.name;
 $('userRole').innerHTML = 'کارمند <span class="badge-role">' + (user.branchId || '—') + '</span>';
 const av = $('userAvatar');
 if (user.avatar) av.innerHTML = '<img src="' + user.avatar + '">'; else av.textContent = user.name ? user.name.charAt(0) : '?';
-$('navMenu').innerHTML = MENU_ITEMS.map(i => '<div class="nav-item" data-page="' + i.id + '">' + i.label + '</div>').join('');
+$('navMenu').innerHTML = MENU_ITEMS.map(i => 
+  '<div class="nav-item" data-page="' + i.id + '">' +
+  '<span>' + i.label + '</span>' +
+  (i.badge ? '<span class="badge-role" style="margin-right:8px;background:var(--danger);display:none">0</span>' : '') +
+  '</div>'
+).join('');
 $('navMenu').querySelectorAll('.nav-item').forEach(item => {
 item.addEventListener('click', () => {
 $('navMenu').querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -212,6 +218,14 @@ loadPage(item.dataset.page);
 });
 });
 loadPage('dashboard');
+// شمارنده پیام‌های مشتریان
+google.script.run.withSuccessHandler(n => {
+  const badge = document.querySelector('[data-page="customerSupport"] .badge-role');
+  if (badge) {
+    badge.textContent = toFa(n || 0);
+    badge.style.display = n > 0 ? 'inline-block' : 'none';
+  }
+}).getUnansweredCustomerCount(currentToken);
 }
 (function checkSession() {
 const saved = localStorage.getItem('zv_emp_user');
@@ -219,7 +233,7 @@ if (currentToken && saved) { currentUser = JSON.parse(saved); showApp(currentUse
 })();
 function loadPage(page) {
 $('pageContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-const loaders = { dashboard: loadDashboard, orders: loadOrders, cards: loadCards, groups: loadGroups, workers: loadWorkers, jobApplicants: loadJobApplicants, reports: loadReports, profile: loadProfile };
+const loaders = { dashboard: loadDashboard, orders: loadOrders, cards: loadCards, groups: loadGroups, workers: loadWorkers, jobApplicants: loadJobApplicants, customerSupport: loadCustomerSupport, reports: loadReports, profile: loadProfile };
 (loaders[page] || loadDashboard)();
 }
 function loadDashboard() {
@@ -377,6 +391,94 @@ google.script.run.withSuccessHandler(() => { closeModal(); toast('ذخیره ش�
 function deleteWrk(rowIndex) {
 if (!confirm('حذف شود؟')) return;
 google.script.run.withSuccessHandler(() => { toast('حذف شد', 'success'); loadWorkers(); }).withFailureHandler(e => toast(e.message, 'error')).deleteEmployeeWorker(rowIndex, currentToken);
+}
+
+
+// ==================== پشتیبانی مشتریان ====================
+function loadCustomerSupport() {
+  $('pageContent').innerHTML = `
+    <div class="page-header">
+      <h1 class="page-title">پیام‌های مشتریان</h1>
+      <button class="btn btn-primary" onclick="loadCustomerSupport()">🔄 بروزرسانی</button>
+    </div>
+    <div id="supportStats" style="margin-bottom:16px"></div>
+    <div id="supportList"><div class="loading"><div class="spinner"></div></div></div>
+  `;
+  fetchCustomerSupport();
+}
+
+function fetchCustomerSupport() {
+  google.script.run.withSuccessHandler(rows => {
+    // آمار
+    const unread = rows.filter(r => r.status === 'unread').length;
+    const answered = rows.filter(r => r.status === 'answered').length;
+    $('supportStats').innerHTML = `
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card"><div class="stat-label">کل پیام‌ها</div><div class="stat-value">${toFa(rows.length)}</div></div>
+        <div class="stat-card yellow"><div class="stat-label">پاسخ‌داده‌نشده</div><div class="stat-value">${toFa(unread)}</div></div>
+        <div class="stat-card green"><div class="stat-label">پاسخ‌داده‌شده</div><div class="stat-value">${toFa(answered)}</div></div>
+      </div>
+    `;
+    
+    // لیست پیام‌ها
+    if (!rows.length) {
+      $('supportList').innerHTML = '<div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">هنوز پیامی از مشتریان ثبت نشده است.</div></div>';
+      return;
+    }
+    
+    $('supportList').innerHTML = rows.map(r => `
+      <div class="card" style="margin-bottom:12px;border-right:4px solid ${r.status === 'unread' ? 'var(--danger)' : 'var(--green)'}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div>
+            <strong style="color:var(--navy);font-size:14px">${esc(r.subject || 'بدون موضوع')}</strong>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">
+              از: ${esc(r.senderName)} (${esc(r.customerId)}) | ${esc(r.createdAt)}
+            </div>
+          </div>
+          <span class="badge badge-${r.status === 'unread' ? 'cancel' : 'done'}">
+            ${r.status === 'unread' ? 'پاسخ‌داده‌نشده' : 'پاسخ‌داده‌شده'}
+          </span>
+        </div>
+        <div style="background:#f8f9fc;padding:12px;border-radius:8px;margin-bottom:10px;font-size:13px;white-space:pre-wrap">${esc(r.message)}</div>
+        ${r.reply ? `<div style="background:#ecfdf3;padding:12px;border-radius:8px;font-size:13px;border-right:3px solid var(--green)"><strong>پاسخ شما:</strong><div style="margin-top:6px;white-space:pre-wrap">${esc(r.reply)}</div></div>` : ''}
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn btn-sm btn-primary" onclick="openReplyModal('${esc(r.conversationId)}','${esc(r.subject)}')">
+            ${r.reply ? '✏️ ویرایش پاسخ' : '↩️ پاسخ'}
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }).withFailureHandler(e => {
+    $('supportList').innerHTML = '<div class="card"><div style="padding:20px;text-align:center;color:var(--danger)">' + esc(e.message) + '</div></div>';
+  }).getCustomerConversationsForEmployee(currentToken);
+}
+
+function openReplyModal(convId, subject) {
+  openModal(`
+    <div class="modal-header">
+      <h2>پاسخ به: ${esc(subject)}</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="field" style="margin-bottom:14px">
+      <label>متن پاسخ</label>
+      <textarea id="replyText" style="min-height:120px" placeholder="پاسخ خود را بنویسید..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">انصراف</button>
+      <button class="btn btn-primary" onclick="sendReplyToCustomer('${esc(convId)}')">ارسال پاسخ</button>
+    </div>
+  `);
+}
+
+function sendReplyToCustomer(convId) {
+  const text = $('replyText').value.trim();
+  if (!text) return toast('متن پاسخ را وارد کنید', 'error');
+  
+  google.script.run.withSuccessHandler(() => {
+    closeModal();
+    toast('پاسخ ثبت شد', 'success');
+    loadCustomerSupport();
+  }).withFailureHandler(e => toast(e.message, 'error')).replyToCustomerConversation(convId, text, currentToken);
 }
 
 // ==================== ثبت کارجو (نسخه اصلاح‌شده کامل) ====================
