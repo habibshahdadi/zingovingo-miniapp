@@ -125,18 +125,27 @@ tr:hover{background:#fafbfd}
 <div class="login-sub">پنل مشتریان — پیگیری سفارشات و خدمات</div>
 
 <div class="login-tabs">
-<button class="login-tab active" data-tab="code" onclick="switchLoginTab('code')">🔑 کد اشتراک</button>
+<button class="login-tab active" data-tab="code" onclick="switchLoginTab('code')">🔑 نام کاربری</button>
 <button class="login-tab" data-tab="otp" onclick="switchLoginTab('otp')">📱 کد یکبار مصرف</button>
 </div>
 
 <div id="loginError" class="login-error"></div>
 <div id="loginInfo" class="login-info"></div>
 
-<!-- تب ۱: کد اشتراک -->
+<!-- تب ۱: نام کاربری و رمز عبور -->
 <div id="tabCode" class="tab-panel active">
-<div class="field"><label>کد اشتراک</label><input id="loginCode" autocomplete="username" placeholder="مثلاً ZV-mvxx32v8"></div>
-<div class="field"><label>شماره موبایل</label><input id="loginPhone1" inputmode="tel" autocomplete="tel" placeholder="09123456789"></div>
-<button class="btn btn-primary" onclick="doLoginCode()">ورود به پنل</button>
+  <div class="field">
+    <label>نام کاربری</label>
+    <input id="loginUsername" autocomplete="username" placeholder="نام کاربری خود را وارد کنید">
+  </div>
+  <div class="field">
+    <label>رمز عبور</label>
+    <input id="loginPassword" type="password" autocomplete="current-password" placeholder="رمز عبور">
+  </div>
+  <button class="btn btn-primary" onclick="doLoginCode()">ورود به پنل</button>
+  <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--muted)">
+    نام کاربری ندارید؟ از <a href="?page=user" style="color:var(--orange)">فرم ثبت درخواست</a> استفاده کنید.
+  </div>
 </div>
 
 <!-- تب ۲: OTP -->
@@ -213,17 +222,25 @@ function showLoginError(msg){ $('loginError').textContent=msg; $('loginError').s
 function showLoginInfo(msg){ $('loginInfo').textContent=msg; $('loginInfo').style.display='block'; $('loginError').style.display='none'; }
 function hideLoginMessages(){ $('loginError').style.display='none'; $('loginInfo').style.display='none'; }
 
-// ==================== روش ۱: ورود با کد اشتراک ====================
+// ==================== روش ۱: ورود با نام کاربری و رمز عبور ====================
 function doLoginCode(){
-const c=$('loginCode').value.trim(), p=$('loginPhone1').value.trim();
-if(!c||!p){ showLoginError('کد اشتراک و موبایل را وارد کنید'); return; }
-hideLoginMessages();
-callServer('customerLogin',[c,p],r=>{
-if(r&&r.success){ currentToken=r.token; currentUser=r.user;
-localStorage.setItem('zv_cst_token',r.token); localStorage.setItem('zv_cst_user',JSON.stringify(r.user));
-showApp(r.user);
-} else { showLoginError((r&&r.message)||'خطا در ورود'); }
-},e=>{ showLoginError(e.message||'خطا در ارتباط با سرور'); });
+  const u = $('loginUsername').value.trim();
+  const p = $('loginPassword').value;
+  if(!u || !p){ showLoginError('نام کاربری و رمز عبور را وارد کنید'); return; }
+  hideLoginMessages();
+  callServer('customerLogin', [u, p], r => {
+    if(r && r.success){ 
+      currentToken = r.token; 
+      currentUser = r.user;
+      localStorage.setItem('zv_cst_token', r.token); 
+      localStorage.setItem('zv_cst_user', JSON.stringify(r.user));
+      showApp(r.user);
+    } else { 
+      showLoginError((r && r.message) || 'خطا در ورود'); 
+    }
+  }, e => { 
+    showLoginError(e.message || 'خطا در ارتباط با سرور'); 
+  });
 }
 
 // ==================== روش ۲: ورود با OTP ====================
