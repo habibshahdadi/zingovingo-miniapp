@@ -528,16 +528,85 @@ function searchJobApplicants(){
 function resetJobApplicantFilters(){ ['jaFilterCase','jaFilterFrom','jaFilterTo','jaFilterSpecialty','jaFilterPosition'].forEach(id => $(id).value=''); $('jaFilterStatus').value=''; searchJobApplicants(); }
 
 function renderAllJobApplicants(rows){
-  if(!rows||!rows.length){ $('jaRecent').innerHTML = '<div style="padding:18px;text-align:center;color:var(--muted)">پرونده‌ای با این فیلترها پیدا نشد.</div>'; return; }
-  let html = '<div style="margin-bottom:8px;color:var(--muted);font-size:12px">تعداد پرونده‌های پیدا شده: ' + toFa(rows.length) + '</div><div class="table-wrap"><table><thead><tr><th>شماره پرونده</th><th>نام متقاضی</th><th>تخصص</th><th>موقعیت</th><th>سن</th><th>تاریخ ثبت</th><th>بررسی اولیه</th><th>وضعیت پرونده</th><th>عملیات</th></tr></thead><tbody>';
+  if(!rows || !rows.length){
+    $('jaRecent').innerHTML = '<div style="padding:18px;text-align:center;color:var(--muted)">پرونده‌ای با این فیلترها پیدا نشد.</div>';
+    return;
+  }
+  
+  let html = `<div style="margin-bottom:8px;color:var(--muted);font-size:12px">تعداد پرونده‌های پیدا شده: ${toFa(rows.length)}</div>
+  <div class="table-wrap"><table><thead><tr>
+    <th>شماره پرونده</th><th>نام متقاضی</th><th>تخصص</th><th>موقعیت</th><th>سن</th><th>تاریخ ثبت</th><th>بررسی اولیه</th><th>وضعیت پرونده</th><th>عملیات</th>
+  </tr></thead><tbody>`;
+  
   rows.forEach((r, i) => {
-    html += '<tr><td><strong>'+esc(r.caseNumber)+'</strong></td><td>'+esc(r.fullName)+'</td><td>'+esc(r.specialty)+'</td><td>'+esc(r.requestedPosition)+'</td><td>'+esc(r.age)+'</td><td>'+esc(r.createdAt)+'</td><td>'+esc(r.initialReview)+'</td><td><span class="badge badge-'+(r.status==='تأیید شده'||r.status==='استخدام شده'?'done':r.status==='رد شده'||r.status==='بایگانی'?'cancel':'progress')+'">'+esc(r.status)+'</span></td><td><button class="btn btn-secondary btn-sm" type="button" onclick="toggleApplicantOperation(\''+esc(r.caseNumber)+'\')">✏️ ویرایش</button></td></tr><tr id="ja-op-'+i+'" style="display:none"><td colspan="9"><div class="card" style="margin:8px 0;background:#f8f9fc"><strong style="color:var(--navy)">ویرایش کامل پرونده '+esc(r.caseNumber)+'</strong><div class="form-grid" style="margin-top:12px"><div class="field"><label>بررسی اولیه</label><select id="ja-op-review-'+i+'">'+jaOptions(['بررسی نشده','تأیید اولیه','رد اولیه','نیازمند بررسی بیشتر'],r.initialReview)+'</select></div><div class="field"><label>تاریخ مصاحبه تلفنی</label><input id="ja-op-phone-date-'+i+'" class="ja-jalali-date" value="'+esc(r.phoneInterviewDate)+'" placeholder="۱۴۰۵/۰۸/۱۲"></div><div class="field"><label>تاریخ مصاحبه حضوری</label><input id="ja-op-person-date-'+i+'" class="ja-jalali-date" value="'+esc(r.inPersonInterviewDate)+'" placeholder="۱۴۰۵/۰۸/۱۲"></div><div class="field"><label>نتیجه مصاحبه تلفنی</label><select id="ja-op-phone-result-'+i+'">'+jaOptions(['انجام نشده','تأیید','رد','نیازمند پیگیری'],r.phoneInterviewResult)+'</select></div><div class="field"><label>نتیجه مصاحبه حضوری</label><select id="ja-op-person-result-'+i+'">'+jaOptions(['انجام نشده','تأیید','رد','نیازمند پیگیری'],r.inPersonInterviewResult)+'</select></div><div class="field"><label>وضعیت پرونده</label><select id="ja-op-status-'+i+'">'+jaOptions(['جدید','در حال بررسی','در انتظار مصاحبه','تأیید شده','رد شده','استخدام شده','بایگانی'],r.status)+'</select></div></div><div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px"><button class="btn btn-secondary btn-sm" type="button" onclick="cancelApplicantOperation('+i+')">لغو</button><button class="btn btn-primary btn-sm" type="button" onclick="saveApplicantOperationFull('+i+',\''+esc(r.caseNumber)+'\')">💾 ذخیره تمام تغییرات</button></div></div></td></tr>';
+    html += `<tr>
+      <td><strong>${esc(r.caseNumber)}</strong></td>
+      <td>${esc(r.fullName)}</td>
+      <td>${esc(r.specialty)}</td>
+      <td>${esc(r.requestedPosition)}</td>
+      <td>${esc(r.age)}</td>
+      <td>${esc(r.createdAt)}</td>
+      <td>${esc(r.initialReview)}</td>
+      <td><span class="badge badge-${r.status==='تأیید شده'||r.status==='استخدام شده'?'done':r.status==='رد شده'||r.status==='بایگانی'?'cancel':'progress'}">${esc(r.status)}</span></td>
+      <td><button class="btn btn-secondary btn-sm" type="button" onclick="toggleApplicantOperation('${esc(r.caseNumber)}')">✏️ ویرایش کامل</button></td>
+    </tr>
+    <tr id="ja-op-${i}" style="display:none">
+      <td colspan="9">
+        <div class="card" style="margin:8px 0;background:#f8f9fc">
+          <strong style="color:var(--navy);font-size:15px">ویرایش کامل پرونده ${esc(r.caseNumber)}</strong>
+          <div style="display:flex;gap:15px;margin:10px 0;font-size:12px;color:var(--muted);background:#fff;padding:10px;border-radius:8px;border:1px solid var(--line)">
+            <span>📅 تاریخ ثبت: <b>${esc(r.createdAt)}</b></span>
+            <span>👤 ثبت‌کننده: <b>${esc(r.createdBy || 'نامشخص')}</b></span>
+          </div>
+          
+          <div class="form-grid" style="margin-top:12px">
+            <div class="field"><label>نام *</label><input id="ja-op-first-${i}" value="${esc(r.firstName)}"></div>
+            <div class="field"><label>نام خانوادگی *</label><input id="ja-op-last-${i}" value="${esc(r.lastName)}"></div>
+            <div class="field"><label>جنسیت</label><select id="ja-op-gender-${i}">${jaOptions(['مرد','زن'], r.gender)}</select></div>
+            <div class="field"><label>تاریخ تولد *</label><input id="ja-op-birth-${i}" class="ja-jalali-date" value="${esc(r.birthDate)}" placeholder="۱۴۰۵/۰۸/۱۲"></div>
+            <div class="field"><label>وضعیت تأهل</label><select id="ja-op-marital-${i}">${jaOptions(['','مجرد','متأهل','سایر'], r.maritalStatus)}</select></div>
+            <div class="field"><label>تخصص اصلی *</label><input id="ja-op-specialty-${i}" value="${esc(r.specialty)}"></div>
+            <div class="field"><label>مدت فعالیت</label><input id="ja-op-exp-${i}" value="${esc(r.experience)}"></div>
+            <div class="field full"><label>مهارت‌های دیگر</label><textarea id="ja-op-skills-${i}">${esc(r.otherSkills)}</textarea></div>
+            <div class="field"><label>میزان تحصیلات</label><select id="ja-op-edu-${i}">${jaOptions(['','زیر دیپلم','دیپلم','کاردانی','کارشناسی','کارشناسی ارشد','دکتری','سایر'], r.education)}</select></div>
+            <div class="field"><label>رشته تحصیلی</label><input id="ja-op-field-${i}" value="${esc(r.fieldOfStudy)}"></div>
+            <div class="field full"><label>محل سکونت</label><input id="ja-op-res-${i}" value="${esc(r.residence)}"></div>
+            <div class="field"><label>شماره تماس *</label><input id="ja-op-phone-${i}" value="${esc(r.phone)}"></div>
+            <div class="field"><label>پیام‌رسان</label><select id="ja-op-mess-${i}">${jaOptions(['','بله','واتساپ','تلگرام','روبیکا','ایتا','سایر'], r.messenger)}</select></div>
+            <div class="field"><label>آی‌دی پیام‌رسان</label><input id="ja-op-messid-${i}" value="${esc(r.messengerId)}"></div>
+            <div class="field"><label>نحوه آشنایی</label><select id="ja-op-source-${i}">${jaOptions(['','دیوار','شیپور','معرفی دوستان','شبکه‌های اجتماعی','مراجعه حضوری','سایر'], r.source)}</select></div>
+            <div class="field"><label>معرف</label><input id="ja-op-ref-${i}" value="${esc(r.referrer)}"></div>
+            <div class="field"><label>موقعیت درخواستی</label><input id="ja-op-pos-${i}" value="${esc(r.requestedPosition)}"></div>
+          </div>
+          
+          <hr style="margin:16px 0;border:0;border-top:1px solid var(--line)">
+          <strong style="color:var(--navy)">گردش کار و مصاحبه</strong>
+          <div class="form-grid" style="margin-top:12px">
+            <div class="field"><label>بررسی اولیه</label><select id="ja-op-review-${i}">${jaOptions(['بررسی نشده','تأیید اولیه','رد اولیه','نیازمند بررسی بیشتر'], r.initialReview)}</select></div>
+            <div class="field"><label>تاریخ مصاحبه تلفنی</label><input id="ja-op-phone-date-${i}" class="ja-jalali-date" value="${esc(r.phoneInterviewDate)}" placeholder="۱۴۰۵/۰۸/۱۲"></div>
+            <div class="field"><label>تاریخ مصاحبه حضوری</label><input id="ja-op-person-date-${i}" class="ja-jalali-date" value="${esc(r.inPersonInterviewDate)}" placeholder="۱۴۰۵/۰۸/۱۲"></div>
+            <div class="field"><label>نتیجه مصاحبه تلفنی</label><select id="ja-op-phone-result-${i}">${jaOptions(['انجام نشده','تأیید','رد','نیازمند پیگیری'], r.phoneInterviewResult)}</select></div>
+            <div class="field"><label>نتیجه مصاحبه حضوری</label><select id="ja-op-person-result-${i}">${jaOptions(['انجام نشده','تأیید','رد','نیازمند پیگیری'], r.inPersonInterviewResult)}</select></div>
+            <div class="field"><label>وضعیت پرونده</label><select id="ja-op-status-${i}">${jaOptions(['جدید','در حال بررسی','در انتظار مصاحبه','تأیید شده','رد شده','استخدام شده','بایگانی'], r.status)}</select></div>
+            <div class="field full"><label>توضیحات</label><textarea id="ja-op-notes-${i}" rows="2">${esc(r.notes)}</textarea></div>
+          </div>
+          
+          <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px">
+            <button class="btn btn-secondary btn-sm" type="button" onclick="cancelApplicantOperation(${i})">لغو</button>
+            <button class="btn btn-primary btn-sm" type="button" onclick="saveApplicantOperationFull(${i},'${esc(r.caseNumber)}')">💾 ذخیره تمام تغییرات</button>
+          </div>
+        </div>
+      </td>
+    </tr>`;
   });
+  
   html += '</tbody></table></div>';
   $('jaRecent').innerHTML = html;
   window.jaRenderedApplicants = rows;
+  
   setTimeout(() => initApplicantJalaliDates(), 100);
 }
+
 function jaOptions(options, selected){ return options.map(x => '<option value="'+esc(x)+'" '+(x===selected?'selected':'')+'>'+esc(x||'— انتخاب —')+'</option>').join(''); }
 function toggleApplicantOperation(caseNo){
   const rows = window.jaRenderedApplicants || [];
@@ -552,12 +621,56 @@ function cancelApplicantOperation(i){ const tr = $('ja-op-'+i); if(tr) tr.style.
 
 function saveApplicantOperationFull(i, caseNo){
   const changes = {
-    initialReview: $('ja-op-review-'+i).value, phoneInterviewDate: $('ja-op-phone-date-'+i).value.trim(), inPersonInterviewDate: $('ja-op-person-date-'+i).value.trim(),
-    phoneInterviewResult: $('ja-op-phone-result-'+i).value, inPersonInterviewResult: $('ja-op-person-result-'+i).value, status: $('ja-op-status-'+i).value
+    firstName: $('ja-op-first-'+i).value.trim(),
+    lastName: $('ja-op-last-'+i).value.trim(),
+    gender: $('ja-op-gender-'+i).value,
+    birthDate: $('ja-op-birth-'+i).value.trim(),
+    maritalStatus: $('ja-op-marital-'+i).value,
+    specialty: $('ja-op-specialty-'+i).value.trim(),
+    experience: $('ja-op-exp-'+i).value.trim(),
+    otherSkills: $('ja-op-skills-'+i).value.trim(),
+    education: $('ja-op-edu-'+i).value,
+    fieldOfStudy: $('ja-op-field-'+i).value.trim(),
+    residence: $('ja-op-res-'+i).value.trim(),
+    phone: $('ja-op-phone-'+i).value.trim(),
+    messenger: $('ja-op-mess-'+i).value,
+    messengerId: $('ja-op-messid-'+i).value.trim(),
+    source: $('ja-op-source-'+i).value,
+    referrer: $('ja-op-ref-'+i).value.trim(),
+    requestedPosition: $('ja-op-pos-'+i).value.trim(),
+    initialReview: $('ja-op-review-'+i).value,
+    phoneInterviewDate: $('ja-op-phone-date-'+i).value.trim(),
+    inPersonInterviewDate: $('ja-op-person-date-'+i).value.trim(),
+    phoneInterviewResult: $('ja-op-phone-result-'+i).value,
+    inPersonInterviewResult: $('ja-op-person-result-'+i).value,
+    status: $('ja-op-status-'+i).value,
+    notes: $('ja-op-notes-'+i).value.trim()
   };
-  for(const key of ['phoneInterviewDate','inPersonInterviewDate']) if(changes[key] && !applicantJalaliParts(changes[key])) return toast('تاریخ مصاحبه معتبر نیست.','error');
-  const btn = $('ja-op-'+i).querySelector('.btn-primary'); btn.disabled=true; btn.textContent='در حال ذخیره…';
-  google.script.run.withSuccessHandler(() => { toast('تغییرات پرونده ذخیره شد.','success'); searchJobApplicants(); }).withFailureHandler(e => { btn.disabled=false; btn.textContent='ذخیره تغییرات'; toast(e.message||'ذخیره تغییرات ناموفق بود.','error'); }).updateEmployeeJobApplicantOperations(caseNo, changes, currentToken);
+  
+  // اعتبارسنجی سمت کلاینت
+  if(!changes.firstName) return toast('نام الزامی است','error');
+  if(!changes.lastName) return toast('نام خانوادگی الزامی است','error');
+  if(!changes.specialty) return toast('تخصص اصلی الزامی است','error');
+  const phone = changes.phone.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+  if(!/^09\d{9}$/.test(phone)) return toast('شماره تماس معتبر نیست','error');
+  if(!applicantJalaliParts(changes.birthDate)) return toast('تاریخ تولد معتبر نیست','error');
+  
+  for(const key of ['phoneInterviewDate','inPersonInterviewDate']){
+    if(changes[key] && !applicantJalaliParts(changes[key])) return toast('تاریخ مصاحبه معتبر نیست.','error');
+  }
+  
+  const btn = $(`ja-op-${i}`).querySelector('.btn-primary');
+  btn.disabled = true;
+  btn.textContent = 'در حال ذخیره…';
+  
+  google.script.run.withSuccessHandler(() => {
+    toast('تمام تغییرات پرونده ذخیره شد.','success');
+    searchJobApplicants();
+  }).withFailureHandler(e => {
+    btn.disabled = false;
+    btn.textContent = '💾 ذخیره تمام تغییرات';
+    toast(e.message || 'ذخیره تغییرات ناموفق بود.','error');
+  }).updateEmployeeJobApplicantFull(caseNo, changes, currentToken);
 }
 
 function loadReports() {
