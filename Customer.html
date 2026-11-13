@@ -110,6 +110,37 @@ tr:hover{background:#fafbfd}
 .thread-state.open{background:#edf2ff;color:#4567bb}
 .thread-state.closed{background:#f0f1f4;color:#687386}
 .unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;margin-right:auto;border-radius:20px;background:#d92d3a;color:#fff;font-size:10px;font-weight:900}
+
+.order-form .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.order-form .field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.order-form .field label{font-size:12px;font-weight:700;color:var(--muted)}
+.order-form .field input,.order-form .field select,.order-form .field textarea{font:inherit;font-size:13px;width:100%;border:1px solid #cfd6e3;border-radius:9px;padding:10px 11px;background:#fff;outline:none}
+.order-form .field input:focus,.order-form .field select:focus,.order-form .field textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
+.order-form .field textarea{min-height:80px;resize:vertical}
+.order-form .full{grid-column:1/-1}
+.order-form .hint{font-size:11px;color:var(--muted)}
+.order-form .required{color:var(--danger)}
+.order-form .levelbar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff7f1;border:1px solid #ffd7c2;border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.order-form .level-pill{font-weight:900;color:var(--navy);font-size:13px}
+.order-form .side-list{display:grid;gap:10px;margin-top:8px}
+.order-form .side-item{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px}
+.order-form .side-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--orange)}
+.order-form .side-name{flex:1;font-size:12px;font-weight:700}
+.order-form .side-qty{width:80px}
+.order-form .price-preview{background:#f8f9fc;border:1px dashed #cbd3e1;border-radius:12px;padding:14px}
+.order-form .price-line{display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:13px}
+.order-form .price-final{border-top:1px solid var(--line);margin-top:7px;padding-top:10px;font-size:15px;color:var(--navy);font-weight:800}
+.order-form .date-wrap{position:relative}
+.order-form .date-pop{display:none;position:absolute;top:calc(100% + 6px);right:0;z-index:50;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;width:290px;box-shadow:0 10px 30px #17203320}
+.order-form .date-pop.open{display:block}
+.order-form .cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.order-form .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.order-form .cal-grid button{padding:6px 0;border:0;border-radius:7px;background:#f3f5f9;cursor:pointer;font:inherit;font-size:12px}
+.order-form .cal-grid button:hover{background:#ffe4d6}
+.order-form .cal-grid .day-label{background:#fff;color:var(--muted);font-size:11px}
+.order-form .date-btn{position:absolute;left:5px;top:5px;padding:5px 9px;background:#eef1f7;border:0;border-radius:7px;cursor:pointer}
+.order-form .date-wrap input{padding-left:50px}
+.order-form .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
 </style>
 </head>
 <body>
@@ -411,6 +442,246 @@ function viewInvoice(requestId){
   },e=>$('pageContent').innerHTML='<div style="padding:18px;text-align:center;color:var(--danger);font-size:12px">'+esc(e.message)+'</div>');
 }
 
+/* ==================== فرم سفارش داخلی ==================== */
+const orderState={services:[],sideServices:[],questions:[],estimate:null,requestId:null,submitting:false,calYear:null,calMonth:null};
+
+function loadNewOrder(){
+  $('pageContent').innerHTML=`
+  <div class="page-header"><h1 class="page-title">ثبت درخواست جدید</h1></div>
+  <div class="card" style="border-right:4px solid var(--orange)">
+    <div class="levelbar"><strong>سطح اشتراک شما</strong><span id="customerLevelBadge" class="level-pill">—</span></div>
+    <div style="font-size:12px;color:var(--muted)">اطلاعات مشتری از پنل شما به‌صورت خودکار اعمال می‌شود و تخفیف سطح روی فاکتور اعمال خواهد شد.</div>
+  </div>
+  <form id="orderForm" class="order-form" onsubmit="submitOrder(event)">
+    <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۱. اطلاعات درخواست و زمان‌بندی</h3>
+      <div class="grid">
+        <div class="field"><label>نوع اقدام</label><select id="actionType"><option value="عادی">عادی</option><option value="رزرو">رزرو</option><option value="فوری">فوری</option></select></div>
+        <div class="field"><label>تاریخ اجرا (شمسی) <span class="required">*</span></label>
+          <div class="date-wrap"><input id="requestDate" type="text" inputmode="numeric" placeholder="۱۴۰۵/۰۸/۲۲" maxlength="10" required>
+            <button class="date-btn" type="button" id="dateToggle">▦</button>
+            <div id="datePop" class="date-pop"><div class="cal-head"><button type="button" class="btn btn-sm btn-secondary" id="prevMonth">‹</button><strong id="calTitle"></strong><button type="button" class="btn btn-sm btn-secondary" id="nextMonth">›</button></div><div id="calGrid" class="cal-grid"></div></div>
+          </div>
+        </div>
+        <div class="field"><label>ساعت اجرا <span class="required">*</span></label><input id="requestTime" type="time" required></div>
+        <div class="field"><label>استان</label><select id="province"><option value="">انتخاب استان</option></select></div>
+        <div class="field"><label>شهر</label><select id="city" disabled><option value="">ابتدا استان</option></select></div>
+        <div class="field full"><label>آدرس دقیق محل خدمت <span class="required">*</span></label><textarea id="address" minlength="5" maxlength="600" placeholder="خیابان، کوچه، پلاک، واحد…" required></textarea></div>
+        <div class="field full"><label>توضیحات تکمیلی</label><textarea id="notes" maxlength="2000" placeholder="جزئیات موردنیاز برای اجرای بهتر خدمت…"></textarea></div>
+      </div>
+    </div>
+    <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۲. انتخاب خدمت و جزئیات</h3>
+      <div class="grid">
+        <div class="field"><label>خدمات <span class="required">*</span></label><select id="serviceId" required><option value="">در حال دریافت خدمات…</option></select></div>
+        <div class="field"><label>میزان تحصیلات سطح تخفیف</label><input id="mainRate" readonly value="نرخ در پیش‌فاکتور محاسبه می‌شود"></div>
+        <input id="quantity" type="hidden" value="1">
+        <div class="field full hint" id="unitHint"></div>
+      </div>
+      <div id="serviceQuestions" class="grid" style="margin-top:16px"></div>
+      <div style="margin-top:16px"><label style="font-size:12px;font-weight:700">خدمات جانبی (اختیاری)</label><div id="sideServices" class="side-list"><div class="hint">در حال دریافت…</div></div></div>
+    </div>
+    <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۳. کد تخفیف (اختیاری)</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><input id="offerCode" maxlength="80" placeholder="کد تخفیف را وارد کنید" style="flex:1;min-width:180px"><button class="btn btn-secondary" type="button" id="applyOfferCode">بررسی کد</button><button class="btn btn-secondary" type="button" id="removeOfferCode">حذف</button></div>
+      <div id="offerCodeHint" class="hint" style="margin-top:6px">اعتبار کد هنگام ثبت در سرور بررسی می‌شود.</div>
+    </div>
+    <div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۴. پیش‌فاکتور</h3>
+      <div class="price-preview">
+        <div class="price-line"><span>خدمات</span><strong id="invoiceBase">—</strong></div>
+        <div class="price-line"><span>خدمات جانبی</span><strong id="invoiceSide">—</strong></div>
+        <div id="invoiceSideDetails"></div>
+        <div class="price-line"><span>هزینه اقدام فوری</span><strong id="invoiceUrgent">—</strong></div>
+        <div class="price-line"><span>تخفیف اشتراک</span><strong id="invoiceDiscount">—</strong></div>
+        <div class="price-line"><span>تخفیف کد</span><strong id="invoiceOfferDiscount">—</strong></div>
+        <div class="price-line"><span>مالیات بر ارزش افزوده</span><strong id="invoiceTax">—</strong></div>
+        <div class="price-line price-final"><span>مبلغ نهایی</span><strong id="finalPrice">خدمت را انتخاب کنید</strong></div>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" id="estimateBtn">محاسبه مجدد</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">ثبت درخواست</button>
+      </div>
+    </div>
+  </form>`;
+
+  // پر کردن اطلاعات مشتری از نشست
+  $('customerLevelBadge').textContent=(currentUser.level||'عادی')+' — تخفیف '+toFa(currentUser.discountRate||0)+'٪';
+  $('province').value=currentUser.province||'';
+  initOrderForm();
+}
+
+function initOrderForm(){
+  initProvinceCities();
+  // پر کردن آدرس و شهر مشتری
+  if(currentUser.province){ populateCities(); setTimeout(()=>{ if(currentUser.city) $('city').value=currentUser.city; },50); }
+  $('address').value=currentUser.address||'';
+  initOrderCalendar();
+  $('serviceId').addEventListener('change',()=>{renderServiceQuestions();renderSideServices();updateUnitHint();estimatePrice();});
+  $('actionType').addEventListener('change',estimatePrice);
+  $('offerCode').addEventListener('change',estimatePrice);
+  $('estimateBtn').addEventListener('click',estimatePrice);
+  $('applyOfferCode').addEventListener('click',applyOfferCode);
+  $('removeOfferCode').addEventListener('click',()=>{$('offerCode').value='';$('offerCodeHint').textContent='کد تخفیف حذف شد.';estimatePrice();});
+  // دریافت خدمات
+  callServer('getServices',[],data=>{
+    orderState.services=data.services||[];
+    orderState.sideServices=data.sideServices||[];
+    orderState.questions=data.questions||[];
+    $('serviceId').innerHTML='<option value="">انتخاب کنید</option>'+orderState.services.map(s=>'<option value="'+esc(s.id)+'">'+esc(s.name)+'</option>').join('');
+    renderSideServices();renderServiceQuestions();updateUnitHint();
+  },e=>toast('خطا در دریافت خدمات: '+e.message,'error'));
+}
+
+function applyOfferCode(){
+  const code=$('offerCode').value.trim();
+  if(!code) return toast('ابتدا کد تخفیف را وارد کنید','error');
+  callServer('validateOfferCode',[code],r=>{
+    $('offerCodeHint').textContent=r.message||'';
+    if(r.valid){ toast('کد تخفیف معتبر است','success'); estimatePrice(); }
+    else { $('invoiceOfferDiscount').textContent='—'; toast(r.message||'کد تخفیف معتبر نیست','error'); }
+  });
+}
+
+function renderSideServices(){
+  const root=$('sideServices');
+  const selected=orderState.services.find(x=>x.id===$('serviceId').value);
+  const eligible=orderState.sideServices.filter(s=>{
+    if(!s.relatedService) return false;
+    const tokens=s.relatedService.split(/[,،;؛]/).map(x=>x.trim().toLowerCase()).filter(Boolean).map(t=>['cleaning_m','cleaning_f'].includes(t)?'home / office cleaning':t);
+    return selected&&tokens.some(t=>t===selected.id.toLowerCase()||t===selected.name.toLowerCase());
+  });
+  if(!eligible.length){ root.innerHTML='<div class="hint">خدمت جانبی مرتبطی ثبت نشده است.</div>'; return; }
+  root.innerHTML=eligible.map(s=>'<div class="side-item"><input type="checkbox" data-side-id="'+esc(s.id)+'"><span class="side-name">'+esc(s.name)+' <span class="hint">('+esc(s.unit)+')</span></span><input class="side-qty" type="number" min="1" max="10000" value="1" data-side-qty="'+esc(s.id)+'" disabled></div>').join('');
+  root.querySelectorAll('input[type=checkbox]').forEach(cb=>cb.addEventListener('change',()=>{
+    const q=root.querySelector('[data-side-qty="'+cb.dataset.sideId+'"]');
+    q.disabled=!cb.checked; estimatePrice();
+  }));
+  root.querySelectorAll('[data-side-qty]').forEach(el=>el.addEventListener('change',estimatePrice));
+}
+
+function renderServiceQuestions(){
+  const root=$('serviceQuestions');
+  const qs=orderState.questions.filter(q=>q.serviceId===$('serviceId').value).sort((a,b)=>(a.position||0)-(b.position||0));
+  if(!qs.length){ root.innerHTML=''; return; }
+  root.innerHTML=qs.map((q,i)=>{
+    const id='q-'+i;
+    const required=/اجباری|required/i.test(q.fieldType||'');
+    const req=required?' required':'';
+    const raw=String(q.inputType||'text').trim().toLowerCase();
+    const isSelect=/select|انتخاب|گزینه/.test(raw);
+    let input='';
+    if(isSelect){
+      const opts=(q.options||'').split(/[,،؛;]/).map(x=>x.trim()).filter(Boolean);
+      input='<select id="'+id+'" data-answer-column="'+esc(q.answerColumn)+'"'+req+'><option value="">انتخاب کنید</option>'+opts.map(o=>'<option value="'+esc(o)+'">'+esc(o)+'</option>').join('')+'</select>';
+    } else {
+      const type=['number','text','date','time','email','tel'].includes(raw)?raw:'text';
+      input='<input id="'+id+'" type="'+type+'" data-answer-column="'+esc(q.answerColumn)+'"'+req+'>';
+    }
+    return '<div class="field"><label>'+esc(q.question)+(required?' <span class="required">*</span>':'')+'</label>'+input+(q.help?'<div class="hint">'+esc(q.help)+'</div>':'')+'</div>';
+  }).join('');
+  root.querySelectorAll('[data-answer-column]').forEach(el=>{
+    el.addEventListener('input',()=>{
+      if(['مقدار','تعداد طبقات'].includes(el.dataset.answerColumn)){
+        const v=parseNum(el.value); if(v>0) $('quantity').value=v;
+      }
+    });
+    el.addEventListener('change',estimatePrice);
+  });
+}
+
+function updateUnitHint(){
+  const s=orderState.services.find(x=>x.id===$('serviceId').value);
+  $('unitHint').textContent=s?('واحد محاسبه: '+s.unit):'';
+}
+
+function parseNum(v){return Number(String(v||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٬,\s]/g,'').replace(/[^0-9.-]/g,''))||0;}
+
+function collectOrderPayload(){
+  const answers={};
+  document.querySelectorAll('#serviceQuestions [data-answer-column]').forEach(el=>{ if(el.value!=='') answers[el.dataset.answerColumn]=el.value; });
+  const derived=parseNum(answers['مقدار']||answers['تعداد طبقات']||1);
+  $('quantity').value=derived>0?derived:1;
+  return {
+    requestId:orderState.requestId||(orderState.requestId='ZV-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9)),
+    serviceId:$('serviceId').value,
+    quantity:Number($('quantity').value),
+    sideServices:[...document.querySelectorAll('[data-side-id]:checked')].map(cb=>({id:cb.dataset.sideId,quantity:Number(document.querySelector('[data-side-qty="'+cb.dataset.sideId+'"]').value)||1})),
+    answers,
+    name:currentUser.fullName,
+    firstName:currentUser.firstName,
+    lastName:currentUser.lastName,
+    membershipCode:currentUser.customerId,
+    offerCode:$('offerCode').value.trim(),
+    actionType:$('actionType').value,
+    phone:currentUser.phone,
+    requestDate:$('requestDate').value.trim(),
+    requestTime:$('requestTime').value,
+    address:$('address').value.trim(),
+    province:$('province').value,
+    city:$('city').value,
+    notes:$('notes').value.trim()
+  };
+}
+
+function resetInvoice(){['invoiceBase','invoiceSide','invoiceUrgent','invoiceDiscount','invoiceOfferDiscount','invoiceTax'].forEach(id=>$(id).textContent='—');$('invoiceSideDetails').innerHTML='';$('finalPrice').textContent='خدمت را انتخاب کنید';}
+
+function estimatePrice(){
+  const p=collectOrderPayload();
+  if(!p.serviceId||!(p.quantity>0)){ resetInvoice(); orderState.estimate=null; return; }
+  $('estimateBtn').disabled=true;
+  callServer('getPriceEstimate',[p],r=>{
+    orderState.estimate=r;
+    $('invoiceBase').textContent=money(r.basePrice||0);
+    $('invoiceSide').textContent=money(r.sideServicesTotal);
+    $('invoiceSideDetails').innerHTML=(r.sideBreakdown||[]).map(x=>'<div class="price-line"><span>'+esc(x.name)+' × '+toFa(x.quantity)+'</span><strong>'+money(x.total)+'</strong></div>').join('');
+    $('invoiceUrgent').textContent=money(r.urgentAmount);
+    $('invoiceDiscount').textContent='− '+money(r.discountAmount)+' ('+toFa(r.discountRate||0)+'٪)';
+    $('invoiceOfferDiscount').textContent='− '+money(r.offerDiscountAmount||0);
+    $('offerCodeHint').textContent=r.offerCode?(r.offerMessage||'کد تخفیف اعمال شد.'):($('offerCode').value.trim()?(r.offerMessage||'کد تخفیف اعمال نشد.'):'کد تخفیف اختیاری است.');
+    $('invoiceTax').textContent=money(r.taxAmount);
+    $('finalPrice').textContent=money(r.finalPrice);
+    $('estimateBtn').disabled=false;
+  },e=>{ resetInvoice(); $('estimateBtn').disabled=false; toast(e.message,'error'); });
+}
+
+function submitOrder(ev){
+  ev.preventDefault();
+  if(orderState.submitting) return;
+  const p=collectOrderPayload();
+  if(!p.serviceId) return toast('یک خدمت انتخاب کنید','error');
+  if(!/^\d{4}\/\d{2}\/\d{2}$/.test(p.requestDate)) return toast('تاریخ شمسی را با قالب ۱۴۰۵/۰۸/۲۲ وارد کنید','error');
+  if(!p.requestTime) return toast('ساعت اجرا را وارد کنید','error');
+  if(!p.address||p.address.length<5) return toast('آدرس دقیق را وارد کنید','error');
+  if(!confirm('ثبت درخواست با مبلغ '+money(orderState.estimate?orderState.estimate.finalPrice:0)+' انجام شود؟')) return;
+  orderState.submitting=true;
+  $('submitBtn').disabled=true; $('submitBtn').textContent='در حال ثبت…';
+  callServer('processOrder',[p],r=>{
+    orderState.submitting=false;
+    $('submitBtn').disabled=false; $('submitBtn').textContent='ثبت درخواست';
+    if(r&&r.success){
+      toast('✅ درخواست ثبت شد — کد پیگیری: '+r.orderId,'success');
+      $('orderForm').reset(); orderState.requestId=null; orderState.estimate=null;
+      resetInvoice(); renderSideServices(); renderServiceQuestions();
+      $('address').value=currentUser.address||'';
+      // رفرش داشبورد
+      setTimeout(()=>{ $('navMenu').querySelector('[data-page="dashboard"]').click(); },1500);
+    } else toast((r&&r.message)||'ثبت درخواست ناموفق بود','error');
+  },e=>{
+    orderState.submitting=false;
+    $('submitBtn').disabled=false; $('submitBtn').textContent='ثبت درخواست';
+    toast(e.message||'خطا در ثبت درخواست','error');
+  });
+}
+
+/* تقویم شمسی فرم سفارش */
+function g2j(gy,gm,gd){const gdm=[0,31,((gy%4===0&&gy%100!==0)||gy%400===0)?29:28,31,30,31,30,31,31,30,31,30,31];let gy2=gm>2?gy+1:gy;let days=355666+365*gy+Math.floor((gy2+3)/4)-Math.floor((gy2+99)/100)+Math.floor((gy2+399)/400)+gd;for(let i=1;i<gm;i++)days+=gdm[i];let jy=-1595+33*Math.floor(days/12053);days%=12053;jy+=4*Math.floor(days/1461);days%=1461;if(days>365){jy+=Math.floor((days-1)/365);days=(days-1)%365}let jm,jd;if(days<186){jm=1+Math.floor(days/31);jd=1+days%31}else{jm=7+Math.floor((days-186)/30);jd=1+(days-186)%30}return[jy,jm,jd]}
+function j2g(jy,jm,jd){jy+=1595;let days=-355668+365*jy+Math.floor(jy/33)*8+Math.floor(((jy%33)+3)/4)+jd+(jm<7?(jm-1)*31:(jm-7)*30+186);let gy=400*Math.floor(days/146097);days%=146097;if(days>36524){gy+=100*Math.floor(--days/36524);days%=36524;if(days>=365)days++}gy+=4*Math.floor(days/1461);days%=1461;if(days>365){gy+=Math.floor((days-1)/365);days=(days-1)%365}let gd=days+1;const leap=gy%4===0&&(gy%100!==0||gy%400===0);const months=[0,31,leap?29:28,31,30,31,30,31,31,30,31,30,31];let gm=1;while(gm<=12&&gd>months[gm]){gd-=months[gm];gm++}return[gy,gm,gd]}
+function renderOrderCalendar(){const months=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];$('calTitle').textContent=months[orderState.calMonth-1]+' '+toFa(orderState.calYear);const grid=$('calGrid');grid.innerHTML=['ش','ی','د','س','چ','پ','ج'].map(x=>'<button type="button" class="day-label" disabled>'+x+'</button>').join('');const first=j2g(orderState.calYear,orderState.calMonth,1);const weekday=(new Date(first[0],first[1]-1,first[2]).getDay()+1)%7;for(let i=0;i<weekday;i++)grid.insertAdjacentHTML('beforeend','<span></span>');const max=orderState.calMonth<=6?31:orderState.calMonth<=11?30:29;for(let d=1;d<=max;d++)grid.insertAdjacentHTML('beforeend','<button type="button" data-day="'+d+'">'+toFa(d)+'</button>');grid.querySelectorAll('[data-day]').forEach(b=>b.addEventListener('click',()=>{$('requestDate').value=orderState.calYear+'/'+String(orderState.calMonth).padStart(2,'0')+'/'+String(Number(b.dataset.day)).padStart(2,'0');$('datePop').classList.remove('open');}))}
+function initOrderCalendar(){const now=new Date();[orderState.calYear,orderState.calMonth]=g2j(now.getFullYear(),now.getMonth()+1,now.getDate()).slice(0,2);$('dateToggle').addEventListener('click',()=>{$('datePop').classList.toggle('open');renderOrderCalendar()});$('prevMonth').addEventListener('click',()=>{orderState.calMonth--;if(orderState.calMonth<1){orderState.calMonth=12;orderState.calYear--}renderOrderCalendar()});$('nextMonth').addEventListener('click',()=>{orderState.calMonth++;if(orderState.calMonth>12){orderState.calMonth=1;orderState.calYear++}renderOrderCalendar()});document.addEventListener('click',e=>{if($('datePop')&&!$('datePop').contains(e.target)&&e.target!==$('dateToggle'))$('datePop').classList.remove('open')})}
+
+/* استان/شهر */
+const provinceCities={'آذربایجان شرقی':['تبریز','مراغه','مرند','میانه','اهر'],'آذربایجان غربی':['ارومیه','خوی','بوکان','مهاباد'],'اردبیل':['اردبیل','پارس‌آباد','مشگین‌شهر'],'اصفهان':['اصفهان','کاشان','خمینی‌شهر','نجف‌آباد'],'البرز':['کرج','فردیس','نظرآباد'],'ایلام':['ایلام','دهلران'],'بوشهر':['بوشهر','برازجان','گناوه'],'تهران':['تهران','ری','اسلامشهر','شهریار','قدس','ملارد','ورامین','پاکدشت','دماوند','پردیس','رباط‌کریم','قرچک'],'چهارمحال و بختیاری':['شهرکرد','بروجن'],'خراسان جنوبی':['بیرجند','قائن','فردوس'],'خراسان رضوی':['مشهد','نیشابور','سبزوار','تربت حیدریه','کاشمر'],'خراسان شمالی':['بجنورد','شیروان'],'خوزستان':['اهواز','دزفول','آبادان','خرمشهر'],'زنجان':['زنجان','ابهر','خرمدره','قیدار'],'سمنان':['سمنان','شاهرود'],'سیستان و بلوچستان':['زاهدان','زابل','چابهار','ایرانشهر','سراوان','خاش'],'فارس':['شیراز','مرودشت','کازرون','جهرم'],'قزوین':['قزوین','تاکستان'],'قم':['قم','جعفریه'],'کردستان':['سنندج','سقز','مریوان','بانه'],'کرمان':['کرمان','سیرجان','رفسنجان','جیرفت'],'کرمانشاه':['کرمانشاه','اسلام‌آباد غرب'],'کهگیلویه و بویراحمد':['یاسوج','دهدشت'],'گلستان':['گرگان','گنبدکاووس','آق‌قلا'],'گیلان':['رشت','بندر انزلی','لاهیجان','آستارا'],'لرستان':['خرم‌آباد','بروجرد','دورود'],'مازندران':['ساری','بابل','آمل','قائم‌شهر','چالوس','تنکابن'],'مرکزی':['اراک','ساوه','خمین','محلات'],'هرمزگان':['بندرعباس','قشم','کیش','بندر لنگه'],'همدان':['همدان','ملایر','نهاوند'],'یزد':['یزد','میبد','اردکان','بافق','مهریز']};
+function initProvinceCities(){const p=$('province');p.innerHTML='<option value="">انتخاب استان</option>'+Object.keys(provinceCities).map(x=>'<option>'+x+'</option>').join('');p.addEventListener('change',populateCities)}
+function populateCities(){const p=$('province').value,c=$('city');const old=c.value;const cities=provinceCities[p]||[];c.innerHTML='<option value="">انتخاب شهر</option>'+cities.map(x=>'<option>'+x+'</option>').join('');c.disabled=!cities.length;if(cities.includes(old))c.value=old}
+
+
 function loadMessages(){
   $('pageContent').innerHTML=
   '<div class="page-header"><h1 class="page-title">پیام‌ها و پشتیبانی</h1><button class="btn btn-primary" onclick="newMessageModal()">✉️ پیام جدید</button></div>'+
@@ -454,22 +725,11 @@ function sendReply(id){
   callServer('replyCustomerConversation',[id,b,currentToken],()=>{ closeModal(); toast('پاسخ ارسال شد','success'); loadMessages(); });
 }
 
-function loadNewOrder(){
-  $('pageContent').innerHTML=
-  '<div class="page-header"><h1 class="page-title">ثبت درخواست جدید</h1></div>'+
-  '<div class="card">'+
-  '<div style="padding:11px 13px;border-radius:9px;background:#fff7ed;color:#9a3412;border:1px solid #ffead5;font-size:12px;margin-bottom:12px">با کلیک روی دکمه زیر، فرم عمومی خدمات باز می‌شود و کد اشتراک شما (<strong>'+esc(currentUser.customerId)+'</strong>) به‌صورت خودکار اعمال می‌گردد؛ تخفیف سطح '+esc(currentUser.level)+' به سفارش شما تعلق می‌گیرد.</div>'+
-  '<button class="btn btn-primary" style="min-height:44px;font-size:13px" onclick="openNewOrderForm()">➕ باز کردن فرم سفارش</button>'+
-  '</div>';
-}
 
-function openNewOrderForm(){
-  // ساخت URL مطلق برای فرم ثبت درخواست
-  const currentUrl = window.location.href;
-  const baseUrl = currentUrl.split('?')[0]; // حذف پارامترهای فعلی
-  const newUrl = baseUrl + '?page=user&membershipCode=' + encodeURIComponent(currentUser.customerId);
-  window.open(newUrl, '_blank');
-}
+
+
+
+
 
 function loadProfile(){
   callServer('getCustomerProfile',[currentToken],p=>{
