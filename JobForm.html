@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base target="_top">
+<title>ثبت درخواست همکاری | ZingoVingo</title>
+<script src="zv-api.js"></script>
+<style>
+:root{--navy:#0B1736;--orange:#FF6B1A;--bg:#f4f6fb;--text:#172033;--muted:#657086;--line:#dfe4ee;--green:#067647;--danger:#b42318}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;line-height:1.8}
+.hero{background:linear-gradient(135deg,var(--navy),#203968);color:#fff;padding:30px 20px;text-align:center;position:relative}
+.hero .brand{font-size:28px;font-weight:900;margin-bottom:6px}.hero .brand span{color:var(--orange)}
+.hero h1{font-size:20px;margin-bottom:8px}
+.hero p{color:#d2d9e8;font-size:13px;max-width:600px;margin:0 auto}
+.hero-back{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;padding:7px 14px;border-radius:9px;text-decoration:none;font-size:12px;cursor:pointer}
+.container{max-width:800px;margin:30px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:16px;box-shadow:0 4px 16px #17203308}
+.card h2{font-size:16px;color:var(--navy);margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:700;color:var(--muted)}
+.field input,.field select,.field textarea{font:inherit;font-size:13px;width:100%;border:1px solid #cfd6e3;border-radius:9px;padding:10px 11px;background:#fff;color:var(--text);outline:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
+.field textarea{min-height:80px;resize:vertical}
+.field .full{grid-column:1/-1}
+.required{color:var(--danger)}
+.btn{border:0;border-radius:10px;padding:12px 20px;font:inherit;font-weight:800;cursor:pointer;font-size:14px}
+.btn-primary{background:var(--orange);color:#fff}.btn-primary:hover{background:#e95b10}
+.btn-secondary{background:#eef1f7;color:var(--navy)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.alert{padding:12px 14px;border-radius:10px;margin-bottom:14px;font-size:13px;display:none}
+.alert.success{display:block;background:#ecfdf3;color:var(--green)}
+.alert.error{display:block;background:#fef3f2;color:var(--danger)}
+.hint{font-size:11px;color:var(--muted);margin-top:4px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.container{padding:0 10px}.card{padding:16px}}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <a href="?page=portal" class="hero-back">← بازگشت</a>
+  <div class="brand">Zingo<span>Vingo</span></div>
+  <h1>📄 ثبت درخواست همکاری</h1>
+  <p>فرم زیر را تکمیل کنید؛ کارشناسان منابع انسانی ZingoVingo در اسرع وقت با شما تماس خواهند گرفت.</p>
+</section>
+
+<div class="container">
+  <div id="alertBox" class="alert"></div>
+
+  <form id="jobForm" class="card" onsubmit="submitJobForm(event)">
+    <h2>۱. اطلاعات هویتی</h2>
+    <div class="grid">
+      <div class="field"><label>نام <span class="required">*</span></label><input id="jf_first" required maxlength="80"></div>
+      <div class="field"><label>نام خانوادگی <span class="required">*</span></label><input id="jf_last" required maxlength="100"></div>
+      <div class="field"><label>جنسیت <span class="required">*</span></label><select id="jf_gender" required><option value="">انتخاب کنید</option><option>مرد</option><option>زن</option></select></div>
+      <div class="field"><label>تاریخ تولد (شمسی) <span class="required">*</span></label><input id="jf_birth" placeholder="مثلاً ۱۳۷۵/۰۵/۲۲" required></div>
+      <div class="field"><label>وضعیت تأهل</label><select id="jf_marital"><option value="">انتخاب کنید</option><option>مجرد</option><option>متأهل</option><option>سایر</option></select></div>
+    </div>
+  </form>
+
+  <form id="jobForm2" class="card" onsubmit="return false;">
+    <h2>۲. تخصص و مهارت‌ها</h2>
+    <div class="grid">
+      <div class="field" style="grid-column:1/-1"><label>تخصص اصلی <span class="required">*</span></label><input id="jf_specialty" required maxlength="150" placeholder="عنوان تخصص خود را وارد کنید"></div>
+      <div class="field"><label>مدت فعالیت</label><input id="jf_experience" maxlength="80" placeholder="مثلاً ۳ سال"></div>
+      <div class="field"><label>میزان تحصیلات</label><select id="jf_education"><option value="">انتخاب کنید</option><option>زیر دیپلم</option><option>دیپلم</option><option>کاردانی</option><option>کارشناسی</option><option>کارشناسی ارشد</option><option>دکتری</option><option>سایر</option></select></div>
+      <div class="field" style="grid-column:1/-1"><label>رشته تحصیلی</label><input id="jf_field" maxlength="120"></div>
+      <div class="field" style="grid-column:1/-1"><label>مهارت‌های دیگر</label><textarea id="jf_skills" placeholder="سایر توانایی‌ها و مهارت‌ها…"></textarea></div>
+    </div>
+  </form>
+
+  <form id="jobForm3" class="card" onsubmit="return false;">
+    <h2>۳. اطلاعات تماس</h2>
+    <div class="grid">
+      <div class="field"><label>شماره تماس <span class="required">*</span></label><input id="jf_phone" inputmode="tel" maxlength="15" placeholder="09123456789" required></div>
+      <div class="field"><label>پیام‌رسان</label><select id="jf_messenger"><option value="">انتخاب کنید</option><option>بله</option><option>واتساپ</option><option>تلگرام</option><option>روبیکا</option><option>ایتا</option><option>سایر</option></select></div>
+      <div class="field"><label>آی‌دی پیام‌رسان</label><input id="jf_messid" maxlength="120"></div>
+      <div class="field" style="grid-column:1/-1"><label>محل سکونت <span class="required">*</span></label><input id="jf_residence" required maxlength="250" placeholder="شهر، منطقه یا نشانی"></div>
+    </div>
+  </form>
+
+  <form id="jobForm4" class="card" onsubmit="return false;">
+    <h2>۴. نحوه آشنایی و موقعیت درخواستی</h2>
+    <div class="grid">
+      <div class="field"><label>نحوه آشنایی</label><select id="jf_source"><option value="">انتخاب کنید</option><option>دیوار</option><option>شیپور</option><option>معرفی دوستان</option><option>شبکه‌های اجتماعی</option><option>مراجعه حضوری</option><option>سایر</option></select></div>
+      <div class="field"><label>معرف</label><input id="jf_referrer" maxlength="120"></div>
+      <div class="field" style="grid-column:1/-1"><label>موقعیت درخواستی <span class="required">*</span></label><input id="jf_position" required maxlength="150" placeholder="مثلاً نیروی خدمات، اپراتور، سرپرست، راننده…"></div>
+      <div class="field" style="grid-column:1/-1"><label>توضیحات تکمیلی</label><textarea id="jf_notes" maxlength="1000" placeholder="هر توضیحی که فکر می‌کنید مفید است…"></textarea></div>
+    </div>
+    <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+      <button type="button" class="btn btn-secondary" onclick="resetForm()">پاک کردن فرم</button>
+      <button type="button" class="btn btn-primary" id="submitBtn" onclick="submitAll()">📨 ارسال درخواست همکاری</button>
+    </div>
+    <div class="hint" style="margin-top:10px;text-align:center">با ارسال این فرم، اطلاعات شما در سامانه ZingoVingo ثبت و توسط کارشناسان بررسی خواهد شد.</div>
+  </form>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+function showAlert(msg, type){
+  const a = $('alertBox');
+  a.className = 'alert ' + type;
+  a.textContent = msg;
+  a.scrollIntoView({behavior:'smooth', block:'center'});
+  setTimeout(()=>{a.className='alert';a.textContent='';}, 6000);
+}
+function normalizeDigits(v){return String(v||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));}
+
+function validateForm(){
+  const phone = normalizeDigits($('jf_phone').value).replace(/[\s-]/g,'');
+  if(!$('jf_first').value.trim()) return 'نام الزامی است.';
+  if(!$('jf_last').value.trim()) return 'نام خانوادگی الزامی است.';
+  if(!$('jf_gender').value) return 'جنسیت را انتخاب کنید.';
+  if(!/^\d{4}\/\d{2}\/\d{2}$/.test(normalizeDigits($('jf_birth').value).replace(/[-\.]/g,'/'))) return 'تاریخ تولد را به شکل ۱۳۷۵/۰۵/۲۲ وارد کنید.';
+  if(!$('jf_specialty').value.trim()) return 'تخصص اصلی الزامی است.';
+  if(!/^09\d{9}$/.test(phone)) return 'شماره تماس باید ۱۱ رقم و با 09 شروع شود.';
+  if(!$('jf_residence').value.trim()) return 'محل سکونت الزامی است.';
+  if(!$('jf_position').value.trim()) return 'موقعیت درخواستی الزامی است.';
+  return null;
+}
+
+function submitAll(){
+  const err = validateForm();
+  if(err) return showAlert(err,'error');
+
+  const data = {
+    firstName: $('jf_first').value.trim(),
+    lastName: $('jf_last').value.trim(),
+    gender: $('jf_gender').value,
+    birthDate: normalizeDigits($('jf_birth').value).replace(/[-\.]/g,'/'),
+    maritalStatus: $('jf_marital').value,
+    specialty: $('jf_specialty').value.trim(),
+    experience: $('jf_experience').value.trim(),
+    education: $('jf_education').value,
+    fieldOfStudy: $('jf_field').value.trim(),
+    otherSkills: $('jf_skills').value.trim(),
+    phone: normalizeDigits($('jf_phone').value).replace(/[\s-]/g,''),
+    messenger: $('jf_messenger').value,
+    messengerId: $('jf_messid').value.trim(),
+    residence: $('jf_residence').value.trim(),
+    source: $('jf_source').value,
+    referrer: $('jf_referrer').value.trim(),
+    requestedPosition: $('jf_position').value.trim(),
+    notes: $('jf_notes').value.trim()
+  };
+
+  $('submitBtn').disabled = true;
+  $('submitBtn').textContent = 'در حال ارسال…';
+
+  google.script.run
+    .withSuccessHandler(r => {
+      $('submitBtn').disabled = false;
+      $('submitBtn').textContent = '📨 ارسال درخواست همکاری';
+      if(r && r.success){
+        showAlert('✅ درخواست شما با شماره ' + r.caseNumber + ' ثبت شد. کارشناسان ما به زودی با شما تماس خواهند گرفت.', 'success');
+        resetForm();
+      } else {
+        showAlert((r && r.message) || 'ثبت درخواست ناموفق بود.', 'error');
+      }
+    })
+    .withFailureHandler(e => {
+      $('submitBtn').disabled = false;
+      $('submitBtn').textContent = '📨 ارسال درخواست همکاری';
+      showAlert('خطا: ' + (e && e.message ? e.message : 'ارتباط با سرور برقرار نشد.'), 'error');
+    })
+    .submitPublicJobApplication(data);
+}
+
+function resetForm(){
+  ['jf_first','jf_last','jf_gender','jf_birth','jf_marital','jf_specialty','jf_experience','jf_education','jf_field','jf_skills','jf_phone','jf_messenger','jf_messid','jf_residence','jf_source','jf_referrer','jf_position','jf_notes'].forEach(id=>{
+    const el = $(id);
+    if(el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+  });
+}
+</script>
+</body>
+</html>
