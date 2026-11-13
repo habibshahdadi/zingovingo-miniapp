@@ -4,737 +4,424 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ZingoVingo | پلتفرم هوشمند خدمات</title>
-<script src="zv-api.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/vazirmatn/index.css">
+<script src="zv-api.js"></script>
 <style>
-  /* ============================================================
-     ZingoVingo Design System — Design Tokens
-     ============================================================ */
-  :root{
-    --zv-navy:#0B1736;          /* رنگ اصلی */
-    --zv-navy-2:#122046;
-    --zv-navy-3:#1a2a4d;
-    --zv-accent:#FF6B1A;        /* رنگ تأکیدی */
-    --zv-accent-hover:#ff8533;
-    --zv-bg:#f4f6fb;            /* پس‌زمینه */
-    --zv-surface:#FFFFFF;       /* سطح کارت‌ها */
-    --zv-text:#172033;          /* متن بدنه */
-    --zv-muted:#657086;         /* متن فرعی */
-    --zv-success:#067647;
-    --zv-success-bg:#e7f6ef;
-    --zv-danger:#b42318;
-    --zv-danger-bg:#fdecea;
-    --zv-warning:#f79009;
-    --zv-warning-bg:#fef4e6;
-    --zv-info:#1849a9;
-    --zv-info-bg:#e9f0fc;
-    --zv-line:#e6eaf3;
-
-    --radius-card:14px;
-    --radius-btn:10px;
-    --radius-badge:20px;
-
-    --shadow-card:0 2px 10px rgba(23,32,51,.08);
-    --shadow-hover:0 8px 24px rgba(11,23,54,.11);
-    --focus-ring:0 0 0 3px rgba(255,107,26,.12);
-  }
-  *{
-    font-family:'Vazirmatn Variable','IRANSansWeb','IRANSans',Tahoma,Arial,sans-serif;
-    box-sizing:border-box;
-  }
-  html{scroll-behavior:smooth;}
-  body{background:var(--zv-bg);color:var(--zv-text);font-size:14px;}
-  .num{font-variant-numeric:tabular-nums;}
-
-  /* ===== Logo ===== */
-  .zv-logo-word{font-weight:800;letter-spacing:-.5px;}
-  .zv-logo-word .z{color:#fff;}
-  .zv-logo-word .v{color:var(--zv-accent);}
-  .zv-logo-mark{
-    width:38px;height:38px;border-radius:10px;flex:none;
-    background:linear-gradient(135deg,#16264f 0%,#0B1736 100%);
-    border:1px solid rgba(255,255,255,.12);
-    display:flex;align-items:center;justify-content:center;
-    box-shadow:inset 0 0 0 2px rgba(255,107,26,.0),0 2px 8px rgba(11,23,54,.35);
-  }
-  .on-light .zv-logo-word .z{color:var(--zv-navy);}
-
-  /* ===== Buttons ===== */
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    border-radius:var(--radius-btn);font-weight:700;font-size:13px;
-    padding:11px 22px;border:1px solid transparent;cursor:pointer;
-    transition:all .2s ease;user-select:none;text-decoration:none;}
-  .btn-primary{background:var(--zv-accent);color:#fff;box-shadow:0 4px 14px rgba(255,107,26,.35);}
-  .btn-primary:hover{background:var(--zv-accent-hover);transform:translateY(-1px);box-shadow:0 8px 20px rgba(255,107,26,.4);}
-  .btn-navy{background:var(--zv-navy);color:#fff;box-shadow:0 4px 14px rgba(11,23,54,.25);}
-  .btn-navy:hover{background:var(--zv-navy-3);transform:translateY(-1px);}
-  .btn-outline{background:#fff;color:var(--zv-navy);border-color:var(--zv-line);}
-  .btn-outline:hover{border-color:var(--zv-accent);color:var(--zv-accent);}
-  .btn-soft{background:var(--zv-info-bg);color:var(--zv-info);}
-  .btn-soft:hover{filter:brightness(.96);}
-  .btn-danger-soft{background:var(--zv-danger-bg);color:var(--zv-danger);}
-  .btn-danger-soft:hover{filter:brightness(.97);}
-  .btn-sm{padding:7px 14px;font-size:12px;}
-
-  /* ===== Cards & Surfaces ===== */
-  .zv-card{background:var(--zv-surface);border:1px solid var(--zv-line);
-    border-radius:var(--radius-card);box-shadow:var(--shadow-card);transition:box-shadow .25s ease,transform .25s ease;}
-  .zv-card-hover:hover{box-shadow:var(--shadow-hover);transform:translateY(-3px);}
-
-  /* ===== Badges ===== */
-  .badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;
-    padding:3px 12px;border-radius:var(--radius-badge);white-space:nowrap;}
-  .badge-success{background:var(--zv-success-bg);color:var(--zv-success);}
-  .badge-warning{background:var(--zv-warning-bg);color:#b45f06;}
-  .badge-danger{background:var(--zv-danger-bg);color:var(--zv-danger);}
-  .badge-info{background:var(--zv-info-bg);color:var(--zv-info);}
-  .badge-navy{background:#eceff7;color:var(--zv-navy);}
-
-  /* ===== Inputs ===== */
-  .zv-input,.zv-select,.zv-textarea{
-    width:100%;background:#fff;border:1.5px solid var(--zv-line);
-    border-radius:var(--radius-btn);padding:10px 14px;font-size:13px;color:var(--zv-text);
-    transition:border-color .2s,box-shadow .2s;outline:none;}
-  .zv-input::placeholder,.zv-textarea::placeholder{color:#9aa3b5;}
-  .zv-input:focus,.zv-select:focus,.zv-textarea:focus{border-color:var(--zv-accent);box-shadow:var(--focus-ring);}
-  .zv-label{display:block;font-size:12px;font-weight:600;color:var(--zv-muted);margin-bottom:6px;}
-
-  /* ===== Tabs ===== */
-  .tab-btn{padding:10px 20px;border-radius:var(--radius-btn);font-size:13px;font-weight:700;
-    color:var(--zv-muted);background:#fff;border:1px solid var(--zv-line);transition:all .2s;cursor:pointer;}
-  .tab-btn:hover{color:var(--zv-navy);}
-  .tab-active{background:var(--zv-navy)!important;color:#fff!important;border-color:var(--zv-navy)!important;
-    box-shadow:0 6px 16px rgba(11,23,54,.3);}
-
-  /* ===== Toasts ===== */
-  .toast{display:flex;align-items:center;gap:10px;max-width:340px;
-    padding:13px 18px;border-radius:var(--radius-card);color:#fff;font-size:13px;font-weight:600;
-    box-shadow:0 10px 30px rgba(11,23,54,.25);animation:toastIn .35s ease both;}
-  .toast-success{background:var(--zv-success);}
-  .toast-error{background:var(--zv-danger);}
-  .toast-info{background:var(--zv-navy);}
-  @keyframes toastIn{from{opacity:0;transform:translateY(18px) scale(.96);}to{opacity:1;transform:none;}}
-
-  /* ===== Modal ===== */
-  .modal-backdrop{position:fixed;inset:0;background:rgba(8,16,39,.6);backdrop-filter:blur(4px);
-    z-index:120;display:flex;align-items:center;justify-content:center;padding:16px;}
-  .modal-box{background:#fff;border-radius:var(--radius-card);width:100%;max-width:480px;
-    max-height:90vh;overflow-y:auto;box-shadow:0 30px 60px rgba(8,16,39,.4);animation:modalIn .28s ease both;}
-  @keyframes modalIn{from{opacity:0;transform:translateY(22px) scale(.97);}to{opacity:1;transform:none;}}
-  .modal-head{display:flex;align-items:center;justify-content:space-between;
-    padding:18px 24px;border-bottom:1px solid var(--zv-line);}
-  .modal-head h3{font-weight:800;font-size:15px;color:var(--zv-navy);}
-  .modal-close{width:32px;height:32px;border-radius:8px;background:#f2f5fb;color:var(--zv-muted);
-    border:none;cursor:pointer;font-weight:700;transition:all .2s;}
-  .modal-close:hover{background:var(--zv-danger-bg);color:var(--zv-danger);}
-
-  /* ===== Hero ===== */
-  .hero{
-    background:
-      radial-gradient(700px 340px at 88% -10%,rgba(255,107,26,.22),transparent 60%),
-      radial-gradient(560px 320px at 5% 110%,rgba(24,73,169,.35),transparent 60%),
-      linear-gradient(160deg,#0d1c40 0%,var(--zv-navy) 55%,#081027 100%);
-    position:relative;overflow:hidden;
-  }
-  .hero::before{content:'';position:absolute;inset:0;
-    background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);
-    background-size:26px 26px;pointer-events:none;}
-  .hero-chip{background:rgba(255,107,26,.14);border:1px solid rgba(255,107,26,.4);color:#ffc59e;}
-
-  .float-slow{animation:floatY 5s ease-in-out infinite;}
-  .float-mid{animation:floatY 4s ease-in-out infinite .8s;}
-  .float-fast{animation:floatY 3.4s ease-in-out infinite 1.6s;}
-  @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-13px);}}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
-  .fade-up{animation:fadeUp .5s ease both;}
-
-  /* ===== Reveal on scroll ===== */
-  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;}
-  .reveal.visible{opacity:1;transform:none;}
-
-  /* ===== Misc ===== */
-  .section-title{font-size:26px;font-weight:800;color:var(--zv-navy);}
-  .accent-line{width:56px;height:4px;border-radius:4px;background:var(--zv-accent);}
-  .icon-tile{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex:none;}
-  .icon-tile-navy{background:var(--zv-navy);color:#fff;}
-  .icon-tile-accent{background:var(--zv-accent);color:#fff;box-shadow:0 6px 16px rgba(255,107,26,.35);}
-  .icon-tile-info{background:var(--zv-info-bg);color:var(--zv-info);}
-  .chip-member{display:inline-flex;align-items:center;gap:7px;background:#f2f5fb;border:1px solid var(--zv-line);
-    color:var(--zv-navy);font-size:12px;font-weight:600;padding:5px 12px 5px 6px;border-radius:var(--radius-badge);}
-  .avatar{width:24px;height:24px;border-radius:50%;background:var(--zv-navy);color:#fff;
-    display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex:none;}
-  .avatar.accent{background:var(--zv-accent);}
-  ::-webkit-scrollbar{width:8px;height:8px;}
-  ::-webkit-scrollbar-thumb{background:#c6cddf;border-radius:8px;}
-  ::-webkit-scrollbar-thumb:hover{background:#aab3c9;}
-  ::-webkit-scrollbar-track{background:transparent;}
-  input[type=radio]{accent-color:var(--zv-accent);}
-
-  #toTop{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:12px;
-    background:var(--zv-navy);color:#fff;border:1px solid rgba(255,255,255,.15);cursor:pointer;
-    opacity:0;pointer-events:none;transition:all .3s;z-index:90;box-shadow:0 8px 20px rgba(11,23,54,.35);font-size:16px;}
-  #toTop.show{opacity:1;pointer-events:auto;}
-  #toTop:hover{background:var(--zv-accent);}
+/* ============================================================
+ZingoVingo Design System — Design Tokens
+============================================================ */
+:root{
+--zv-navy:#0B1736;--zv-navy-2:#122046;--zv-navy-3:#1a2a4d;
+--zv-accent:#FF6B1A;--zv-accent-hover:#ff8533;--zv-bg:#f4f6fb;
+--zv-surface:#FFFFFF;--zv-text:#172033;--zv-muted:#657086;
+--zv-success:#067647;--zv-success-bg:#e7f6ef;--zv-danger:#b42318;
+--zv-danger-bg:#fdecea;--zv-warning:#f79009;--zv-warning-bg:#fef4e6;
+--zv-info:#1849a9;--zv-info-bg:#e9f0fc;--zv-line:#e6eaf3;
+--radius-card:14px;--radius-btn:10px;--radius-badge:20px;
+--shadow-card:0 2px 10px rgba(23,32,51,.08);--shadow-hover:0 8px 24px rgba(11,23,54,.11);
+--focus-ring:0 0 0 3px rgba(255,107,26,.12);
+}
+*{font-family:'Vazirmatn Variable','IRANSansWeb','IRANSans',Tahoma,Arial,sans-serif;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--zv-bg);color:var(--zv-text);font-size:14px;}
+.num{font-variant-numeric:tabular-nums;}
+.zv-logo-word{font-weight:800;letter-spacing:-.5px;}
+.zv-logo-word .z{color:#fff;}
+.zv-logo-word .v{color:var(--zv-accent);}
+.zv-logo-mark{width:38px;height:38px;border-radius:10px;flex:none;background:linear-gradient(135deg,#16264f 0%,#0B1736 100%);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 2px rgba(255,107,26,.0),0 2px 8px rgba(11,23,54,.35);}
+.on-light .zv-logo-word .z{color:var(--zv-navy);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:var(--radius-btn);font-weight:700;font-size:13px;padding:11px 22px;border:1px solid transparent;cursor:pointer;transition:all .2s ease;user-select:none;text-decoration:none;}
+.btn-primary{background:var(--zv-accent);color:#fff;box-shadow:0 4px 14px rgba(255,107,26,.35);}
+.btn-primary:hover{background:var(--zv-accent-hover);transform:translateY(-1px);box-shadow:0 8px 20px rgba(255,107,26,.4);}
+.btn-navy{background:var(--zv-navy);color:#fff;box-shadow:0 4px 14px rgba(11,23,54,.25);}
+.btn-navy:hover{background:var(--zv-navy-3);transform:translateY(-1px);}
+.btn-outline{background:#fff;color:var(--zv-navy);border-color:var(--zv-line);}
+.btn-outline:hover{border-color:var(--zv-accent);color:var(--zv-accent);}
+.btn-soft{background:var(--zv-info-bg);color:var(--zv-info);}
+.btn-soft:hover{filter:brightness(.96);}
+.btn-danger-soft{background:var(--zv-danger-bg);color:var(--zv-danger);}
+.btn-danger-soft:hover{filter:brightness(.97);}
+.btn-sm{padding:7px 14px;font-size:12px;}
+.zv-card{background:var(--zv-surface);border:1px solid var(--zv-line);border-radius:var(--radius-card);box-shadow:var(--shadow-card);transition:box-shadow .25s ease,transform .25s ease;}
+.zv-card-hover:hover{box-shadow:var(--shadow-hover);transform:translateY(-3px);}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:3px 12px;border-radius:var(--radius-badge);white-space:nowrap;}
+.badge-success{background:var(--zv-success-bg);color:var(--zv-success);}
+.badge-warning{background:var(--zv-warning-bg);color:#b45f06;}
+.badge-danger{background:var(--zv-danger-bg);color:var(--zv-danger);}
+.badge-info{background:var(--zv-info-bg);color:var(--zv-info);}
+.badge-navy{background:#eceff7;color:var(--zv-navy);}
+.zv-input,.zv-select,.zv-textarea{width:100%;background:#fff;border:1.5px solid var(--zv-line);border-radius:var(--radius-btn);padding:10px 14px;font-size:13px;color:var(--zv-text);transition:border-color .2s,box-shadow .2s;outline:none;}
+.zv-input::placeholder,.zv-textarea::placeholder{color:#9aa3b5;}
+.zv-input:focus,.zv-select:focus,.zv-textarea:focus{border-color:var(--zv-accent);box-shadow:var(--focus-ring);}
+.zv-label{display:block;font-size:12px;font-weight:600;color:var(--zv-muted);margin-bottom:6px;}
+.tab-btn{padding:10px 20px;border-radius:var(--radius-btn);font-size:13px;font-weight:700;color:var(--zv-muted);background:#fff;border:1px solid var(--zv-line);transition:all .2s;cursor:pointer;}
+.tab-btn:hover{color:var(--zv-navy);}
+.tab-active{background:var(--zv-navy)!important;color:#fff!important;border-color:var(--zv-navy)!important;box-shadow:0 6px 16px rgba(11,23,54,.3);}
+.toast{display:flex;align-items:center;gap:10px;max-width:340px;padding:13px 18px;border-radius:var(--radius-card);color:#fff;font-size:13px;font-weight:600;box-shadow:0 10px 30px rgba(11,23,54,.25);animation:toastIn .35s ease both;}
+.toast-success{background:var(--zv-success);}
+.toast-error{background:var(--zv-danger);}
+.toast-info{background:var(--zv-navy);}
+@keyframes toastIn{from{opacity:0;transform:translateY(18px) scale(.96);}to{opacity:1;transform:none;}}
+.modal-backdrop{position:fixed;inset:0;background:rgba(8,16,39,.6);backdrop-filter:blur(4px);z-index:120;display:flex;align-items:center;justify-content:center;padding:16px;}
+.modal-box{background:#fff;border-radius:var(--radius-card);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 30px 60px rgba(8,16,39,.4);animation:modalIn .28s ease both;}
+@keyframes modalIn{from{opacity:0;transform:translateY(22px) scale(.97);}to{opacity:1;transform:none;}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--zv-line);}
+.modal-head h3{font-weight:800;font-size:15px;color:var(--zv-navy);}
+.modal-close{width:32px;height:32px;border-radius:8px;background:#f2f5fb;color:var(--zv-muted);border:none;cursor:pointer;font-weight:700;transition:all .2s;}
+.modal-close:hover{background:var(--zv-danger-bg);color:var(--zv-danger);}
+.hero{background:radial-gradient(700px 340px at 88% -10%,rgba(255,107,26,.22),transparent 60%),radial-gradient(560px 320px at 5% 110%,rgba(24,73,169,.35),transparent 60%),linear-gradient(160deg,#0d1c40 0%,var(--zv-navy) 55%,#081027 100%);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:26px 26px;pointer-events:none;}
+.hero-chip{background:rgba(255,107,26,.14);border:1px solid rgba(255,107,26,.4);color:#ffc59e;}
+.float-slow{animation:floatY 5s ease-in-out infinite;}
+.float-mid{animation:floatY 4s ease-in-out infinite .8s;}
+.float-fast{animation:floatY 3.4s ease-in-out infinite 1.6s;}
+@keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-13px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.fade-up{animation:fadeUp .5s ease both;}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.visible{opacity:1;transform:none;}
+.section-title{font-size:26px;font-weight:800;color:var(--zv-navy);}
+.accent-line{width:56px;height:4px;border-radius:4px;background:var(--zv-accent);}
+.icon-tile{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex:none;}
+.icon-tile-navy{background:var(--zv-navy);color:#fff;}
+.icon-tile-accent{background:var(--zv-accent);color:#fff;box-shadow:0 6px 16px rgba(255,107,26,.35);}
+.icon-tile-info{background:var(--zv-info-bg);color:var(--zv-info);}
+.chip-member{display:inline-flex;align-items:center;gap:7px;background:#f2f5fb;border:1px solid var(--zv-line);color:var(--zv-navy);font-size:12px;font-weight:600;padding:5px 12px 5px 6px;border-radius:var(--radius-badge);}
+.avatar{width:24px;height:24px;border-radius:50%;background:var(--zv-navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex:none;}
+.avatar.accent{background:var(--zv-accent);}
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-thumb{background:#c6cddf;border-radius:8px;}
+::-webkit-scrollbar-thumb:hover{background:#aab3c9;}
+::-webkit-scrollbar-track{background:transparent;}
+input[type=radio]{accent-color:var(--zv-accent);}
+#toTop{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:12px;background:var(--zv-navy);color:#fff;border:1px solid rgba(255,255,255,.15);cursor:pointer;opacity:0;pointer-events:none;transition:all .3s;z-index:90;box-shadow:0 8px 20px rgba(11,23,54,.35);font-size:16px;}
+#toTop.show{opacity:1;pointer-events:auto;}
+#toTop:hover{background:var(--zv-accent);}
 </style>
 </head>
 <body>
 
 <!-- ==================== HEADER ==================== -->
 <header id="top" class="fixed top-0 inset-x-0 z-50" style="background:var(--zv-navy);border-bottom:1px solid rgba(255,255,255,.08);">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-    <a href="#top" class="flex items-center gap-2.5">
-      <span class="zv-logo-mark">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M5 5h9l-9 9h14" stroke="#FF6B1A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M5 19l7-10 7 10" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      <span class="zv-logo-word text-xl"><span class="z">Zingo</span><span class="v">Vingo</span></span>
-    </a>
-    <nav class="hidden lg:flex items-center gap-7 text-[13px] font-semibold text-slate-300">
-      <a href="#services" class="hover:text-white transition">خدمات</a>
-      <a href="#features" class="hover:text-white transition">قابلیت‌ها</a>
-      <a href="#dashboard" class="hover:text-white transition">پنل مدیریت</a>
-      <a href="#contact" class="hover:text-white transition">تماس با ما</a>
-    </nav>
-    <div class="flex items-center gap-2">
-      <a href="#dashboard" class="btn btn-primary btn-sm hidden sm:inline-flex">ورود / ثبت درخواست</a>
-      <button id="menuBtn" class="lg:hidden p-2 rounded-[10px] text-white" style="background:rgba(255,255,255,.08);" aria-label="منو">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-      </button>
-    </div>
-  </div>
-  <div id="mobileMenu" class="hidden lg:hidden px-4 pb-4 space-y-1 text-[13px] font-semibold text-slate-300" style="background:var(--zv-navy);">
-    <a href="#services" class="block py-2.5 px-3 rounded-lg hover:bg-white/5">خدمات</a>
-    <a href="#features" class="block py-2.5 px-3 rounded-lg hover:bg-white/5">قابلیت‌ها</a>
-    <a href="#dashboard" class="block py-2.5 px-3 rounded-lg hover:bg-white/5">پنل مدیریت</a>
-    <a href="#contact" class="block py-2.5 px-3 rounded-lg hover:bg-white/5">تماس با ما</a>
-  </div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+<a href="#top" class="flex items-center gap-2.5">
+<span class="zv-logo-mark">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+<path d="M5 5h9l-9 9h14" stroke="#FF6B1A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 19l7-10 7 10" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</span>
+<span class="zv-logo-word text-xl"><span class="z">Zingo</span><span class="v">Vingo</span></span>
+</a>
+<nav class="hidden lg:flex items-center gap-7 text-[13px] font-semibold text-slate-300">
+<a href="#services" class="hover:text-white transition">خدمات</a>
+<a href="#features" class="hover:text-white transition">قابلیت‌ها</a>
+<a href="?page=portal" class="hover:text-white transition">پنل مدیریت</a>
+<a href="#contact" class="hover:text-white transition">تماس با ما</a>
+</nav>
+<div class="flex items-center gap-2">
+<a href="?page=portal" class="btn btn-primary btn-sm hidden sm:inline-flex">ورود به پنل‌ها</a>
+<button id="menuBtn" class="lg:hidden p-2 rounded-[10px] text-white" style="background:rgba(255,255,255,.08);" aria-label="منو">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+</button>
+</div>
+</div>
+<div id="mobileMenu" class="hidden lg:hidden px-4 pb-4 space-y-1 text-[13px] font-semibold text-slate-300" style="background:var(--zv-navy);">
+<a href="#services" class="block py-2.5 px-3 rounded-lg hover:bg-white/5">خدمات</a>
+<a href="#features" class="block py-2.5 px-3 rounded-lg hover:bg-white/5">قابلیت‌ها</a>
+<a href="?page=portal" class="block py-2.5 px-3 rounded-lg hover:bg-white/5">پنل مدیریت</a>
+<a href="#contact" class="block py-2.5 px-3 rounded-lg hover:bg-white/5">تماس با ما</a>
+</div>
 </header>
 
 <!-- ==================== HERO ==================== -->
 <section class="hero pt-32 pb-20">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-14 items-center relative">
-    <div class="fade-up">
-      <span class="hero-chip inline-flex items-center gap-2 text-[12px] font-bold px-4 py-1.5 rounded-[20px] mb-6">
-        <span class="w-2 h-2 rounded-full animate-pulse" style="background:var(--zv-accent);"></span>
-        پلتفرم جامع مدیریت خدمات — چابک، مطمئن، سازمانی
-      </span>
-      <h1 class="text-white text-3xl sm:text-5xl font-extrabold leading-[1.45] mb-6">
-        بستری هوشمند برای
-        <span style="color:var(--zv-accent);">ارائه خدمات متنوع</span><br>
-        و مدیریت یکپارچه شعب
-      </h1>
-      <p class="text-slate-300 leading-9 mb-9 text-[14px] sm:text-[15px] max-w-xl">
-        <b class="text-white">ZingoVingo</b> با تکیه بر فناوری اطلاعات و ارتباطات دیجیتال، بستر مناسبی جهت ارائه خدمات متنوع از قبیل
-        <b class="text-white">خدمات نظافتی</b>، <b class="text-white">حمل و نقل</b>، <b class="text-white">جابه‌جایی اثاثیه</b> و <b class="text-white">توسعه کسب‌وکار</b> فراهم کرده و امکان کنترل شعب، کارمندان، گروه‌ها و ثبت درخواست‌ها را به‌صورت یکپارچه در اختیار شما قرار می‌دهد.
-      </p>
-      <div class="flex flex-wrap gap-3 mb-12">
-        <a href="#dashboard" class="btn btn-primary">ثبت درخواست</a>
-        <a href="#services" class="btn" style="background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.18);">مشاهده خدمات</a>
-      </div>
-      <div class="grid grid-cols-3 gap-4 max-w-md">
-        <div class="rounded-[14px] p-4 text-center" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);">
-          <div class="text-2xl font-extrabold text-white num" data-counter="120">0</div>
-          <div class="text-[11px] text-slate-400 mt-1">شعبه فعال</div>
-        </div>
-        <div class="rounded-[14px] p-4 text-center" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);">
-          <div class="text-2xl font-extrabold num" style="color:var(--zv-accent);" data-counter="4500">0</div>
-          <div class="text-[11px] text-slate-400 mt-1">درخواست موفق</div>
-        </div>
-        <div class="rounded-[14px] p-4 text-center" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);">
-          <div class="text-2xl font-extrabold text-white num" data-counter="980">0</div>
-          <div class="text-[11px] text-slate-400 mt-1">نیروی متخصص</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Hero Illustration (brand palette: navy + orange) -->
-    <div class="relative fade-up">
-      <svg viewBox="0 0 520 460" class="w-full max-w-lg mx-auto drop-shadow-2xl">
-        <defs>
-          <linearGradient id="zvG1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#16264f"/><stop offset="1" stop-color="#0B1736"/>
-          </linearGradient>
-          <linearGradient id="zvG2" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#FF6B1A"/><stop offset="1" stop-color="#ff8533"/>
-          </linearGradient>
-        </defs>
-        <rect x="40" y="60" width="200" height="360" rx="26" fill="url(#zvG1)" stroke="rgba(255,255,255,.12)" stroke-width="2"/>
-        <rect x="52" y="86" width="176" height="308" rx="14" fill="#ffffff"/>
-        <rect x="115" y="70" width="50" height="8" rx="4" fill="#2a3a63"/>
-        <rect x="66" y="102" width="86" height="12" rx="6" fill="#0B1736"/>
-        <rect x="164" y="102" width="52" height="12" rx="6" fill="url(#zvG2)"/>
-        <rect x="66" y="124" width="148" height="7" rx="3.5" fill="#e6eaf3"/>
-        <rect x="66" y="146" width="148" height="52" rx="12" fill="#f4f6fb"/>
-        <circle cx="88" cy="172" r="12" fill="#FF6B1A"/>
-        <rect x="108" y="162" width="80" height="7" rx="3.5" fill="#172033"/>
-        <rect x="108" y="176" width="55" height="6" rx="3" fill="#9aa3b5"/>
-        <rect x="66" y="208" width="148" height="52" rx="12" fill="#e9f0fc"/>
-        <circle cx="88" cy="234" r="12" fill="#1849a9"/>
-        <rect x="108" y="224" width="70" height="7" rx="3.5" fill="#172033"/>
-        <rect x="108" y="238" width="90" height="6" rx="3" fill="#9aa3b5"/>
-        <rect x="66" y="270" width="148" height="52" rx="12" fill="#e7f6ef"/>
-        <circle cx="88" cy="296" r="12" fill="#067647"/>
-        <rect x="108" y="286" width="85" height="7" rx="3.5" fill="#172033"/>
-        <rect x="108" y="300" width="60" height="6" rx="3" fill="#9aa3b5"/>
-        <rect x="66" y="336" width="148" height="40" rx="10" fill="url(#zvG2)"/>
-        <rect x="100" y="352" width="80" height="8" rx="4" fill="#fff"/>
-        <g class="float-slow">
-          <rect x="290" y="70" width="180" height="86" rx="14" fill="#ffffff" stroke="#e6eaf3" stroke-width="2"/>
-          <circle cx="322" cy="100" r="16" fill="#e7f6ef"/>
-          <path d="M315 100l5 5 9-10" stroke="#067647" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <rect x="348" y="90" width="98" height="8" rx="4" fill="#0B1736"/>
-          <rect x="348" y="106" width="64" height="7" rx="3.5" fill="#e6eaf3"/>
-          <rect x="306" y="128" width="148" height="6" rx="3" fill="#f4f6fb"/>
-          <rect x="306" y="128" width="96" height="6" rx="3" fill="#FF6B1A"/>
-        </g>
-        <g class="float-mid">
-          <rect x="300" y="184" width="180" height="86" rx="14" fill="#ffffff" stroke="#e6eaf3" stroke-width="2"/>
-          <circle cx="332" cy="214" r="16" fill="#fef4e6"/>
-          <path d="M325 214h6l3-7 4 14 3-7h6" stroke="#f79009" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <rect x="358" y="204" width="98" height="8" rx="4" fill="#0B1736"/>
-          <rect x="358" y="220" width="54" height="7" rx="3.5" fill="#e6eaf3"/>
-          <rect x="316" y="244" width="20" height="10" rx="3" fill="#1849a9"/>
-          <rect x="342" y="238" width="20" height="16" rx="3" fill="#FF6B1A"/>
-          <rect x="368" y="244" width="20" height="10" rx="3" fill="#0B1736"/>
-          <rect x="394" y="234" width="20" height="20" rx="3" fill="#067647"/>
-        </g>
-        <g class="float-fast">
-          <rect x="290" y="298" width="180" height="96" rx="14" fill="url(#zvG1)"/>
-          <circle cx="330" cy="336" r="18" fill="rgba(255,107,26,.2)"/>
-          <path d="M322 340a8 8 0 0116 0M330 330a4.5 4.5 0 100-9 4.5 4.5 0 000 9z" stroke="#FF6B1A" stroke-width="2" fill="none" stroke-linecap="round"/>
-          <rect x="356" y="322" width="92" height="8" rx="4" fill="#ffffff"/>
-          <rect x="356" y="338" width="60" height="7" rx="3.5" fill="rgba(255,255,255,.35)"/>
-          <circle cx="316" cy="372" r="10" fill="#FF6B1A"/><circle cx="332" cy="372" r="10" fill="#1849a9"/><circle cx="348" cy="372" r="10" fill="rgba(255,255,255,.25)"/>
-          <rect x="366" y="366" width="80" height="12" rx="6" fill="url(#zvG2)"/>
-        </g>
-      </svg>
-    </div>
-  </div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-14 items-center relative">
+<div class="fade-up">
+<span class="hero-chip inline-flex items-center gap-2 text-[12px] font-bold px-4 py-1.5 rounded-[20px] mb-6">
+<span class="w-2 h-2 rounded-full animate-pulse" style="background:var(--zv-accent);"></span>
+پلتفرم جامع مدیریت خدمات — چابک، مطمئن، سازمانی
+</span>
+<h1 class="text-white text-3xl sm:text-5xl font-extrabold leading-[1.45] mb-6">
+بستری هوشمند برای
+<span style="color:var(--zv-accent);">ارائه خدمات متنوع</span><br>
+و مدیریت یکپارچه شعب
+</h1>
+<p class="text-slate-300 leading-9 mb-9 text-[14px] sm:text-[15px] max-w-xl">
+<b class="text-white">ZingoVingo</b> با تکیه بر فناوری اطلاعات و ارتباطات دیجیتال، بستر مناسبی جهت ارائه خدمات متنوع از قبیل
+<b class="text-white">خدمات نظافتی</b>، <b class="text-white">حمل و نقل</b>، <b class="text-white">جابه‌جایی اثاثیه</b> و <b class="text-white">توسعه کسب‌وکار</b> فراهم کرده و امکان کنترل شعب، کارمندان، گروه‌ها و ثبت درخواست‌ها را به‌صورت یکپارچه در اختیار شما قرار می‌دهد.
+</p>
+<div class="flex flex-wrap gap-3 mb-12">
+<a href="?page=user" class="btn btn-primary">ثبت درخواست خدمات</a>
+<a href="#services" class="btn" style="background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.18);">مشاهده خدمات</a>
+</div>
+<div class="grid grid-cols-3 gap-4 max-w-md">
+<div class="rounded-[14px] p-4 text-center" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);">
+<div class="text-2xl font-extrabold text-white num" data-counter="120">0</div>
+<div class="text-[11px] text-slate-400 mt-1">شعبه فعال</div>
+</div>
+<div class="rounded-[14px] p-4 text-center" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);">
+<div class="text-2xl font-extrabold num" style="color:var(--zv-accent);" data-counter="4500">0</div>
+<div class="text-[11px] text-slate-400 mt-1">درخواست موفق</div>
+</div>
+<div class="rounded-[14px] p-4 text-center" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);">
+<div class="text-2xl font-extrabold text-white num" data-counter="980">0</div>
+<div class="text-[11px] text-slate-400 mt-1">نیروی متخصص</div>
+</div>
+</div>
+</div>
+<!-- Hero Illustration -->
+<div class="relative fade-up">
+<svg viewBox="0 0 520 460" class="w-full max-w-lg mx-auto drop-shadow-2xl">
+<defs>
+<linearGradient id="zvG1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#16264f"/><stop offset="1" stop-color="#0B1736"/></linearGradient>
+<linearGradient id="zvG2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF6B1A"/><stop offset="1" stop-color="#ff8533"/></linearGradient>
+</defs>
+<rect x="40" y="60" width="200" height="360" rx="26" fill="url(#zvG1)" stroke="rgba(255,255,255,.12)" stroke-width="2"/>
+<rect x="52" y="86" width="176" height="308" rx="14" fill="#ffffff"/>
+<rect x="115" y="70" width="50" height="8" rx="4" fill="#2a3a63"/>
+<rect x="66" y="102" width="86" height="12" rx="6" fill="#0B1736"/>
+<rect x="164" y="102" width="52" height="12" rx="6" fill="url(#zvG2)"/>
+<rect x="66" y="124" width="148" height="7" rx="3.5" fill="#e6eaf3"/>
+<rect x="66" y="146" width="148" height="52" rx="12" fill="#f4f6fb"/>
+<circle cx="88" cy="172" r="12" fill="#FF6B1A"/>
+<rect x="108" y="162" width="80" height="7" rx="3.5" fill="#172033"/>
+<rect x="108" y="176" width="55" height="6" rx="3" fill="#9aa3b5"/>
+<rect x="66" y="208" width="148" height="52" rx="12" fill="#e9f0fc"/>
+<circle cx="88" cy="234" r="12" fill="#1849a9"/>
+<rect x="108" y="224" width="70" height="7" rx="3.5" fill="#172033"/>
+<rect x="108" y="238" width="90" height="6" rx="3" fill="#9aa3b5"/>
+<rect x="66" y="270" width="148" height="52" rx="12" fill="#e7f6ef"/>
+<circle cx="88" cy="296" r="12" fill="#067647"/>
+<rect x="108" y="286" width="85" height="7" rx="3.5" fill="#172033"/>
+<rect x="108" y="300" width="60" height="6" rx="3" fill="#9aa3b5"/>
+<rect x="66" y="336" width="148" height="40" rx="10" fill="url(#zvG2)"/>
+<rect x="100" y="352" width="80" height="8" rx="4" fill="#fff"/>
+<g class="float-slow">
+<rect x="290" y="70" width="180" height="86" rx="14" fill="#ffffff" stroke="#e6eaf3" stroke-width="2"/>
+<circle cx="322" cy="100" r="16" fill="#e7f6ef"/>
+<path d="M315 100l5 5 9-10" stroke="#067647" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="348" y="90" width="98" height="8" rx="4" fill="#0B1736"/>
+<rect x="348" y="106" width="64" height="7" rx="3.5" fill="#e6eaf3"/>
+<rect x="306" y="128" width="148" height="6" rx="3" fill="#f4f6fb"/>
+<rect x="306" y="128" width="96" height="6" rx="3" fill="#FF6B1A"/>
+</g>
+<g class="float-mid">
+<rect x="300" y="184" width="180" height="86" rx="14" fill="#ffffff" stroke="#e6eaf3" stroke-width="2"/>
+<circle cx="332" cy="214" r="16" fill="#fef4e6"/>
+<path d="M325 214h6l3-7 4 14 3-7h6" stroke="#f79009" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="358" y="204" width="98" height="8" rx="4" fill="#0B1736"/>
+<rect x="358" y="220" width="54" height="7" rx="3.5" fill="#e6eaf3"/>
+<rect x="316" y="244" width="20" height="10" rx="3" fill="#1849a9"/>
+<rect x="342" y="238" width="20" height="16" rx="3" fill="#FF6B1A"/>
+<rect x="368" y="244" width="20" height="10" rx="3" fill="#0B1736"/>
+<rect x="394" y="234" width="20" height="20" rx="3" fill="#067647"/>
+</g>
+<g class="float-fast">
+<rect x="290" y="298" width="180" height="96" rx="14" fill="url(#zvG1)"/>
+<circle cx="330" cy="336" r="18" fill="rgba(255,107,26,.2)"/>
+<path d="M322 340a8 8 0 0116 0M330 330a4.5 4.5 0 100-9 4.5 4.5 0 000 9z" stroke="#FF6B1A" stroke-width="2" fill="none" stroke-linecap="round"/>
+<rect x="356" y="322" width="92" height="8" rx="4" fill="#ffffff"/>
+<rect x="356" y="338" width="60" height="7" rx="3.5" fill="rgba(255,255,255,.35)"/>
+<circle cx="316" cy="372" r="10" fill="#FF6B1A"/><circle cx="332" cy="372" r="10" fill="#1849a9"/><circle cx="348" cy="372" r="10" fill="rgba(255,255,255,.25)"/>
+<rect x="366" y="366" width="80" height="12" rx="6" fill="url(#zvG2)"/>
+</g>
+</svg>
+</div>
+</div>
 </section>
 
 <!-- ==================== SERVICES ==================== -->
 <section id="services" class="py-20 bg-white" style="border-bottom:1px solid var(--zv-line);">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="text-center mb-14">
-      <span class="badge badge-info">خدمات ما</span>
-      <h2 class="section-title mt-4 mb-3">خدمات متنوع و حرفه‌ای <span class="zv-logo-word" style="font-size:.85em;"><span class="z" style="color:var(--zv-navy);">Zingo</span><span class="v">Vingo</span></span></h2>
-      <div class="accent-line mx-auto mb-4"></div>
-      <p class="text-[13px]" style="color:var(--zv-muted);max-width:520px;margin-inline:auto;">بستر مناسب جهت ارائه خدمات متنوع با بالاترین کیفیت و مدیریت هوشمند فرآیندها</p>
-    </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="zv-card zv-card-hover p-7">
-        <div class="icon-tile icon-tile-navy mb-5">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l1 6H8l1-6z"/><path d="M8 9h8l2 12H6L8 9z"/><path d="M12 12v6"/></svg>
-        </div>
-        <h3 class="font-bold text-[16px] mb-2" style="color:var(--zv-navy);">خدمات نظافتی</h3>
-        <p class="text-[13px] leading-7" style="color:var(--zv-muted);">اعزام نیروهای مجرب نظافت برای منازل، ادارات، مجتمع‌ها و اماکن تجاری با تضمین کیفیت خدمت.</p>
-      </div>
-      <div class="zv-card zv-card-hover p-7">
-        <div class="icon-tile icon-tile-accent mb-5">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8h13v9H1zM14 11h4l3 3v3h-7z"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="17.5" cy="18.5" r="1.8"/></svg>
-        </div>
-        <h3 class="font-bold text-[16px] mb-2" style="color:var(--zv-navy);">حمل و نقل</h3>
-        <p class="text-[13px] leading-7" style="color:var(--zv-muted);">ناوگان حمل و نقل درون‌شهری و برون‌شهری با رانندگان حرفه‌ای و امکان پیگیری آنلاین محموله.</p>
-      </div>
-      <div class="zv-card zv-card-hover p-7">
-        <div class="icon-tile icon-tile-navy mb-5">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-6h6v6"/><path d="M3 13h4M17 13h4"/></svg>
-        </div>
-        <h3 class="font-bold text-[16px] mb-2" style="color:var(--zv-navy);">جابه‌جایی اثاثیه</h3>
-        <p class="text-[13px] leading-7" style="color:var(--zv-muted);">بسته‌بندی تخصصی، حمل و جابه‌جایی ایمن اثاثیه منزل و محل کار با بیمه کامل بار.</p>
-      </div>
-      <div class="zv-card zv-card-hover p-7">
-        <div class="icon-tile icon-tile-accent mb-5">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M6 16l5-6 4 4 5-8"/><path d="M16 6h4v4"/></svg>
-        </div>
-        <h3 class="font-bold text-[16px] mb-2" style="color:var(--zv-navy);">توسعه کسب‌وکار</h3>
-        <p class="text-[13px] leading-7" style="color:var(--zv-muted);">مشاوره، برندینگ و راهکارهای دیجیتال مارکتینگ برای رشد و توسعه پایدار کسب‌وکار شما.</p>
-      </div>
-    </div>
-  </div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6">
+<div class="text-center mb-14">
+<span class="badge badge-info">خدمات ما</span>
+<h2 class="section-title mt-4 mb-3">خدمات متنوع و حرفه‌ای <span class="zv-logo-word" style="font-size:.85em;"><span class="z" style="color:var(--zv-navy);">Zingo</span><span class="v">Vingo</span></span></h2>
+<div class="accent-line mx-auto mb-4"></div>
+<p class="text-[13px]" style="color:var(--zv-muted);max-width:520px;margin-inline:auto;">بستر مناسب جهت ارائه خدمات متنوع با بالاترین کیفیت و مدیریت هوشمند فرآیندها</p>
+</div>
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="zv-card zv-card-hover p-7">
+<div class="icon-tile icon-tile-navy mb-5">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l1 6H8l1-6z"/><path d="M8 9h8l2 12H6L8 9z"/><path d="M12 12v6"/></svg>
+</div>
+<h3 class="font-bold text-[16px] mb-2" style="color:var(--zv-navy);">خدمات نظافتی</h3>
+<p class="text-[13px] leading-7" style="color:var(--zv-muted);">اعزام نیروهای مجرب نظافت برای منازل، ادارات، مجتمع‌ها و اماکن تجاری با تضمین کیفیت خدمت.</p>
+</div>
+<div class="zv-card zv-card-hover p-7">
+<div class="icon-tile icon-tile-accent mb-5">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8h13v9H1zM14 11h4l3 3v3h-7z"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="17.5" cy="18.5" r="1.8"/></svg>
+</div>
+<h3 class="font-bold text-[16px] mb-2" style="color:var(--zv-navy);">حمل و نقل</h3>
+<p class="text-[13px] leading-7" style="color:var(--zv-muted);">ناوگان حمل و نقل درون‌شهری و برون‌شهری با رانندگان حرفه‌ای و امکان پیگیری آنلاین محموله.</p>
+</div>
+<div class="zv-card zv-card-hover p-7">
+<div class="icon-tile icon-tile-navy mb-5">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-6h6v6"/><path d="M3 13h4M17 13h4"/></svg>
+</div>
+<h3 class="font-bold text-[16px] mb-2" style="color:var(--zv-navy);">جابه‌جایی اثاثیه</h3>
+<p class="text-[13px] leading-7" style="color:var(--zv-muted);">بسته‌بندی تخصصی، حمل و جابه‌جایی ایمن اثاثیه منزل و محل کار با بیمه کامل بار.</p>
+</div>
+<div class="zv-card zv-card-hover p-7">
+<div class="icon-tile icon-tile-accent mb-5">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M6 16l5-6 4 4 5-8"/><path d="M16 6h4v4"/></svg>
+</div>
+<h3 class="font-bold text-[16px] mb-2" style="color:var(--zv-navy);">توسعه کسب‌وکار</h3>
+<p class="text-[13px] leading-7" style="color:var(--zv-muted);">مشاوره، برندینگ و راهکارهای دیجیتال مارکتینگ برای رشد و توسعه پایدار کسب‌وکار شما.</p>
+</div>
+</div>
+</div>
 </section>
 
 <!-- ==================== FEATURES ==================== -->
 <section id="features" class="py-20">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="text-center mb-14">
-      <span class="badge" style="background:rgba(255,107,26,.12);color:var(--zv-accent);">قابلیت‌های پلتفرم</span>
-      <h2 class="section-title mt-4 mb-3">مدیریت یکپارچه و سازمانی</h2>
-      <div class="accent-line mx-auto mb-4"></div>
-      <p class="text-[13px]" style="color:var(--zv-muted);max-width:520px;margin-inline:auto;">ابزارهای کامل کنترلی برای مدیریت ساختار سازمانی و فرآیند درخواست‌ها</p>
-    </div>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="zv-card zv-card-hover p-7">
-        <div class="icon-tile icon-tile-info mb-4 text-xl">🏢</div>
-        <h3 class="font-bold text-[15px] mb-2" style="color:var(--zv-navy);">کنترل و ایجاد شعب</h3>
-        <p class="text-[13px] leading-7" style="color:var(--zv-muted);">ایجاد شعب جدید در شهرهای مختلف، ویرایش اطلاعات و پایش عملکرد هر شعبه به‌صورت مستقل.</p>
-      </div>
-      <div class="zv-card zv-card-hover p-7">
-        <div class="icon-tile icon-tile-info mb-4 text-xl">👥</div>
-        <h3 class="font-bold text-[15px] mb-2" style="color:var(--zv-navy);">کنترل کارمندان شعب</h3>
-        <p class="text-[13px] leading-7" style="color:var(--zv-muted);">ثبت، ویرایش و مدیریت کارمندان هر شعبه همراه با نقش سازمانی و وضعیت فعالیت.</p>
-      </div>
-      <div class="zv-card zv-card-hover p-7">
-        <div class="icon-tile icon-tile-info mb-4 text-xl">🗂️</div>
-        <h3 class="font-bold text-[15px] mb-2" style="color:var(--zv-navy);">کنترل و ایجاد گروه‌ها در شعب</h3>
-        <p class="text-[13px] leading-7" style="color:var(--zv-muted);">تعریف گروه‌های تخصصی و تیم‌های اجرایی در هر شعبه جهت تقسیم بهینه وظایف.</p>
-      </div>
-      <div class="zv-card zv-card-hover p-7">
-        <div class="icon-tile icon-tile-info mb-4 text-xl">➕</div>
-        <h3 class="font-bold text-[15px] mb-2" style="color:var(--zv-navy);">کنترل و افزودن افراد به گروه‌ها</h3>
-        <p class="text-[13px] leading-7" style="color:var(--zv-muted);">انتساب کارمندان به گروه‌های مربوطه و مدیریت اعضای هر گروه در چند گام ساده.</p>
-      </div>
-      <div class="zv-card zv-card-hover p-7" style="border-color:rgba(255,107,26,.35);">
-        <div class="icon-tile icon-tile-accent mb-4 text-xl">📝</div>
-        <h3 class="font-bold text-[15px] mb-2" style="color:var(--zv-navy);">ورود و ثبت درخواست <span class="badge badge-warning mr-1">جدید</span></h3>
-        <p class="text-[13px] leading-7" style="color:var(--zv-muted);">ثبت درخواست توسط مشتری یا اپراتور، تعیین نوع خدمت و پیگیری وضعیت تا تکمیل نهایی.</p>
-      </div>
-      <div class="zv-card zv-card-hover p-7">
-        <div class="icon-tile icon-tile-info mb-4 text-xl">📊</div>
-        <h3 class="font-bold text-[15px] mb-2" style="color:var(--zv-navy);">گزارش‌گیری و آمار</h3>
-        <p class="text-[13px] leading-7" style="color:var(--zv-muted);">داشبورد آماری زنده از شعب، نیروی انسانی و وضعیت درخواست‌ها برای تصمیم‌گیری بهتر.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ==================== DASHBOARD ==================== -->
-<section id="dashboard" class="py-20" style="background:linear-gradient(180deg,#eef1f8 0%,var(--zv-bg) 100%);border-top:1px solid var(--zv-line);">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="text-center mb-10">
-      <span class="badge badge-navy">دموی پنل مدیریت</span>
-      <h2 class="section-title mt-4 mb-3">پنل مدیریت سامانه</h2>
-      <div class="accent-line mx-auto mb-4"></div>
-      <p class="text-[13px]" style="color:var(--zv-muted);max-width:540px;margin-inline:auto;">همه قابلیت‌ها را به‌صورت زنده تجربه کنید: مدیریت شعب، کارمندان، گروه‌ها و ثبت درخواست‌ها</p>
-    </div>
-
-    <!-- Stats -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <div class="zv-card p-5 flex items-center gap-4">
-        <div class="icon-tile icon-tile-navy text-xl">🏢</div>
-        <div><div id="statBranches" class="text-2xl font-extrabold num" style="color:var(--zv-navy);">0</div><div class="text-[12px]" style="color:var(--zv-muted);">شعب</div></div>
-      </div>
-      <div class="zv-card p-5 flex items-center gap-4">
-        <div class="icon-tile icon-tile-accent text-xl">👥</div>
-        <div><div id="statEmployees" class="text-2xl font-extrabold num" style="color:var(--zv-navy);">0</div><div class="text-[12px]" style="color:var(--zv-muted);">کارمندان</div></div>
-      </div>
-      <div class="zv-card p-5 flex items-center gap-4">
-        <div class="icon-tile icon-tile-info text-xl">🗂️</div>
-        <div><div id="statGroups" class="text-2xl font-extrabold num" style="color:var(--zv-navy);">0</div><div class="text-[12px]" style="color:var(--zv-muted);">گروه‌ها</div></div>
-      </div>
-      <div class="zv-card p-5 flex items-center gap-4">
-        <div class="icon-tile" style="background:var(--zv-success-bg);color:var(--zv-success);font-size:20px;">📝</div>
-        <div><div id="statRequests" class="text-2xl font-extrabold num" style="color:var(--zv-navy);">0</div><div class="text-[12px]" style="color:var(--zv-muted);">درخواست‌ها</div></div>
-      </div>
-    </div>
-
-    <!-- Charts -->
-    <div class="grid lg:grid-cols-3 gap-4 mb-8">
-      <div class="zv-card p-6 lg:col-span-2">
-        <h3 class="font-bold text-[14px] mb-5" style="color:var(--zv-navy);">📊 درخواست‌ها به تفکیک شعبه</h3>
-        <div id="barChart" class="space-y-4"></div>
-      </div>
-      <div class="zv-card p-6 flex flex-col items-center">
-        <h3 class="font-bold text-[14px] mb-3 self-start" style="color:var(--zv-navy);">🎯 وضعیت درخواست‌ها</h3>
-        <div id="donut" class="w-40 h-40 rounded-full relative my-2">
-          <div class="absolute rounded-full bg-white flex flex-col items-center justify-center" style="inset:18px;">
-            <span id="donutTotal" class="text-xl font-extrabold num" style="color:var(--zv-navy);">0</span>
-            <span class="text-[10px]" style="color:var(--zv-muted);">کل درخواست‌ها</span>
-          </div>
-        </div>
-        <div id="donutLegend" class="flex flex-wrap gap-1.5 justify-center mt-2"></div>
-      </div>
-    </div>
-
-    <div class="zv-card overflow-hidden" style="box-shadow:var(--shadow-hover);">
-      <!-- Tabs -->
-      <div class="flex flex-wrap gap-2 p-4" style="background:#f8f9fd;border-bottom:1px solid var(--zv-line);">
-        <button data-tab="branches" class="tab-btn tab-active">🏢 شعب</button>
-        <button data-tab="employees" class="tab-btn">👥 کارمندان</button>
-        <button data-tab="groups" class="tab-btn">🗂️ گروه‌ها</button>
-        <button data-tab="requests" class="tab-btn">📝 درخواست‌ها</button>
-      </div>
-
-      <!-- TAB: BRANCHES -->
-      <div id="tab-branches" class="tab-panel p-6 grid lg:grid-cols-3 gap-6">
-        <div class="zv-card p-5 h-fit" style="background:#fafbfe;">
-          <h3 class="font-bold text-[15px] mb-1" style="color:var(--zv-navy);">ایجاد شعبه جدید</h3>
-          <p class="text-[12px] mb-4" style="color:var(--zv-muted);">اطلاعات شعبه را وارد کنید تا به شبکه ZingoVingo افزوده شود.</p>
-          <div class="space-y-3">
-            <div><label class="zv-label">نام شعبه</label><input id="brName" type="text" class="zv-input" placeholder="مثلاً شعبه مرکزی تهران"></div>
-            <div><label class="zv-label">شهر</label><input id="brCity" type="text" class="zv-input" placeholder="شهر محل شعبه"></div>
-            <div><label class="zv-label">تلفن تماس</label><input id="brPhone" type="text" class="zv-input num" placeholder="021-XXXXXXXX"></div>
-            <div><label class="zv-label">وضعیت</label>
-              <select id="brStatus" class="zv-select">
-                <option value="فعال">فعال</option>
-                <option value="در حال راه‌اندازی">در حال راه‌اندازی</option>
-              </select>
-            </div>
-            <button onclick="addBranch()" class="btn btn-primary w-full mt-1">ثبت شعبه</button>
-          </div>
-        </div>
-        <div class="lg:col-span-2">
-          <div class="flex flex-wrap items-center gap-3 mb-4">
-            <h3 class="font-bold text-[15px]" style="color:var(--zv-navy);">لیست شعب</h3>
-            <span id="brCount" class="badge badge-navy"></span>
-            <button onclick="exportCSV('branches')" class="btn btn-outline btn-sm mr-auto">⬇ خروجی CSV</button>
-          </div>
-          <div id="branchList" class="grid sm:grid-cols-2 gap-4"></div>
-        </div>
-      </div>
-
-      <!-- TAB: EMPLOYEES -->
-      <div id="tab-employees" class="tab-panel hidden p-6 grid lg:grid-cols-3 gap-6">
-        <div class="zv-card p-5 h-fit" style="background:#fafbfe;">
-          <h3 class="font-bold text-[15px] mb-1" style="color:var(--zv-navy);">افزودن کارمند</h3>
-          <p class="text-[12px] mb-4" style="color:var(--zv-muted);">کارمند جدید را به یکی از شعب اختصاص دهید.</p>
-          <div class="space-y-3">
-            <div><label class="zv-label">نام و نام خانوادگی</label><input id="empName" type="text" class="zv-input" placeholder="نام کامل کارمند"></div>
-            <div><label class="zv-label">شماره تماس</label><input id="empPhone" type="text" class="zv-input num" placeholder="09XXXXXXXXX"></div>
-            <div><label class="zv-label">نقش سازمانی</label>
-              <select id="empRole" class="zv-select">
-                <option>مدیر شعبه</option>
-                <option>اپراتور</option>
-                <option>نیروی خدماتی</option>
-                <option>راننده</option>
-                <option>کارشناس توسعه کسب‌وکار</option>
-              </select>
-            </div>
-            <div><label class="zv-label">شعبه</label><select id="empBranch" class="zv-select"></select></div>
-            <div><label class="zv-label">وضعیت</label>
-              <select id="empStatus" class="zv-select">
-                <option value="فعال">فعال</option>
-                <option value="در مأموریت">در مأموریت</option>
-                <option value="غیرفعال">غیرفعال</option>
-              </select>
-            </div>
-            <button onclick="addEmployee()" class="btn btn-navy w-full mt-1">ثبت کارمند</button>
-          </div>
-        </div>
-        <div class="lg:col-span-2">
-          <div class="flex flex-wrap items-center gap-3 mb-4">
-            <h3 class="font-bold text-[15px]" style="color:var(--zv-navy);">کارمندان</h3>
-            <span id="empCount" class="badge badge-navy"></span>
-            <div class="mr-auto flex flex-wrap items-center gap-2">
-              <select id="empFilter" onchange="ui.empFilter=this.value;renderEmployees()" class="zv-select" style="width:auto;font-size:12px;padding:7px 12px;font-weight:600;"></select>
-              <button onclick="exportCSV('employees')" class="btn btn-outline btn-sm">⬇ CSV</button>
-            </div>
-          </div>
-          <div id="employeeList" class="grid sm:grid-cols-2 gap-4"></div>
-        </div>
-      </div>
-
-      <!-- TAB: GROUPS -->
-      <div id="tab-groups" class="tab-panel hidden p-6 grid lg:grid-cols-3 gap-6">
-        <div class="space-y-5 h-fit">
-          <div class="zv-card p-5" style="background:#fafbfe;">
-            <h3 class="font-bold text-[15px] mb-1" style="color:var(--zv-navy);">ایجاد گروه در شعبه</h3>
-            <p class="text-[12px] mb-4" style="color:var(--zv-muted);">تیم‌های تخصصی هر شعبه را تعریف کنید.</p>
-            <div class="space-y-3">
-              <div><label class="zv-label">نام گروه</label><input id="grpName" type="text" class="zv-input" placeholder="مثلاً تیم نظافت آلفا"></div>
-              <div><label class="zv-label">شعبه</label><select id="grpBranch" class="zv-select"></select></div>
-              <div><label class="zv-label">حوزه فعالیت</label>
-                <select id="grpType" class="zv-select">
-                  <option>خدمات نظافتی</option>
-                  <option>حمل و نقل</option>
-                  <option>جابه‌جایی اثاثیه</option>
-                  <option>توسعه کسب‌وکار</option>
-                  <option>پشتیبانی</option>
-                </select>
-              </div>
-              <button onclick="addGroup()" class="btn btn-primary w-full mt-1">ایجاد گروه</button>
-            </div>
-          </div>
-          <div class="zv-card p-5" style="border-color:rgba(24,73,169,.25);">
-            <h4 class="font-bold text-[14px] mb-1" style="color:var(--zv-info);">افزودن افراد به گروه</h4>
-            <p class="text-[12px] mb-4" style="color:var(--zv-muted);">فقط کارمندان همان شعبه قابل انتساب به گروه هستند.</p>
-            <div class="space-y-3">
-              <select id="memberGroup" class="zv-select" onchange="ui.memberGroup=this.value;ui.memberEmp='';fillSelects()"></select>
-              <select id="memberEmp" class="zv-select" onchange="ui.memberEmp=this.value"></select>
-              <button onclick="addMember()" class="btn btn-soft w-full">افزودن به گروه</button>
-            </div>
-          </div>
-        </div>
-        <div class="lg:col-span-2">
-          <div class="flex flex-wrap items-center gap-3 mb-4">
-            <h3 class="font-bold text-[15px]" style="color:var(--zv-navy);">گروه‌های شعب</h3>
-            <span id="grpCount" class="badge badge-navy"></span>
-            <button onclick="exportCSV('groups')" class="btn btn-outline btn-sm mr-auto">⬇ خروجی CSV</button>
-          </div>
-          <div id="groupList" class="space-y-4"></div>
-        </div>
-      </div>
-
-      <!-- TAB: REQUESTS -->
-      <div id="tab-requests" class="tab-panel hidden p-6 grid lg:grid-cols-3 gap-6">
-        <div class="zv-card p-5 h-fit" style="background:#fafbfe;">
-          <h3 class="font-bold text-[15px] mb-1" style="color:var(--zv-navy);">ورود و ثبت درخواست</h3>
-          <p class="text-[12px] mb-4" style="color:var(--zv-muted);">درخواست می‌تواند توسط مشتری یا اپراتور ثبت گردد.</p>
-          <div class="space-y-3">
-            <div class="grid grid-cols-2 gap-2">
-              <label id="byCustomerLbl" class="zv-card p-3 text-center cursor-pointer transition" style="border:2px solid var(--zv-accent);background:rgba(255,107,26,.06);">
-                <input type="radio" name="reqBy" value="مشتری" checked class="hidden">
-                <div class="text-xl">🙋</div><div class="text-[12px] font-bold mt-1" style="color:var(--zv-navy);">ثبت توسط مشتری</div>
-              </label>
-              <label id="byOperatorLbl" class="zv-card p-3 text-center cursor-pointer transition" style="border:2px solid var(--zv-line);">
-                <input type="radio" name="reqBy" value="اپراتور" class="hidden">
-                <div class="text-xl">🎧</div><div class="text-[12px] font-bold mt-1" style="color:var(--zv-navy);">ثبت توسط اپراتور</div>
-              </label>
-            </div>
-            <div><label class="zv-label">نام مشتری</label><input id="reqName" type="text" class="zv-input" placeholder="نام و نام خانوادگی"></div>
-            <div><label class="zv-label">شماره تماس</label><input id="reqPhone" type="text" class="zv-input num" placeholder="09XXXXXXXXX"></div>
-            <div><label class="zv-label">نوع خدمت</label>
-              <select id="reqType" class="zv-select">
-                <option>خدمات نظافتی</option>
-                <option>حمل و نقل</option>
-                <option>جابه‌جایی اثاثیه</option>
-                <option>توسعه کسب‌وکار</option>
-              </select>
-            </div>
-            <div><label class="zv-label">شعبه رسیدگی‌کننده</label><select id="reqBranch" class="zv-select"></select></div>
-            <div><label class="zv-label">آدرس</label><input id="reqAddr" type="text" class="zv-input" placeholder="آدرس محل ارائه خدمت"></div>
-            <div><label class="zv-label">توضیحات</label><textarea id="reqDesc" rows="2" class="zv-textarea" style="resize:none;" placeholder="شرح مختصر درخواست..."></textarea></div>
-            <button onclick="addRequest()" class="btn btn-primary w-full mt-1">ثبت درخواست</button>
-          </div>
-        </div>
-        <div class="lg:col-span-2">
-          <div class="flex flex-wrap items-center gap-3 mb-4">
-            <h3 class="font-bold text-[15px]" style="color:var(--zv-navy);">درخواست‌های ثبت‌شده</h3>
-            <span id="reqCount" class="badge badge-navy"></span>
-            <div class="mr-auto flex flex-wrap items-center gap-2">
-              <input id="reqSearch" type="search" class="zv-input" style="width:180px;font-size:12px;padding:7px 12px;" placeholder="جستجوی مشتری، خدمت، آدرس…" oninput="ui.reqSearch=this.value;renderRequests()">
-              <select id="reqFilter" onchange="ui.reqFilter=this.value;renderRequests()" class="zv-select" style="width:auto;font-size:12px;padding:7px 12px;font-weight:600;">
-                <option value="all">همه وضعیت‌ها</option>
-                <option>در انتظار بررسی</option>
-                <option>تأیید شده</option>
-                <option>در حال انجام</option>
-                <option>تکمیل شده</option>
-                <option>لغو شده</option>
-              </select>
-              <button onclick="exportCSV('requests')" class="btn btn-outline btn-sm">⬇ CSV</button>
-            </div>
-          </div>
-          <div id="requestList" class="space-y-4 max-h-[580px] overflow-y-auto pl-1"></div>
-        </div>
-      </div>
-
-      <!-- panel footer -->
-      <div class="flex flex-wrap items-center justify-between gap-2 px-6 py-3" style="border-top:1px solid var(--zv-line);background:#f8f9fd;">
-        <span class="text-[11px]" style="color:var(--zv-muted);">💾 تغییرات به‌صورت خودکار در مرورگر شما ذخیره می‌شوند.</span>
-        <button onclick="resetDemo()" class="btn btn-outline btn-sm">بازگردانی داده‌های نمونه</button>
-      </div>
-    </div>
-  </div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6">
+<div class="text-center mb-14">
+<span class="badge" style="background:rgba(255,107,26,.12);color:var(--zv-accent);">قابلیت‌های پلتفرم</span>
+<h2 class="section-title mt-4 mb-3">مدیریت یکپارچه و سازمانی</h2>
+<div class="accent-line mx-auto mb-4"></div>
+<p class="text-[13px]" style="color:var(--zv-muted);max-width:520px;margin-inline:auto;">ابزارهای کامل کنترلی برای مدیریت ساختار سازمانی و فرآیند درخواست‌ها</p>
+</div>
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="zv-card zv-card-hover p-7">
+<div class="icon-tile icon-tile-info mb-4 text-xl">🏢</div>
+<h3 class="font-bold text-[15px] mb-2" style="color:var(--zv-navy);">کنترل و ایجاد شعب</h3>
+<p class="text-[13px] leading-7" style="color:var(--zv-muted);">ایجاد شعب جدید در شهرهای مختلف، ویرایش اطلاعات و پایش عملکرد هر شعبه به‌صورت مستقل.</p>
+</div>
+<div class="zv-card zv-card-hover p-7">
+<div class="icon-tile icon-tile-info mb-4 text-xl">👥</div>
+<h3 class="font-bold text-[15px] mb-2" style="color:var(--zv-navy);">کنترل کارمندان شعب</h3>
+<p class="text-[13px] leading-7" style="color:var(--zv-muted);">ثبت، ویرایش و مدیریت کارمندان هر شعبه همراه با نقش سازمانی و وضعیت فعالیت.</p>
+</div>
+<div class="zv-card zv-card-hover p-7">
+<div class="icon-tile icon-tile-info mb-4 text-xl">🗂️</div>
+<h3 class="font-bold text-[15px] mb-2" style="color:var(--zv-navy);">کنترل و ایجاد گروه‌ها در شعب</h3>
+<p class="text-[13px] leading-7" style="color:var(--zv-muted);">تعریف گروه‌های تخصصی و تیم‌های اجرایی در هر شعبه جهت تقسیم بهینه وظایف.</p>
+</div>
+<div class="zv-card zv-card-hover p-7">
+<div class="icon-tile icon-tile-info mb-4 text-xl">➕</div>
+<h3 class="font-bold text-[15px] mb-2" style="color:var(--zv-navy);">کنترل و افزودن افراد به گروه‌ها</h3>
+<p class="text-[13px] leading-7" style="color:var(--zv-muted);">انتساب کارمندان به گروه‌های مربوطه و مدیریت اعضای هر گروه در چند گام ساده.</p>
+</div>
+<div class="zv-card zv-card-hover p-7" style="border-color:rgba(255,107,26,.35);">
+<div class="icon-tile icon-tile-accent mb-4 text-xl">📝</div>
+<h3 class="font-bold text-[15px] mb-2" style="color:var(--zv-navy);">ورود و ثبت درخواست <span class="badge badge-warning mr-1">جدید</span></h3>
+<p class="text-[13px] leading-7" style="color:var(--zv-muted);">ثبت درخواست توسط مشتری یا اپراتور، تعیین نوع خدمت و پیگیری وضعیت تا تکمیل نهایی.</p>
+</div>
+<div class="zv-card zv-card-hover p-7">
+<div class="icon-tile icon-tile-info mb-4 text-xl">📊</div>
+<h3 class="font-bold text-[15px] mb-2" style="color:var(--zv-navy);">گزارش‌گیری و آمار</h3>
+<p class="text-[13px] leading-7" style="color:var(--zv-muted);">داشبورد آماری زنده از شعب، نیروی انسانی و وضعیت درخواست‌ها برای تصمیم‌گیری بهتر.</p>
+</div>
+</div>
+</div>
 </section>
 
 <!-- ==================== CTA ==================== -->
 <section class="py-16">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6">
-    <div class="hero rounded-[14px] p-10 sm:p-14 text-center relative" style="box-shadow:0 20px 50px rgba(11,23,54,.35);">
-      <div class="absolute -top-14 -left-14 w-48 h-48 rounded-full" style="background:rgba(255,107,26,.15);filter:blur(10px);"></div>
-      <h2 class="text-2xl sm:text-4xl font-extrabold mb-4 text-white relative">آماده‌اید کسب‌وکار خود را متحول کنید؟</h2>
-      <p class="text-slate-300 text-[13px] sm:text-[14px] mb-8 max-w-xl mx-auto relative leading-8">همین حالا درخواست خود را ثبت کنید یا برای راه‌اندازی شعبه اختصاصی با کارشناسان ZingoVingo در تماس باشید.</p>
-      <div class="flex flex-wrap justify-center gap-3 relative">
-        <a href="#dashboard" class="btn btn-primary">ثبت درخواست</a>
-        <a href="#contact" class="btn" style="background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.2);">دریافت مشاوره رایگان</a>
-      </div>
-    </div>
-  </div>
+<div class="max-w-5xl mx-auto px-4 sm:px-6">
+<div class="hero rounded-[14px] p-10 sm:p-14 text-center relative" style="box-shadow:0 20px 50px rgba(11,23,54,.35);">
+<div class="absolute -top-14 -left-14 w-48 h-48 rounded-full" style="background:rgba(255,107,26,.15);filter:blur(10px);"></div>
+<h2 class="text-2xl sm:text-4xl font-extrabold mb-4 text-white relative">آماده‌اید کسب‌وکار خود را متحول کنید؟</h2>
+<p class="text-slate-300 text-[13px] sm:text-[14px] mb-8 max-w-xl mx-auto relative leading-8">همین حالا درخواست خود را ثبت کنید یا برای راه‌اندازی شعبه اختصاصی با کارشناسان ZingoVingo در تماس باشید.</p>
+<div class="flex flex-wrap justify-center gap-3 relative">
+<a href="?page=user" class="btn btn-primary">ثبت درخواست خدمات</a>
+<a href="#contact" class="btn" style="background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.2);">دریافت مشاوره رایگان</a>
+</div>
+</div>
+</div>
 </section>
 
 <!-- ==================== CONTACT FORM ==================== -->
 <section id="contact" class="py-20 bg-white" style="border-top:1px solid var(--zv-line);">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-12 items-start">
-    <div>
-      <span class="badge badge-info">تماس با ما</span>
-      <h2 class="section-title mt-4 mb-3">در کنار شما هستیم</h2>
-      <div class="accent-line mb-5"></div>
-      <p class="text-[13px] leading-8 mb-8" style="color:var(--zv-muted);max-width:480px;">
-        فرم روبه‌رو را تکمیل کنید؛ درخواست شما مستقیماً در سامانه ZingoVingo ثبت شده و کارشناسان ما در اسرع وقت با شما تماس می‌گیرند.
-      </p>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div class="zv-card zv-card-hover p-5">
-          <div class="icon-tile icon-tile-navy mb-3" style="width:42px;height:42px;font-size:18px;">📞</div>
-          <div class="font-bold text-[13px] mb-1" style="color:var(--zv-navy);">تلفن تماس</div>
-          <div class="text-[12px] num" dir="ltr" style="color:var(--zv-muted);text-align:right;">021-9100 4567</div>
-        </div>
-        <div class="zv-card zv-card-hover p-5">
-          <div class="icon-tile icon-tile-accent mb-3" style="width:42px;height:42px;font-size:18px;">✉️</div>
-          <div class="font-bold text-[13px] mb-1" style="color:var(--zv-navy);">ایمیل</div>
-          <div class="text-[12px]" dir="ltr" style="color:var(--zv-muted);text-align:right;">info@zingovingo.ir</div>
-        </div>
-        <div class="zv-card zv-card-hover p-5">
-          <div class="icon-tile icon-tile-info mb-3" style="width:42px;height:42px;font-size:18px;">📍</div>
-          <div class="font-bold text-[13px] mb-1" style="color:var(--zv-navy);">آدرس</div>
-          <div class="text-[12px] leading-6" style="color:var(--zv-muted);">تهران، خیابان ولیعصر، برج فناوری، طبقه ۱۲</div>
-        </div>
-        <div class="zv-card zv-card-hover p-5">
-          <div class="icon-tile icon-tile-info mb-3" style="width:42px;height:42px;font-size:18px;">🕐</div>
-          <div class="font-bold text-[13px] mb-1" style="color:var(--zv-navy);">ساعات پاسخ‌گویی</div>
-          <div class="text-[12px] leading-6" style="color:var(--zv-muted);">شنبه تا چهارشنبه — ۹ الی ۱۷</div>
-        </div>
-      </div>
-    </div>
-
-    <form id="contactForm" class="zv-card p-7 space-y-4" novalidate>
-      <h3 class="font-bold text-[15px]" style="color:var(--zv-navy);">ارسال پیام و ثبت درخواست</h3>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div><label class="zv-label">نام و نام خانوادگی *</label><input id="ctName" type="text" class="zv-input" placeholder="نام کامل"></div>
-        <div><label class="zv-label">شماره تماس *</label><input id="ctPhone" type="text" class="zv-input num" placeholder="09XXXXXXXXX"></div>
-      </div>
-      <div><label class="zv-label">نوع خدمت</label>
-        <select id="ctType" class="zv-select">
-          <option>خدمات نظافتی</option>
-          <option>حمل و نقل</option>
-          <option>جابه‌جایی اثاثیه</option>
-          <option>توسعه کسب‌وکار</option>
-        </select>
-      </div>
-      <div><label class="zv-label">شعبه (اختیاری)</label><select id="ctBranch" class="zv-select"></select></div>
-      <div><label class="zv-label">پیام شما</label><textarea id="ctMsg" rows="4" class="zv-textarea" style="resize:none;" placeholder="شرح مختصر درخواست..."></textarea></div>
-      <button type="submit" class="btn btn-primary w-full">ارسال و ثبت درخواست</button>
-    </form>
-  </div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-12 items-start">
+<div>
+<span class="badge badge-info">تماس با ما</span>
+<h2 class="section-title mt-4 mb-3">در کنار شما هستیم</h2>
+<div class="accent-line mb-5"></div>
+<p class="text-[13px] leading-8 mb-8" style="color:var(--zv-muted);max-width:480px;">
+فرم روبه‌رو را تکمیل کنید؛ درخواست شما مستقیماً در سامانه ZingoVingo ثبت شده و کارشناسان ما در اسرع وقت با شما تماس می‌گیرند.
+</p>
+<div class="grid sm:grid-cols-2 gap-4">
+<div class="zv-card zv-card-hover p-5">
+<div class="icon-tile icon-tile-navy mb-3" style="width:42px;height:42px;font-size:18px;">📞</div>
+<div class="font-bold text-[13px] mb-1" style="color:var(--zv-navy);">تلفن تماس</div>
+<div class="text-[12px] num" dir="ltr" style="color:var(--zv-muted);text-align:right;">021-9100 4567</div>
+</div>
+<div class="zv-card zv-card-hover p-5">
+<div class="icon-tile icon-tile-accent mb-3" style="width:42px;height:42px;font-size:18px;">✉️</div>
+<div class="font-bold text-[13px] mb-1" style="color:var(--zv-navy);">ایمیل</div>
+<div class="text-[12px]" dir="ltr" style="color:var(--zv-muted);text-align:right;">info@zingovingo.ir</div>
+</div>
+<div class="zv-card zv-card-hover p-5">
+<div class="icon-tile icon-tile-info mb-3" style="width:42px;height:42px;font-size:18px;">📍</div>
+<div class="font-bold text-[13px] mb-1" style="color:var(--zv-navy);">آدرس</div>
+<div class="text-[12px] leading-6" style="color:var(--zv-muted);">تهران، خیابان ولیعصر، برج فناوری، طبقه ۱۲</div>
+</div>
+<div class="zv-card zv-card-hover p-5">
+<div class="icon-tile icon-tile-info mb-3" style="width:42px;height:42px;font-size:18px;">🕐</div>
+<div class="font-bold text-[13px] mb-1" style="color:var(--zv-navy);">ساعات پاسخ‌گویی</div>
+<div class="text-[12px] leading-6" style="color:var(--zv-muted);">شنبه تا چهارشنبه — ۹ الی ۱۷</div>
+</div>
+</div>
+</div>
+<form id="contactForm" class="zv-card p-7 space-y-4" novalidate>
+<h3 class="font-bold text-[15px]" style="color:var(--zv-navy);">ارسال پیام و ثبت درخواست</h3>
+<div class="grid sm:grid-cols-2 gap-4">
+<div><label class="zv-label">نام و نام خانوادگی *</label><input id="ctName" type="text" class="zv-input" placeholder="نام کامل"></div>
+<div><label class="zv-label">شماره تماس *</label><input id="ctPhone" type="text" class="zv-input num" placeholder="09XXXXXXXXX"></div>
+</div>
+<div><label class="zv-label">نوع خدمت</label>
+<select id="ctType" class="zv-select">
+<option>خدمات نظافتی</option>
+<option>حمل و نقل</option>
+<option>جابه‌جایی اثاثیه</option>
+<option>توسعه کسب‌وکار</option>
+</select>
+</div>
+<div><label class="zv-label">شعبه (اختیاری)</label><select id="ctBranch" class="zv-select"></select></div>
+<div><label class="zv-label">پیام شما</label><textarea id="ctMsg" rows="4" class="zv-textarea" style="resize:none;" placeholder="شرح مختصر درخواست..."></textarea></div>
+<button type="submit" class="btn btn-primary w-full">ارسال و ثبت درخواست</button>
+</form>
+</div>
 </section>
 
 <!-- ==================== FOOTER ==================== -->
 <footer class="pt-14 pb-6" style="background:#081027;color:#aab3c9;border-top:3px solid var(--zv-accent);">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-4 gap-10">
-    <div class="md:col-span-2">
-      <div class="flex items-center gap-2.5 mb-4">
-        <span class="zv-logo-mark">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M5 5h9l-9 9h14" stroke="#FF6B1A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M5 19l7-10 7 10" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-        <span class="zv-logo-word text-xl"><span class="z">Zingo</span><span class="v">Vingo</span></span>
-      </div>
-      <p class="text-[13px] leading-8 max-w-md" style="color:#8b95ad;">فناوری اطلاعات و ارتباطات دیجیتال — ارائه‌دهنده بستر مناسب جهت خدمات متنوع نظافتی، حمل و نقل، جابه‌جایی اثاثیه و توسعه کسب‌وکار با سیستم مدیریت یکپارچه شعب، کارمندان، گروه‌ها و درخواست‌ها.</p>
-    </div>
-    <div>
-      <h4 class="font-bold text-white mb-4 text-[14px]">دسترسی سریع</h4>
-      <ul class="space-y-2.5 text-[13px]">
-        <li><a href="#services" class="hover:text-[var(--zv-accent)] transition">خدمات</a></li>
-        <li><a href="#features" class="hover:text-[var(--zv-accent)] transition">قابلیت‌ها</a></li>
-        <li><a href="#dashboard" class="hover:text-[var(--zv-accent)] transition">پنل مدیریت</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4 class="font-bold text-white mb-4 text-[14px]">تماس با ما</h4>
-      <ul class="space-y-2.5 text-[13px]">
-        <li class="flex items-center gap-2">📞 <span dir="ltr" class="num">021-9100 4567</span></li>
-        <li class="flex items-center gap-2">✉️ info@zingovingo.ir</li>
-        <li class="flex items-start gap-2 leading-6">📍 تهران، خیابان ولیعصر، برج فناوری، طبقه ۱۲</li>
-      </ul>
-    </div>
-  </div>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 pt-5 text-center text-[12px]" style="border-top:1px solid rgba(255,255,255,.08);color:#5d6883;">
-    © <span id="year" class="num">۱۴۰۵</span> کلیه حقوق برای شرکت فناوری اطلاعات و ارتباطات دیجیتال <b style="color:#8b95ad;">ZingoVingo</b> محفوظ است.
-  </div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-4 gap-10">
+<div class="md:col-span-2">
+<div class="flex items-center gap-2.5 mb-4">
+<span class="zv-logo-mark">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+<path d="M5 5h9l-9 9h14" stroke="#FF6B1A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5 19l7-10 7 10" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</span>
+<span class="zv-logo-word text-xl"><span class="z">Zingo</span><span class="v">Vingo</span></span>
+</div>
+<p class="text-[13px] leading-8 max-w-md" style="color:#8b95ad;">فناوری اطلاعات و ارتباطات دیجیتال — ارائه‌دهنده بستر مناسب جهت خدمات متنوع نظافتی، حمل و نقل، جابه‌جایی اثاثیه و توسعه کسب‌وکار با سیستم مدیریت یکپارچه شعب، کارمندان، گروه‌ها و درخواست‌ها.</p>
+</div>
+<div>
+<h4 class="font-bold text-white mb-4 text-[14px]">دسترسی سریع</h4>
+<ul class="space-y-2.5 text-[13px]">
+<li><a href="#services" class="hover:text-[var(--zv-accent)] transition">خدمات</a></li>
+<li><a href="#features" class="hover:text-[var(--zv-accent)] transition">قابلیت‌ها</a></li>
+<li><a href="?page=portal" class="hover:text-[var(--zv-accent)] transition">پنل مدیریت</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-white mb-4 text-[14px]">تماس با ما</h4>
+<ul class="space-y-2.5 text-[13px]">
+<li class="flex items-center gap-2">📞 <span dir="ltr" class="num">021-9100 4567</span></li>
+<li class="flex items-center gap-2">✉️ info@zingovingo.ir</li>
+<li class="flex items-start gap-2 leading-6">📍 تهران، خیابان ولیعصر، برج فناوری، طبقه ۱۲</li>
+</ul>
+</div>
+</div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 pt-5 text-center text-[12px]" style="border-top:1px solid rgba(255,255,255,.08);color:#5d6883;">
+© <span id="year" class="num">۱۴۰۵</span> کلیه حقوق برای شرکت فناوری اطلاعات و ارتباطات دیجیتال <b style="color:#8b95ad;">ZingoVingo</b> محفوظ است.
+</div>
 </footer>
 
 <!-- Toast / Modal / ToTop -->
@@ -744,580 +431,112 @@
 
 <script>
 /* ============================================================
-   ZingoVingo — State & Persistence
-   ============================================================ */
+ZingoVingo — State & Persistence (Demo Only)
+============================================================ */
 const STORE_KEY = 'zingovingo_v1';
-
 function SEED(){
-  return {
-    branches: [
-      {id:1, name:'شعبه مرکزی تهران', city:'تهران', phone:'021-88001234', status:'فعال'},
-      {id:2, name:'شعبه اصفهان', city:'اصفهان', phone:'031-32005678', status:'فعال'},
-      {id:3, name:'شعبه مشهد', city:'مشهد', phone:'051-37009012', status:'در حال راه‌اندازی'},
-    ],
-    employees: [
-      {id:1, name:'علی محمدی', phone:'09121234567', role:'مدیر شعبه', branchId:1, status:'فعال'},
-      {id:2, name:'سارا احمدی', phone:'09123456789', role:'اپراتور', branchId:1, status:'فعال'},
-      {id:3, name:'رضا کریمی', phone:'09131112233', role:'راننده', branchId:2, status:'در مأموریت'},
-      {id:4, name:'مریم حسینی', phone:'09134445566', role:'نیروی خدماتی', branchId:2, status:'فعال'},
-    ],
-    groups: [
-      {id:1, name:'تیم نظافت آلفا', branchId:1, type:'خدمات نظافتی', members:[2]},
-      {id:2, name:'تیم حمل و نقل پارس', branchId:2, type:'حمل و نقل', members:[3]},
-    ],
-    requests: [
-      {id:1, by:'مشتری', name:'حسین رضایی', phone:'09125556677', type:'جابه‌جایی اثاثیه', branchId:1, addr:'تهران، سعادت‌آباد، بلوار دریا', desc:'جابجایی وسایل منزل به کرج', status:'در حال انجام', date:'۱۴۰۵/۰۸/۱۲'},
-      {id:2, by:'اپراتور', name:'نگار موسوی', phone:'09137778899', type:'خدمات نظافتی', branchId:2, addr:'اصفهان، خیابان چهارباغ بالا', desc:'نظافت هفتگی دفتر کار', status:'تأیید شده', date:'۱۴۰۵/۰۸/۱۴'},
-    ],
-    ids:{b:4,e:5,g:3,r:3}
-  };
+return {
+branches: [
+{id:1, name:'شعبه مرکزی تهران', city:'تهران', phone:'021-88001234', status:'فعال'},
+{id:2, name:'شعبه اصفهان', city:'اصفهان', phone:'031-32005678', status:'فعال'},
+{id:3, name:'شعبه مشهد', city:'مشهد', phone:'051-37009012', status:'در حال راه‌اندازی'},
+],
+employees: [
+{id:1, name:'علی محمدی', phone:'09121234567', role:'مدیر شعبه', branchId:1, status:'فعال'},
+{id:2, name:'سارا احمدی', phone:'09123456789', role:'اپراتور', branchId:1, status:'فعال'},
+{id:3, name:'رضا کریمی', phone:'09131112233', role:'راننده', branchId:2, status:'در مأموریت'},
+{id:4, name:'مریم حسینی', phone:'09134445566', role:'نیروی خدماتی', branchId:2, status:'فعال'},
+],
+groups: [
+{id:1, name:'تیم نظافت آلفا', branchId:1, type:'خدمات نظافتی', members:[2]},
+{id:2, name:'تیم حمل و نقل پارس', branchId:2, type:'حمل و نقل', members:[3]},
+],
+requests: [
+{id:1, by:'مشتری', name:'حسین رضایی', phone:'09125556677', type:'جابه‌جایی اثاثیه', branchId:1, addr:'تهران، سعادت‌آباد، بلوار دریا', desc:'جابجایی وسایل منزل به کرج', status:'در حال انجام', date:'۱۴۰۵/۰۸/۱۲'},
+{id:2, by:'اپراتور', name:'نگار موسوی', phone:'09137778899', type:'خدمات نظافتی', branchId:2, addr:'اصفهان، خیابان چهارباغ بالا', desc:'نظافت هفتگی دفتر کار', status:'تأیید شده', date:'۱۴۰۵/۰۸/۱۴'},
+],
+ids:{b:4,e:5,g:3,r:3}
+};
 }
-
-function load(){
-  try{
-    const d = JSON.parse(localStorage.getItem(STORE_KEY));
-    if(d && d.branches && d.employees && d.groups && d.requests && d.ids) return d;
-  }catch(e){}
-  return null;
-}
+function load(){try{const d = JSON.parse(localStorage.getItem(STORE_KEY));if(d && d.branches && d.employees && d.groups && d.requests && d.ids) return d;}catch(e){}return null;}
 function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
-
 let state = load() || SEED();
-
-/* وضعیت رابط کاربری — فیلترها بین رندرها حفظ می‌شوند */
 const ui = { empFilter:'all', reqFilter:'all', reqSearch:'', memberGroup:'', memberEmp:'' };
 
-/* ============================================================
-   Helpers
-   ============================================================ */
+/* ===== Helpers ===== */
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const branchName = id => (state.branches.find(b=>b.id==id)||{}).name || '—';
 const empNameSafe = id => (state.employees.find(e=>e.id==id)||{}).name || '';
 const faNum = n => Number(n).toLocaleString('fa-IR');
 
-/* ===== Toast با لحن برند: محترمانه، شفاف، کوتاه و راهنما ===== */
 function toast(msg, type='success'){
-  const t = document.createElement('div');
-  const icons = {success:'✅', error:'⚠️', info:'ℹ️'};
-  t.className = 'toast toast-' + (type==='err'?'error':type);
-  t.innerHTML = `<span>${icons[type==='err'?'error':type]||icons.info}</span><span>${esc(msg)}</span>`;
-  $('toasts').appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .4s';setTimeout(()=>t.remove(),420);}, 3400);
+const t = document.createElement('div');
+const icons = {success:'✅', error:'⚠️', info:'ℹ️'};
+t.className = 'toast toast-' + (type==='err'?'error':type);
+t.innerHTML = `<span>${icons[type==='err'?'error':type]||icons.info}</span><span>${esc(msg)}</span>`;
+$('toasts').appendChild(t);
+setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .4s';setTimeout(()=>t.remove(),420);}, 3400);
 }
 
-/* ============================================================
-   Modal System (ویرایش + تأیید حذف)
-   ============================================================ */
 function openModal(title, bodyHtml){
-  closeModal();
-  $('modalRoot').innerHTML = `
-    <div class="modal-backdrop" id="modalBackdrop">
-      <div class="modal-box" role="dialog" aria-modal="true">
-        <div class="modal-head">
-          <h3>${title}</h3>
-          <button class="modal-close" onclick="closeModal()" aria-label="بستن">✕</button>
-        </div>
-        <div class="p-6">${bodyHtml}</div>
-      </div>
-    </div>`;
-  $('modalBackdrop').addEventListener('click', e=>{ if(e.target.id==='modalBackdrop') closeModal(); });
+closeModal();
+$('modalRoot').innerHTML = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal-box" role="dialog" aria-modal="true"><div class="modal-head"><h3>${title}</h3><button class="modal-close" onclick="closeModal()" aria-label="بستن">✕</button></div><div class="p-6">${bodyHtml}</div></div></div>`;
+$('modalBackdrop').addEventListener('click', e=>{ if(e.target.id==='modalBackdrop') closeModal(); });
 }
 function closeModal(){ $('modalRoot').innerHTML=''; }
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
 
 function confirmDialog(msg, onYes, title='تأیید عملیات'){
-  openModal(title, `
-    <p class="text-[13px] leading-8" style="color:var(--zv-text);">${msg}</p>
-    <div class="flex gap-2 mt-6">
-      <button id="cfmYes" class="btn flex-1" style="background:var(--zv-danger);color:#fff;">بله، انجام شود</button>
-      <button onclick="closeModal()" class="btn btn-outline flex-1">انصراف</button>
-    </div>`);
-  $('cfmYes').addEventListener('click', ()=>{ closeModal(); onYes(); });
+openModal(title, `<p class="text-[13px] leading-8" style="color:var(--zv-text);">${msg}</p><div class="flex gap-2 mt-6"><button id="cfmYes" class="btn flex-1" style="background:var(--zv-danger);color:#fff;">بله، انجام شود</button><button onclick="closeModal()" class="btn btn-outline flex-1">انصراف</button></div>`);
+$('cfmYes').addEventListener('click', ()=>{ closeModal(); onYes(); });
 }
 
-/* ============================================================
-   TABS & MENU
-   ============================================================ */
+/* ===== UI Polish ===== */
 document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('tab-active'));
-    btn.classList.add('tab-active');
-    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.add('hidden'));
-    const panel = $('tab-'+btn.dataset.tab);
-    panel.classList.remove('hidden','fade-up'); void panel.offsetWidth; panel.classList.add('fade-up');
-  });
+btn.addEventListener('click', ()=>{
+document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('tab-active'));
+btn.classList.add('tab-active');
+document.querySelectorAll('.tab-panel').forEach(p=>p.classList.add('hidden'));
+const panel = $('tab-'+btn.dataset.tab);
+panel.classList.remove('hidden','fade-up'); void panel.offsetWidth; panel.classList.add('fade-up');
+});
 });
 $('menuBtn').addEventListener('click', ()=> $('mobileMenu').classList.toggle('hidden'));
 document.querySelectorAll('#mobileMenu a').forEach(a=>a.addEventListener('click',()=>$('mobileMenu').classList.add('hidden')));
 
-/* ============================================================
-   BRANCHES
-   ============================================================ */
-function addBranch(){
-  const name=$('brName').value.trim(), city=$('brCity').value.trim(), phone=$('brPhone').value.trim();
-  if(!name||!city){ toast('ثبت شعبه کامل نشد. لطفاً نام شعبه و شهر را وارد کنید.','error'); return; }
-  state.branches.push({id:state.ids.b++, name, city, phone, status:$('brStatus').value});
-  $('brName').value='';$('brCity').value='';$('brPhone').value='';
-  renderAll(); toast('شعبه «'+name+'» با موفقیت ایجاد گردید.');
-}
-function editBranch(id){
-  const b = state.branches.find(x=>x.id==id); if(!b) return;
-  openModal('ویرایش شعبه', `
-    <div class="space-y-3">
-      <div><label class="zv-label">نام شعبه</label><input id="mBrName" class="zv-input" value="${esc(b.name)}"></div>
-      <div><label class="zv-label">شهر</label><input id="mBrCity" class="zv-input" value="${esc(b.city)}"></div>
-      <div><label class="zv-label">تلفن تماس</label><input id="mBrPhone" class="zv-input num" value="${esc(b.phone||'')}"></div>
-      <div><label class="zv-label">وضعیت</label>
-        <select id="mBrStatus" class="zv-select">
-          <option ${b.status==='فعال'?'selected':''}>فعال</option>
-          <option ${b.status==='در حال راه‌اندازی'?'selected':''}>در حال راه‌اندازی</option>
-        </select></div>
-      <div class="flex gap-2 pt-2">
-        <button id="mSave" class="btn btn-primary flex-1">ذخیره تغییرات</button>
-        <button onclick="closeModal()" class="btn btn-outline flex-1">انصراف</button>
-      </div>
-    </div>`);
-  $('mSave').addEventListener('click', ()=>{
-    const name=$('mBrName').value.trim(), city=$('mBrCity').value.trim();
-    if(!name||!city){ toast('نام شعبه و شهر الزامی است.','error'); return; }
-    Object.assign(b,{name, city, phone:$('mBrPhone').value.trim(), status:$('mBrStatus').value});
-    save(); closeModal(); renderAll(); toast('اطلاعات شعبه «'+name+'» به‌روزرسانی شد.');
-  });
-}
-function deleteBranch(id){
-  const nm = branchName(id);
-  confirmDialog('با حذف شعبه «'+esc(nm)+'»، کارمندان و گروه‌های وابسته نیز حذف می‌گردند. آیا مطمئن هستید؟', ()=>{
-    state.branches = state.branches.filter(b=>b.id!=id);
-    state.employees = state.employees.filter(e=>e.branchId!=id);
-    state.groups = state.groups.filter(g=>g.branchId!=id);
-    save(); renderAll(); toast('شعبه «'+nm+'» با موفقیت از لیست حذف گردید.','info');
-  });
-}
-function renderBranches(){
-  $('brCount').textContent = faNum(state.branches.length) + ' شعبه';
-  $('branchList').innerHTML = state.branches.map(b=>`
-    <div class="zv-card zv-card-hover p-5">
-      <div class="flex items-start justify-between gap-2">
-        <div class="icon-tile icon-tile-navy" style="width:44px;height:44px;font-size:19px;">🏢</div>
-        <span class="badge ${b.status==='فعال'?'badge-success':'badge-warning'}">${esc(b.status)}</span>
-      </div>
-      <h4 class="font-bold mt-3 text-[15px]" style="color:var(--zv-navy);">${esc(b.name)}</h4>
-      <div class="text-[12px] mt-2 space-y-1" style="color:var(--zv-muted);">
-        <div>📍 ${esc(b.city)}</div>
-        <div class="num" dir="ltr" style="text-align:right;">📞 ${esc(b.phone||'—')}</div>
-        <div>👥 ${faNum(state.employees.filter(e=>e.branchId==b.id).length)} کارمند &nbsp;·&nbsp; 🗂️ ${faNum(state.groups.filter(g=>g.branchId==b.id).length)} گروه</div>
-      </div>
-      <div class="flex gap-2 mt-3">
-        <button onclick="editBranch(${b.id})" class="btn btn-outline btn-sm flex-1">✎ ویرایش</button>
-        <button onclick="deleteBranch(${b.id})" class="btn btn-danger-soft btn-sm flex-1">حذف شعبه</button>
-      </div>
-    </div>`).join('') || '<div class="zv-card p-8 text-center sm:col-span-2"><div class="text-3xl mb-2">🗂️</div><p class="text-[13px]" style="color:var(--zv-muted);">هنوز شعبه‌ای ثبت نشده است. نخستین شعبه را از فرم کنار ایجاد کنید.</p></div>';
-}
-
-/* ============================================================
-   EMPLOYEES
-   ============================================================ */
-const EMP_ROLES = ['مدیر شعبه','اپراتور','نیروی خدماتی','راننده','کارشناس توسعه کسب‌وکار'];
-const EMP_STATUSES = ['فعال','در مأموریت','غیرفعال'];
-
-function addEmployee(){
-  const name=$('empName').value.trim(), phone=$('empPhone').value.trim(), branchId=+$('empBranch').value;
-  if(!name){ toast('ثبت کارمند کامل نشد. لطفاً نام و نام خانوادگی را وارد کنید.','error'); return; }
-  if(!branchId){ toast('برای ثبت کارمند، ابتدا یک شعبه ایجاد نمایید.','error'); return; }
-  state.employees.push({id:state.ids.e++, name, phone, role:$('empRole').value, branchId, status:$('empStatus').value});
-  $('empName').value='';$('empPhone').value='';
-  renderAll(); toast('کارمند «'+name+'» با موفقیت به شعبه افزوده شد.');
-}
-function editEmployee(id){
-  const e = state.employees.find(x=>x.id==id); if(!e) return;
-  if(!state.branches.length){ toast('برای ویرایش کارمند، حداقل یک شعبه لازم است.','error'); return; }
-  openModal('ویرایش کارمند', `
-    <div class="space-y-3">
-      <div><label class="zv-label">نام و نام خانوادگی</label><input id="mEmpName" class="zv-input" value="${esc(e.name)}"></div>
-      <div><label class="zv-label">شماره تماس</label><input id="mEmpPhone" class="zv-input num" value="${esc(e.phone||'')}"></div>
-      <div><label class="zv-label">نقش سازمانی</label><select id="mEmpRole" class="zv-select">${EMP_ROLES.map(r=>`<option ${r===e.role?'selected':''}>${r}</option>`).join('')}</select></div>
-      <div><label class="zv-label">شعبه</label><select id="mEmpBranch" class="zv-select">${state.branches.map(b=>`<option value="${b.id}" ${b.id==e.branchId?'selected':''}>${esc(b.name)}</option>`).join('')}</select></div>
-      <div><label class="zv-label">وضعیت</label><select id="mEmpStatus" class="zv-select">${EMP_STATUSES.map(s=>`<option ${s===e.status?'selected':''}>${s}</option>`).join('')}</select></div>
-      <div class="flex gap-2 pt-2">
-        <button id="mSave" class="btn btn-primary flex-1">ذخیره تغییرات</button>
-        <button onclick="closeModal()" class="btn btn-outline flex-1">انصراف</button>
-      </div>
-    </div>`);
-  $('mSave').addEventListener('click', ()=>{
-    const name=$('mEmpName').value.trim();
-    if(!name){ toast('نام کارمند الزامی است.','error'); return; }
-    const nb = +$('mEmpBranch').value;
-    Object.assign(e,{name, phone:$('mEmpPhone').value.trim(), role:$('mEmpRole').value, branchId:nb, status:$('mEmpStatus').value});
-    /* در صورت تغییر شعبه، عضویت در گروه‌های شعبه قبلی حذف می‌شود */
-    state.groups.forEach(g=>{ if(g.branchId!=nb) g.members = g.members.filter(m=>m!=e.id); });
-    save(); closeModal(); renderAll(); toast('اطلاعات کارمند «'+name+'» به‌روزرسانی شد.');
-  });
-}
-function deleteEmployee(id){
-  const nm = empNameSafe(id);
-  confirmDialog('آیا از حذف کارمند «'+esc(nm)+'» مطمئن هستید؟', ()=>{
-    state.employees = state.employees.filter(e=>e.id!=id);
-    state.groups.forEach(g=> g.members = g.members.filter(m=>m!=id));
-    save(); renderAll(); toast('کارمند «'+nm+'» با موفقیت از لیست حذف گردید.','info');
-  });
-}
-function empStatusBadge(s){ return s==='فعال'?'badge-success': s==='در مأموریت'?'badge-warning':'badge-navy'; }
-function renderEmployees(){
-  $('empCount').textContent = faNum(state.employees.length) + ' نفر';
-  const list = ui.empFilter==='all' ? state.employees : state.employees.filter(e=>e.branchId==ui.empFilter);
-  $('employeeList').innerHTML = list.map(e=>{
-    const grps = state.groups.filter(g=>g.members.includes(e.id)).map(g=>`<span class="badge badge-info" style="font-size:10.5px;">${esc(g.name)}</span>`).join(' ');
-    return `<div class="zv-card zv-card-hover p-5">
-      <div class="flex items-center gap-3">
-        <span class="avatar ${e.id%2?'':'accent'}" style="width:42px;height:42px;font-size:15px;">${esc(e.name.charAt(0))}</span>
-        <div class="flex-1 min-w-0">
-          <h4 class="font-bold text-[14px]" style="color:var(--zv-navy);">${esc(e.name)} <span class="badge ${empStatusBadge(e.status)} mr-1">${esc(e.status)}</span></h4>
-          <div class="text-[12px]" style="color:var(--zv-muted);">${esc(e.role)} · ${esc(branchName(e.branchId))}</div>
-        </div>
-        <div class="flex flex-col gap-1.5">
-          <button onclick="editEmployee(${e.id})" class="btn btn-outline btn-sm" title="ویرایش کارمند" style="padding:5px 10px;">✎</button>
-          <button onclick="deleteEmployee(${e.id})" class="btn btn-danger-soft btn-sm" title="حذف کارمند" style="padding:5px 10px;">🗑</button>
-        </div>
-      </div>
-      <div class="text-[12px] num mt-2" style="color:var(--zv-muted);" dir="ltr">📞 ${esc(e.phone||'—')}</div>
-      ${grps?`<div class="mt-3 flex flex-wrap gap-1.5 items-center"><span class="text-[11px]" style="color:var(--zv-muted);">گروه‌ها:</span> ${grps}</div>`:''}
-    </div>`;}).join('') || '<div class="zv-card p-8 text-center sm:col-span-2"><div class="text-3xl mb-2">👥</div><p class="text-[13px]" style="color:var(--zv-muted);">کارمندی یافت نشد. برای افزودن کارمند جدید از فرم کنار اقدام کنید.</p></div>';
-}
-
-/* ============================================================
-   GROUPS
-   ============================================================ */
-const GRP_TYPES = ['خدمات نظافتی','حمل و نقل','جابه‌جایی اثاثیه','توسعه کسب‌وکار','پشتیبانی'];
-
-function addGroup(){
-  const name=$('grpName').value.trim(), branchId=+$('grpBranch').value;
-  if(!name){ toast('ایجاد گروه کامل نشد. لطفاً نام گروه را وارد کنید.','error'); return; }
-  if(!branchId){ toast('برای ایجاد گروه، ابتدا یک شعبه ثبت نمایید.','error'); return; }
-  state.groups.push({id:state.ids.g++, name, branchId, type:$('grpType').value, members:[]});
-  $('grpName').value='';
-  renderAll(); toast('گروه «'+name+'» با موفقیت در شعبه ایجاد گردید.');
-}
-function editGroup(id){
-  const g = state.groups.find(x=>x.id==id); if(!g) return;
-  if(!state.branches.length){ toast('برای ویرایش گروه، حداقل یک شعبه لازم است.','error'); return; }
-  openModal('ویرایش گروه', `
-    <div class="space-y-3">
-      <div><label class="zv-label">نام گروه</label><input id="mGrpName" class="zv-input" value="${esc(g.name)}"></div>
-      <div><label class="zv-label">شعبه</label><select id="mGrpBranch" class="zv-select">${state.branches.map(b=>`<option value="${b.id}" ${b.id==g.branchId?'selected':''}>${esc(b.name)}</option>`).join('')}</select></div>
-      <div><label class="zv-label">حوزه فعالیت</label><select id="mGrpType" class="zv-select">${GRP_TYPES.map(t=>`<option ${t===g.type?'selected':''}>${t}</option>`).join('')}</select></div>
-      <p class="text-[11px] leading-6" style="color:var(--zv-muted);">توجه: در صورت تغییر شعبه، اعضای فعلی گروه حذف می‌شوند.</p>
-      <div class="flex gap-2 pt-2">
-        <button id="mSave" class="btn btn-primary flex-1">ذخیره تغییرات</button>
-        <button onclick="closeModal()" class="btn btn-outline flex-1">انصراف</button>
-      </div>
-    </div>`);
-  $('mSave').addEventListener('click', ()=>{
-    const name=$('mGrpName').value.trim();
-    if(!name){ toast('نام گروه الزامی است.','error'); return; }
-    const nb=+$('mGrpBranch').value;
-    if(nb!=g.branchId) g.members=[];
-    Object.assign(g,{name, branchId:nb, type:$('mGrpType').value});
-    save(); closeModal(); renderAll(); toast('گروه «'+name+'» به‌روزرسانی شد.');
-  });
-}
-function deleteGroup(id){
-  const nm = (state.groups.find(g=>g.id==id)||{}).name||'';
-  confirmDialog('آیا از حذف گروه «'+esc(nm)+'» مطمئن هستید؟', ()=>{
-    state.groups = state.groups.filter(g=>g.id!=id);
-    save(); renderAll(); toast('گروه «'+nm+'» با موفقیت حذف گردید.','info');
-  });
-}
-function addMember(){
-  const gid=+ui.memberGroup, eid=+ui.memberEmp;
-  if(!gid){ toast('لطفاً ابتدا گروه مورد نظر را انتخاب کنید.','error'); return; }
-  if(!eid){ toast('لطفاً کارمند مورد نظر را برای افزودن انتخاب کنید.','error'); return; }
-  const g = state.groups.find(x=>x.id==gid);
-  const emp = state.employees.find(x=>x.id==eid);
-  if(!g||!emp) return;
-  if(g.branchId != emp.branchId){ toast('امکان انتساب وجود ندارد؛ کارمند باید متعلق به شعبه همان گروه باشد.','error'); return; }
-  if(g.members.includes(eid)){ toast('این فرد پیش‌تر به عضویت گروه درآمده است.','error'); return; }
-  g.members.push(eid);
-  ui.memberEmp='';
-  save(); renderAll(); toast(emp.name+' با موفقیت به گروه «'+g.name+'» افزوده شد.');
-}
-function removeMember(gid, eid){
-  const g = state.groups.find(x=>x.id==gid); if(!g) return;
-  g.members = g.members.filter(m=>m!=eid);
-  save(); renderAll(); toast('عضو مورد نظر از گروه حذف گردید.','info');
-}
-function renderGroups(){
-  $('grpCount').textContent = faNum(state.groups.length) + ' گروه';
-  $('groupList').innerHTML = state.groups.map(g=>{
-    const members = g.members.map(mid=>{
-      const e = state.employees.find(x=>x.id==mid); if(!e) return '';
-      return `<span class="chip-member">
-        <span class="avatar ${mid%2?'':'accent'}">${esc(e.name.charAt(0))}</span>
-        ${esc(e.name)}
-        <button onclick="removeMember(${g.id},${mid})" class="mr-1 font-bold" style="color:var(--zv-danger);" title="حذف از گروه">×</button></span>`;
-    }).join('');
-    return `<div class="zv-card zv-card-hover p-5">
-      <div class="flex flex-wrap items-center gap-2">
-        <div class="icon-tile icon-tile-info" style="width:42px;height:42px;font-size:18px;">🗂️</div>
-        <div class="flex-1 min-w-[150px]">
-          <h4 class="font-bold text-[14px]" style="color:var(--zv-navy);">${esc(g.name)}</h4>
-          <div class="text-[12px]" style="color:var(--zv-muted);">${esc(branchName(g.branchId))} · ${esc(g.type)}</div>
-        </div>
-        <span class="badge badge-navy">${faNum(g.members.length)} عضو</span>
-        <button onclick="editGroup(${g.id})" class="btn btn-outline btn-sm">✎ ویرایش</button>
-        <button onclick="deleteGroup(${g.id})" class="btn btn-danger-soft btn-sm">حذف گروه</button>
-      </div>
-      <div class="mt-3 flex flex-wrap gap-2" style="border-top:1px dashed var(--zv-line);padding-top:12px;">
-        ${members || '<span class="text-[12px]" style="color:var(--zv-muted);">هنوز عضوی به این گروه اضافه نشده است.</span>'}
-      </div>
-    </div>`;}).join('') || '<div class="zv-card p-8 text-center"><div class="text-3xl mb-2">🗂️</div><p class="text-[13px]" style="color:var(--zv-muted);">هنوز گروهی ایجاد نشده است. نخستین گروه تخصصی را از فرم کنار تعریف کنید.</p></div>';
-}
-
-/* ============================================================
-   REQUESTS
-   ============================================================ */
-const statusFlow = ['در انتظار بررسی','تأیید شده','در حال انجام','تکمیل شده'];
-function statusBadge(s){
-  return {'در انتظار بررسی':'badge-warning','تأیید شده':'badge-info','در حال انجام':'badge-warning','تکمیل شده':'badge-success','لغو شده':'badge-danger'}[s]||'badge-navy';
-}
-function addRequest(){
-  const name=$('reqName').value.trim(), phone=$('reqPhone').value.trim(), addr=$('reqAddr').value.trim();
-  if(!name||!phone){ toast('ثبت درخواست کامل نشد. لطفاً نام مشتری و شماره تماس را به‌درستی وارد کنید.','error'); return; }
-  const by = document.querySelector('input[name="reqBy"]:checked').value;
-  state.requests.unshift({id:state.ids.r++, by, name, phone, type:$('reqType').value, branchId:+$('reqBranch').value, addr, desc:$('reqDesc').value.trim(), status:'در انتظار بررسی', date:new Date().toLocaleDateString('fa-IR')});
-  $('reqName').value='';$('reqPhone').value='';$('reqAddr').value='';$('reqDesc').value='';
-  renderAll(); toast('درخواست توسط '+by+' با موفقیت ثبت گردید و در صف بررسی قرار گرفت.');
-}
-function changeStatus(id, dir){
-  const r = state.requests.find(x=>x.id==id); if(!r) return;
-  if(dir==='reject'){
-    confirmDialog('آیا از لغو درخواست کد #'+(1000+r.id)+' مطمئن هستید؟', ()=>{
-      r.status='لغو شده'; save(); renderAll(); toast('درخواست شماره #'+(1000+r.id)+' لغو گردید.','error');
-    });
-    return;
-  }
-  const i = statusFlow.indexOf(r.status);
-  if(i>-1 && i<statusFlow.length-1){ r.status = statusFlow[i+1]; save(); renderAll(); toast('وضعیت درخواست به «'+r.status+'» تغییر یافت.'); }
-}
-function deleteRequest(id){
-  confirmDialog('آیا از حذف این درخواست مطمئن هستید؟', ()=>{
-    state.requests = state.requests.filter(r=>r.id!=id);
-    save(); renderAll(); toast('درخواست با موفقیت از لیست حذف گردید.','info');
-  });
-}
-const typeIcon = {'خدمات نظافتی':'🧹','حمل و نقل':'🚚','جابه‌جایی اثاثیه':'📦','توسعه کسب‌وکار':'📈'};
-function renderRequests(){
-  const q = ui.reqSearch.trim();
-  let list = ui.reqFilter==='all' ? state.requests : state.requests.filter(r=>r.status===ui.reqFilter);
-  if(q) list = list.filter(r=>[r.name,r.phone,r.type,r.addr,r.desc,branchName(r.branchId)].some(v=>String(v||'').includes(q)));
-  $('reqCount').textContent = faNum(state.requests.length) + ' درخواست';
-  $('requestList').innerHTML = list.map(r=>{
-    const canAdvance = statusFlow.includes(r.status) && r.status!=='تکمیل شده';
-    return `<div class="zv-card zv-card-hover p-5">
-      <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="text-xl">${typeIcon[r.type]||'📄'}</span>
-        <h4 class="font-bold text-[14px]" style="color:var(--zv-navy);">${esc(r.type)}</h4>
-        <span class="badge ${statusBadge(r.status)}">${esc(r.status)}</span>
-        <span class="badge ${r.by==='مشتری'?'badge-info':'badge-navy'}">${r.by==='مشتری'?'🙋 مشتری':'🎧 اپراتور'}</span>
-        <span class="mr-auto text-[11px] num" style="color:var(--zv-muted);">${esc(r.date)} · کد #${1000+r.id}</span>
-      </div>
-      <div class="grid sm:grid-cols-2 gap-x-6 gap-y-1 text-[12px]" style="color:var(--zv-text);">
-        <div>👤 <b>${esc(r.name)}</b></div>
-        <div class="num" dir="ltr" style="text-align:right;">📞 ${esc(r.phone)}</div>
-        <div>🏢 ${esc(branchName(r.branchId))}</div>
-        <div>📍 ${esc(r.addr||'—')}</div>
-      </div>
-      ${r.desc?`<p class="text-[12px] mt-2 rounded-[10px] p-2.5 leading-6" style="background:#f8f9fd;color:var(--zv-muted);">${esc(r.desc)}</p>`:''}
-      <div class="flex flex-wrap gap-2 mt-3" style="border-top:1px dashed var(--zv-line);padding-top:12px;">
-        ${canAdvance?`<button onclick="changeStatus(${r.id},1)" class="btn btn-primary btn-sm">انتقال به مرحله بعد</button>
-        <button onclick="changeStatus(${r.id},'reject')" class="btn btn-danger-soft btn-sm">لغو درخواست</button>`:''}
-        ${r.status==='تکمیل شده'?'<span class="badge badge-success">✔ فرآیند به پایان رسید</span>':''}
-        ${r.status==='لغو شده'?'<span class="badge badge-danger">✖ درخواست لغو شده است</span>':''}
-        <button onclick="deleteRequest(${r.id})" class="btn btn-outline btn-sm mr-auto">حذف</button>
-      </div>
-    </div>`;}).join('') || '<div class="zv-card p-8 text-center"><div class="text-3xl mb-2">📭</div><p class="text-[13px]" style="color:var(--zv-muted);">درخواستی با این فیلتر یافت نشد. می‌توانید از فرم کنار درخواست جدیدی ثبت کنید.</p></div>';
-}
-
-/* ============================================================
-   SELECTS — با حفظ انتخاب کاربر بین رندرها
-   ============================================================ */
-function fillSelects(){
-  const brOpts = '<option value="">— انتخاب شعبه —</option>' + state.branches.map(b=>`<option value="${b.id}">${esc(b.name)}</option>`).join('');
-  const namedOpts = state.branches.map(b=>`<option value="${b.id}">${esc(b.name)}</option>`).join('');
-
-  const keep = (el, html, fallback)=>{
-    const prev = el.value; el.innerHTML = html;
-    el.value = [...el.options].some(o=>o.value===prev) ? prev : fallback;
-  };
-  keep($('empBranch'), brOpts, '');
-  keep($('grpBranch'), brOpts, '');
-  keep($('reqBranch'), '<option value="0">شعبه (اختیاری)</option>' + namedOpts, '0');
-  keep($('ctBranch'),  '<option value="0">— انتخاب شعبه —</option>' + namedOpts, '0');
-
-  $('empFilter').innerHTML = '<option value="all">همه شعب</option>' + namedOpts;
-  if(![...$('empFilter').options].some(o=>o.value===String(ui.empFilter))) ui.empFilter='all';
-  $('empFilter').value = ui.empFilter;
-
-  $('reqFilter').value = ui.reqFilter;
-
-  $('memberGroup').innerHTML = '<option value="">— انتخاب گروه —</option>' + state.groups.map(g=>`<option value="${g.id}">${esc(g.name)} (${esc(branchName(g.branchId))})</option>`).join('');
-  if(![...$('memberGroup').options].some(o=>o.value===String(ui.memberGroup))) ui.memberGroup='';
-  $('memberGroup').value = ui.memberGroup;
-
-  const gid = +ui.memberGroup;
-  const g = state.groups.find(x=>x.id==gid);
-  if(g){
-    const avail = state.employees.filter(e=>e.branchId==g.branchId && !g.members.includes(e.id));
-    $('memberEmp').innerHTML = '<option value="">— انتخاب کارمند همان شعبه —</option>' + avail.map(e=>`<option value="${e.id}">${esc(e.name)} (${esc(e.role)})</option>`).join('');
-    if(![...$('memberEmp').options].some(o=>o.value===String(ui.memberEmp))) ui.memberEmp='';
-    $('memberEmp').value = ui.memberEmp;
-    $('memberEmp').disabled = false;
-  } else {
-    $('memberEmp').innerHTML = '<option value="">ابتدا گروه را انتخاب کنید</option>';
-    $('memberEmp').disabled = true; ui.memberEmp='';
-  }
-}
-
-/* ============================================================
-   CHARTS
-   ============================================================ */
-const REQ_STATUSES = ['در انتظار بررسی','تأیید شده','در حال انجام','تکمیل شده','لغو شده'];
-const REQ_COLORS = {'در انتظار بررسی':'#f79009','تأیید شده':'#1849a9','در حال انجام':'#FF6B1A','تکمیل شده':'#067647','لغو شده':'#b42318'};
-
-function renderCharts(){
-  const counts = state.branches.map(b=>state.requests.filter(r=>r.branchId==b.id).length);
-  const max = Math.max(1,...counts);
-  $('barChart').innerHTML = state.branches.length ? state.branches.map((b,i)=>`
-    <div>
-      <div class="flex justify-between text-[12px] font-bold mb-1.5" style="color:var(--zv-navy);">
-        <span>${esc(b.name)}</span><span class="num">${faNum(counts[i])}</span>
-      </div>
-      <div class="h-2.5 rounded-full" style="background:#eef1f8;">
-        <div class="h-2.5 rounded-full" style="width:${Math.round(counts[i]/max*100)}%;background:linear-gradient(90deg,var(--zv-navy),var(--zv-accent));transition:width .7s ease;"></div>
-      </div>
-    </div>`).join('') : '<p class="text-[12px]" style="color:var(--zv-muted);">برای نمایش نمودار، ابتدا شعبه‌ای ایجاد کنید.</p>';
-
-  const sc = REQ_STATUSES.map(s=>state.requests.filter(r=>r.status===s).length);
-  const total = sc.reduce((a,b)=>a+b,0);
-  if(total){
-    let acc=0;
-    const stops = sc.map((n,i)=>{ const from=acc/total*360; acc+=n; return `${REQ_COLORS[REQ_STATUSES[i]]} ${from}deg ${acc/total*360}deg`; }).join(',');
-    $('donut').style.background = `conic-gradient(${stops})`;
-  } else {
-    $('donut').style.background = '#eef1f8';
-  }
-  $('donutTotal').textContent = faNum(total);
-  $('donutLegend').innerHTML = REQ_STATUSES.map((s,i)=>
-    `<span class="badge" style="background:#f2f5fb;color:var(--zv-muted);font-size:10.5px;">
-      <span style="width:8px;height:8px;border-radius:50%;background:${REQ_COLORS[s]};display:inline-block;"></span>
-      ${s} (${faNum(sc[i])})</span>`).join('');
-}
-
-/* ============================================================
-   CSV EXPORT
-   ============================================================ */
-function exportCSV(kind){
-  const defs = {
-    branches:  {file:'branches',  head:['شناسه','نام شعبه','شهر','تلفن','وضعیت'],
-                rows: state.branches.map(b=>[b.id,b.name,b.city,b.phone,b.status])},
-    employees: {file:'employees', head:['شناسه','نام','تلفن','نقش','شعبه','وضعیت'],
-                rows: state.employees.map(e=>[e.id,e.name,e.phone,e.role,branchName(e.branchId),e.status])},
-    groups:    {file:'groups',    head:['شناسه','نام گروه','شعبه','حوزه','تعداد اعضا','اعضا'],
-                rows: state.groups.map(g=>[g.id,g.name,branchName(g.branchId),g.type,g.members.length,g.members.map(m=>empNameSafe(m)).join(' - ')])},
-    requests:  {file:'requests',  head:['کد','ثبت‌کننده','مشتری','تلفن','خدمت','شعبه','آدرس','توضیحات','وضعیت','تاریخ'],
-                rows: state.requests.map(r=>[1000+r.id,r.by,r.name,r.phone,r.type,branchName(r.branchId),r.addr,r.desc,r.status,r.date])},
-  };
-  const d = defs[kind];
-  if(!d || !d.rows.length){ toast('رکوردی برای خروجی وجود ندارد.','error'); return; }
-  const csv = [d.head.join(','), ...d.rows.map(row=>row.map(c=>`"${String(c??'').replace(/"/g,'""')}"`).join(','))].join('\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'}));
-  a.download = 'zingovingo-' + d.file + '.csv';
-  a.click(); URL.revokeObjectURL(a.href);
-  toast('خروجی CSV با موفقیت دانلود شد.','info');
-}
-
-/* ============================================================
-   RENDER ALL
-   ============================================================ */
-function renderStats(){
-  $('statBranches').textContent = faNum(state.branches.length);
-  $('statEmployees').textContent = faNum(state.employees.length);
-  $('statGroups').textContent = faNum(state.groups.length);
-  $('statRequests').textContent = faNum(state.requests.length);
-}
-function renderAll(){
-  fillSelects(); renderBranches(); renderEmployees(); renderGroups(); renderRequests(); renderCharts(); renderStats(); save();
-}
-function resetDemo(){
-  confirmDialog('تمام داده‌های ثبت‌شده حذف و داده‌های نمونه بازگردانی می‌شوند. ادامه می‌دهید؟', ()=>{
-    state = SEED();
-    Object.assign(ui,{empFilter:'all',reqFilter:'all',reqSearch:'',memberGroup:'',memberEmp:''});
-    $('reqSearch').value='';
-    save(); renderAll(); toast('داده‌های نمونه بازگردانی شد.','info');
-  });
-}
-
-/* ============================================================
-   CONTACT FORM — ثبت مستقیم درخواست در سامانه
-   ============================================================ */
+/* ===== Contact Form Demo ===== */
 $('contactForm').addEventListener('submit', e=>{
-  e.preventDefault();
-  const name=$('ctName').value.trim(), phone=$('ctPhone').value.trim();
-  if(!name||!phone){ toast('ارسال کامل نشد. لطفاً نام و شماره تماس را وارد کنید.','error'); return; }
-  const id = state.ids.r++;
-  state.requests.unshift({id, by:'مشتری', name, phone, type:$('ctType').value, branchId:+$('ctBranch').value||0,
-    addr:'—', desc:$('ctMsg').value.trim(), status:'در انتظار بررسی', date:new Date().toLocaleDateString('fa-IR')});
-  save(); renderAll(); e.target.reset();
-  toast('درخواست شما با کد #'+(1000+id)+' ثبت شد و در صف بررسی قرار گرفت.');
+e.preventDefault();
+const name=$('ctName').value.trim(), phone=$('ctPhone').value.trim();
+if(!name||!phone){ toast('ارسال کامل نشد. لطفاً نام و شماره تماس را وارد کنید.','error'); return; }
+toast('پیام شما با موفقیت ثبت شد. کارشناسان ما به زودی با شما تماس خواهند گرفت.','success');
+e.target.reset();
 });
 
-/* ============================================================
-   UI POLISH — radios, counters, reveal, toTop, year
-   ============================================================ */
-function syncByRadios(){
-  const isCustomer = document.querySelector('input[name="reqBy"]:checked').value==='مشتری';
-  const c = $('byCustomerLbl'), o = $('byOperatorLbl');
-  c.style.border = '2px solid ' + (isCustomer?'var(--zv-accent)':'var(--zv-line)');
-  c.style.background = isCustomer?'rgba(255,107,26,.06)':'#fff';
-  o.style.border = '2px solid ' + (!isCustomer?'var(--zv-accent)':'var(--zv-line)');
-  o.style.background = !isCustomer?'rgba(255,107,26,.06)':'#fff';
-}
-document.querySelectorAll('input[name="reqBy"]').forEach(r=>r.addEventListener('change', syncByRadios));
-
-/* animated counters — فقط هنگام دیده شدن */
+/* ===== Scroll & Counters ===== */
 function animateOne(el){
-  const target = +el.dataset.counter; let cur = 0;
-  const step = Math.max(1, Math.floor(target/60));
-  const iv = setInterval(()=>{
-    cur += step;
-    if(cur >= target){ cur = target; clearInterval(iv); }
-    el.textContent = cur.toLocaleString('fa-IR') + '+';
-  }, 28);
+const target = +el.dataset.counter; let cur = 0;
+const step = Math.max(1, Math.floor(target/60));
+const iv = setInterval(()=>{
+cur += step;
+if(cur >= target){ cur = target; clearInterval(iv); }
+el.textContent = cur.toLocaleString('fa-IR') + '+';
+}, 28);
 }
 const counterIO = new IntersectionObserver(entries=>{
-  entries.forEach(en=>{ if(en.isIntersecting){ animateOne(en.target); counterIO.unobserve(en.target); } });
+entries.forEach(en=>{ if(en.isIntersecting){ animateOne(en.target); counterIO.unobserve(en.target); } });
 },{threshold:.4});
 document.querySelectorAll('[data-counter]').forEach(el=>counterIO.observe(el));
 
-/* scroll reveal */
 const revealIO = new IntersectionObserver(entries=>{
-  entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('visible'); revealIO.unobserve(en.target); } });
+entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('visible'); revealIO.unobserve(en.target); } });
 },{threshold:.08});
 document.querySelectorAll('.zv-card-hover').forEach(el=>{ el.classList.add('reveal'); revealIO.observe(el); });
 
-/* back to top */
-window.addEventListener('scroll', ()=>{
-  $('toTop').classList.toggle('show', window.scrollY > 500);
-});
+window.addEventListener('scroll', ()=>{ $('toTop').classList.toggle('show', window.scrollY > 500); });
 $('toTop').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
-
-/* year */
 $('year').textContent = new Date().toLocaleDateString('fa-IR',{year:'numeric',calendar:'persian'}).split('/')[0];
-
-/* INIT */
-renderAll();
-syncByRadios();
 </script>
 </body>
 </html>
