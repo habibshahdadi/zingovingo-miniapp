@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base target="_top">
+<title>ورود به پنل‌ها | ZingoVingo</title>
+<script src="zv-api.js"></script>
+<style>
+:root{--navy:#0B1736;--navy-light:#1a2a4d;--orange:#FF6B1A;--orange-light:#ff8533;--bg:#f4f6fb;--text:#172033;--muted:#657086;--line:#dfe4ee;--white:#fff;--green:#067647;--danger:#b42318;--blue:#1849a9;--yellow:#f79009;--shadow:0 2px 10px #17203308;--radius:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;line-height:1.7;font-size:14px;min-height:100vh}
+.portal-hero{background:linear-gradient(135deg,var(--navy) 0%,#203968 100%);color:#fff;padding:40px 20px 60px;text-align:center;position:relative;overflow:hidden}
+.portal-hero::before{content:'';position:absolute;top:-50%;right:-20%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,107,26,.15) 0%,transparent 70%);border-radius:50%}
+.portal-hero::after{content:'';position:absolute;bottom:-30%;left:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(255,107,26,.1) 0%,transparent 70%);border-radius:50%}
+.portal-hero .brand{font-size:32px;font-weight:900;margin-bottom:8px;position:relative;z-index:1}
+.portal-hero .brand span{color:var(--orange)}
+.portal-hero h1{font-size:22px;margin-bottom:10px;position:relative;z-index:1}
+.portal-hero p{color:#d2d9e8;font-size:13px;max-width:600px;margin:0 auto;position:relative;z-index:1}
+.portal-back{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px 16px;border-radius:10px;text-decoration:none;font-size:13px;cursor:pointer;z-index:2;transition:all .2s}
+.portal-back:hover{background:rgba(255,255,255,.2)}
+.portal-container{max-width:1200px;margin:-40px auto 40px;padding:0 20px;position:relative;z-index:2}
+.portal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
+.portal-card{background:#fff;border-radius:18px;padding:24px;box-shadow:var(--shadow);border:1px solid var(--line);transition:all .25s;position:relative;overflow:hidden}
+.portal-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(11,23,54,.12)}
+.portal-card.featured{border:2px solid var(--orange)}
+.portal-card.featured::before{content:'ویژه';position:absolute;top:12px;left:12px;background:var(--orange);color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px}
+.card-icon{width:64px;height:64px;border-radius:16px;display:grid;place-items:center;font-size:32px;margin-bottom:14px}
+.card-icon.customer{background:#fff0e7;color:var(--orange)}
+.card-icon.staff{background:#edf2ff;color:var(--blue)}
+.card-icon.manager{background:#e7f7f1;color:var(--green)}
+.card-icon.employee{background:#fff7ed;color:var(--yellow)}
+.card-icon.supervisor{background:#f3e8ff;color:#7c3aed}
+.card-icon.worker{background:#fef3f2;color:var(--danger)}
+.card-icon.operator{background:#e0f2fe;color:#0284c7}
+.portal-card h2{font-size:18px;color:var(--navy);margin-bottom:6px}
+.portal-card .desc{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.8}
+.portal-card .actions{display:flex;gap:8px;flex-wrap:wrap}
+.portal-card .actions .btn{flex:1;min-width:120px}
+.btn{border:0;border-radius:10px;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:13px}
+.btn-primary{background:var(--orange);color:#fff}.btn-primary:hover{background:var(--orange-light);transform:translateY(-1px)}
+.btn-secondary{background:#eef1f7;color:var(--navy)}.btn-secondary:hover{background:#dfe4ee}
+.btn-dark{background:var(--navy);color:#fff}.btn-dark:hover{background:var(--navy-light)}
+.btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--line)}.btn-outline:hover{border-color:var(--orange);color:var(--orange)}
+.portal-footer{text-align:center;padding:30px 20px;color:var(--muted);font-size:12px}
+.portal-footer a{color:var(--orange);text-decoration:none}
+@media(max-width:700px){
+  .portal-hero{padding:30px 16px 50px}
+  .portal-hero .brand{font-size:26px}
+  .portal-hero h1{font-size:18px}
+  .portal-container{margin-top:-30px}
+  .portal-grid{grid-template-columns:1fr;gap:14px}
+  .portal-card{padding:18px}
+  .card-icon{width:54px;height:54px;font-size:26px}
+}
+</style>
+</head>
+<body>
+
+<section class="portal-hero">
+  <a href="?page=landing" class="portal-back">← بازگشت به صفحه اصلی</a>
+  <div class="brand">Zingo<span>Vingo</span></div>
+  <h1>🚪 ورود به پنل‌های سامانه</h1>
+  <p>نقش خود را انتخاب کنید تا به پنل مربوطه هدایت شوید. مشتریان و کارجویان عزیز نیز می‌توانند از بخش‌های مخصوص خود استفاده کنند.</p>
+</section>
+
+<div class="portal-container">
+  <div class="portal-grid">
+
+    <!-- ۱. مشتری (ویژه) -->
+    <div class="portal-card featured">
+      <div class="card-icon customer">👤</div>
+      <h2>پنل مشتریان</h2>
+      <p class="desc">مشتریان گرامی می‌توانند وارد پنل خود شده، سفارشات و کارت‌هایشان را پیگیری کنند، یا درخواست جدیدی ثبت نمایند.</p>
+      <div class="actions">
+        <a href="?page=customer" class="btn btn-primary">🔐 ورود به پنل</a>
+        <a href="?page=user" class="btn btn-outline">📝 ثبت درخواست</a>
+      </div>
+    </div>
+
+    <!-- ۲. کارکنان / کارجویان -->
+    <div class="portal-card">
+      <div class="card-icon staff">👷</div>
+      <h2>پنل کارکنان</h2>
+      <p class="desc">کارمندان، سرپرستان و متخصصان ZingoVingo از این بخش وارد می‌شوند. کارجویان عزیز نیز می‌توانند درخواست همکاری ثبت کنند.</p>
+      <div class="actions">
+        <a href="?page=employee" class="btn btn-dark">🔐 ورود کارمند</a>
+        <a href="?page=jobform" class="btn btn-outline">📄 ثبت درخواست همکاری</a>
+      </div>
+    </div>
+
+    <!-- ۳. مدیر شعبه -->
+    <div class="portal-card">
+      <div class="card-icon manager">🏢</div>
+      <h2>پنل مدیر شعبه</h2>
+      <p class="desc">مدیران شعب می‌توانند سفارشات، کارت‌ها، کارمندان، گروه‌ها و نیروهای شعبه خود را مدیریت کنند.</p>
+      <div class="actions">
+        <a href="?page=branchmanager" class="btn btn-primary">🔐 ورود به پنل</a>
+      </div>
+    </div>
+
+    <!-- ۴. کارمند -->
+    <div class="portal-card">
+      <div class="card-icon employee">📋</div>
+      <h2>پنل کارمند</h2>
+      <p class="desc">کارمندان شعبه می‌توانند سفارشات، کارت‌ها، گروه‌ها و نیروها را مشاهده و مدیریت کنند.</p>
+      <div class="actions">
+        <a href="?page=employee" class="btn btn-primary">🔐 ورود به پنل</a>
+      </div>
+    </div>
+
+    <!-- ۵. سوپروایزر -->
+    <div class="portal-card">
+      <div class="card-icon supervisor">👥</div>
+      <h2>پنل سوپروایزر</h2>
+      <p class="desc">سرپرستان گروه‌ها می‌توانند اعضای گروه، کارت‌ها، مکاتبات و گزارش عملکرد را مدیریت کنند.</p>
+      <div class="actions">
+        <a href="?page=supervisor" class="btn btn-primary">🔐 ورود به پنل</a>
+      </div>
+    </div>
+
+    <!-- ۶. متخصص / کارگر -->
+    <div class="portal-card">
+      <div class="card-icon worker">🔧</div>
+      <h2>پنل متخصص</h2>
+      <p class="desc">متخصصان و کارگران می‌توانند کارت‌های تخصیص‌یافته به خود را مشاهده، وضعیت را تغییر و با سرپرست در ارتباط باشند.</p>
+      <div class="actions">
+        <a href="?page=worker" class="btn btn-primary">🔐 ورود به پنل</a>
+      </div>
+    </div>
+
+    <!-- ۷. اپراتور -->
+    <div class="portal-card">
+      <div class="card-icon operator">🎧</div>
+      <h2>پنل اپراتور</h2>
+      <p class="desc">اپراتورهای ZingoVingo می‌توانند سفارشات جدید ثبت و وضعیت سفارشات خود را پیگیری کنند.</p>
+      <div class="actions">
+        <a href="?page=operator" class="btn btn-primary">🔐 ورود به پنل</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="portal-footer">
+  <p>© ۱۴۰۵ کلیه حقوق برای شرکت فناوری اطلاعات و ارتباطات دیجیتال <strong>ZingoVingo</strong> محفوظ است.</p>
+  <p style="margin-top:6px">📞 021-9100 4567 | ✉️ info@zingovingo.ir</p>
+</footer>
+
+</body>
+</html>
