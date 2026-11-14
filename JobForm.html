@@ -1,180 +1,693 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <base target="_top">
 <title>ثبت درخواست همکاری | ZingoVingo</title>
+<meta name="zv-api-url" content="https://script.google.com/macros/s/AKfycbwjFAiqfPiLijKT5sF63GQocU7tWvrlfFbZCY9CQ39_R_tMT9xq_dZFVSkR-mCaPhgh/exec">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet">
+
+<!-- ① تله خطا -->
+<script>
+window.__zvErrors = [];
+window.__zvModern = (function () {
+  try { new Function('a', 'return a?.b ?? 0'); return true; } catch (e) { return false; }
+})();
+window.addEventListener('error', function (ev) {
+  var t = ev && ev.target;
+  if (t && t !== window && t.tagName && /^(SCRIPT|LINK|IMG|IFRAME|SOURCE)$/.test(String(t.tagName).toUpperCase())) {
+    console.warn('[ZV] asset failed:', t.src || t.href);
+    return;
+  }
+  var msg = String((ev && ev.message) || '').trim();
+  if (!ev.lineno && (/^Script error\.?$/i.test(msg) || msg === '')) {
+    console.warn('[ZV] cross-origin script error ignored');
+    return;
+  }
+  window.__zvErrors.push(msg + ' @ ' + (ev.lineno || 0) + ':' + (ev.colno || 0));
+  var b = document.getElementById('zvFatal');
+  if (b) { b.style.display = 'block'; b.textContent = 'خطای اسکریپت: ' + window.__zvErrors.join(' | '); }
+}, true);
+window.addEventListener('unhandledrejection', function (ev) {
+  console.warn('[ZV] promise rejected:', ev && ev.reason);
+});
+</script>
+
+<!-- ② لایه سازگاری و پل ارتباطی -->
+<script src="zv-compat.js"></script>
 <script src="zv-api.js"></script>
+
 <style>
-:root{--navy:#0B1736;--orange:#FF6B1A;--bg:#f4f6fb;--text:#172033;--muted:#657086;--line:#dfe4ee;--green:#067647;--danger:#b42318}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;line-height:1.8}
-.hero{background:linear-gradient(135deg,var(--navy),#203968);color:#fff;padding:30px 20px;text-align:center;position:relative}
-.hero .brand{font-size:28px;font-weight:900;margin-bottom:6px}.hero .brand span{color:var(--orange)}
-.hero h1{font-size:20px;margin-bottom:8px}
-.hero p{color:#d2d9e8;font-size:13px;max-width:600px;margin:0 auto}
-.hero-back{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;padding:7px 14px;border-radius:9px;text-decoration:none;font-size:12px;cursor:pointer}
-.container{max-width:800px;margin:30px auto;padding:0 16px}
-.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:16px;box-shadow:0 4px 16px #17203308}
-.card h2{font-size:16px;color:var(--navy);margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+/* ═══════════════════════════════════════════════════
+   1) DESIGN TOKENS
+   ═══════════════════════════════════════════════════ */
+:root{
+  --navy:#0B1736;--navy2:#13234D;--navy3:#1B2F63;
+  --brand:#FF6B1A;--brand2:#FF8A3D;--brandDeep:#E4570B;
+  --blue:#2E63E7;--violet:#7C4DFF;--teal:#0FA3A3;
+  --green:#0E9F6E;--amber:#D97706;--red:#E02D3C;--pink:#E0447C;--slate:#64748B;
+  --bg:#F3F5FB;--surface:#fff;--surface2:#F6F8FD;
+  --ink:#101A33;--muted:#5C6784;--line:#E2E7F3;--line2:#D3DAEC;
+  --scrim:rgba(7,13,31,.58);--sh:0 6px 22px rgba(11,23,54,.07);--sh2:0 16px 44px rgba(11,23,54,.16);
+  --r:16px;--tr:180ms ease;
+  --grad:linear-gradient(135deg,#FF6B1A,#FF8A3D 55%,#FFB25E);
+  --hero:linear-gradient(120deg,#0B1736,#16295B 45%,#3B2E7E 78%,#7C4DFF 130%);
+  --glass:rgba(148,163,184,.16);--glassBrd:rgba(100,116,139,.28);
+}
+[data-theme=dark]{
+  --bg:#070D1F;--surface:#0E1830;--surface2:#121F3D;
+  --ink:#E9EEFC;--muted:#93A0C2;--line:#1D2B4F;--line2:#27375F;
+  --scrim:rgba(2,6,18,.74);--sh:0 8px 26px rgba(0,0,0,.42);--sh2:0 18px 50px rgba(0,0,0,.58);
+  --glass:rgba(203,213,225,.11);--glassBrd:rgba(148,163,184,.26);
+}
+
+/* ═══════════════════════════════════════════════════
+   2) BASE
+   ═══════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Vazirmatn',Tahoma,sans-serif;
+  background:var(--bg);color:var(--ink);
+  font-size:14px;line-height:1.75;min-height:100vh;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:-2;
+  background:
+    radial-gradient(700px 420px at 92% -6%,rgba(255,107,26,.14),transparent 60%),
+    radial-gradient(640px 460px at -8% 108%,rgba(46,99,231,.13),transparent 60%),
+    radial-gradient(520px 380px at 55% 118%,rgba(124,77,255,.09),transparent 60%);
+}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid rgba(255,107,26,.45);outline-offset:2px;border-radius:8px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--line2),var(--slate));border-radius:9px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--brand2),var(--brandDeep))}
+svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ═══════════════════════════════════════════════════
+   3) BRAND FONT (Nunito Black)
+   ═══════════════════════════════════════════════════ */
+.zv-brand,.hero .brand,.footer .brand{
+  font-family:'Nunito','Vazirmatn',Tahoma,sans-serif !important;
+  font-weight:900 !important;letter-spacing:-0.5px;
+}
+.zv-brand span,.hero .brand span,.footer .brand span{
+  font-family:'Nunito',sans-serif !important;font-weight:900 !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   4) FATAL ERROR BAR
+   ═══════════════════════════════════════════════════ */
+#zvFatal{
+  display:none;position:fixed;top:0;left:0;right:0;
+  z-index:9999;background:#E02D3C;color:#fff;
+  padding:10px 16px;font-size:12px;direction:ltr;text-align:left;
+}
+
+/* ═══════════════════════════════════════════════════
+   5) HERO
+   ═══════════════════════════════════════════════════ */
+.hero{
+  background:var(--hero);color:#fff;
+  padding:32px 20px 60px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(420px 220px at 88% 20%,rgba(255,107,26,.42),transparent 60%),
+    radial-gradient(300px 200px at 10% 110%,rgba(15,163,163,.32),transparent 60%);
+}
+.hero::after{
+  content:'';position:absolute;inset:0;opacity:.17;
+  background-image:radial-gradient(rgba(255,255,255,.85) 1px,transparent 1px);
+  background-size:22px 22px;
+}
+.hero>*{position:relative;z-index:1}
+.hero .brand{font-size:30px;margin-bottom:8px}
+.hero .brand span{color:var(--brand2)}
+.hero h1{font-size:20px;font-weight:800;margin-bottom:10px}
+.hero p{color:#C9D4F2;font-size:13px;max-width:640px;margin:0 auto;line-height:1.9}
+.hero-back{
+  position:absolute;top:20px;right:20px;z-index:2;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
+  color:#fff;padding:8px 16px;border-radius:11px;font-size:12px;font-weight:700;
+  transition:all var(--tr);display:inline-flex;align-items:center;gap:6px;
+}
+.hero-back:hover{background:rgba(255,255,255,.22);transform:translateY(-1px)}
+
+/* ═══════════════════════════════════════════════════
+   6) CONTAINER & CARDS
+   ═══════════════════════════════════════════════════ */
+.container{max-width:820px;margin:-40px auto 40px;padding:0 20px;position:relative;z-index:2}
+.card{
+  background:rgba(243,245,251,.55);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  border:1px solid rgba(148,163,184,.28);
+  border-radius:18px;padding:22px;margin-bottom:16px;
+  box-shadow:0 8px 32px rgba(11,23,54,.08);
+  transition:all var(--tr);
+}
+.card:hover{box-shadow:0 12px 40px rgba(11,23,54,.12)}
+.card h2{
+  font-size:15px;font-weight:900;color:var(--navy);
+  margin:0 0 14px;padding-bottom:10px;
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:8px;
+}
+.card h2 .num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:8px;
+  background:var(--grad);color:#fff;font-size:12px;
+}
+
+/* ═══════════════════════════════════════════════════
+   7) GRID & FIELDS
+   ═══════════════════════════════════════════════════ */
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.field{display:flex;flex-direction:column;gap:5px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
 .field label{font-size:12px;font-weight:700;color:var(--muted)}
-.field input,.field select,.field textarea{font:inherit;font-size:13px;width:100%;border:1px solid #cfd6e3;border-radius:9px;padding:10px 11px;background:#fff;color:var(--text);outline:none}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
+.field input,.field select,.field textarea{
+  min-height:40px;padding:9px 12px;
+  border:1px solid var(--line);border-radius:10px;
+  background:var(--surface);font-size:13px;
+  transition:all var(--tr);width:100%;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--brand);outline:none;
+  box-shadow:0 0 0 3px rgba(255,107,26,.12);
+}
 .field textarea{min-height:80px;resize:vertical}
 .field .full{grid-column:1/-1}
-.required{color:var(--danger)}
-.btn{border:0;border-radius:10px;padding:12px 20px;font:inherit;font-weight:800;cursor:pointer;font-size:14px}
-.btn-primary{background:var(--orange);color:#fff}.btn-primary:hover{background:#e95b10}
-.btn-secondary{background:#eef1f7;color:var(--navy)}
-.btn:disabled{opacity:.55;cursor:not-allowed}
-.alert{padding:12px 14px;border-radius:10px;margin-bottom:14px;font-size:13px;display:none}
-.alert.success{display:block;background:#ecfdf3;color:var(--green)}
-.alert.error{display:block;background:#fef3f2;color:var(--danger)}
+.required{color:var(--red);font-weight:900}
+
+/* ═══════════════════════════════════════════════════
+   8) BUTTONS
+   ═══════════════════════════════════════════════════ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:40px;padding:10px 18px;border-radius:11px;
+  border:1px solid transparent;font-size:13px;font-weight:800;
+  cursor:pointer;transition:all var(--tr);white-space:nowrap;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 6px 18px rgba(255,107,26,.35)}
+.btn-primary:hover{box-shadow:0 10px 26px rgba(255,107,26,.5)}
+.btn-soft{background:var(--surface2);border-color:var(--line);color:var(--ink)}
+.btn-soft:hover{border-color:var(--brand);color:var(--brandDeep)}
+
+/* ═══════════════════════════════════════════════════
+   9) ALERTS
+   ═══════════════════════════════════════════════════ */
+.alert{
+  padding:12px 14px;border-radius:12px;margin-bottom:14px;
+  font-size:13px;display:none;align-items:center;gap:10px;
+  border-right:4px solid transparent;
+}
+.alert.show{display:flex}
+.alert.success{background:rgba(14,159,110,.08);color:var(--green);border-right-color:var(--green)}
+.alert.error{background:rgba(224,45,60,.08);color:var(--red);border-right-color:var(--red)}
+.alert.info{background:rgba(46,99,231,.08);color:var(--blue);border-right-color:var(--blue)}
 .hint{font-size:11px;color:var(--muted);margin-top:4px}
-@media(max-width:600px){.grid{grid-template-columns:1fr}.container{padding:0 10px}.card{padding:16px}}
+
+/* ═══════════════════════════════════════════════════
+   10) FOOTER
+   ═══════════════════════════════════════════════════ */
+.footer{
+  text-align:center;padding:30px 20px 40px;
+  color:var(--muted);font-size:12px;
+}
+.footer .brand{font-size:18px;color:var(--navy);margin-bottom:6px}
+.footer .brand span{color:var(--brand)}
+.footer p{margin:4px 0}
+
+/* ═══════════════════════════════════════════════════
+   11) JALALI DATE PICKER
+   ═══════════════════════════════════════════════════ */
+.ja-date-wrap{position:relative;width:100%}
+.ja-date-input{padding-left:48px!important;direction:ltr;text-align:right;unicode-bidi:plaintext}
+.ja-date-btn{
+  position:absolute;left:6px;top:50%;transform:translateY(-50%);
+  border:0;border-radius:8px;background:var(--surface2);
+  color:var(--navy);padding:6px 9px;cursor:pointer;z-index:2;
+  transition:all var(--tr);
+}
+.ja-date-btn:hover{background:var(--brand);color:#fff}
+.ja-date-pop{
+  display:none;position:absolute;top:calc(100% + 7px);right:0;
+  width:min(320px,calc(100vw - 48px));
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:13px;padding:11px;
+  box-shadow:0 12px 32px rgba(11,23,54,.18);z-index:120;
+}
+.ja-date-pop.open{display:block}
+.ja-cal-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:4px;margin-bottom:9px;color:var(--navy);font-weight:800;font-size:13px;
+}
+.ja-cal-head button{
+  border:0;background:var(--surface2);border-radius:8px;
+  padding:5px 9px;cursor:pointer;font-size:14px;
+  transition:all var(--tr);
+}
+.ja-cal-head button:hover{background:var(--brand);color:#fff}
+.ja-cal-head .year-display{cursor:pointer;padding:2px 8px;border-radius:6px;flex:1;text-align:center}
+.ja-cal-head .year-display:hover{background:rgba(255,107,26,.12)}
+.ja-cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}
+.ja-cal-grid button{
+  border:0;border-radius:7px;padding:7px 0;
+  background:var(--surface2);cursor:pointer;
+  color:var(--ink);font:inherit;font-size:12px;
+  transition:all var(--tr);
+}
+.ja-cal-grid button:hover{background:rgba(255,107,26,.15);color:var(--brandDeep)}
+.ja-cal-grid .day-label{background:transparent;color:var(--muted);font-weight:700}
+.ja-cal-grid .today{outline:2px solid var(--brand);outline-offset:-2px}
+
+/* ═══════════════════════════════════════════════════
+   12) RESPONSIVE
+   ═══════════════════════════════════════════════════ */
+@media(max-width:700px){
+  .hero{padding:24px 16px 50px}
+  .hero .brand{font-size:24px}
+  .hero h1{font-size:17px}
+  .container{margin-top:-30px;padding:0 14px}
+  .grid{grid-template-columns:1fr}
+  .card{padding:16px}
+  .hero-back{top:12px;right:12px;padding:6px 12px;font-size:11px}
+}
+@media(max-width:480px){
+  .hero .brand{font-size:22px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
 </style>
 </head>
 <body>
 
+<div id="zvFatal"></div>
+
+<!-- ═══ HERO ═══ -->
 <section class="hero">
-  <a href="?page=portal" class="hero-back">← بازگشت</a>
-  <div class="brand">Zingo<span>Vingo</span></div>
+  <a href="Landing.html" class="hero-back">
+    <svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="m15 18-6-6 6-6"/></svg>
+    بازگشت به صفحه اصلی
+  </a>
+  <div class="brand zv-brand">Zingo<span>Vingo</span></div>
   <h1>📄 ثبت درخواست همکاری</h1>
   <p>فرم زیر را تکمیل کنید؛ کارشناسان منابع انسانی ZingoVingo در اسرع وقت با شما تماس خواهند گرفت.</p>
 </section>
 
+<!-- ═══ FORM ═══ -->
 <div class="container">
   <div id="alertBox" class="alert"></div>
 
-  <form id="jobForm" class="card" onsubmit="submitJobForm(event)">
-    <h2>۱. اطلاعات هویتی</h2>
-    <div class="grid">
-      <div class="field"><label>نام <span class="required">*</span></label><input id="jf_first" required maxlength="80"></div>
-      <div class="field"><label>نام خانوادگی <span class="required">*</span></label><input id="jf_last" required maxlength="100"></div>
-      <div class="field"><label>جنسیت <span class="required">*</span></label><select id="jf_gender" required><option value="">انتخاب کنید</option><option>مرد</option><option>زن</option></select></div>
-      <div class="field"><label>تاریخ تولد (شمسی) <span class="required">*</span></label><input id="jf_birth" placeholder="مثلاً ۱۳۷۵/۰۵/۲۲" required></div>
-      <div class="field"><label>وضعیت تأهل</label><select id="jf_marital"><option value="">انتخاب کنید</option><option>مجرد</option><option>متأهل</option><option>سایر</option></select></div>
-    </div>
-  </form>
+  <form id="jobForm" onsubmit="submitJobForm(event)">
 
-  <form id="jobForm2" class="card" onsubmit="return false;">
-    <h2>۲. تخصص و مهارت‌ها</h2>
-    <div class="grid">
-      <div class="field" style="grid-column:1/-1"><label>تخصص اصلی <span class="required">*</span></label><input id="jf_specialty" required maxlength="150" placeholder="عنوان تخصص خود را وارد کنید"></div>
-      <div class="field"><label>مدت فعالیت</label><input id="jf_experience" maxlength="80" placeholder="مثلاً ۳ سال"></div>
-      <div class="field"><label>میزان تحصیلات</label><select id="jf_education"><option value="">انتخاب کنید</option><option>زیر دیپلم</option><option>دیپلم</option><option>کاردانی</option><option>کارشناسی</option><option>کارشناسی ارشد</option><option>دکتری</option><option>سایر</option></select></div>
-      <div class="field" style="grid-column:1/-1"><label>رشته تحصیلی</label><input id="jf_field" maxlength="120"></div>
-      <div class="field" style="grid-column:1/-1"><label>مهارت‌های دیگر</label><textarea id="jf_skills" placeholder="سایر توانایی‌ها و مهارت‌ها…"></textarea></div>
+    <!-- ۱. اطلاعات هویتی -->
+    <div class="card">
+      <h2><span class="num">۱</span> اطلاعات هویتی</h2>
+      <div class="grid">
+        <div class="field"><label>نام <span class="required">*</span></label><input id="jf_first" required maxlength="80"></div>
+        <div class="field"><label>نام خانوادگی <span class="required">*</span></label><input id="jf_last" required maxlength="100"></div>
+        <div class="field">
+          <label>جنسیت <span class="required">*</span></label>
+          <select id="jf_gender" required>
+            <option value="">انتخاب کنید</option>
+            <option>مرد</option>
+            <option>زن</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>تاریخ تولد (شمسی) <span class="required">*</span></label>
+          <div class="ja-date-wrap">
+            <input id="jf_birth" class="ja-date-input" placeholder="۱۳۷۵/۰۵/۲۲" required>
+            <button type="button" class="ja-date-btn" aria-label="باز کردن تقویم شمسی">
+              <svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </button>
+            <div class="ja-date-pop"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label>وضعیت تأهل</label>
+          <select id="jf_marital">
+            <option value="">انتخاب کنید</option>
+            <option>مجرد</option>
+            <option>متأهل</option>
+            <option>سایر</option>
+          </select>
+        </div>
+      </div>
     </div>
-  </form>
 
-  <form id="jobForm3" class="card" onsubmit="return false;">
-    <h2>۳. اطلاعات تماس</h2>
-    <div class="grid">
-      <div class="field"><label>شماره تماس <span class="required">*</span></label><input id="jf_phone" inputmode="tel" maxlength="15" placeholder="09123456789" required></div>
-      <div class="field"><label>پیام‌رسان</label><select id="jf_messenger"><option value="">انتخاب کنید</option><option>بله</option><option>واتساپ</option><option>تلگرام</option><option>روبیکا</option><option>ایتا</option><option>سایر</option></select></div>
-      <div class="field"><label>آی‌دی پیام‌رسان</label><input id="jf_messid" maxlength="120"></div>
-      <div class="field" style="grid-column:1/-1"><label>محل سکونت <span class="required">*</span></label><input id="jf_residence" required maxlength="250" placeholder="شهر، منطقه یا نشانی"></div>
+    <!-- ۲. تخصص و مهارت‌ها -->
+    <div class="card">
+      <h2><span class="num">۲</span> تخصص و مهارت‌ها</h2>
+      <div class="grid">
+        <div class="field full"><label>تخصص اصلی <span class="required">*</span></label><input id="jf_specialty" required maxlength="150" placeholder="عنوان تخصص خود را وارد کنید"></div>
+        <div class="field"><label>مدت فعالیت</label><input id="jf_experience" maxlength="80" placeholder="مثلاً ۳ سال"></div>
+        <div class="field">
+          <label>میزان تحصیلات</label>
+          <select id="jf_education">
+            <option value="">انتخاب کنید</option>
+            <option>زیر دیپلم</option>
+            <option>دیپلم</option>
+            <option>کاردانی</option>
+            <option>کارشناسی</option>
+            <option>کارشناسی ارشد</option>
+            <option>دکتری</option>
+            <option>سایر</option>
+          </select>
+        </div>
+        <div class="field full"><label>رشته تحصیلی</label><input id="jf_field" maxlength="120"></div>
+        <div class="field full"><label>مهارت‌های دیگر</label><textarea id="jf_skills" placeholder="سایر توانایی‌ها و مهارت‌ها…"></textarea></div>
+      </div>
     </div>
-  </form>
 
-  <form id="jobForm4" class="card" onsubmit="return false;">
-    <h2>۴. نحوه آشنایی و موقعیت درخواستی</h2>
-    <div class="grid">
-      <div class="field"><label>نحوه آشنایی</label><select id="jf_source"><option value="">انتخاب کنید</option><option>دیوار</option><option>شیپور</option><option>معرفی دوستان</option><option>شبکه‌های اجتماعی</option><option>مراجعه حضوری</option><option>سایر</option></select></div>
-      <div class="field"><label>معرف</label><input id="jf_referrer" maxlength="120"></div>
-      <div class="field" style="grid-column:1/-1"><label>موقعیت درخواستی <span class="required">*</span></label><input id="jf_position" required maxlength="150" placeholder="مثلاً نیروی خدمات، اپراتور، سرپرست، راننده…"></div>
-      <div class="field" style="grid-column:1/-1"><label>توضیحات تکمیلی</label><textarea id="jf_notes" maxlength="1000" placeholder="هر توضیحی که فکر می‌کنید مفید است…"></textarea></div>
+    <!-- ۳. اطلاعات تماس -->
+    <div class="card">
+      <h2><span class="num">۳</span> اطلاعات تماس</h2>
+      <div class="grid">
+        <div class="field"><label>شماره تماس <span class="required">*</span></label><input id="jf_phone" inputmode="tel" maxlength="15" placeholder="09123456789" required></div>
+        <div class="field">
+          <label>پیام‌رسان</label>
+          <select id="jf_messenger">
+            <option value="">انتخاب کنید</option>
+            <option>بله</option>
+            <option>واتساپ</option>
+            <option>تلگرام</option>
+            <option>روبیکا</option>
+            <option>ایتا</option>
+            <option>سایر</option>
+          </select>
+        </div>
+        <div class="field"><label>آی‌دی پیام‌رسان</label><input id="jf_messid" maxlength="120"></div>
+        <div class="field full"><label>محل سکونت <span class="required">*</span></label><input id="jf_residence" required maxlength="250" placeholder="شهر، منطقه یا نشانی"></div>
+      </div>
     </div>
-    <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-      <button type="button" class="btn btn-secondary" onclick="resetForm()">پاک کردن فرم</button>
-      <button type="button" class="btn btn-primary" id="submitBtn" onclick="submitAll()">📨 ارسال درخواست همکاری</button>
+
+    <!-- ۴. نحوه آشنایی و موقعیت درخواستی -->
+    <div class="card">
+      <h2><span class="num">۴</span> نحوه آشنایی و موقعیت درخواستی</h2>
+      <div class="grid">
+        <div class="field">
+          <label>نحوه آشنایی</label>
+          <select id="jf_source">
+            <option value="">انتخاب کنید</option>
+            <option>دیوار</option>
+            <option>شیپور</option>
+            <option>معرفی دوستان</option>
+            <option>شبکه‌های اجتماعی</option>
+            <option>مراجعه حضوری</option>
+            <option>سایر</option>
+          </select>
+        </div>
+        <div class="field"><label>معرف</label><input id="jf_referrer" maxlength="120"></div>
+        <div class="field full"><label>موقعیت درخواستی <span class="required">*</span></label><input id="jf_position" required maxlength="150" placeholder="مثلاً نیروی خدمات، اپراتور، سرپرست، راننده…"></div>
+        <div class="field full"><label>توضیحات تکمیلی</label><textarea id="jf_notes" maxlength="1000" placeholder="هر توضیحی که فکر می‌کنید مفید است…"></textarea></div>
+      </div>
+
+      <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+        <button type="button" class="btn btn-soft" onclick="resetForm()">
+          <svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
+          پاک کردن فرم
+        </button>
+        <button type="button" class="btn btn-primary" id="submitBtn" onclick="submitAll()">
+          <svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.86L3 21l1.9-5.2A8.4 8.4 0 1 1 21 11.5z"/></svg>
+          ارسال درخواست همکاری
+        </button>
+      </div>
+      <p class="hint" style="margin-top:12px;text-align:center">با ارسال این فرم، اطلاعات شما در سامانه ZingoVingo ثبت و توسط کارشناسان بررسی خواهد شد.</p>
     </div>
-    <div class="hint" style="margin-top:10px;text-align:center">با ارسال این فرم، اطلاعات شما در سامانه ZingoVingo ثبت و توسط کارشناسان بررسی خواهد شد.</div>
+
   </form>
 </div>
 
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="brand zv-brand">Zingo<span>Vingo</span></div>
+  <p>© ۱۴۰۵ کلیه حقوق برای شرکت فناوری اطلاعات و ارتباطات دیجیتال محفوظ است.</p>
+  <p style="margin-top:8px">📞 021-9100 4567 &nbsp;|&nbsp; ✉️ info@zingovingo.ir</p>
+</footer>
+
 <script>
-const $ = id => document.getElementById(id);
-function showAlert(msg, type){
-  const a = $('alertBox');
-  a.className = 'alert ' + type;
-  a.textContent = msg;
-  a.scrollIntoView({behavior:'smooth', block:'center'});
-  setTimeout(()=>{a.className='alert';a.textContent='';}, 6000);
+/* ═══════════════════════════════════════════════════
+   JALALI DATE CONVERTER
+   ═══════════════════════════════════════════════════ */
+function g2j(gy,gm,gd){
+  var leap=(gy%4===0&&gy%100!==0)||gy%400===0;
+  var gdm=[0,31,leap?29:28,31,30,31,30,31,31,30,31,30,31];
+  var gy2=gm>2?gy+1:gy;
+  var days=355666+365*gy+Math.floor((gy2+3)/4)-Math.floor((gy2+99)/100)+Math.floor((gy2+399)/400)+gd;
+  for(var i=1;i<gm;i++)days+=gdm[i];
+  var jy=-1595+33*Math.floor(days/12053);days%=12053;
+  jy+=4*Math.floor(days/1461);days%=1461;
+  if(days>365){jy+=Math.floor((days-1)/365);days=(days-1)%365;}
+  var jm,jd;
+  if(days<186){jm=1+Math.floor(days/31);jd=1+days%31;}
+  else{jm=7+Math.floor((days-186)/30);jd=1+(days-186)%30;}
+  return[jy,jm,jd];
 }
-function normalizeDigits(v){return String(v||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));}
+function j2g(jy,jm,jd){
+  jy+=1595;
+  var days=-355668+365*jy+Math.floor(jy/33)*8+Math.floor(((jy%33)+3)/4)+jd+(jm<7?(jm-1)*31:(jm-7)*30+186);
+  var gy=400*Math.floor(days/146097);days%=146097;
+  if(days>36524){gy+=100*Math.floor(--days/36524);days%=36524;if(days>=365)days++;}
+  gy+=4*Math.floor(days/1461);days%=1461;
+  if(days>365){gy+=Math.floor((days-1)/365);days=(days-1)%365;}
+  var gd=days+1;
+  var leap=gy%4===0&&(gy%100!==0||gy%400===0);
+  var ms=[0,31,leap?29:28,31,30,31,30,31,31,30,31,30,31];
+  var gm=1;
+  while(gm<=12&&gd>ms[gm]){gd-=ms[gm];gm++;}
+  return[gy,gm,gd];
+}
+function jLeap(y){var g=j2g(y,12,30),j=g2j(g[0],g[1],g[2]);return j[0]===y&&j[1]===12&&j[2]===30;}
+function jDays(y,m){return m<=6?31:(m<=11?30:(jLeap(y)?30:29));}
+function parseJ(s){
+  var m=String(s||'').trim().replace(/[.\-]/g,'/').match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+  if(!m)return null;
+  var y=Number(m[1]),mo=Number(m[2]),d=Number(m[3]);
+  if(mo<1||mo>12||d<1||d>jDays(y,mo))return null;
+  return[y,mo,d];
+}
+function normalizeDigits(v){
+  return String(v||'').replace(/[۰-۹]/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d);})
+    .replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d);});
+}
+function toFaDigits(v){return String(v).replace(/\d/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'[d];});}
+
+/* ═══════════════════════════════════════════════════
+   FORM LOGIC
+   ═══════════════════════════════════════════════════ */
+var $=function(id){return document.getElementById(id);};
+var alertTimer=null;
+
+function showAlert(msg,type){
+  var a=$('alertBox');
+  a.className='alert show '+type;
+  a.textContent=msg;
+  a.scrollIntoView({behavior:'smooth',block:'center'});
+  if(alertTimer)clearTimeout(alertTimer);
+  alertTimer=setTimeout(function(){a.className='alert';a.textContent='';},6000);
+}
 
 function validateForm(){
-  const phone = normalizeDigits($('jf_phone').value).replace(/[\s-]/g,'');
-  if(!$('jf_first').value.trim()) return 'نام الزامی است.';
-  if(!$('jf_last').value.trim()) return 'نام خانوادگی الزامی است.';
-  if(!$('jf_gender').value) return 'جنسیت را انتخاب کنید.';
-  if(!/^\d{4}\/\d{2}\/\d{2}$/.test(normalizeDigits($('jf_birth').value).replace(/[-\.]/g,'/'))) return 'تاریخ تولد را به شکل ۱۳۷۵/۰۵/۲۲ وارد کنید.';
-  if(!$('jf_specialty').value.trim()) return 'تخصص اصلی الزامی است.';
-  if(!/^09\d{9}$/.test(phone)) return 'شماره تماس باید ۱۱ رقم و با 09 شروع شود.';
-  if(!$('jf_residence').value.trim()) return 'محل سکونت الزامی است.';
-  if(!$('jf_position').value.trim()) return 'موقعیت درخواستی الزامی است.';
+  var phone=normalizeDigits($('jf_phone').value).replace(/[\s-]/g,'');
+  if(!$('jf_first').value.trim())return 'نام الزامی است.';
+  if(!$('jf_last').value.trim())return 'نام خانوادگی الزامی است.';
+  if(!$('jf_gender').value)return 'جنسیت را انتخاب کنید.';
+  if(!parseJ($('jf_birth').value))return 'تاریخ تولد را به شکل ۱۳۷۵/۰۵/۲۲ وارد کنید.';
+  if(!$('jf_specialty').value.trim())return 'تخصص اصلی الزامی است.';
+  if(!/^09\d{9}$/.test(phone))return 'شماره تماس باید ۱۱ رقم و با 09 شروع شود.';
+  if(!$('jf_residence').value.trim())return 'محل سکونت الزامی است.';
+  if(!$('jf_position').value.trim())return 'موقعیت درخواستی الزامی است.';
   return null;
 }
 
 function submitAll(){
-  const err = validateForm();
-  if(err) return showAlert(err,'error');
+  var err=validateForm();
+  if(err)return showAlert(err,'error');
 
-  const data = {
-    firstName: $('jf_first').value.trim(),
-    lastName: $('jf_last').value.trim(),
-    gender: $('jf_gender').value,
-    birthDate: normalizeDigits($('jf_birth').value).replace(/[-\.]/g,'/'),
-    maritalStatus: $('jf_marital').value,
-    specialty: $('jf_specialty').value.trim(),
-    experience: $('jf_experience').value.trim(),
-    education: $('jf_education').value,
-    fieldOfStudy: $('jf_field').value.trim(),
-    otherSkills: $('jf_skills').value.trim(),
-    phone: normalizeDigits($('jf_phone').value).replace(/[\s-]/g,''),
-    messenger: $('jf_messenger').value,
-    messengerId: $('jf_messid').value.trim(),
-    residence: $('jf_residence').value.trim(),
-    source: $('jf_source').value,
-    referrer: $('jf_referrer').value.trim(),
-    requestedPosition: $('jf_position').value.trim(),
-    notes: $('jf_notes').value.trim()
+  var data={
+    firstName:$('jf_first').value.trim(),
+    lastName:$('jf_last').value.trim(),
+    gender:$('jf_gender').value,
+    birthDate:normalizeDigits($('jf_birth').value).replace(/[-\.]/g,'/'),
+    maritalStatus:$('jf_marital').value,
+    specialty:$('jf_specialty').value.trim(),
+    experience:$('jf_experience').value.trim(),
+    education:$('jf_education').value,
+    fieldOfStudy:$('jf_field').value.trim(),
+    otherSkills:$('jf_skills').value.trim(),
+    phone:normalizeDigits($('jf_phone').value).replace(/[\s-]/g,''),
+    messenger:$('jf_messenger').value,
+    messengerId:$('jf_messid').value.trim(),
+    residence:$('jf_residence').value.trim(),
+    source:$('jf_source').value,
+    referrer:$('jf_referrer').value.trim(),
+    requestedPosition:$('jf_position').value.trim(),
+    notes:$('jf_notes').value.trim()
   };
 
-  $('submitBtn').disabled = true;
-  $('submitBtn').textContent = 'در حال ارسال…';
+  var btn=$('submitBtn');
+  btn.disabled=true;
+  btn.innerHTML='<svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px;animation:spin 1s linear infinite"><circle cx="12" cy="12" r="9" stroke-dasharray="20" stroke-dashoffset="10"/></svg> در حال ارسال…';
 
-  google.script.run
-    .withSuccessHandler(r => {
-      $('submitBtn').disabled = false;
-      $('submitBtn').textContent = '📨 ارسال درخواست همکاری';
-      if(r && r.success){
-        showAlert('✅ درخواست شما با شماره ' + r.caseNumber + ' ثبت شد. کارشناسان ما به زودی با شما تماس خواهند گرفت.', 'success');
-        resetForm();
-      } else {
-        showAlert((r && r.message) || 'ثبت درخواست ناموفق بود.', 'error');
-      }
-    })
-    .withFailureHandler(e => {
-      $('submitBtn').disabled = false;
-      $('submitBtn').textContent = '📨 ارسال درخواست همکاری';
-      showAlert('خطا: ' + (e && e.message ? e.message : 'ارتباط با سرور برقرار نشد.'), 'error');
-    })
-    .submitPublicJobApplication(data);
+  // Apps Script call
+  if(window.google && google.script && google.script.run){
+    google.script.run
+      .withSuccessHandler(function(r){
+        btn.disabled=false;
+        btn.innerHTML='<svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.86L3 21l1.9-5.2A8.4 8.4 0 1 1 21 11.5z"/></svg> ارسال درخواست همکاری';
+        if(r && r.success){
+          showAlert('✅ درخواست شما با شماره ' + r.caseNumber + ' ثبت شد. کارشناسان ما به زودی با شما تماس خواهند گرفت.','success');
+          resetForm();
+        }else{
+          showAlert((r && r.message) || 'ثبت درخواست ناموفق بود.','error');
+        }
+      })
+      .withFailureHandler(function(e){
+        btn.disabled=false;
+        btn.innerHTML='<svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.86L3 21l1.9-5.2A8.4 8.4 0 1 1 21 11.5z"/></svg> ارسال درخواست همکاری';
+        showAlert('خطا: ' + (e && e.message ? e.message : 'ارتباط با سرور برقرار نشد.'),'error');
+      })
+      .submitPublicJobApplication(data);
+  }else{
+    // Fallback for local testing
+    btn.disabled=false;
+    btn.innerHTML='<svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.86L3 21l1.9-5.2A8.4 8.4 0 1 1 21 11.5z"/></svg> ارسال درخواست همکاری';
+    showAlert('این فرم باید از طریق Apps Script اجرا شود. داده‌ها در کنسول لاگ شدند.','info');
+    console.log('Job Application Data:',data);
+  }
 }
 
 function resetForm(){
-  ['jf_first','jf_last','jf_gender','jf_birth','jf_marital','jf_specialty','jf_experience','jf_education','jf_field','jf_skills','jf_phone','jf_messenger','jf_messid','jf_residence','jf_source','jf_referrer','jf_position','jf_notes'].forEach(id=>{
-    const el = $(id);
-    if(el.tagName === 'SELECT') el.selectedIndex = 0;
-    else el.value = '';
+  ['jf_first','jf_last','jf_gender','jf_birth','jf_marital','jf_specialty','jf_experience','jf_education','jf_field','jf_skills','jf_phone','jf_messenger','jf_messid','jf_residence','jf_source','jf_referrer','jf_position','jf_notes'].forEach(function(id){
+    var el=$(id);
+    if(el.tagName==='SELECT')el.selectedIndex=0;
+    else el.value='';
   });
 }
+
+function submitJobForm(ev){
+  if(ev)ev.preventDefault();
+  submitAll();
+}
+
+/* ═══════════════════════════════════════════════════
+   JALALI CALENDAR UI
+   ═══════════════════════════════════════════════════ */
+(function initJalaliCalendar(){
+  var months=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+  var wrap=document.querySelector('.ja-date-wrap');
+  if(!wrap)return;
+  var input=wrap.querySelector('input');
+  var btn=wrap.querySelector('.ja-date-btn');
+  var pop=wrap.querySelector('.ja-date-pop');
+  if(!input||!btn||!pop)return;
+
+  var now=new Date();
+  var jy,jm;
+  var jNow=g2j(now.getFullYear(),now.getMonth()+1,now.getDate());
+  jy=jNow[0];jm=jNow[1];
+
+  function render(){
+    var today=g2j(now.getFullYear(),now.getMonth()+1,now.getDate());
+    var max=jDays(jy,jm);
+    var first=j2g(jy,jm,1);
+    var weekday=(new Date(first[0],first[1]-1,first[2]).getDay()+1)%7;
+    var html='<div class="ja-cal-head">';
+    html+='<button type="button" data-prev-year title="سال قبل">«</button>';
+    html+='<button type="button" data-prev title="ماه قبل">‹</button>';
+    html+='<span class="year-display" data-year-input title="کلیک برای تغییر سال">'+months[jm-1]+' '+toFaDigits(jy)+'</span>';
+    html+='<button type="button" data-next title="ماه بعد">›</button>';
+    html+='<button type="button" data-next-year title="سال بعد">»</button>';
+    html+='</div><div class="ja-cal-grid">';
+    ['ش','ی','د','س','چ','پ','ج'].forEach(function(x){html+='<button type="button" class="day-label" disabled>'+x+'</button>';});
+    for(var i=0;i<weekday;i++)html+='<span></span>';
+    for(var d=1;d<=max;d++){
+      var isToday=today[0]===jy&&today[1]===jm&&today[2]===d;
+      html+='<button type="button" data-day="'+d+'" class="'+(isToday?'today':'')+'">'+toFaDigits(d)+'</button>';
+    }
+    html+='</div>';
+    pop.innerHTML=html;
+
+    pop.querySelector('[data-prev]').onclick=function(e){e.stopPropagation();jm--;if(jm<1){jm=12;jy--;}render();};
+    pop.querySelector('[data-next]').onclick=function(e){e.stopPropagation();jm++;if(jm>12){jm=1;jy++;}render();};
+    pop.querySelector('[data-prev-year]').onclick=function(e){e.stopPropagation();jy--;render();};
+    pop.querySelector('[data-next-year]').onclick=function(e){e.stopPropagation();jy++;render();};
+    pop.querySelector('[data-year-input]').onclick=function(e){
+      e.stopPropagation();
+      var inp=document.createElement('input');
+      inp.type='number';inp.min='1300';inp.max='1500';inp.value=jy;
+      inp.style.cssText='width:70px;text-align:center;font-weight:bold;border:1px solid var(--brand);border-radius:6px;padding:2px;font-size:13px';
+      e.target.replaceWith(inp);inp.focus();inp.select();
+      var saveYear=function(){var ny=parseInt(inp.value);if(ny>=1300&&ny<=1500){jy=ny;render();}};
+      inp.addEventListener('blur',saveYear);
+      inp.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();saveYear();}if(ev.key==='Escape'){render();}});
+    };
+    var dayBtns=pop.querySelectorAll('[data-day]');
+    for(var k=0;k<dayBtns.length;k++){
+      dayBtns[k].onclick=(function(b){return function(e){
+        e.stopPropagation();
+        var day=+b.dataset.day;
+        input.value=jy+'/'+String(jm).padStart(2,'0')+'/'+String(day).padStart(2,'0');
+        pop.classList.remove('open');
+        input.dispatchEvent(new Event('input',{bubbles:true}));
+        input.dispatchEvent(new Event('change',{bubbles:true}));
+      };})(dayBtns[k]);
+    }
+  }
+
+  btn.addEventListener('click',function(e){
+    e.stopPropagation();
+    document.querySelectorAll('.ja-date-pop.open').forEach(function(x){x.classList.remove('open');});
+    var parts=parseJ(input.value);
+    if(parts){jy=parts[0];jm=parts[1];}
+    render();
+    pop.classList.toggle('open');
+  });
+
+  input.addEventListener('input',function(){
+    var v=normalizeDigits(input.value).replace(/\D/g,'').slice(0,8);
+    if(v.length>4)v=v.slice(0,4)+'/'+v.slice(4);
+    if(v.length>7)v=v.slice(0,7)+'/'+v.slice(7);
+    input.value=v;
+  });
+
+  input.addEventListener('blur',function(){
+    if(!input.value.trim())return;
+    var parts=parseJ(input.value);
+    if(!parts){
+      showAlert('تاریخ معتبر نیست؛ قالب صحیح ۱۴۰۵/۰۸/۱۲ است.','error');
+      return;
+    }
+    input.value=parts[0]+'/'+String(parts[1]).padStart(2,'0')+'/'+String(parts[2]).padStart(2,'0');
+  });
+
+  document.addEventListener('click',function(e){
+    if(!wrap.contains(e.target))pop.classList.remove('open');
+  });
+})();
+
+/* ═══════════════════════════════════════════════════
+   SPIN ANIMATION (for loading button)
+   ═══════════════════════════════════════════════════ */
+var style=document.createElement('style');
+style.textContent='@keyframes spin{to{transform:rotate(360deg)}}';
+document.head.appendChild(style);
 </script>
+
 </body>
 </html>
