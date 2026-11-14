@@ -5,11 +5,37 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <base target="_top">
 <title>مرکز مدیریت سامانه | ZingoVingo</title>
+
+<!-- ① فقط این یک خط را با آدرس /exec واقعی خودت پر کن -->
+<meta name="zv-api-url" content="https://script.google.com/macros/s/AKfycbwjFAiqfPiLijKT5sF63GQocU7tWvrlfFbZCY9CQ39_R_tMT9xq_dZFVSkR-mCaPhgh/exec">
+
 <link id="zvFavicon" rel="icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<!-- ② تله خطا: فقط خطای واقعی JS قرمز می‌شود، نه 404 منابع -->
+<script>
+window.__zvErrors = [];
+window.addEventListener('error', function (ev) {
+  var t = ev && ev.target;
+  if (t && t !== window && t.tagName && /^(SCRIPT|LINK|IMG|IFRAME|SOURCE)$/.test(String(t.tagName).toUpperCase())) {
+    console.warn('منبع بارگذاری نشد (نادیده گرفته شد):', t.src || t.href);
+    return;
+  }
+  var m = (ev.message || 'خطا') + ' @ ' + (ev.lineno || 0) + ':' + (ev.colno || 0);
+  window.__zvErrors.push(m);
+  var b = document.getElementById('zvFatal');
+  if (b) { b.style.display = 'block'; b.textContent = 'خطای اسکریپت: ' + window.__zvErrors.join(' | '); }
+}, true);
+</script>
+
+<!-- ③ لایه سازگاری، سپس پل ارتباطی — ترتیب مهم است -->
+<script src="zv-compat.js"></script>
 <script src="zv-api.js"></script>
+
+<!-- ④ نمودار با تلاش مجدد خودکار -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
+        onerror="window.zvEnsureChart && window.zvEnsureChart()"></script>
 <script>
 window.__zvErrors=[];
 window.addEventListener('error',function(ev){
