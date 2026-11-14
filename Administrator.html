@@ -290,6 +290,30 @@ select option{background:#111A30;color:#fff}
 .toolbar .zsel,.bulk .zsel{width:auto;min-width:158px}
 .toolbar .zsel-btn,.bulk .zsel-btn{min-height:37px;font-size:12px}
 .modal.dk .zsel-btn{background:rgba(203,213,225,.13);border-color:#3E5384;color:#fff}
+
+/* ===== یکدست‌سازی فرم‌ها در مودال تیره ===== */
+.modal.dk select{
+  background:rgba(203,213,225,.13)!important;
+  border-color:#3E5384!important;
+  color:#fff!important;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.modal.dk select option{
+  background:#111A30!important;
+  color:#fff!important;
+}
+.modal.dk .zsel-opt{color:#fff!important}
+.modal.dk .zsel-opt:hover{background:rgba(255,107,26,.24)}
+.modal.dk .zsel-opt.on{background:rgba(255,107,26,.34)}
+.modal.dk .zsel-pan{background:rgba(17,26,48,.98)!important}
+.modal.dk .field label{color:#D3DCF5!important}
+.modal.dk .field input[readonly]{
+  background:rgba(255,107,26,.14)!important;
+  border-color:rgba(255,107,26,.4)!important;
+  color:#FFC79E!important;
+  font-weight:800;
+}
 /* ===== جستجوی سراسری ===== */
 #cmdk{position:fixed;inset:0;z-index:120;background:var(--scrim);backdrop-filter:blur(5px);display:none;justify-content:center;padding:11vh 16px}
 #cmdk.show{display:flex}
@@ -600,6 +624,8 @@ function openModal(html,wide,dark){
   m.innerHTML=html;
   $('#mback').classList.add('show');
   document.body.style.overflow='hidden';
+  /* بازسازی zsel برای محتوای جدید — جلوگیری از نصف‌سفید/نصف‌تیره */
+  $$('select',m).forEach(function(sel){sel._zvDone=false;});
   decorate(m);
 }
 function closeModal(){$('#mback').classList.remove('show');document.body.style.overflow='';}
