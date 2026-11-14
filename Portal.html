@@ -23,7 +23,7 @@
   --r:16px;--tr:180ms ease;
   --grad:linear-gradient(135deg,#FF6B1A,#FF8A3D 55%,#FFB25E);
   --hero:linear-gradient(120deg,#0B1736,#16295B 45%,#3B2E7E 78%,#7C4DFF 130%);
-  --glass:rgba(148,163,184,.16);--glassBrd:rgba(100,116,139,.28);--panBg:rgba(17,26,48,.9);
+  --glass:rgba(148,163,184,.16);--glassBrd:rgba(100,116,139,.28);
 }
 [data-theme=dark]{
   --bg:#070D1F;--surface:#0E1830;--surface2:#121F3D;
@@ -55,9 +55,10 @@ button,a{font:inherit;color:inherit;text-decoration:none}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--line2),var(--slate));border-radius:9px;border:2px solid var(--bg)}
 ::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--brand2),var(--brandDeep))}
+svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* ═══════════════════════════════════════════════════
-   3) BRAND FONT (Nunito Black)
+   3) BRAND FONT
    ═══════════════════════════════════════════════════ */
 .zv-brand,.portal-hero .brand,.portal-footer .brand{
   font-family:'Nunito','Vazirmatn',Tahoma,sans-serif !important;
@@ -68,7 +69,7 @@ button,a{font:inherit;color:inherit;text-decoration:none}
 }
 
 /* ═══════════════════════════════════════════════════
-   4) HERO SECTION
+   4) HERO
    ═══════════════════════════════════════════════════ */
 .portal-hero{
   background:var(--hero);color:#fff;
@@ -137,14 +138,6 @@ button,a{font:inherit;color:inherit;text-decoration:none}
   opacity:0;transition:opacity var(--tr);
 }
 .portal-card:hover::before{opacity:1}
-
-/* Featured card (Administrator) */
-.portal-card.featured{
-  background:rgba(255,107,26,.06);
-  border-color:rgba(255,107,26,.35);
-}
-.portal-card.featured::before{opacity:1}
-.portal-card.featured .card-icon{background:var(--grad);color:#fff;box-shadow:0 6px 18px rgba(255,107,26,.35)}
 
 /* ═══════════════════════════════════════════════════
    7) CARD ICON
@@ -234,7 +227,7 @@ button,a{font:inherit;color:inherit;text-decoration:none}
 
 <!-- ═══ HERO ═══ -->
 <section class="portal-hero">
-  <a href="?page=landing" class="portal-back">← بازگشت به صفحه اصلی</a>
+  <a href="Landing.html" class="portal-back">← بازگشت به صفحه اصلی</a>
   <div class="brand zv-brand">Zingo<span>Vingo</span></div>
   <h1>🚪 درگاه ورود به پنل‌های سامانه</h1>
   <p>نقش سازمانی خود را انتخاب کنید تا به پنل اختصاصی هدایت شوید. ورود با نام کاربری و رمز عبور در داخل هر پنل انجام می‌شود.</p>
@@ -244,84 +237,123 @@ button,a{font:inherit;color:inherit;text-decoration:none}
 <div class="portal-container">
   <div class="portal-grid">
 
-    <!-- ۱. ادمین ارشد (ویژه) -->
-    <div class="portal-card featured">
-      <div class="card-icon admin">👑</div>
+    <!-- ۱. ادمین ارشد -->
+    <div class="portal-card">
+      <div class="card-icon admin">
+        <svg class="ic" viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
       <h2>پنل مدیر ارشد</h2>
       <p class="desc">مرکز فرماندهی کامل سامانه — مدیریت شعب، کارمندان، نیروها، سفارشات، کارت‌ها، گزارش‌ها و تنظیمات.</p>
       <div class="actions">
-        <a href="?page=administrator" class="btn btn-primary">🔐 ورود به پنل</a>
+        <a href="Administrator.html" class="btn btn-primary">
+          <svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          ورود به پنل
+        </a>
       </div>
     </div>
 
     <!-- ۲. مدیر کل -->
     <div class="portal-card">
-      <div class="card-icon manager">🏛️</div>
+      <div class="card-icon manager">
+        <svg class="ic" viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/></svg>
+      </div>
       <h2>پنل مدیر کل</h2>
       <p class="desc">نظارت بر عملکرد همه شعب، مشاهده گزارش‌های جامع و مدیریت کلان سازمان.</p>
       <div class="actions">
-        <a href="?page=manager" class="btn btn-dark">🔐 ورود به پنل</a>
+        <a href="Manager.html" class="btn btn-dark">
+          <svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          ورود به پنل
+        </a>
       </div>
     </div>
 
     <!-- ۳. مدیر شعبه -->
     <div class="portal-card">
-      <div class="card-icon branch">🏢</div>
+      <div class="card-icon branch">
+        <svg class="ic" viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/></svg>
+      </div>
       <h2>پنل مدیر شعبه</h2>
       <p class="desc">مدیریت سفارشات، کارت‌ها، کارمندان، گروه‌ها و نیروهای شعبه خود.</p>
       <div class="actions">
-        <a href="?page=branchmanager" class="btn btn-primary">🔐 ورود به پنل</a>
+        <a href="BranchManager.html" class="btn btn-primary">
+          <svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          ورود به پنل
+        </a>
       </div>
     </div>
 
     <!-- ۴. کارمند -->
     <div class="portal-card">
-      <div class="card-icon employee">📋</div>
+      <div class="card-icon employee">
+        <svg class="ic" viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
       <h2>پنل کارمند</h2>
       <p class="desc">ثبت و پیگیری سفارشات، مدیریت کارت‌ها، گروه‌ها، نیروها و پشتیبانی مشتریان.</p>
       <div class="actions">
-        <a href="?page=employee" class="btn btn-primary">🔐 ورود به پنل</a>
+        <a href="Employee.html" class="btn btn-primary">
+          <svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          ورود به پنل
+        </a>
       </div>
     </div>
 
     <!-- ۵. سرپرست -->
     <div class="portal-card">
-      <div class="card-icon supervisor">👥</div>
+      <div class="card-icon supervisor">
+        <svg class="ic" viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
       <h2>پنل سرپرست</h2>
       <p class="desc">مدیریت اعضای گروه، تخصیص کارت‌ها، مکاتبات با متخصصان و گزارش عملکرد.</p>
       <div class="actions">
-        <a href="?page=supervisor" class="btn btn-primary">🔐 ورود به پنل</a>
+        <a href="Supervisor.html" class="btn btn-primary">
+          <svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          ورود به پنل
+        </a>
       </div>
     </div>
 
     <!-- ۶. متخصص / کارگر -->
     <div class="portal-card">
-      <div class="card-icon worker">🔧</div>
+      <div class="card-icon worker">
+        <svg class="ic" viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z"/></svg>
+      </div>
       <h2>پنل متخصص</h2>
       <p class="desc">مشاهده کارت‌های تخصیص‌یافته، تغییر وضعیت، برنامه کاری هفتگی و ارتباط با سرپرست.</p>
       <div class="actions">
-        <a href="?page=worker" class="btn btn-primary">🔐 ورود به پنل</a>
+        <a href="Worker.html" class="btn btn-primary">
+          <svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          ورود به پنل
+        </a>
       </div>
     </div>
 
     <!-- ۷. اپراتور -->
     <div class="portal-card">
-      <div class="card-icon operator">🎧</div>
+      <div class="card-icon operator">
+        <svg class="ic" viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.13.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.45c.9.34 1.84.57 2.8.7A2 2 0 0 1 22 16.9z"/></svg>
+      </div>
       <h2>پنل اپراتور</h2>
       <p class="desc">ثبت درخواست‌های جدید مشتریان و پیگیری وضعیت سفارشات ثبت‌شده.</p>
       <div class="actions">
-        <a href="?page=operator" class="btn btn-primary">🔐 ورود به پنل</a>
+        <a href="Operator.html" class="btn btn-primary">
+          <svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          ورود به پنل
+        </a>
       </div>
     </div>
 
     <!-- ۸. مشتری -->
     <div class="portal-card">
-      <div class="card-icon customer">👤</div>
+      <div class="card-icon customer">
+        <svg class="ic" viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
       <h2>پنل مشتریان</h2>
       <p class="desc">پیگیری سفارشات و کارت‌ها، مشاهده فاکتورها، ارسال پیام به پشتیبانی و ثبت درخواست جدید.</p>
       <div class="actions">
-        <a href="?page=customer" class="btn btn-primary">🔐 ورود به پنل</a>
-        <a href="?page=user" class="btn btn-outline" style="margin-top:8px">📝 ثبت درخواست خدمات</a>
+        <a href="Customer.html" class="btn btn-primary">
+          <svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          ورود به پنل
+        </a>
       </div>
     </div>
 
@@ -334,6 +366,18 @@ button,a{font:inherit;color:inherit;text-decoration:none}
   <p>© ۱۴۰۵ کلیه حقوق برای شرکت فناوری اطلاعات و ارتباطات دیجیتال محفوظ است.</p>
   <p style="margin-top:8px">📞 021-9100 4567 &nbsp;|&nbsp; ✉️ info@zingovingo.ir</p>
 </footer>
+
+<script>
+// ═══════════════════════════════════════════════════
+// Theme persistence (optional)
+// ═══════════════════════════════════════════════════
+(function(){
+  try{
+    const t = localStorage.getItem('zv_theme');
+    if(t) document.documentElement.dataset.theme = t;
+  }catch(e){}
+})();
+</script>
 
 </body>
 </html>
