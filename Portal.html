@@ -1,99 +1,274 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <base target="_top">
-<title>ورود به پنل‌ها | ZingoVingo</title>
-<script src="zv-api.js"></script>
+<title>درگاه ورود به پنل‌ها | ZingoVingo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#0B1736;--navy-light:#1a2a4d;--orange:#FF6B1A;--orange-light:#ff8533;--bg:#f4f6fb;--text:#172033;--muted:#657086;--line:#dfe4ee;--white:#fff;--green:#067647;--danger:#b42318;--blue:#1849a9;--yellow:#f79009;--shadow:0 2px 10px #17203308;--radius:14px}
+/* ═══════════════════════════════════════════════════
+   1) DESIGN TOKENS
+   ═══════════════════════════════════════════════════ */
+:root{
+  --navy:#0B1736;--navy2:#13234D;--navy3:#1B2F63;
+  --brand:#FF6B1A;--brand2:#FF8A3D;--brandDeep:#E4570B;
+  --blue:#2E63E7;--violet:#7C4DFF;--teal:#0FA3A3;
+  --green:#0E9F6E;--amber:#D97706;--red:#E02D3C;--pink:#E0447C;--slate:#64748B;
+  --bg:#F3F5FB;--surface:#fff;--surface2:#F6F8FD;
+  --ink:#101A33;--muted:#5C6784;--line:#E2E7F3;--line2:#D3DAEC;
+  --scrim:rgba(7,13,31,.58);--sh:0 6px 22px rgba(11,23,54,.07);--sh2:0 16px 44px rgba(11,23,54,.16);
+  --r:16px;--tr:180ms ease;
+  --grad:linear-gradient(135deg,#FF6B1A,#FF8A3D 55%,#FFB25E);
+  --hero:linear-gradient(120deg,#0B1736,#16295B 45%,#3B2E7E 78%,#7C4DFF 130%);
+  --glass:rgba(148,163,184,.16);--glassBrd:rgba(100,116,139,.28);--panBg:rgba(17,26,48,.9);
+}
+[data-theme=dark]{
+  --bg:#070D1F;--surface:#0E1830;--surface2:#121F3D;
+  --ink:#E9EEFC;--muted:#93A0C2;--line:#1D2B4F;--line2:#27375F;
+  --scrim:rgba(2,6,18,.74);--sh:0 8px 26px rgba(0,0,0,.42);--sh2:0 18px 50px rgba(0,0,0,.58);
+  --glass:rgba(203,213,225,.11);--glassBrd:rgba(148,163,184,.26);
+}
+
+/* ═══════════════════════════════════════════════════
+   2) BASE
+   ═══════════════════════════════════════════════════ */
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;line-height:1.7;font-size:14px;min-height:100vh}
-.portal-hero{background:linear-gradient(135deg,var(--navy) 0%,#203968 100%);color:#fff;padding:40px 20px 60px;text-align:center;position:relative;overflow:hidden}
-.portal-hero::before{content:'';position:absolute;top:-50%;right:-20%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,107,26,.15) 0%,transparent 70%);border-radius:50%}
-.portal-hero::after{content:'';position:absolute;bottom:-30%;left:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(255,107,26,.1) 0%,transparent 70%);border-radius:50%}
-.portal-hero .brand{font-size:32px;font-weight:900;margin-bottom:8px;position:relative;z-index:1}
-.portal-hero .brand span{color:var(--orange)}
-.portal-hero h1{font-size:22px;margin-bottom:10px;position:relative;z-index:1}
-.portal-hero p{color:#d2d9e8;font-size:13px;max-width:600px;margin:0 auto;position:relative;z-index:1}
-.portal-back{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:8px 16px;border-radius:10px;text-decoration:none;font-size:13px;cursor:pointer;z-index:2;transition:all .2s}
-.portal-back:hover{background:rgba(255,255,255,.2)}
-.portal-container{max-width:1200px;margin:-40px auto 40px;padding:0 20px;position:relative;z-index:2}
-.portal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
-.portal-card{background:#fff;border-radius:18px;padding:24px;box-shadow:var(--shadow);border:1px solid var(--line);transition:all .25s;position:relative;overflow:hidden}
-.portal-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(11,23,54,.12)}
-.portal-card.featured{border:2px solid var(--orange)}
-.portal-card.featured::before{content:'ویژه';position:absolute;top:12px;left:12px;background:var(--orange);color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px}
-.card-icon{width:64px;height:64px;border-radius:16px;display:grid;place-items:center;font-size:32px;margin-bottom:14px}
-.card-icon.customer{background:#fff0e7;color:var(--orange)}
-.card-icon.staff{background:#edf2ff;color:var(--blue)}
-.card-icon.manager{background:#e7f7f1;color:var(--green)}
-.card-icon.employee{background:#fff7ed;color:var(--yellow)}
-.card-icon.supervisor{background:#f3e8ff;color:#7c3aed}
-.card-icon.worker{background:#fef3f2;color:var(--danger)}
-.card-icon.operator{background:#e0f2fe;color:#0284c7}
-.portal-card h2{font-size:18px;color:var(--navy);margin-bottom:6px}
-.portal-card .desc{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.8}
-.portal-card .actions{display:flex;gap:8px;flex-wrap:wrap}
-.portal-card .actions .btn{flex:1;min-width:120px}
-.btn{border:0;border-radius:10px;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:13px}
-.btn-primary{background:var(--orange);color:#fff}.btn-primary:hover{background:var(--orange-light);transform:translateY(-1px)}
-.btn-secondary{background:#eef1f7;color:var(--navy)}.btn-secondary:hover{background:#dfe4ee}
-.btn-dark{background:var(--navy);color:#fff}.btn-dark:hover{background:var(--navy-light)}
-.btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--line)}.btn-outline:hover{border-color:var(--orange);color:var(--orange)}
-.portal-footer{text-align:center;padding:30px 20px;color:var(--muted);font-size:12px}
-.portal-footer a{color:var(--orange);text-decoration:none}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Vazirmatn',Tahoma,sans-serif;
+  background:var(--bg);color:var(--ink);
+  font-size:14px;line-height:1.75;min-height:100vh;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:-2;
+  background:
+    radial-gradient(700px 420px at 92% -6%,rgba(255,107,26,.14),transparent 60%),
+    radial-gradient(640px 460px at -8% 108%,rgba(46,99,231,.13),transparent 60%),
+    radial-gradient(520px 380px at 55% 118%,rgba(124,77,255,.09),transparent 60%);
+}
+button,a{font:inherit;color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid rgba(255,107,26,.45);outline-offset:2px;border-radius:8px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--line2),var(--slate));border-radius:9px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--brand2),var(--brandDeep))}
+
+/* ═══════════════════════════════════════════════════
+   3) BRAND FONT (Nunito Black)
+   ═══════════════════════════════════════════════════ */
+.zv-brand,.portal-hero .brand,.portal-footer .brand{
+  font-family:'Nunito','Vazirmatn',Tahoma,sans-serif !important;
+  font-weight:900 !important;letter-spacing:-0.5px;
+}
+.zv-brand span,.portal-hero .brand span,.portal-footer .brand span{
+  font-family:'Nunito',sans-serif !important;font-weight:900 !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   4) HERO SECTION
+   ═══════════════════════════════════════════════════ */
+.portal-hero{
+  background:var(--hero);color:#fff;
+  padding:42px 24px 70px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.portal-hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(420px 220px at 88% 20%,rgba(255,107,26,.42),transparent 60%),
+    radial-gradient(300px 200px at 10% 110%,rgba(15,163,163,.32),transparent 60%);
+}
+.portal-hero::after{
+  content:'';position:absolute;inset:0;opacity:.17;
+  background-image:radial-gradient(rgba(255,255,255,.85) 1px,transparent 1px);
+  background-size:22px 22px;
+}
+.portal-hero>*{position:relative;z-index:1}
+.portal-hero .brand{font-size:34px;margin-bottom:8px}
+.portal-hero .brand span{color:var(--brand2)}
+.portal-hero h1{font-size:20px;font-weight:800;margin-bottom:10px}
+.portal-hero p{color:#C9D4F2;font-size:13px;max-width:640px;margin:0 auto;line-height:1.9}
+.portal-back{
+  position:absolute;top:20px;right:20px;z-index:2;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
+  color:#fff;padding:8px 16px;border-radius:11px;font-size:12px;font-weight:700;
+  transition:all var(--tr);
+}
+.portal-back:hover{background:rgba(255,255,255,.22);transform:translateY(-1px)}
+
+/* ═══════════════════════════════════════════════════
+   5) PORTAL GRID
+   ═══════════════════════════════════════════════════ */
+.portal-container{
+  max-width:1280px;margin:-40px auto 40px;padding:0 20px;
+  position:relative;z-index:2;
+}
+.portal-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:18px;
+}
+
+/* ═══════════════════════════════════════════════════
+   6) GLASS CARD
+   ═══════════════════════════════════════════════════ */
+.portal-card{
+  background:rgba(243,245,251,.55);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  border:1px solid rgba(148,163,184,.28);
+  border-radius:18px;padding:24px;
+  box-shadow:0 8px 32px rgba(11,23,54,.08);
+  transition:all var(--tr);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.portal-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 44px rgba(11,23,54,.14);
+  border-color:rgba(255,107,26,.35);
+}
+.portal-card::before{
+  content:'';position:absolute;top:0;right:0;width:4px;height:100%;
+  background:var(--grad);border-radius:0 4px 4px 0;
+  opacity:0;transition:opacity var(--tr);
+}
+.portal-card:hover::before{opacity:1}
+
+/* Featured card (Administrator) */
+.portal-card.featured{
+  background:rgba(255,107,26,.06);
+  border-color:rgba(255,107,26,.35);
+}
+.portal-card.featured::before{opacity:1}
+.portal-card.featured .card-icon{background:var(--grad);color:#fff;box-shadow:0 6px 18px rgba(255,107,26,.35)}
+
+/* ═══════════════════════════════════════════════════
+   7) CARD ICON
+   ═══════════════════════════════════════════════════ */
+.card-icon{
+  width:60px;height:60px;border-radius:15px;
+  display:grid;place-items:center;font-size:28px;
+  margin-bottom:14px;flex:0 0 auto;
+  transition:transform var(--tr);
+}
+.portal-card:hover .card-icon{transform:scale(1.05)}
+.card-icon.admin{background:rgba(255,107,26,.12);color:var(--brand)}
+.card-icon.manager{background:rgba(124,77,255,.12);color:var(--violet)}
+.card-icon.branch{background:rgba(15,163,163,.12);color:var(--teal)}
+.card-icon.employee{background:rgba(46,99,231,.12);color:var(--blue)}
+.card-icon.supervisor{background:rgba(224,68,124,.12);color:var(--pink)}
+.card-icon.worker{background:rgba(14,159,110,.12);color:var(--green)}
+.card-icon.operator{background:rgba(217,119,6,.12);color:var(--amber)}
+.card-icon.customer{background:rgba(224,45,60,.12);color:var(--red)}
+
+/* ═══════════════════════════════════════════════════
+   8) CARD CONTENT
+   ═══════════════════════════════════════════════════ */
+.portal-card h2{
+  font-size:17px;font-weight:900;color:var(--navy);
+  margin-bottom:6px;
+}
+.portal-card .desc{
+  font-size:12px;color:var(--muted);line-height:1.85;
+  margin-bottom:18px;flex:1;
+}
+.portal-card .actions{margin-top:auto}
+
+/* ═══════════════════════════════════════════════════
+   9) BUTTONS
+   ═══════════════════════════════════════════════════ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:40px;padding:10px 18px;border-radius:11px;
+  border:1px solid transparent;font-size:13px;font-weight:800;
+  cursor:pointer;transition:all var(--tr);white-space:nowrap;width:100%;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 6px 18px rgba(255,107,26,.35)}
+.btn-primary:hover{box-shadow:0 10px 26px rgba(255,107,26,.5)}
+.btn-soft{background:var(--surface2);border-color:var(--line);color:var(--ink)}
+.btn-soft:hover{border-color:var(--brand);color:var(--brandDeep)}
+.btn-dark{background:var(--navy);color:#fff}
+.btn-dark:hover{background:var(--navy2)}
+.btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--line)}
+.btn-outline:hover{border-color:var(--brand);color:var(--brandDeep)}
+
+/* ═══════════════════════════════════════════════════
+   10) FOOTER
+   ═══════════════════════════════════════════════════ */
+.portal-footer{
+  text-align:center;padding:30px 20px 40px;
+  color:var(--muted);font-size:12px;
+}
+.portal-footer .brand{font-size:18px;color:var(--navy);margin-bottom:6px}
+.portal-footer .brand span{color:var(--brand)}
+.portal-footer p{margin:4px 0}
+
+/* ═══════════════════════════════════════════════════
+   11) RESPONSIVE
+   ═══════════════════════════════════════════════════ */
 @media(max-width:700px){
-  .portal-hero{padding:30px 16px 50px}
-  .portal-hero .brand{font-size:26px}
-  .portal-hero h1{font-size:18px}
-  .portal-container{margin-top:-30px}
+  .portal-hero{padding:30px 16px 60px}
+  .portal-hero .brand{font-size:28px}
+  .portal-hero h1{font-size:17px}
+  .portal-container{margin-top:-30px;padding:0 14px}
   .portal-grid{grid-template-columns:1fr;gap:14px}
   .portal-card{padding:18px}
-  .card-icon{width:54px;height:54px;font-size:26px}
+  .card-icon{width:52px;height:52px;font-size:24px}
+}
+@media(max-width:480px){
+  .portal-hero .brand{font-size:24px}
+  .portal-back{top:12px;right:12px;padding:6px 12px;font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
 </style>
 </head>
 <body>
 
+<!-- ═══ HERO ═══ -->
 <section class="portal-hero">
   <a href="?page=landing" class="portal-back">← بازگشت به صفحه اصلی</a>
-  <div class="brand">Zingo<span>Vingo</span></div>
-  <h1>🚪 ورود به پنل‌های سامانه</h1>
-  <p>نقش خود را انتخاب کنید تا به پنل مربوطه هدایت شوید. مشتریان و کارجویان عزیز نیز می‌توانند از بخش‌های مخصوص خود استفاده کنند.</p>
+  <div class="brand zv-brand">Zingo<span>Vingo</span></div>
+  <h1>🚪 درگاه ورود به پنل‌های سامانه</h1>
+  <p>نقش سازمانی خود را انتخاب کنید تا به پنل اختصاصی هدایت شوید. ورود با نام کاربری و رمز عبور در داخل هر پنل انجام می‌شود.</p>
 </section>
 
+<!-- ═══ PORTAL GRID ═══ -->
 <div class="portal-container">
   <div class="portal-grid">
 
-    <!-- ۱. مشتری (ویژه) -->
+    <!-- ۱. ادمین ارشد (ویژه) -->
     <div class="portal-card featured">
-      <div class="card-icon customer">👤</div>
-      <h2>پنل مشتریان</h2>
-      <p class="desc">مشتریان گرامی می‌توانند وارد پنل خود شده، سفارشات و کارت‌هایشان را پیگیری کنند، یا درخواست جدیدی ثبت نمایند.</p>
+      <div class="card-icon admin">👑</div>
+      <h2>پنل مدیر ارشد</h2>
+      <p class="desc">مرکز فرماندهی کامل سامانه — مدیریت شعب، کارمندان، نیروها، سفارشات، کارت‌ها، گزارش‌ها و تنظیمات.</p>
       <div class="actions">
-        <a href="?page=customer" class="btn btn-primary">🔐 ورود به پنل</a>
-        <a href="?page=user" class="btn btn-outline">📝 ثبت درخواست</a>
+        <a href="?page=administrator" class="btn btn-primary">🔐 ورود به پنل</a>
       </div>
     </div>
 
-    <!-- ۲. کارکنان / کارجویان -->
+    <!-- ۲. مدیر کل -->
     <div class="portal-card">
-      <div class="card-icon staff">👷</div>
-      <h2>پنل کارکنان</h2>
-      <p class="desc">کارمندان، سرپرستان و متخصصان ZingoVingo از این بخش وارد می‌شوند. کارجویان عزیز نیز می‌توانند درخواست همکاری ثبت کنند.</p>
+      <div class="card-icon manager">🏛️</div>
+      <h2>پنل مدیر کل</h2>
+      <p class="desc">نظارت بر عملکرد همه شعب، مشاهده گزارش‌های جامع و مدیریت کلان سازمان.</p>
       <div class="actions">
-        <a href="?page=employee" class="btn btn-dark">🔐 ورود کارمند</a>
-        <a href="?page=jobform" class="btn btn-outline">📄 ثبت درخواست همکاری</a>
+        <a href="?page=manager" class="btn btn-dark">🔐 ورود به پنل</a>
       </div>
     </div>
 
     <!-- ۳. مدیر شعبه -->
     <div class="portal-card">
-      <div class="card-icon manager">🏢</div>
+      <div class="card-icon branch">🏢</div>
       <h2>پنل مدیر شعبه</h2>
-      <p class="desc">مدیران شعب می‌توانند سفارشات، کارت‌ها، کارمندان، گروه‌ها و نیروهای شعبه خود را مدیریت کنند.</p>
+      <p class="desc">مدیریت سفارشات، کارت‌ها، کارمندان، گروه‌ها و نیروهای شعبه خود.</p>
       <div class="actions">
         <a href="?page=branchmanager" class="btn btn-primary">🔐 ورود به پنل</a>
       </div>
@@ -103,17 +278,17 @@ body{background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;
     <div class="portal-card">
       <div class="card-icon employee">📋</div>
       <h2>پنل کارمند</h2>
-      <p class="desc">کارمندان شعبه می‌توانند سفارشات، کارت‌ها، گروه‌ها و نیروها را مشاهده و مدیریت کنند.</p>
+      <p class="desc">ثبت و پیگیری سفارشات، مدیریت کارت‌ها، گروه‌ها، نیروها و پشتیبانی مشتریان.</p>
       <div class="actions">
         <a href="?page=employee" class="btn btn-primary">🔐 ورود به پنل</a>
       </div>
     </div>
 
-    <!-- ۵. سوپروایزر -->
+    <!-- ۵. سرپرست -->
     <div class="portal-card">
       <div class="card-icon supervisor">👥</div>
-      <h2>پنل سوپروایزر</h2>
-      <p class="desc">سرپرستان گروه‌ها می‌توانند اعضای گروه، کارت‌ها، مکاتبات و گزارش عملکرد را مدیریت کنند.</p>
+      <h2>پنل سرپرست</h2>
+      <p class="desc">مدیریت اعضای گروه، تخصیص کارت‌ها، مکاتبات با متخصصان و گزارش عملکرد.</p>
       <div class="actions">
         <a href="?page=supervisor" class="btn btn-primary">🔐 ورود به پنل</a>
       </div>
@@ -123,7 +298,7 @@ body{background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;
     <div class="portal-card">
       <div class="card-icon worker">🔧</div>
       <h2>پنل متخصص</h2>
-      <p class="desc">متخصصان و کارگران می‌توانند کارت‌های تخصیص‌یافته به خود را مشاهده، وضعیت را تغییر و با سرپرست در ارتباط باشند.</p>
+      <p class="desc">مشاهده کارت‌های تخصیص‌یافته، تغییر وضعیت، برنامه کاری هفتگی و ارتباط با سرپرست.</p>
       <div class="actions">
         <a href="?page=worker" class="btn btn-primary">🔐 ورود به پنل</a>
       </div>
@@ -133,18 +308,31 @@ body{background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;
     <div class="portal-card">
       <div class="card-icon operator">🎧</div>
       <h2>پنل اپراتور</h2>
-      <p class="desc">اپراتورهای ZingoVingo می‌توانند سفارشات جدید ثبت و وضعیت سفارشات خود را پیگیری کنند.</p>
+      <p class="desc">ثبت درخواست‌های جدید مشتریان و پیگیری وضعیت سفارشات ثبت‌شده.</p>
       <div class="actions">
         <a href="?page=operator" class="btn btn-primary">🔐 ورود به پنل</a>
+      </div>
+    </div>
+
+    <!-- ۸. مشتری -->
+    <div class="portal-card">
+      <div class="card-icon customer">👤</div>
+      <h2>پنل مشتریان</h2>
+      <p class="desc">پیگیری سفارشات و کارت‌ها، مشاهده فاکتورها، ارسال پیام به پشتیبانی و ثبت درخواست جدید.</p>
+      <div class="actions">
+        <a href="?page=customer" class="btn btn-primary">🔐 ورود به پنل</a>
+        <a href="?page=user" class="btn btn-outline" style="margin-top:8px">📝 ثبت درخواست خدمات</a>
       </div>
     </div>
 
   </div>
 </div>
 
+<!-- ═══ FOOTER ═══ -->
 <footer class="portal-footer">
-  <p>© ۱۴۰۵ کلیه حقوق برای شرکت فناوری اطلاعات و ارتباطات دیجیتال <strong>ZingoVingo</strong> محفوظ است.</p>
-  <p style="margin-top:6px">📞 021-9100 4567 | ✉️ info@zingovingo.ir</p>
+  <div class="brand zv-brand">Zingo<span>Vingo</span></div>
+  <p>© ۱۴۰۵ کلیه حقوق برای شرکت فناوری اطلاعات و ارتباطات دیجیتال محفوظ است.</p>
+  <p style="margin-top:8px">📞 021-9100 4567 &nbsp;|&nbsp; ✉️ info@zingovingo.ir</p>
 </footer>
 
 </body>
