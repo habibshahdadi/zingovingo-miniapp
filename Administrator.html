@@ -6,46 +6,72 @@
 <base target="_top">
 <title>مرکز مدیریت سامانه | ZingoVingo</title>
 
-<!-- ① فقط این یک خط را با آدرس /exec واقعی خودت پر کن -->
 <meta name="zv-api-url" content="https://script.google.com/macros/s/AKfycbwjFAiqfPiLijKT5sF63GQocU7tWvrlfFbZCY9CQ39_R_tMT9xq_dZFVSkR-mCaPhgh/exec">
 
 <link id="zvFavicon" rel="icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-<!-- ② تله خطا: فقط خطای واقعی JS قرمز می‌شود، نه 404 منابع -->
+<!-- ① تله خطا: فقط خطای واقعیِ برنامه قرمز می‌شود -->
 <script>
 window.__zvErrors = [];
+window.__zvModern = (function () {
+  try { new Function('a', 'return a?.b ?? 0'); return true; } catch (e) { return false; }
+})();
 window.addEventListener('error', function (ev) {
   var t = ev && ev.target;
+  /* الف) منبع بارگذاری نشد (404 / شبکه) → فقط کنسول */
   if (t && t !== window && t.tagName && /^(SCRIPT|LINK|IMG|IFRAME|SOURCE)$/.test(String(t.tagName).toUpperCase())) {
-    console.warn('منبع بارگذاری نشد (نادیده گرفته شد):', t.src || t.href);
+    console.warn('[ZV] asset failed:', t.src || t.href);
     return;
   }
-  var m = (ev.message || 'خطا') + ' @ ' + (ev.lineno || 0) + ':' + (ev.colno || 0);
-  window.__zvErrors.push(m);
+  var msg = String((ev && ev.message) || '').trim();
+  /* ب) خطای مبهم cross-origin بدون شماره خط → بی‌خطر، فقط کنسول */
+  if (!ev.lineno && (/^Script error\.?$/i.test(msg) || msg === '')) {
+    console.warn('[ZV] cross-origin script error ignored');
+    return;
+  }
+  /* ج) خطای واقعی برنامه → نوار قرمز */
+  window.__zvErrors.push(msg + ' @ ' + (ev.lineno || 0) + ':' + (ev.colno || 0));
   var b = document.getElementById('zvFatal');
   if (b) { b.style.display = 'block'; b.textContent = 'خطای اسکریپت: ' + window.__zvErrors.join(' | '); }
 }, true);
+window.addEventListener('unhandledrejection', function (ev) {
+  console.warn('[ZV] promise rejected:', ev && ev.reason);
+});
 </script>
 
-<!-- ③ لایه سازگاری، سپس پل ارتباطی — ترتیب مهم است -->
+<!-- ② لایه سازگاری، سپس پل ارتباطی — ترتیب مهم است -->
 <script src="zv-compat.js"></script>
 <script src="zv-api.js"></script>
 
-<!-- ④ نمودار با تلاش مجدد خودکار -->
+<!-- ③ نمودار: crossorigin برای نمایش خطای واقعی در صورت بروز -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
-        onerror="window.zvEnsureChart && window.zvEnsureChart()"></script>
+        crossorigin="anonymous"
+        onerror="console.warn('[ZV] Chart.js load failed')"></script>
+
+<!-- ④ در مرورگر قدیمی، جای نمودار پیام محترمانه نشان بده -->
 <script>
-window.__zvErrors=[];
-window.addEventListener('error',function(ev){
-  var m=(ev.message||'خطا')+' @ '+(ev.lineno||0)+':'+(ev.colno||0);
-  window.__zvErrors.push(m);
-  var b=document.getElementById('zvFatal');
-  if(b){b.style.display='block';b.textContent='خطای اسکریپت: '+window.__zvErrors.join(' | ');}
+document.addEventListener('DOMContentLoaded', function () {
+  if (window.__zvModern) return;
+  var page = document.getElementById('page');
+  if (!page || !window.MutationObserver) return;
+  var note = '<div style="height:100%;display:grid;place-items:center;text-align:center;' +
+             'color:#93A0C2;font-size:11.5px;line-height:2;padding:14px">' +
+             'نمودار در مرورگر داخل پیام‌رسان پشتیبانی نمی‌شود.<br>' +
+             'برای دیدن نمودارها، «باز کردن در مرورگر» را بزنید.</div>';
+  function fill() {
+    var wraps = page.querySelectorAll('.cwrap');
+    for (var i = 0; i < wraps.length; i++) {
+      if (wraps[i].getAttribute('data-zv-note')) continue;
+      wraps[i].setAttribute('data-zv-note', '1');
+      wraps[i].innerHTML = note;
+    }
+  }
+  fill();
+  new MutationObserver(fill).observe(page, { childList: true, subtree: true });
 });
 </script>
-<style>
 :root{
 --navy:#0B1736;--navy2:#13234D;--navy3:#1B2F63;--brand:#FF6B1A;--brand2:#FF8A3D;--brandDeep:#E4570B;
 --blue:#2E63E7;--violet:#7C4DFF;--teal:#0FA3A3;--green:#0E9F6E;--amber:#D97706;--red:#E02D3C;--pink:#E0447C;--slate:#64748B;
