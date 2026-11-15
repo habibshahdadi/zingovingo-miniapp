@@ -231,121 +231,41 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
 .footer p{margin:4px 0}
 
 /* ═══════════════════════════════════════════════════
-   11) JALALI DATE PICKER — اصلاح‌شده
+   11) JALALI DATE PICKER — اصلاح نهایی (Fixed Positioning)
    ═══════════════════════════════════════════════════ */
-.ja-date-wrap{
-  position:relative;
-  width:100%;
-  z-index:1; /* ← کلیدی: لایه والد را مشخص می‌کند */
-}
-.ja-date-input{
-  padding-left:48px!important;
-  direction:ltr;
-  text-align:right;
-  unicode-bidi:plaintext;
-}
+.ja-date-wrap{position:relative;width:100%;}
+.ja-date-input{padding-left:48px!important;direction:ltr;text-align:right;unicode-bidi:plaintext}
 .ja-date-btn{
-  position:absolute;
-  left:6px;
-  top:50%;
-  transform:translateY(-50%);
-  border:0;
-  border-radius:8px;
-  background:var(--surface2);
-  color:var(--navy);
-  padding:6px 9px;
-  cursor:pointer;
-  z-index:2;
+  position:absolute;left:6px;top:50%;transform:translateY(-50%);
+  border:0;border-radius:8px;background:var(--surface2);
+  color:var(--navy);padding:6px 9px;cursor:pointer;z-index:2;
   transition:all var(--tr);
 }
-.ja-date-btn:hover{
-  background:var(--brand);
-  color:#fff;
-}
+.ja-date-btn:hover{background:var(--brand);color:#fff}
 .ja-date-pop{
   display:none;
-  position:absolute;
-  top:calc(100% + 7px);
-  right:0;
+  /* position: absolute حذف شد و در JS به fixed تغییر می‌کند تا از تله backdrop-filter فرار کند */
   width:min(320px,calc(100vw - 48px));
   background:var(--surface);
   border:1px solid var(--line);
   border-radius:13px;
   padding:11px;
-  box-shadow:0 12px 32px rgba(11,23,54,.18);
-  z-index:9999; /* ← کلیدی: همیشه روی همه کارت‌ها */
+  box-shadow:0 12px 32px rgba(11,23,54,.25);
+  z-index:99999; /* بالاترین لایه ممکن */
 }
-.ja-date-pop.open{
-  display:block;
-  animation:zvCalPop .15s ease;
-}
-@keyframes zvCalPop{
-  from{opacity:0;transform:translateY(-6px)}
-  to{opacity:1;transform:none}
-}
-.ja-cal-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:4px;
-  margin-bottom:9px;
-  color:var(--navy);
-  font-weight:800;
-  font-size:13px;
-}
-.ja-cal-head button{
-  border:0;
-  background:var(--surface2);
-  border-radius:8px;
-  padding:5px 9px;
-  cursor:pointer;
-  font-size:14px;
-  transition:all var(--tr);
-}
-.ja-cal-head button:hover{
-  background:var(--brand);
-  color:#fff;
-}
-.ja-cal-head .year-display{
-  cursor:pointer;
-  padding:2px 8px;
-  border-radius:6px;
-  flex:1;
-  text-align:center;
-}
-.ja-cal-head .year-display:hover{
-  background:rgba(255,107,26,.12);
-}
-.ja-cal-grid{
-  display:grid;
-  grid-template-columns:repeat(7,minmax(0,1fr));
-  gap:4px;
-  text-align:center;
-}
-.ja-cal-grid button{
-  border:0;
-  border-radius:7px;
-  padding:7px 0;
-  background:var(--surface2);
-  cursor:pointer;
-  color:var(--ink);
-  font:inherit;
-  font-size:12px;
-  transition:all var(--tr);
-}
-.ja-cal-grid button:hover{
-  background:rgba(255,107,26,.15);
-  color:var(--brandDeep);
-}
-.ja-cal-grid .day-label{
-  background:transparent;
-  color:var(--muted);
-  font-weight:700;
-}
-.ja-cal-grid .today{
-  outline:2px solid var(--brand);
-  outline-offset:-2px;
-}
+.ja-date-pop.open{display:block;animation:zvCalPop .15s ease}
+@keyframes zvCalPop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.ja-cal-head{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:9px;color:var(--navy);font-weight:800;font-size:13px}
+.ja-cal-head button{border:0;background:var(--surface2);border-radius:8px;padding:5px 9px;cursor:pointer;font-size:14px;transition:all var(--tr)}
+.ja-cal-head button:hover{background:var(--brand);color:#fff}
+.ja-cal-head .year-display{cursor:pointer;padding:2px 8px;border-radius:6px;flex:1;text-align:center}
+.ja-cal-head .year-display:hover{background:rgba(255,107,26,.12)}
+.ja-cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}
+.ja-cal-grid button{border:0;border-radius:7px;padding:7px 0;background:var(--surface2);cursor:pointer;color:var(--ink);font:inherit;font-size:12px;transition:all var(--tr)}
+.ja-cal-grid button:hover{background:rgba(255,107,26,.15);color:var(--brandDeep)}
+.ja-cal-grid .day-label{background:transparent;color:var(--muted);font-weight:700}
+.ja-cal-grid .today{outline:2px solid var(--brand);outline-offset:-2px}
+
 /* ═══════════════════════════════════════════════════
    12) RESPONSIVE
    ═══════════════════════════════════════════════════ */
@@ -377,7 +297,7 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
     بازگشت به صفحه اصلی
   </a>
   <div class="brand zv-brand">Zingo<span>Vingo</span></div>
-  <h1> ثبت درخواست همکاری </h1>
+  <h1>ثبت درخواست همکاری</h1>
   <p>فرم زیر را تکمیل کنید؛ کارشناسان منابع انسانی ZingoVingo در اسرع وقت با شما تماس خواهند گرفت.</p>
 </section>
 
@@ -447,9 +367,9 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
       </div>
     </div>
 
-    <!-- ۳. اطلاعات تماس -->
+    <!-- ۳. اطلاعات تماس و محل سکونت -->
     <div class="card">
-      <h2><span class="num">۳</span> اطلاعات تماس</h2>
+      <h2><span class="num">۳</span> اطلاعات تماس و محل سکونت</h2>
       <div class="grid">
         <div class="field"><label>شماره تماس <span class="required">*</span></label><input id="jf_phone" inputmode="tel" maxlength="15" placeholder="09123456789" required></div>
         <div class="field">
@@ -465,7 +385,15 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
           </select>
         </div>
         <div class="field"><label>آی‌دی پیام‌رسان</label><input id="jf_messid" maxlength="120"></div>
-        <div class="field full"><label>محل سکونت <span class="required">*</span></label><input id="jf_residence" required maxlength="250" placeholder="شهر، منطقه یا نشانی"></div>
+        <div class="field">
+          <label>استان <span class="required">*</span></label>
+          <select id="jf_province" required><option value="">انتخاب استان</option></select>
+        </div>
+        <div class="field">
+          <label>شهر <span class="required">*</span></label>
+          <select id="jf_city" required disabled><option value="">ابتدا استان را انتخاب کنید</option></select>
+        </div>
+        <div class="field full"><label>آدرس دقیق <span class="required">*</span></label><textarea id="jf_residence" required maxlength="500" placeholder="خیابان، کوچه، پلاک، واحد…"></textarea></div>
       </div>
     </div>
 
@@ -577,20 +505,22 @@ function showAlert(msg,type){
 
 function validateForm(){
   var phone=normalizeDigits($('jf_phone').value).replace(/[\s-]/g,'');
-  if(!$('jf_first').value.trim())return 'نام الزامی است.';
-  if(!$('jf_last').value.trim())return 'نام خانوادگی الزامی است.';
-  if(!$('jf_gender').value)return 'جنسیت را انتخاب کنید.';
-  if(!parseJ($('jf_birth').value))return 'تاریخ تولد را به شکل ۱۳۷۵/۰۵/۲۲ وارد کنید.';
-  if(!$('jf_specialty').value.trim())return 'تخصص اصلی الزامی است.';
-  if(!/^09\d{9}$/.test(phone))return 'شماره تماس باید ۱۱ رقم و با 09 شروع شود.';
-  if(!$('jf_residence').value.trim())return 'محل سکونت الزامی است.';
-  if(!$('jf_position').value.trim())return 'موقعیت درخواستی الزامی است.';
+  if(!$('jf_first').value.trim()) return 'نام الزامی است.';
+  if(!$('jf_last').value.trim()) return 'نام خانوادگی الزامی است.';
+  if(!$('jf_gender').value) return 'جنسیت را انتخاب کنید.';
+  if(!parseJ($('jf_birth').value)) return 'تاریخ تولد را به شکل ۱۳۷۵/۰۵/۲۲ وارد کنید.';
+  if(!$('jf_specialty').value.trim()) return 'تخصص اصلی الزامی است.';
+  if(!/^09\d{9}$/.test(phone)) return 'شماره تماس باید ۱۱ رقم و با 09 شروع شود.';
+  if(!$('jf_province').value) return 'لطفاً استان را انتخاب کنید.';
+  if(!$('jf_city').value) return 'لطفاً شهر را انتخاب کنید.';
+  if(!$('jf_residence').value.trim()) return 'آدرس دقیق الزامی است.';
+  if(!$('jf_position').value.trim()) return 'موقعیت درخواستی الزامی است.';
   return null;
 }
 
 function submitAll(){
   var err=validateForm();
-  if(err)return showAlert(err,'error');
+  if(err) return showAlert(err,'error');
 
   var data={
     firstName:$('jf_first').value.trim(),
@@ -606,6 +536,8 @@ function submitAll(){
     phone:normalizeDigits($('jf_phone').value).replace(/[\s-]/g,''),
     messenger:$('jf_messenger').value,
     messengerId:$('jf_messid').value.trim(),
+    province:$('jf_province').value,
+    city:$('jf_city').value,
     residence:$('jf_residence').value.trim(),
     source:$('jf_source').value,
     referrer:$('jf_referrer').value.trim(),
@@ -617,7 +549,6 @@ function submitAll(){
   btn.disabled=true;
   btn.innerHTML='<svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px;animation:spin 1s linear infinite"><circle cx="12" cy="12" r="9" stroke-dasharray="20" stroke-dashoffset="10"/></svg> در حال ارسال…';
 
-  // Apps Script call
   if(window.google && google.script && google.script.run){
     google.script.run
       .withSuccessHandler(function(r){
@@ -637,7 +568,6 @@ function submitAll(){
       })
       .submitPublicJobApplication(data);
   }else{
-    // Fallback for local testing
     btn.disabled=false;
     btn.innerHTML='<svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.86L3 21l1.9-5.2A8.4 8.4 0 1 1 21 11.5z"/></svg> ارسال درخواست همکاری';
     showAlert('این فرم باید از طریق Apps Script اجرا شود. داده‌ها در کنسول لاگ شدند.','info');
@@ -646,34 +576,35 @@ function submitAll(){
 }
 
 function resetForm(){
-  ['jf_first','jf_last','jf_gender','jf_birth','jf_marital','jf_specialty','jf_experience','jf_education','jf_field','jf_skills','jf_phone','jf_messenger','jf_messid','jf_residence','jf_source','jf_referrer','jf_position','jf_notes'].forEach(function(id){
+  ['jf_first','jf_last','jf_gender','jf_birth','jf_marital','jf_specialty','jf_experience','jf_education','jf_field','jf_skills','jf_phone','jf_messenger','jf_messid','jf_province','jf_city','jf_residence','jf_source','jf_referrer','jf_position','jf_notes'].forEach(function(id){
     var el=$(id);
-    if(el.tagName==='SELECT')el.selectedIndex=0;
+    if(el.tagName==='SELECT') el.selectedIndex=0;
     else el.value='';
   });
+  $('jf_city').disabled = true;
 }
 
 function submitJobForm(ev){
-  if(ev)ev.preventDefault();
+  if(ev) ev.preventDefault();
   submitAll();
 }
 
 /* ═══════════════════════════════════════════════════
-   JALALI CALENDAR UI
+   JALALI CALENDAR UI (با رفع مشکل Stacking Context)
    ═══════════════════════════════════════════════════ */
 (function initJalaliCalendar(){
   var months=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
   var wrap=document.querySelector('.ja-date-wrap');
-  if(!wrap)return;
+  if(!wrap) return;
   var input=wrap.querySelector('input');
   var btn=wrap.querySelector('.ja-date-btn');
   var pop=wrap.querySelector('.ja-date-pop');
-  if(!input||!btn||!pop)return;
+  if(!input||!btn||!pop) return;
 
   var now=new Date();
   var jy,jm;
   var jNow=g2j(now.getFullYear(),now.getMonth()+1,now.getDate());
-  jy=jNow[0];jm=jNow[1];
+  jy=jNow[0]; jm=jNow[1];
 
   function render(){
     var today=g2j(now.getFullYear(),now.getMonth()+1,now.getDate());
@@ -688,7 +619,7 @@ function submitJobForm(ev){
     html+='<button type="button" data-next-year title="سال بعد">»</button>';
     html+='</div><div class="ja-cal-grid">';
     ['ش','ی','د','س','چ','پ','ج'].forEach(function(x){html+='<button type="button" class="day-label" disabled>'+x+'</button>';});
-    for(var i=0;i<weekday;i++)html+='<span></span>';
+    for(var i=0;i<weekday;i++) html+='<span></span>';
     for(var d=1;d<=max;d++){
       var isToday=today[0]===jy&&today[1]===jm&&today[2]===d;
       html+='<button type="button" data-day="'+d+'" class="'+(isToday?'today':'')+'">'+toFaDigits(d)+'</button>';
@@ -702,10 +633,9 @@ function submitJobForm(ev){
     pop.querySelector('[data-next-year]').onclick=function(e){e.stopPropagation();jy++;render();};
     pop.querySelector('[data-year-input]').onclick=function(e){
       e.stopPropagation();
-      var inp=document.createElement('input');
-      inp.type='number';inp.min='1300';inp.max='1500';inp.value=jy;
+      var inp=document.createElement('input'); inp.type='number'; inp.min='1300'; inp.max='1500'; inp.value=jy;
       inp.style.cssText='width:70px;text-align:center;font-weight:bold;border:1px solid var(--brand);border-radius:6px;padding:2px;font-size:13px';
-      e.target.replaceWith(inp);inp.focus();inp.select();
+      e.target.replaceWith(inp); inp.focus(); inp.select();
       var saveYear=function(){var ny=parseInt(inp.value);if(ny>=1300&&ny<=1500){jy=ny;render();}};
       inp.addEventListener('blur',saveYear);
       inp.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();saveYear();}if(ev.key==='Escape'){render();}});
@@ -729,18 +659,26 @@ function submitJobForm(ev){
     var parts=parseJ(input.value);
     if(parts){jy=parts[0];jm=parts[1];}
     render();
-    pop.classList.toggle('open');
+    
+    // رفع مشکل رفتن تقویم به زیر کارت‌ها: استفاده از position: fixed و محاسبه مختصات
+    var rect = input.getBoundingClientRect();
+    pop.style.position = 'fixed';
+    pop.style.top = (rect.bottom + 7) + 'px';
+    pop.style.right = (window.innerWidth - rect.right) + 'px';
+    pop.style.zIndex = '99999';
+    
+    pop.classList.add('open');
   });
 
   input.addEventListener('input',function(){
     var v=normalizeDigits(input.value).replace(/\D/g,'').slice(0,8);
-    if(v.length>4)v=v.slice(0,4)+'/'+v.slice(4);
-    if(v.length>7)v=v.slice(0,7)+'/'+v.slice(7);
+    if(v.length>4) v=v.slice(0,4)+'/'+v.slice(4);
+    if(v.length>7) v=v.slice(0,7)+'/'+v.slice(7);
     input.value=v;
   });
 
   input.addEventListener('blur',function(){
-    if(!input.value.trim())return;
+    if(!input.value.trim()) return;
     var parts=parseJ(input.value);
     if(!parts){
       showAlert('تاریخ معتبر نیست؛ قالب صحیح ۱۴۰۵/۰۸/۱۲ است.','error');
@@ -750,9 +688,65 @@ function submitJobForm(ev){
   });
 
   document.addEventListener('click',function(e){
-    if(!wrap.contains(e.target))pop.classList.remove('open');
+    if(!wrap.contains(e.target)) pop.classList.remove('open');
   });
 })();
+
+/* ═══════════════════════════════════════════════════
+   PROVINCE & CITY DROPDOWNS
+   ═══════════════════════════════════════════════════ */
+var provinceCities={
+  'آذربایجان شرقی':['تبریز','مراغه','مرند','میانه','اهر','بناب','شبستر','اسکو','سراب','عجب‌شیر','ملکان','جلفا','بستان‌آباد','هشترود','ورزقان','چاراویماق','خداآفرین','هوراند'],
+  'آذربایجان غربی':['ارومیه','خوی','بوکان','مهاباد','میاندوآب','سلماس','نقده','پیرانشهر','ماکو','تکاب','شاهین‌دژ','سردشت','اشنویه','چالدران','پلدشت','چایپاره','باروق','چهاربرج'],
+  'اردبیل':['اردبیل','پارس‌آباد','مشگین‌شهر','خلخال','گرمی','نمین','بیله‌سوار','نیر','کوثر','سرعین','اصلاندوز'],
+  'اصفهان':['اصفهان','کاشان','خمینی‌شهر','نجف‌آباد','شاهین‌شهر','فلاورجان','گلپایگان','زرین‌شهر','نائین','آران و بیدگل','مبارکه','لنجان','خوانسار','سمیرم','شهرضا','دهاقان','فریدن','تیران و کرون','چادگان','بوئین میاندشت','برخوار','خور و بیابانک','کوهپایه','اردستان','ورزنه','هرند'],
+  'البرز':['کرج','فردیس','نظرآباد','هشتگرد','محمدشهر','ماهدشت','طالقان','ساوجبلاغ','اشتهارد','کمال‌شهر','گرمدره','چهارباغ'],
+  'ایلام':['ایلام','دهلران','آبدانان','ایوان','دره‌شهر','مهران','چرداول','ملکشاهی','بدره','سیروان','هلیلان'],
+  'بوشهر':['بوشهر','برازجان','گناوه','کنگان','جم','دیر','خورموج','دشتستان','عسلویه','دشتی','تنگستان','دیلم'],
+  'تهران':['تهران','ری','اسلامشهر','شهریار','قدس','ملارد','ورامین','پاکدشت','دماوند','پردیس','رباط‌کریم','قرچک','بهارستان','پیشوا','فیروزکوه','شمیرانات','بوستان','گلستان','نصیرشهر','اندیشه','باقرشهر','کهریزک','فشم','لواسان','رودهن','بومهن'],
+  'چهارمحال و بختیاری':['شهرکرد','بروجن','فارسان','لردگان','اردل','کوهرنگ','کیار','سامان','بن','فلارد','خانمیرزا'],
+  'خراسان جنوبی':['بیرجند','قائن','فردوس','طبس','نهبندان','سربیشه','درمیان','بشرویه','سرایان','خوسف','زیرکوه'],
+  'خراسان رضوی':['مشهد','نیشابور','سبزوار','تربت حیدریه','کاشمر','قوچان','تربت جام','چناران','خواف','تایباد','سرخس','فریمان','گناباد','درگز','بردسکن','رشتخوار','مه‌ولات','زاوه','جغتای','جوین','خلیل‌آباد','باخرز','کلات','داورزن','فیروزه','خوشاب','کوهسرخ','ششتمد','صالح‌آباد','زاوین'],
+  'خراسان شمالی':['بجنورد','شیروان','اسفراین','آشخانه','جاجرم','فاروج','مانه و سملقان','گرمه','راز و جرگلان','بام و صفی‌آباد'],
+  'خوزستان':['اهواز','دزفول','آبادان','خرمشهر','ماهشهر','بهبهان','ایذه','شوشتر','اندیمشک','شوش','مسجدسلیمان','امیدیه','سوسنگرد','بندر امام','رامشیر','شادگان','هندیجان','رامهرمز','باغ‌ملک','هفتکل','لالی','گتوند','کارون','حمیدیه','باوی','دشت آزادگان','هویزه','آغاجاری'],
+  'زنجان':['زنجان','ابهر','خرمدره','قیدار','سلطانیه','طارم','ماهنشان','ایجرود','سجاس'],
+  'سمنان':['سمنان','شاهرود','دامغان','گرمسار','مهدی‌شهر','سرخه','آرادان','میامی','بسطام','بیارجمند'],
+  'سیستان و بلوچستان':['زاهدان','زابل','چابهار','ایرانشهر','سراوان','خاش','کنارک','نیک‌شهر','سرباز','دلگان','قصرقند','مهرستان','سیب و سوران','زهک','هیرمند','نیمروز','هامون','فنوج','میرجاوه','گلشن','لاشار','بمپور','راسک','دشتیاری','تفتان'],
+  'فارس':['شیراز','مرودشت','کازرون','جهرم','فسا','لار','داراب','نی‌ریز','آباده','اقلید','لامرد','استهبان','سپیدان','ممسنی','قیروکارزین','خرامه','سروستان','کوار','خرم‌بید','بوانات','پاسارگاد','ارسنجان','زرین‌دشت','مهر','رستم','فراشبند','گراش','خنج','بختگان','سرچهان','کوه‌چنار','زرقان','بیضا'],
+  'قزوین':['قزوین','تاکستان','الوند','آبیک','بوئین‌زهرا','اقبالیه','محمدیه','آوج','کوهین'],
+  'قم':['قم','جعفریه','کهک','قنوات','دستجرد','سلفچگان'],
+  'کردستان':['سنندج','سقز','مریوان','بانه','قروه','کامیاران','بیجار','دیواندره','دهگلان','سروآباد'],
+  'کرمان':['کرمان','سیرجان','رفسنجان','جیرفت','بم','زرند','شهربابک','کهنوج','عنبرآباد','بافت','راور','بردسیر','منوجان','رودبار جنوب','قلعه‌گنج','فهرج','نرماشیر','ریگان','انار','رابر','کوهبنان','ارزوئیه','فاریاب'],
+  'کرمانشاه':['کرمانشاه','اسلام‌آباد غرب','هرسین','کنگاور','جوانرود','پاوه','سنقر','سرپل ذهاب','صحنه','قصرشیرین','گیلانغرب','دالاهو','روانسر','ثلاث باباجانی'],
+  'کهگیلویه و بویراحمد':['یاسوج','دوگنبدان','دهدشت','لیکک','سی‌سخت','چرام','باشت','لنده','مارگون','دیشموک'],
+  'گلستان':['گرگان','گنبدکاووس','علی‌آباد کتول','بندر ترکمن','آق‌قلا','کردکوی','بندر گز','مینودشت','کلاله','گمیشان','رامیان','آزادشهر','گالیکش','مراوه‌تپه'],
+  'گیلان':['رشت','بندر انزلی','لاهیجان','لنگرود','آستارا','تالش','رودسر','فومن','صومعه‌سرا','ماسال','سیاهکل','رودبار','املش','رضوانشهر','کوچصفهان','خمام','سنگر','آستانه اشرفیه','کیاشهر','چابکسر','رحیم‌آباد','شفت','ماکلوان'],
+  'لرستان':['خرم‌آباد','بروجرد','دورود','الیگودرز','کوهدشت','ازنا','نورآباد','الشتر','پلدختر','چگنی','رومشکان','دلفان','سلسله'],
+  'مازندران':['ساری','بابل','آمل','قائم‌شهر','بابلسر','نوشهر','چالوس','تنکابن','بهشهر','جویبار','فریدونکنار','محمودآباد','نور','رویان','رامسر','عباس‌آباد','کلاردشت','سوادکوه','سیمرغ','گلوگاه','نکا','بهنام‌میر','میاندرود','سرخ‌رود','امیرکلا','خلیل‌شهر','رینه','پل سفید','زیرآب','کیاسر'],
+  'مرکزی':['اراک','ساوه','خمین','محلات','دلیجان','شازند','تفرش','آشتیان','زرندیه','کمیجان','فراهان','خنداب','خوانسار'],
+  'هرمزگان':['بندرعباس','میناب','قشم','کیش','بندر لنگه','حاجی‌آباد','رودان','جاسک','بستک','پارسیان','خمیر','سیریک','بشاگرد','ابوموسی','حاجی‌آباد','کوهستک'],
+  'همدان':['همدان','ملایر','نهاوند','تویسرکان','کبودرآهنگ','اسدآباد','بهار','رزن','فامنین','درگزین'],
+  'یزد':['یزد','میبد','اردکان','بافق','مهریز','ابرکوه','تفت','اشکذر','هرات','مروست','بهاباد','خاتم','زارچ','شاهدیه','احمدآباد','عقدا','نیر']
+};
+
+function initProvinceCities(){
+  var p=$('jf_province');
+  p.innerHTML='<option value="">انتخاب استان</option>'+Object.keys(provinceCities).map(x=>'<option>'+x+'</option>').join('');
+  p.addEventListener('change', populateCities);
+}
+
+function populateCities(){
+  var p=$('jf_province').value;
+  var c=$('jf_city');
+  var old=c.value;
+  var cities=provinceCities[p]||[];
+  c.innerHTML='<option value="">انتخاب شهر</option>'+cities.map(x=>'<option>'+x+'</option>').join('');
+  c.disabled=!cities.length;
+  if(cities.includes(old)) c.value=old;
+}
+
+// راه‌اندازی اولیه استان و شهر
+initProvinceCities();
 
 /* ═══════════════════════════════════════════════════
    SPIN ANIMATION (for loading button)
