@@ -13,12 +13,12 @@
 <script>
 window.__zvErrors=[];
 window.addEventListener('error',function(ev){
-  var t=ev&&ev.target;
-  if(t&&t!==window&&t.tagName&&/^(SCRIPT|LINK|IMG|IFRAME|SOURCE)$/.test(String(t.tagName).toUpperCase())){console.warn('[ZV] asset failed:',t.src||t.href);return;}
-  var msg=String((ev&&ev.message)||'').trim();
-  if(!ev.lineno&&(/^Script error\.?$/i.test(msg)||msg==='')){console.warn('[ZV] cross-origin ignored');return;}
-  window.__zvErrors.push(msg+' @ '+(ev.lineno||0)+':'+(ev.colno||0));
-  var b=document.getElementById('zvFatal');if(b){b.style.display='block';b.textContent='خطای اسکریپت: '+window.__zvErrors.join(' | ');}
+var t=ev&&ev.target;
+if(t&&t!==window&&t.tagName&&/^(SCRIPT|LINK|IMG|IFRAME|SOURCE)$/.test(String(t.tagName).toUpperCase())){console.warn('[ZV] asset failed:',t.src||t.href);return;}
+var msg=String((ev&&ev.message)||'').trim();
+if(!ev.lineno&&(/^Script error\.?$/i.test(msg)||msg==='')){console.warn('[ZV] cross-origin ignored');return;}
+window.__zvErrors.push(msg+' @ '+(ev.lineno||0)+':'+(ev.colno||0));
+var b=document.getElementById('zvFatal');if(b){b.style.display='block';b.textContent='خطای اسکریپت: '+window.__zvErrors.join(' | ');}
 },true);
 window.addEventListener('unhandledrejection',function(ev){console.warn('[ZV] promise rejected:',ev&&ev.reason);});
 </script>
@@ -186,7 +186,7 @@ input[type=checkbox]{width:16px;height:16px;accent-color:var(--brand);cursor:poi
 .modal.w{width:min(1020px,100%)}
 .modal>form{display:flex;flex-direction:column;min-height:0;flex:1;overflow:hidden}
 .mb{padding:20px 22px;overflow-y:auto;flex:1 1 auto;min-height:0}
-.mf{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:9px;flex-wrap:wrap;flex:0 0 auto}
+.mf{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:9px;flex-wrap:wrap;flex:0 0 auto;align-items:center}
 .modal.dk{background:linear-gradient(165deg,#0D1830,#15264C);border-color:#2A3B66;color:#fff}
 .modal.dk .mh,.modal.dk .mf{border-color:#2A3B66}
 .modal.dk .mh h3{color:#fff}
@@ -280,11 +280,29 @@ select option{background:#111A30;color:#fff}
 .pl-e{display:block;width:100%;border:0;border-right:3px solid var(--brand);border-radius:6px;background:rgba(255,107,26,.11);padding:3px 5px;margin-bottom:3px;text-align:right;cursor:pointer;overflow:hidden}
 .pl-e b{display:block;font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pl-e small{display:block;font-size:8.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.thread{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;background:var(--surface)}
-.msgb{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:var(--surface2);font-size:12.5px}
-.msgb.me{background:rgba(255,107,26,.08);border-color:rgba(255,107,26,.3)}
+.thread{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;background:var(--surface);transition:all var(--tr)}
+.thread:hover{border-color:var(--line2);box-shadow:var(--sh)}
+.thread.unread{border-right:3px solid var(--brand)}
+.tmeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:10.5px;color:var(--muted);margin-top:3px}
+.tno{font-size:10.5px;color:var(--brandDeep);font-weight:800}
+.tprev{background:var(--surface2);border-radius:9px;padding:7px 10px;margin-top:7px;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.ubdg{background:var(--red);color:#fff;border-radius:10px;font-size:10px;font-weight:900;padding:1px 8px}
+.chatbox{max-height:44vh;overflow-y:auto;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface2);margin-bottom:12px}
+.msgb{border:1px solid var(--line);border-radius:12px;padding:9px 12px;margin-bottom:8px;background:var(--surface);font-size:12.5px}
+.msgb.me{background:rgba(255,107,26,.08);border-color:rgba(255,107,26,.3);margin-left:26px}
+.msgb.them{margin-right:26px}
+.msgb.note{background:rgba(217,119,6,.12);border-color:rgba(217,119,6,.4)}
+.msgb.sys{background:transparent;border:0;text-align:center;color:var(--muted);font-size:10.5px;padding:3px;margin-bottom:6px}
 .msgb b{font-size:11.5px}.msgb small{color:var(--muted);font-size:10px;display:block;margin-top:4px}
-.msgb .body{white-space:pre-wrap;margin:5px 0}
+.msgb .body{white-space:pre-wrap;margin:5px 0;word-break:break-word}
+.modal.dk .chatbox{background:rgba(255,255,255,.04);border-color:#2A3B66}
+.modal.dk .msgb{background:rgba(255,255,255,.07);border-color:#33477A;color:#fff}
+.modal.dk .msgb.me{background:rgba(255,107,26,.18);border-color:rgba(255,107,26,.45)}
+.modal.dk .msgb.note{background:rgba(217,119,6,.2);border-color:rgba(217,119,6,.5)}
+.modal.dk .msgb.sys{background:transparent;border:0;color:#93A3C8}
+.modal.dk .msgb small{color:#93A3C8}
+.notechk{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer;margin-right:auto}
+.modal.dk .notechk{color:#D3DCF5}
 .soon-hero{background:var(--hero);color:#fff;border-radius:20px;padding:34px;position:relative;overflow:hidden;margin-bottom:18px}
 .soon-hero:before{content:"";position:absolute;inset:0;background:radial-gradient(420px 220px at 85% 15%,rgba(255,107,26,.4),transparent 60%)}
 .soon-hero>*{position:relative}
@@ -317,66 +335,64 @@ select option{background:#111A30;color:#fff}
 .topbar .btn-p span{display:none}
 #notifPanel{left:3vw}
 .toolbar .zsel,.bulk .zsel{width:100%}
+.chatbox{max-height:38vh}
+.msgb.me{margin-left:10px}.msgb.them{margin-right:10px}
 }
 @media print{body>*{display:none!important}#printArea{display:block!important;font-family:Vazirmatn,Tahoma,sans-serif}}
 </style>
 </head>
 <body>
 <div id="zvFatal"></div>
-
 <div id="loginView" class="login">
-  <div class="lbox">
-    <h1>Zingo<span>Vingo</span></h1>
-    <div class="sub">پنل کارمند شعبه — ورود با حساب کارمند</div>
-    <div id="loginError" class="errbox"></div>
-    <div class="field" style="margin-bottom:12px"><label>نام کاربری</label><input id="loginUser" autocomplete="username"></div>
-    <div class="field" style="margin-bottom:16px"><label>رمز عبور</label><input id="loginPass" type="password" autocomplete="current-password"></div>
-    <button class="btn btn-p" style="width:100%" id="loginBtn" data-act="login">ورود به پنل شعبه</button>
-  </div>
+<div class="lbox">
+<h1>Zingo<span>Vingo</span></h1>
+<div class="sub">پنل کارمند شعبه — ورود با حساب کارمند</div>
+<div id="loginError" class="errbox"></div>
+<div class="field" style="margin-bottom:12px"><label>نام کاربری</label><input id="loginUser" autocomplete="username"></div>
+<div class="field" style="margin-bottom:16px"><label>رمز عبور</label><input id="loginPass" type="password" autocomplete="current-password"></div>
+<button class="btn btn-p" style="width:100%" id="loginBtn" data-act="login">ورود به پنل شعبه</button>
 </div>
-
+</div>
 <div id="app">
-  <aside class="sidebar" id="sidebar">
-    <div class="brand">
-      <div class="mark"><svg class="ic" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg></div>
-      <div><h1>Zingo<span>Vingo</span></h1><small>پنل کارمند شعبه</small></div>
-    </div>
-    <nav class="nav" id="nav"></nav>
-    <div class="side-foot">
-      <div class="uchip">
-        <div class="av" id="sideAv" data-act="profile-go"></div>
-        <div style="flex:1;min-width:0"><b id="sideName"></b><small id="sideRole"></small></div>
-        <button class="ibtn" data-act="logout" title="خروج"><svg class="ic" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
-      </div>
-    </div>
-  </aside>
-  <div class="main">
-    <header class="topbar">
-      <button class="ibtn menu-btn" data-act="menu"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-      <div><h2 id="tbTitle">داشبورد</h2><div class="crumb" id="tbCrumb"></div></div>
-      <div class="branch-chip" id="branchChip"></div>
-      <div class="sp"></div>
-      <button class="sbtn" data-act="cmdk"><svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>جستجوی سراسری…</span><kbd>Ctrl K</kbd></button>
-      <button class="ibtn" data-act="bell" id="bellBtn"><svg class="ic" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot" id="bellDot" hidden></span></button>
-      <button class="ibtn" data-act="theme" id="themeBtn"></button>
-      <button class="btn btn-p" data-act="new-applicant"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M12 5v14M5 12h14"/></svg><span>کارجوی جدید</span></button>
-    </header>
-    <main id="page"></main>
-  </div>
+<aside class="sidebar" id="sidebar">
+<div class="brand">
+<div class="mark"><svg class="ic" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg></div>
+<div><h1>Zingo<span>Vingo</span></h1><small>پنل کارمند شعبه</small></div>
 </div>
-
+<nav class="nav" id="nav"></nav>
+<div class="side-foot">
+<div class="uchip">
+<div class="av" id="sideAv" data-act="profile-go"></div>
+<div style="flex:1;min-width:0"><b id="sideName"></b><small id="sideRole"></small></div>
+<button class="ibtn" data-act="logout" title="خروج"><svg class="ic" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
+</div>
+</div>
+</aside>
+<div class="main">
+<header class="topbar">
+<button class="ibtn menu-btn" data-act="menu"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+<div><h2 id="tbTitle">داشبورد</h2><div class="crumb" id="tbCrumb"></div></div>
+<div class="branch-chip" id="branchChip"></div>
+<div class="sp"></div>
+<button class="sbtn" data-act="cmdk"><svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>جستجوی سراسری…</span><kbd>Ctrl K</kbd></button>
+<button class="ibtn" data-act="bell" id="bellBtn"><svg class="ic" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot" id="bellDot" hidden></span></button>
+<button class="ibtn" data-act="theme" id="themeBtn"></button>
+<button class="btn btn-p" data-act="new-applicant"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M12 5v14M5 12h14"/></svg><span>کارجوی جدید</span></button>
+</header>
+<main id="page"></main>
+</div>
+</div>
 <div class="scrim" id="scrim" data-act="scrim"></div>
 <aside class="drawer" id="drawer"></aside>
 <div class="mback" id="mback"><div class="modal" id="modal"></div></div>
 <div id="cmdk"><div class="ck">
-  <div class="ck-top"><svg class="ic" viewBox="0 0 24 24" style="width:17px;height:17px;color:var(--muted)"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="ckInput" placeholder="جستجو در سفارش‌ها، کارت‌ها، کارجویان، نیروها…" autocomplete="off"><button class="ck-clear" data-act="ck-hist-clear" id="ckClearBtn">پاکسازی سوابق</button></div>
-  <div class="ckl" id="ckList"></div>
+<div class="ck-top"><svg class="ic" viewBox="0 0 24 24" style="width:17px;height:17px;color:var(--muted)"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="ckInput" placeholder="جستجو در سفارش‌ها، کارت‌ها، کارجویان، گفتگوها…" autocomplete="off"><button class="ck-clear" data-act="ck-hist-clear" id="ckClearBtn">پاکسازی سوابق</button></div>
+<div class="ckl" id="ckList"></div>
 </div></div>
 <div id="notifPanel"></div>
 <div id="toasts"></div>
 <div id="printArea"></div>
 <div class="jdate-pop" id="jdatePop"></div>
-
 <script>
 'use strict';
 /* ═════════ 1) UTILITIES ═════════ */
@@ -404,7 +420,7 @@ function gKey(v){var d=new Date(v);return d.getFullYear()+'-'+String(d.getMonth(
 var JM=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
 function jMonthKey(v){var d=new Date(v);var j=g2j(d.getFullYear(),d.getMonth()+1,1);return j[0]+'-'+String(j[1]).padStart(2,'0');}
 function lastMonths(n){var out=[],now=new Date();for(var i=n-1;i>=0;i--){var x=new Date(now.getFullYear(),now.getMonth()-i,1);var j=g2j(x.getFullYear(),x.getMonth()+1,1);out.push({key:j[0]+'-'+String(j[1]).padStart(2,'0'),label:JM[j[1]-1]});}return out;}
-var IR={'آذربایجان شرقی':['تبریز','مراغه','مرند','میانه','اهر','بناب','شبستر','اسکو','سراب','عجب‌شیر','ملکان','جلفا','بستان‌آباد','هشترود','ورزقان','چاراویماق','خداآفرین','هوراند'],'آذربایجان غربی':['ارومیه','خوی','بوکان','مهاباد','میاندوآب','سلماس','نقده','پیرانشهر','ماکو','تکاب','شاهین‌دژ','سردشت','اشنویه','چالدران','پلدشت','چایپاره','باروق','چهاربرج'],'اردبیل':['اردبیل','پارس‌آباد','مشگین‌شهر','خلخال','گرمی','نمین','بیله‌سوار','نیر','کوثر','سرعین','اصلاندوز'],'اصفهان':['اصفهان','کاشان','خمینی‌شهر','نجف‌آباد','شاهین‌شهر','فلاورجان','گلپایگان','زرین‌شهر','نائین','آران و بیدگل','مبارکه','لنجان','خوانسار','سمیرم','شهرضا','دهاقان','فریدن','تیران و کرون','چادگان','بوئین میاندشت','برخوار','خور و بیابانک','کوهپایه','اردستان','ورزنه','هرند'],'البرز':['کرج','فردیس','نظرآباد','هشتگرد','محمدشهر','ماهدشت','طالقان','ساوجبلاغ','اشتهارد','کمال‌شهر','گرمدره','چهارباغ'],'ایلام':['ایلام','دهلران','آبدانان','ایوان','دره‌شهر','مهران','چرداول','ملکشاهی','بدره','سیروان','هلیلان'],'بوشهر':['بوشهر','برازجان','گناوه','کنگان','جم','دیر','خورموج','دشتستان','عسلویه','دشتی','تنگستان','دیلم'],'تهران':['تهران','ری','اسلامشهر','شهریار','قدس','ملارد','ورامین','پاکدشت','دماوند','پردیس','رباط‌کریم','قرچک','بهارستان','پیشوا','فیروزکوه','شمیرانات','بوستان','گلستان','نصیرشهر','اندیشه','باقرشهر','کهریزک','فشم','لواسان','رودهن','بومهن'],'چهارمحال و بختیاری':['شهرکرد','بروجن','فارسان','لردگان','اردل','کوهرنگ','کیار','سامان','بن','فلارد','خانمیرزا'],'خراسان جنوبی':['بیرجند','قائن','فردوس','طبس','نهبندان','سربیشه','درمیان','بشرویه','سرایان','خوسف','زیرکوه'],'خراسان رضوی':['مشهد','نیشابور','سبزوار','تربت حیدریه','کاشمر','قوچان','تربت جام','چناران','خواف','تایباد','سرخس','فریمان','گناباد','درگز','بردسکن','رشتخوار','مه‌ولات','زاوه','جغتای','جوین','خلیل‌آباد','باخرز','کلات','داورزن','فیروزه','خوشاب','کوهسرخ','ششتمد','صالح‌آباد','زاوین'],'خراسان شمالی':['بجنورد','شیروان','اسفراین','آشخانه','جاجرم','فاروج','مانه و سملقان','گرمه','راز و جرگلان','بام و صفی‌آباد'],'خوزستان':['اهواز','دزفول','آبادان','خرمشهر','ماهشهر','بهبهان','ایذه','شوشتر','اندیمشک','شوش','مسجدسلیمان','امیدیه','سوسنگرد','بندر امام','رامشیر','شادگان','هندیجان','رامهرمز','باغ‌ملک','هفتکل','لالی','گتوند','کارون','حمیدیه','باوی','دشت آزادگان','هویزه','آغاجاری'],'زنجان':['زنجان','ابهر','خرمدره','قیدار','سلطانیه','طارم','ماهنشان','ایجرود','سجاس'],'سمنان':['سمنان','شاهرود','دامغان','گرمسار','مهدی‌شهر','سرخه','آرادان','میامی','بسطام','بیارجمند'],'سیستان و بلوچستان':['زاهدان','زابل','چابهار','ایرانشهر','سراوان','خاش','کنارک','نیک‌شهر','سرباز','دلگان','قصرقند','مهرستان','سیب و سوران','زهک','هیرمند','نیمروز','هامون','فنوج','میرجاوه','گلشن','لاشار','بمپور','راسک','دشتیاری','تفتان'],'فارس':['شیراز','مرودشت','کازرون','جهرم','فسا','لار','داراب','نی‌ریز','آباده','اقلید','لامرد','استهبان','سپیدان','ممسنی','قیروکارزین','خرامه','سروستان','کوار','خرم‌بید','بوانات','پاسارگاد','ارسنجان','زرین‌دشت','مهر','رستم','فراشبند','گراش','خنج','بختگان','سرچهان','کوه‌چنار','زرقان','بیضا'],'قزوین':['قزوین','تاکستان','الوند','آبیک','بوئین‌زهرا','اقبالیه','محمدیه','آوج','کوهین'],'قم':['قم','جعفریه','کهک','قنوات','دستجرد','سلفچگان'],'کردستان':['سنندج','سقز','مریوان','بانه','قروه','کامیاران','بیجار','دیواندره','دهگلان','سروآباد'],'کرمان':['کرمان','سیرجان','رفسنجان','جیرفت','بم','زرند','شهربابک','کهنوج','عنبرآباد','بافت','راور','بردسیر','منوجان','رودبار جنوب','قلعه‌گنج','فهرج','نرماشیر','ریگان','انار','رابر','کوهبنان','ارزوئیه','فاریاب'],'کرمانشاه':['کرمانشاه','اسلام‌آباد غرب','هرسین','کنگاور','جوانرود','پاوه','سنقر','سرپل ذهاب','صحنه','قصرشیرین','گیلانغرب','دالاهو','روانسر','ثلاث باباجانی','ثلاث باباجانی'],'کهگیلویه و بویراحمد':['یاسوج','دوگنبدان','دهدشت','لیکک','سی‌سخت','چرام','باشت','لنده','مارگون','دیشموک'],'گلستان':['گرگان','گنبدکاووس','علی‌آباد کتول','بندر ترکمن','آق‌قلا','کردکوی','بندر گز','مینودشت','کلاله','گمیشان','رامیان','آزادشهر','گالیکش','مراوه‌تپه'],'گیلان':['رشت','بندر انزلی','لاهیجان','لنگرود','آستارا','تالش','رودسر','فومن','صومعه‌سرا','ماسال','سیاهکل','رودبار','املش','رضوانشهر','کوچصفهان','خمام','سنگر','آستانه اشرفیه','کیاشهر','چابکسر','رحیم‌آباد','شفت','ماکلوان'],'لرستان':['خرم‌آباد','بروجرد','دورود','الیگودرز','کوهدشت','ازنا','نورآباد','الشتر','پلدختر','چگنی','رومشکان','دلفان','سلسله'],'مازندران':['ساری','بابل','آمل','قائم‌شهر','بابلسر','نوشهر','چالوس','تنکابن','بهشهر','جویبار','فریدونکنار','محمودآباد','نور','رویان','رامسر','عباس‌آباد','کلاردشت','سوادکوه','سیمرغ','گلوگاه','نکا','بهنام‌میر','میاندرود','سرخ‌رود','امیرکلا','خلیل‌شهر','رینه','پل سفید','زیرآب','کیاسر'],'مرکزی':['اراک','ساوه','خمین','محلات','دلیجان','شازند','تفرش','آشتیان','زرندیه','کمیجان','فراهان','خنداب','خوانسار'],'هرمزگان':['بندرعباس','میناب','قشم','کیش','بندر لنگه','حاجی‌آباد','رودان','جاسک','بستک','پارسیان','خمیر','سیریک','بشاگرد','ابوموسی','کوهستک'],'همدان':['همدان','ملایر','نهاوند','تویسرکان','کبودرآهنگ','اسدآباد','بهار','رزن','فامنین','درگزین'],'یزد':['یزد','میبد','اردکان','بافق','مهریز','ابرکوه','تفت','اشکذر','هرات','مروست','بهاباد','خاتم','زارچ','شاهدیه','احمدآباد','عقدا','نیر']};
+var IR={'آذربایجان شرقی':['تبریز','مراغه','مرند','میانه','اهر','بناب','شبستر','اسکو','سراب','عجب‌شیر','ملکان','جلفا','بستان‌آباد','هشترود','ورزقان','چاراویماق','خداآفرین','هوراند'],'آذربایجان غربی':['ارومیه','خوی','بوکان','مهاباد','میاندوآب','سلماس','نقده','پیرانشهر','ماکو','تکاب','شاهین‌دژ','سردشت','اشنویه','چالدران','پلدشت','چایپاره','باروق','چهاربرج'],'اردبیل':['اردبیل','پارس‌آباد','مشگین‌شهر','خلخال','گرمی','نمین','بیله‌سوار','نیر','کوثر','سرعین','اصلاندوز'],'اصفهان':['اصفهان','کاشان','خمینی‌شهر','نجف‌آباد','شاهین‌شهر','فلاورجان','گلپایگان','زرین‌شهر','نائین','آران و بیدگل','مبارکه','لنجان','خوانسار','سمیرم','شهرضا','دهاقان','فریدن','تیران و کرون','چادگان','بوئین میاندشت','برخوار','خور و بیابانک','کوهپایه','اردستان','ورزنه','هرند'],'البرز':['کرج','فردیس','نظرآباد','هشتگرد','محمدشهر','ماهدشت','طالقان','ساوجبلاغ','اشتهارد','کمال‌شهر','گرمدره','چهارباغ'],'ایلام':['ایلام','دهلران','آبدانان','ایوان','دره‌شهر','مهران','چرداول','ملکشاهی','بدره','سیروان','هلیلان'],'بوشهر':['بوشهر','برازجان','گناوه','کنگان','جم','دیر','خورموج','دشتستان','عسلویه','دشتی','تنگستان','دیلم'],'تهران':['تهران','ری','اسلامشهر','شهریار','قدس','ملارد','ورامین','پاکدشت','دماوند','پردیس','رباط‌کریم','قرچک','بهارستان','پیشوا','فیروزکوه','شمیرانات','بوستان','گلستان','نصیرشهر','اندیشه','باقرشهر','کهریزک','فشم','لواسان','رودهن','بومهن'],'چهارمحال و بختیاری':['شهرکرد','بروجن','فارسان','لردگان','اردل','کوهرنگ','کیار','سامان','بن','فلارد','خانمیرزا'],'خراسان جنوبی':['بیرجند','قائن','فردوس','طبس','نهبندان','سربیشه','درمیان','بشرویه','سرایان','خوسف','زیرکوه'],'خراسان رضوی':['مشهد','نیشابور','سبزوار','تربت حیدریه','کاشمر','قوچان','تربت جام','چناران','خواف','تایباد','سرخس','فریمان','گناباد','درگز','بردسکن','رشتخوار','مه‌ولات','زاوه','جغتای','جوین','خلیل‌آباد','باخرز','کلات','داورزن','فیروزه','خوشاب','کوهسرخ','ششتمد','صالح‌آباد','زاوین'],'خراسان شمالی':['بجنورد','شیروان','اسفراین','آشخانه','جاجرم','فاروج','مانه و سملقان','گرمه','راز و جرگلان','بام و صفی‌آباد'],'خوزستان':['اهواز','دزفول','آبادان','خرمشهر','ماهشهر','بهبهان','ایذه','شوشتر','اندیمشک','شوش','مسجدسلیمان','امیدیه','سوسنگرد','بندر امام','رامشیر','شادگان','هندیجان','رامهرمز','باغ‌ملک','هفتکل','لالی','گتوند','کارون','حمیدیه','باوی','دشت آزادگان','هویزه','آغاجاری'],'زنجان':['زنجان','ابهر','خرمدره','قیدار','سلطانیه','طارم','ماهنشان','ایجرود','سجاس'],'سمنان':['سمنان','شاهرود','دامغان','گرمسار','مهدی‌شهر','سرخه','آرادان','میامی','بسطام','بیارجمند'],'سیستان و بلوچستان':['زاهدان','زابل','چابهار','ایرانشهر','سراوان','خاش','کنارک','نیک‌شهر','سرباز','دلگان','قصرقند','مهرستان','سیب و سوران','زهک','هیرمند','نیمروز','هامون','فنوج','میرجاوه','گلشن','لاشار','بمپور','راسک','دشتیاری','تفتان'],'فارس':['شیراز','مرودشت','کازرون','جهرم','فسا','لار','داراب','نی‌ریز','آباده','اقلید','لامرد','استهبان','سپیدان','ممسنی','قیروکارزین','خرامه','سروستان','کوار','خرم‌بید','بوانات','پاسارگاد','ارسنجان','زرین‌دشت','مهر','رستم','فراشبند','گراش','خنج','بختگان','سرچهان','کوه‌چنار','زرقان','بیضا'],'قزوین':['قزوین','تاکستان','الوند','آبیک','بوئین‌زهرا','اقبالیه','محمدیه','آوج','کوهین'],'قم':['قم','جعفریه','کهک','قنوات','دستجرد','سلفچگان'],'کردستان':['سنندج','سقز','مریوان','بانه','قروه','کامیاران','بیجار','دیواندره','دهگلان','سروآباد'],'کرمان':['کرمان','سیرجان','رفسنجان','جیرفت','بم','زرند','شهربابک','کهنوج','عنبرآباد','بافت','راور','بردسیر','منوجان','رودبار جنوب','قلعه‌گنج','فهرج','نرماشیر','ریگان','انار','رابر','کوهبنان','ارزوئیه','فاریاب'],'کرمانشاه':['کرمانشاه','اسلام‌آباد غرب','هرسین','کنگاور','جوانرود','پاوه','سنقر','سرپل ذهاب','صحنه','قصرشیرین','گیلانغرب','دالاهو','روانسر','ثلاث باباجانی'],'کهگیلویه و بویراحمد':['یاسوج','دوگنبدان','دهدشت','لیکک','سی‌سخت','چرام','باشت','لنده','مارگون','دیشموک'],'گلستان':['گرگان','گنبدکاووس','علی‌آباد کتول','بندر ترکمن','آق‌قلا','کردکوی','بندر گز','مینودشت','کلاله','گمیشان','رامیان','آزادشهر','گالیکش','مراوه‌تپه'],'گیلان':['رشت','بندر انزلی','لاهیجان','لنگرود','آستارا','تالش','رودسر','فومن','صومعه‌سرا','ماسال','سیاهکل','رودبار','املش','رضوانشهر','کوچصفهان','خمام','سنگر','آستانه اشرفیه','کیاشهر','چابکسر','رحیم‌آباد','شفت','ماکلوان'],'لرستان':['خرم‌آباد','بروجرد','دورود','الیگودرز','کوهدشت','ازنا','نورآباد','الشتر','پلدختر','چگنی','رومشکان','دلفان','سلسله'],'مازندران':['ساری','بابل','آمل','قائم‌شهر','بابلسر','نوشهر','چالوس','تنکابن','بهشهر','جویبار','فریدونکنار','محمودآباد','نور','رویان','رامسر','عباس‌آباد','کلاردشت','سوادکوه','سیمرغ','گلوگاه','نکا','بهنام‌میر','میاندرود','سرخ‌رود','امیرکلا','خلیل‌شهر','رینه','پل سفید','زیرآب','کیاسر'],'مرکزی':['اراک','ساوه','خمین','محلات','دلیجان','شازند','تفرش','آشتیان','زرندیه','کمیجان','فراهان','خنداب','خوانسار'],'هرمزگان':['بندرعباس','میناب','قشم','کیش','بندر لنگه','حاجی‌آباد','رودان','جاسک','بستک','پارسیان','خمیر','سیریک','بشاگرد','ابوموسی','کوهستک'],'همدان':['همدان','ملایر','نهاوند','تویسرکان','کبودرآهنگ','اسدآباد','بهار','رزن','فامنین','درگزین'],'یزد':['یزد','میبد','اردکان','بافق','مهریز','ابرکوه','تفت','اشکذر','هرات','مروست','بهاباد','خاتم','زارچ','شاهدیه','احمدآباد','عقدا','نیر']};
 var PROVINCES=Object.keys(IR);
 function citiesOf(p){return IR[String(p||'').trim()]||[];}
 /* ═════════ 2) ICONS ═════════ */
@@ -447,22 +463,27 @@ bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a
 history:'<path d="M3 3v6h6"/><path d="M3.5 9a9 9 0 1 1 2 9.4"/><path d="M12 8v4l3 2"/>',
 send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
 lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+unlock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
 headset:'<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>'
 };
 function icon(n,s){return '<svg class="ic" viewBox="0 0 24 24"'+(s?' style="'+s+'"':'')+'>'+(IC[n]||IC.grid)+'</svg>';}
 /* ═════════ 3) STATE ═════════ */
-var STC={'جدید':'blue','ثبت اولیه':'violet','تبدیل به کارت':'teal','در حال انجام':'amber','تکمیل شده':'green','لغو شده':'red','تعلیق':'gray','تخصیص به شعبه':'teal','تخصیص به گروه':'pink','تخصیص به کارگر':'violet','ارجاع به سرپرست':'pink','فعال':'green','غیرفعال':'gray','در حال بررسی':'amber','در انتظار مصاحبه':'violet','تأیید شده':'green','رد شده':'red','استخدام شده':'teal','بایگانی':'gray','عادی':'gray','نقره‌ای':'blue','طلایی':'amber','پلاتینیوم':'violet','Employee':'blue','Supervisor':'violet','worker':'blue','operator':'teal','success':'green','error':'red','فوری':'red','رزرو':'violet','OPEN':'blue','CLOSED':'gray','unread':'red','answered':'green','member':'blue','supervisor':'violet','بررسی نشده':'gray','تأیید اولیه':'green','رد اولیه':'red','نیازمند بررسی بیشتر':'amber','تأیید':'green','رد':'red','انجام نشده':'gray','نیازمند پیگیری':'amber','هفتگی':'blue','ماهانه':'violet','بدون تکرار':'gray','مرد':'blue','زن':'pink','باز':'blue','بسته':'gray','پاسخ داده شده':'green','در انتظار پاسخ':'amber'};
+var STC={'جدید':'blue','ثبت اولیه':'violet','تبدیل به کارت':'teal','در حال انجام':'amber','تکمیل شده':'green','لغو شده':'red','تعلیق':'gray','تخصیص به شعبه':'teal','تخصیص به گروه':'pink','تخصیص به کارگر':'violet','ارجاع به سرپرست':'pink','فعال':'green','غیرفعال':'gray','در حال بررسی':'amber','در انتظار مصاحبه':'violet','تأیید شده':'green','رد شده':'red','استخدام شده':'teal','بایگانی':'gray','عادی':'gray','فوری':'red','Employee':'blue','Supervisor':'violet','worker':'blue','operator':'teal','success':'green','error':'red','رزرو':'violet','OPEN':'blue','ANSWERED':'green','CLOSED':'gray','unread':'red','answered':'green','closed':'gray','member':'blue','supervisor':'violet','بررسی نشده':'gray','تأیید اولیه':'green','رد اولیه':'red','نیازمند بررسی بیشتر':'amber','تأیید':'green','رد':'red','انجام نشده':'gray','نیازمند پیگیری':'amber','هفتگی':'blue','ماهانه':'violet','بدون تکرار':'gray','مرد':'blue','زن':'pink','باز':'blue','بسته':'gray','پاسخ داده شده':'green','در انتظار پاسخ':'amber'};
 function pill(s){return '<span class="pill p-'+(STC[s]||'gray')+'">'+esc(s||'—')+'</span>';}
 function av(name,url,cls){var inner=url?'<img src="'+esc(url)+'" alt="">':esc(String(name||'؟').trim().charAt(0));return '<span class="av '+(cls||'')+'">'+inner+'</span>';}
 var TOKEN=localStorage.getItem('zv_emp_token')||'';
-var USER=null,DB={},PS={page:'dashboard',pn:1,sel:new Set(),filters:{},tab:'kanban',view:'kanban',week:new Date()};
+var USER=null,DB={},PS={page:'dashboard',pn:1,sel:new Set(),filters:{},view:'kanban',week:new Date(),tq:'',tstate:''};
 var CH=[],HKEY='zv_emp_search_history';
+var CH_MAP={CUSTOMER_SUPPORT:'support',INTERNAL:'threads',EMPLOYEE_SUPPORT:'adminSupport'};
+var CH_TITLE={CUSTOMER_SUPPORT:'پشتیبانی مشتریان',INTERNAL:'مکاتبات سازمانی',EMPLOYEE_SUPPORT:'ارتباط با پشتیبانی'};
 function api(fn){var args=Array.prototype.slice.call(arguments,1);return new Promise(function(res,rej){if(!window.google||!google.script||!google.script.run){rej(new Error('پل ارتباطی zv-api.js بارگذاری نشده است.'));return;}var r=google.script.run.withSuccessHandler(res).withFailureHandler(function(e){rej(new Error(e&&e.message?e.message:String(e)));});r[fn].apply(r,args);});}
 function myBranch(){return (DB.branches||[])[0]||{};}
 function branchName(id){var b=(DB.branches||[]).find(function(x){return x.branchId===id;});return b?b.name:(id||'—');}
 function groupName(id){var g=(DB.groups||[]).find(function(x){return x.groupId===id;});return g?g.name:'—';}
 function workerName(id){var w=(DB.workers||[]).find(function(x){return x.workerId===id;});return w?fullName(w):'';}
 function cuName(id){var o=(DB.orders||[]).find(function(x){return x.customerId===id;});return o?o.customerName:id;}
+function allTickets(){return (DB.support||[]).concat(DB.threads||[]).concat(DB.adminSupport||[]);}
+function unreadOf(key){return (DB[key]||[]).filter(function(t){return num(t.unread)>0&&t.state!=='CLOSED';}).length;}
 /* ═════════ 4) UI PRIMITIVES ═════════ */
 function toast(msg,type,action){var t=document.createElement('div');t.className='toast '+(type||'');t.innerHTML=icon(type==='ok'?'check':type==='err'?'x':type==='warn'?'undo':'zap','width:16px;height:16px')+'<span>'+esc(msg)+'</span>'+(action?'<button type="button">'+esc(action.label)+'</button>':'');if(action)t.querySelector('button').onclick=function(){action.fn();t.remove();};$('#toasts').appendChild(t);setTimeout(function(){t.remove();},action?8000:3800);}
 function openModal(html,wide,dark){var m=$('#modal');m.className='modal'+(wide?' w':'')+(dark?' dk':'');m.innerHTML=html;$('#mback').classList.add('show');document.body.style.overflow='hidden';$$('select',m).forEach(function(s){s._zvDone=false;});decorate(m);enhanceDates(m);}
@@ -494,37 +515,36 @@ $('#jdatePop').addEventListener('click',function(e){var nav=e.target.closest('[d
 /* ═════════ 7) DATA ═════════ */
 function applyBoot(r){USER=r.user;DB=r.data||{};DB._legacy=false;}
 function loadData(){
-  return api('employeeBootstrap',TOKEN).then(applyBoot).catch(function(e){
-    if(/No such|not a function|is not defined/i.test(e.message))return legacyLoad();
-    throw e;
-  });
+return api('employeeBootstrap',TOKEN).then(applyBoot).catch(function(e){
+if(/No such|not a function|is not defined/i.test(e.message))return legacyLoad();
+throw e;
+});
 }
 function legacyLoad(){
-  return Promise.all([
-    api('getEmployeeOrders',{},TOKEN).catch(function(){return [];}),
-    api('getEmployeeCards',{},TOKEN).catch(function(){return [];}),
-    api('getEmployeeGroups',TOKEN).catch(function(){return [];}),
-    api('getEmployeeWorkers',TOKEN).catch(function(){return [];}),
-    api('searchEmployeeJobApplicants',{branchId:USER.branchId},TOKEN).catch(function(){return [];}),
-    api('getCustomerConversationsForEmployee',TOKEN).catch(function(){return [];})
-  ]).then(function(a){
-    DB={orders:a[0].map(function(o){return {rowIndex:o.rowIndex,requestId:o.requestId,createdAt:o.date,customerName:o.customer,phone:o.phone,service:o.service,finalPrice:o.finalPrice,status:o.status,groupId:o.groupId,groupName:o.groupName,execDate:o.execDate,branchId:USER.branchId};}),
-      cards:a[1].map(function(c){return {rowIndex:c.rowIndex,cardId:c.cardId,requestId:c.requestId,customerName:c.customer,service:c.details,amount:c.amount,workerId:'',status:c.status,execDate:c.execDate,execTime:c.execTime,branchId:USER.branchId};}),
-      groups:a[2],workers:a[3],applicants:a[4],support:a[5],members:[],tasks:[],threads:[],adminSupport:[],cardHistory:[],branches:[{branchId:USER.branchId,name:'شعبه '+USER.branchId}],_legacy:true};
-  });
+return Promise.all([
+api('getEmployeeOrders',{},TOKEN).catch(function(){return [];}),
+api('getEmployeeCards',{},TOKEN).catch(function(){return [];}),
+api('getEmployeeGroups',TOKEN).catch(function(){return [];}),
+api('getEmployeeWorkers',TOKEN).catch(function(){return [];}),
+api('searchEmployeeJobApplicants',{branchId:USER.branchId},TOKEN).catch(function(){return [];})
+]).then(function(a){
+DB={orders:a[0].map(function(o){return {rowIndex:o.rowIndex,requestId:o.requestId,createdAt:o.createdAt||o.date,customerId:o.customerId,customerName:o.customer||o.customerName,phone:o.phone,service:o.service,finalPrice:o.finalPrice,status:o.status,groupId:o.groupId,groupName:o.groupName,execDate:o.execDate,execTime:o.execTime,branchId:USER.branchId};}),
+cards:a[1].map(function(c){return {rowIndex:c.rowIndex,cardId:c.cardId,requestId:c.requestId,customerName:c.customer||c.customerName,service:c.service||c.details,amount:c.amount,workerId:c.workerId||'',status:c.status,execDate:c.execDate,execTime:c.execTime,branchId:USER.branchId};}),
+groups:a[2],workers:a[3],applicants:a[4],support:[],members:[],tasks:[],threads:[],adminSupport:[],cardHistory:[],branches:[{branchId:USER.branchId,name:'شعبه '+USER.branchId}],_legacy:true};
+});
 }
 function reload(){return loadData().then(render);}
 /* ═════════ 8) AUTH ═════════ */
 function setLoginErr(m){var e=$('#loginError');e.textContent=m;e.style.display='block';}
 function doLogin(){
-  var u=$('#loginUser').value.trim(),p=$('#loginPass').value;
-  if(!u||!p){setLoginErr('نام کاربری و رمز عبور را وارد کنید.');return;}
-  $('#loginError').style.display='none';
-  var b=$('#loginBtn');b.disabled=true;b.textContent='در حال ورود…';
-  api('employeeLogin',u,p).then(function(r){
-    TOKEN=r.token;USER=r.user;localStorage.setItem('zv_emp_token',TOKEN);
-    return loadData();
-  }).then(showApp).catch(function(e){setLoginErr(e.message);}).then(function(){b.disabled=false;b.textContent='ورود به پنل شعبه';});
+var u=$('#loginUser').value.trim(),p=$('#loginPass').value;
+if(!u||!p){setLoginErr('نام کاربری و رمز عبور را وارد کنید.');return;}
+$('#loginError').style.display='none';
+var b=$('#loginBtn');b.disabled=true;b.textContent='در حال ورود…';
+api('employeeLogin',u,p).then(function(r){
+TOKEN=r.token;USER=r.user;localStorage.setItem('zv_emp_token',TOKEN);
+return loadData();
+}).then(showApp).catch(function(e){setLoginErr(e.message);}).then(function(){b.disabled=false;b.textContent='ورود به پنل شعبه';});
 }
 function confirmLogout(){confirmBox('خروج از پنل','آیا برای خروج از پنل مطمئن هستید؟',function(){api('employeeLogout',TOKEN).catch(function(){}).then(function(){localStorage.removeItem('zv_emp_token');TOKEN='';USER=null;location.reload();});},'بله، خروج','خیر',false);}
 function showApp(){$('#loginView').style.display='none';$('#app').style.display='grid';paintSideUser();go('dashboard');}
@@ -544,44 +564,44 @@ var MENU=[
 {id:'groups',l:'گروه‌ها',ic:'groups'},
 {id:'members',l:'اعضای گروه',ic:'groups'},
 {id:'workers',l:'نیروها',ic:'worker'},
-{sec:'ارتباطات'},
-{id:'support',l:'پشتیبانی مشتریان',ic:'cust',bc:'r',badge:function(){return (DB.support||[]).filter(function(s){return s.status==='unread';}).length;}},
-{id:'threads',l:'مکاتبات سازمانی',ic:'msg'},
-{id:'adminSupport',l:'ارتباط با پشتیبانی',ic:'headset',bc:'v',badge:function(){return (DB.adminSupport||[]).filter(function(s){return s.reply&&s.status!=='بسته';}).length;}},
+{sec:'گفتگوها'},
+{id:'support',l:'پشتیبانی مشتریان',ic:'cust',bc:'r',badge:function(){return unreadOf('support');}},
+{id:'threads',l:'مکاتبات سازمانی',ic:'msg',bc:'b',badge:function(){return unreadOf('threads');}},
+{id:'adminSupport',l:'ارتباط با پشتیبانی',ic:'headset',bc:'v',badge:function(){return unreadOf('adminSupport');}},
 {sec:'در حال توسعه'},
 {id:'finance',l:'امور مالی',ic:'wallet',soon:true},
 {id:'branchServices',l:'خدمات شعبه',ic:'svc',soon:true},
 {sec:'حساب'},
 {id:'profile',l:'پروفایل من',ic:'user'}
 ];
-var TITLES={dashboard:['داشبورد','نمای زنده شعبه شما'],reports:['گزارش‌ها','تحلیل مالی و عملیاتی شعبه'],planner:['برنامه هفتگی','تقویم اجرای کارت‌های شعبه'],orders:['سفارش‌ها','سفارش‌های شعبه شما'],cards:['کارت‌های عملیاتی','کانبان تخصیص و اجرا'],tasks:['لیست کارها','سرویس‌های دوره‌ای شعبه'],applicants:['جذب و استخدام','پرونده‌های کارجویان شعبه'],groups:['گروه‌ها','تیم‌های عملیاتی شعبه'],members:['اعضای گروه','عضویت و نقش‌ها'],workers:['نیروها','متخصصان و سرپرستان شعبه'],support:['پشتیبانی مشتریان','پیام‌های مشتریان شعبه'],threads:['مکاتبات سازمانی','گفتگوهای داخل شعبه'],adminSupport:['ارتباط با پشتیبانی','ارسال پیام به مدیر سامانه'],finance:['امور مالی','به‌زودی'],branchServices:['خدمات شعبه','به‌زودی'],profile:['پروفایل من','حساب کاربری']};
+var TITLES={dashboard:['داشبورد','نمای زنده شعبه شما'],reports:['گزارش‌ها','تحلیل مالی و عملیاتی شعبه'],planner:['برنامه هفتگی','تقویم اجرای کارت‌های شعبه'],orders:['سفارش‌ها','سفارش‌های شعبه شما'],cards:['کارت‌های عملیاتی','کانبان تخصیص و اجرا'],tasks:['لیست کارها','سرویس‌های دوره‌ای شعبه'],applicants:['جذب و استخدام','پرونده‌های کارجویان شعبه'],groups:['گروه‌ها','تیم‌های عملیاتی شعبه'],members:['اعضای گروه','عضویت و نقش‌ها'],workers:['نیروها','متخصصان و سرپرستان شعبه'],support:['پشتیبانی مشتریان','گفتگوی رشته‌ای با مشتریان شعبه'],threads:['مکاتبات سازمانی','گفتگوهای داخل شعبه'],adminSupport:['ارتباط با پشتیبانی','گفتگوی رشته‌ای با مدیر سامانه'],finance:['امور مالی','به‌زودی'],branchServices:['خدمات شعبه','به‌زودی'],profile:['پروفایل من','حساب کاربری']};
 function renderNav(){$('#nav').innerHTML=MENU.map(function(m){if(m.sec)return '<div class="nav-sec">'+esc(m.sec)+'</div>';var b=m.badge?m.badge():0;return '<div class="nav-item'+(PS.page===m.id?' on':'')+(m.soon?' soon':'')+'" data-act="go" data-page="'+m.id+'">'+icon(m.ic,'width:17px;height:17px')+'<span>'+esc(m.l)+'</span>'+(m.soon?'<span class="bdg v">به‌زودی</span>':(b?'<span class="bdg '+(m.bc||'')+'">'+fa(b)+'</span>':''))+'</div>';}).join('');}
 function toggleSidebar(){var s=$('#sidebar');s.classList.toggle('open');$('#scrim').classList.toggle('show',s.classList.contains('open'));}
 function toggleTheme(){var t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;localStorage.setItem('zv_emp_theme',t);$('#themeBtn').innerHTML=icon(t==='dark'?'sun':'moon');if(PS.page==='dashboard'||PS.page==='reports')render();}
-function go(p){PS.page=p;PS.pn=1;PS.q='';PS.filters={};PS.sort=null;PS.sel=new Set();if(p==='cards')PS.view='kanban';$('#sidebar').classList.remove('open');$('#scrim').classList.remove('show');render();}
+function go(p){PS.page=p;PS.pn=1;PS.q='';PS.filters={};PS.sort=null;PS.sel=new Set();PS.tq='';PS.tstate='';if(p==='cards')PS.view='kanban';$('#sidebar').classList.remove('open');$('#scrim').classList.remove('show');render();}
 function render(){
-  CH.forEach(function(c){try{c.destroy();}catch(e){}});CH=[];
-  var p=PS.page||'dashboard',t=TITLES[p]||TITLES.dashboard;
-  $('#tbTitle').textContent=t[0];$('#tbCrumb').textContent='ZingoVingo · '+t[1];
-  $('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
-  var out;
-  if(p==='dashboard')out=dashboard();
-  else if(p==='cards')out=cardsPage();
-  else if(p==='planner')out=plannerPage();
-  else if(p==='reports')out=reportsPage();
-  else if(p==='support')out=supportPage();
-  else if(p==='threads')out=threadsPage();
-  else if(p==='adminSupport')out=adminSupportPage();
-  else if(p==='finance')out=soonPage('finance');
-  else if(p==='branchServices')out=soonPage('branchServices');
-  else if(p==='profile')out=profilePage();
-  else out=entityPage(p);
-  Promise.resolve(out).then(function(h){
-    $('#page').innerHTML=h;decorate($('#page'));enhanceDates($('#page'));renderNav();paintSideUser();
-    $('#bellDot').hidden=!notifications().some(function(n){return !n.read;});
-    if(p==='dashboard')drawDashboardCharts();
-    if(p==='reports')drawReportCharts();
-  }).catch(function(e){$('#page').innerHTML='<div class="card"><div class="empty"><div class="ei">'+icon('x')+'</div><h4>خطا در بارگذاری صفحه</h4><p class="sub">'+esc(e.message)+'</p></div></div>';});
+CH.forEach(function(c){try{c.destroy();}catch(e){}});CH=[];
+var p=PS.page||'dashboard',t=TITLES[p]||TITLES.dashboard;
+$('#tbTitle').textContent=t[0];$('#tbCrumb').textContent='ZingoVingo · '+t[1];
+$('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
+var out;
+if(p==='dashboard')out=dashboard();
+else if(p==='cards')out=cardsPage();
+else if(p==='planner')out=plannerPage();
+else if(p==='reports')out=reportsPage();
+else if(p==='support')out=ticketsPage('CUSTOMER_SUPPORT');
+else if(p==='threads')out=ticketsPage('INTERNAL');
+else if(p==='adminSupport')out=ticketsPage('EMPLOYEE_SUPPORT');
+else if(p==='finance')out=soonPage('finance');
+else if(p==='branchServices')out=soonPage('branchServices');
+else if(p==='profile')out=profilePage();
+else out=entityPage(p);
+Promise.resolve(out).then(function(h){
+$('#page').innerHTML=h;decorate($('#page'));enhanceDates($('#page'));renderNav();paintSideUser();
+$('#bellDot').hidden=!notifications().some(function(n){return !n.read;});
+if(p==='dashboard')drawDashboardCharts();
+if(p==='reports')drawReportCharts();
+}).catch(function(e){$('#page').innerHTML='<div class="card"><div class="empty"><div class="ei">'+icon('x')+'</div><h4>خطا در بارگذاری صفحه</h4><p class="sub">'+esc(e.message)+'</p></div></div>';});
 }
 /* ═════════ 10) ENTITY CONFIG ═════════ */
 function grOpts(){return (DB.groups||[]).map(function(g){return {v:g.groupId,l:g.name+' ('+g.groupId+')'};});}
@@ -599,7 +619,7 @@ search:['caseNumber','firstName','lastName','phone','specialty','requestedPositi
 filters:[{k:'status',l:'وضعیت',opts:['جدید','در حال بررسی','در انتظار مصاحبه','تأیید شده','رد شده','استخدام شده','بایگانی']},{k:'initialReview',l:'بررسی اولیه',opts:['بررسی نشده','تأیید اولیه','رد اولیه','نیازمند بررسی بیشتر']}],
 bulk:['جدید','در حال بررسی','در انتظار مصاحبه','تأیید شده','رد شده','استخدام شده','بایگانی'],
 cols:[{k:'caseNumber',l:'پرونده',r:function(r){return '<b>'+esc(r.caseNumber)+'</b>';}},{k:'createdAt',l:'ثبت'},{k:'firstName',l:'نام',r:function(r){return esc(fullName(r));}},{k:'phone',l:'تماس',cls:'ltr',r:function(r){return fa(r.phone);}},{k:'specialty',l:'تخصص'},{k:'requestedPosition',l:'موقعیت'},{k:'initialReview',l:'بررسی اولیه',r:function(r){return pill(r.initialReview);}},{k:'status',l:'وضعیت',r:function(r){return pill(r.status);}}],
-rowActs:[{a:'applicant-edit',i:'edit',l:'ویرایش کامل'},{a:'applicant-status',i:'check',l:'تغییر وضعیت'}]},
+rowActs:[{a:'applicant-edit',i:'edit',l:'ویرایش کامل'},{a:'applicant-status',i:'check',l:'تغییر وضعیت'},{a:'applicant-hire',i:'star',l:'استخدام و ایجاد نیرو',when:function(r){return r.status==='تأیید شده';}}]},
 workers:{title:'نیروها',singular:'نیرو',icon:'worker',person:1,idKey:'workerId',
 search:['workerId','firstName','lastName','username','contact','specialization'],
 filters:[{k:'operations',l:'نوع',opts:['worker','Supervisor','operator']},{k:'groupId',l:'گروه',opts:grOpts},{k:'status',l:'وضعیت',opts:['فعال','غیرفعال']}],
@@ -628,359 +648,421 @@ function rowsFor(e){var cfg=CFG[e],rows=(DB[e]||[]).slice();var q=en(PS.q||'').t
 function viewsKey(e){return 'zv_emp_views_'+e;}
 function getViews(e){try{return JSON.parse(localStorage.getItem(viewsKey(e))||'[]');}catch(x){return [];}}
 function entityPage(e){
-  var cfg=CFG[e];if(!cfg)return '<div class="card">صفحه یافت نشد.</div>';
-  if(DB._legacy&&['members','tasks'].indexOf(e)>=0)return legacyNotice(e);
-  var all=rowsFor(e),size=12,pages=Math.max(1,Math.ceil(all.length/size));PS.pn=Math.min(Math.max(1,PS.pn||1),pages);
-  var rows=all.slice((PS.pn-1)*size,PS.pn*size);
-  var canDel=!cfg.noDelete,views=getViews(e);
-  var acts=btn('export','CSV','dl','btn-s',' data-e="'+e+'"');
-  if(!cfg.noNew)acts+=btn(e==='applicants'?'new-applicant':'new',cfg.singular+' جدید','plus','btn-p',' data-e="'+e+'"');
-  var h=pageHead(cfg.title,fa(all.length)+' مورد · فقط شعبه '+esc(USER.branchId||''),acts);
-  h+='<div class="toolbar">'+btn('save-view','ذخیره نما','star','btn-s btn-sm',' data-e="'+e+'"');
-  h+=views.map(function(v){return '<span class="btn btn-s btn-sm" data-act="apply-view" data-e="'+e+'" data-id="'+esc(v.id)+'">'+esc(v.name)+' <span data-act="del-view" data-e="'+e+'" data-id="'+esc(v.id)+'">'+icon('x','width:11px;height:11px')+'</span></span>';}).join('')+'</div>';
-  h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-search placeholder="جستجو…" value="'+esc(PS.q||'')+'"></div>';
-  h+=(cfg.filters||[]).map(function(f){var o=typeof f.opts==='function'?f.opts():f.opts;return '<select class="sel" data-filter="'+f.k+'"><option value="">'+esc(f.l)+': همه</option>'+o.map(function(x){var v=typeof x==='string'?x:x.v,l=typeof x==='string'?x:x.l;return '<option value="'+esc(v)+'"'+(String(PS.filters[f.k])===String(v)?' selected':'')+'>'+esc(l)+'</option>';}).join('')+'</select>';}).join('')+'</div>';
-  h+='<div class="bulk'+(PS.sel.size?' show':'')+'"><b>'+fa(PS.sel.size)+'</b> مورد انتخاب شده';
-  if(cfg.bulk)h+='<select class="sel" id="bulkStatus"><option value="">تغییر وضعیت…</option>'+cfg.bulk.map(function(s){return '<option>'+esc(s)+'</option>';}).join('')+'</select>'+btn('bulk-status','اعمال','','btn-s btn-sm',' data-e="'+e+'"');
-  if(canDel)h+=btn('bulk-del','حذف گروهی','trash','btn-d btn-sm',' data-e="'+e+'"');
-  h+=btn('sel-clear','انصراف','','btn-s btn-sm',' data-e="'+e+'"')+'</div>';
-  if(!rows.length){h+='<div class="card"><div class="empty"><div class="ei">'+icon(cfg.icon)+'</div><h4>موردی یافت نشد</h4><p class="sub">فیلترها را تغییر دهید یا رکورد جدید ثبت کنید.</p></div></div>';return h;}
-  h+='<div class="tw"><table class="tb"><thead><tr>';
-  if(!cfg.noDelete||cfg.bulk)h+='<th style="width:36px"><input type="checkbox" data-selall></th>';
-  h+=cfg.cols.map(function(c){return '<th data-act="sort" data-e="'+e+'" data-k="'+c.k+'">'+esc(c.l)+(PS.sort&&PS.sort.k===c.k?(PS.sort.d===1?' ↑':' ↓'):'')+'</th>';}).join('');
-  h+='<th style="text-align:left">عملیات</th></tr></thead><tbody>';
-  h+=rows.map(function(r){
-    var id=r.rowIndex,row='<tr>';
-    if(!cfg.noDelete||cfg.bulk)row+='<td><input type="checkbox" data-sel="'+id+'"'+(PS.sel.has(id)?' checked':'')+'></td>';
-    row+=cfg.cols.map(function(c){return '<td class="'+(c.cls||'')+'">'+(c.r?c.r(r):esc(r[c.k]==null?'—':r[c.k]))+'</td>';}).join('');
-    row+='<td><div class="ra">'+ibtn('view','eye','مشاهده',' data-e="'+e+'" data-id="'+id+'"');
-    (cfg.rowActs||[]).forEach(function(a){if(!a.when||a.when(r))row+=ibtn(a.a,a.i,a.l,' data-e="'+e+'" data-id="'+id+'"');});
-    if(!cfg.noEdit&&!cfg.custom)row+=ibtn('edit','edit','ویرایش',' data-e="'+e+'" data-id="'+id+'"');
-    if(canDel)row+=ibtn('del','trash','حذف',' data-e="'+e+'" data-id="'+id+'"');
-    row+='</div></td></tr>';return row;
-  }).join('');
-  h+='</tbody></table></div><div class="pager"><span>صفحه '+fa(PS.pn)+' از '+fa(pages)+' · '+fa(all.length)+' مورد</span><div style="display:flex;gap:6px"><button class="btn btn-s btn-sm" data-act="pager" data-d="-1"'+(PS.pn<=1?' disabled':'')+'>'+icon('chevR','width:13px;height:13px')+'</button><button class="btn btn-s btn-sm" data-act="pager" data-d="1"'+(PS.pn>=pages?' disabled':'')+'>'+icon('chevL','width:13px;height:13px')+'</button></div></div>';
-  return h;
+var cfg=CFG[e];if(!cfg)return '<div class="card">صفحه یافت نشد.</div>';
+if(DB._legacy&&['members','tasks'].indexOf(e)>=0)return legacyNotice(e);
+var all=rowsFor(e),size=12,pages=Math.max(1,Math.ceil(all.length/size));PS.pn=Math.min(Math.max(1,PS.pn||1),pages);
+var rows=all.slice((PS.pn-1)*size,PS.pn*size);
+var canDel=!cfg.noDelete,views=getViews(e);
+var acts=btn('export','CSV','dl','btn-s',' data-e="'+e+'"');
+if(!cfg.noNew)acts+=btn(e==='applicants'?'new-applicant':'new',cfg.singular+' جدید','plus','btn-p',' data-e="'+e+'"');
+var h=pageHead(cfg.title,fa(all.length)+' مورد · فقط شعبه '+esc(USER.branchId||''),acts);
+h+='<div class="toolbar">'+btn('save-view','ذخیره نما','star','btn-s btn-sm',' data-e="'+e+'"');
+h+=views.map(function(v){return '<span class="btn btn-s btn-sm" data-act="apply-view" data-e="'+e+'" data-id="'+esc(v.id)+'">'+esc(v.name)+' <span data-act="del-view" data-e="'+e+'" data-id="'+esc(v.id)+'">'+icon('x','width:11px;height:11px')+'</span></span>';}).join('')+'</div>';
+h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-search placeholder="جستجو…" value="'+esc(PS.q||'')+'"></div>';
+h+=(cfg.filters||[]).map(function(f){var o=typeof f.opts==='function'?f.opts():f.opts;return '<select class="sel" data-filter="'+f.k+'"><option value="">'+esc(f.l)+': همه</option>'+o.map(function(x){var v=typeof x==='string'?x:x.v,l=typeof x==='string'?x:x.l;return '<option value="'+esc(v)+'"'+(String(PS.filters[f.k])===String(v)?' selected':'')+'>'+esc(l)+'</option>';}).join('')+'</select>';}).join('')+'</div>';
+h+='<div class="bulk'+(PS.sel.size?' show':'')+'"><b>'+fa(PS.sel.size)+'</b> مورد انتخاب شده';
+if(cfg.bulk)h+='<select class="sel" id="bulkStatus"><option value="">تغییر وضعیت…</option>'+cfg.bulk.map(function(s){return '<option>'+esc(s)+'</option>';}).join('')+'</select>'+btn('bulk-status','اعمال','','btn-s btn-sm',' data-e="'+e+'"');
+if(canDel)h+=btn('bulk-del','حذف گروهی','trash','btn-d btn-sm',' data-e="'+e+'"');
+h+=btn('sel-clear','انصراف','','btn-s btn-sm',' data-e="'+e+'"')+'</div>';
+if(!rows.length){h+='<div class="card"><div class="empty"><div class="ei">'+icon(cfg.icon)+'</div><h4>موردی یافت نشد</h4><p class="sub">فیلترها را تغییر دهید یا رکورد جدید ثبت کنید.</p></div></div>';return h;}
+h+='<div class="tw"><table class="tb"><thead><tr>';
+if(!cfg.noDelete||cfg.bulk)h+='<th style="width:36px"><input type="checkbox" data-selall></th>';
+h+=cfg.cols.map(function(c){return '<th data-act="sort" data-e="'+e+'" data-k="'+c.k+'">'+esc(c.l)+(PS.sort&&PS.sort.k===c.k?(PS.sort.d===1?' ↑':' ↓'):'')+'</th>';}).join('');
+h+='<th style="text-align:left">عملیات</th></tr></thead><tbody>';
+h+=rows.map(function(r){
+var id=r.rowIndex,row='<tr>';
+if(!cfg.noDelete||cfg.bulk)row+='<td><input type="checkbox" data-sel="'+id+'"'+(PS.sel.has(id)?' checked':'')+'></td>';
+row+=cfg.cols.map(function(c){return '<td class="'+(c.cls||'')+'">'+(c.r?c.r(r):esc(r[c.k]==null?'—':r[c.k]))+'</td>';}).join('');
+row+='<td><div class="ra">'+ibtn('view','eye','مشاهده',' data-e="'+e+'" data-id="'+id+'"');
+(cfg.rowActs||[]).forEach(function(a){if(!a.when||a.when(r))row+=ibtn(a.a,a.i,a.l,' data-e="'+e+'" data-id="'+id+'"');});
+if(!cfg.noEdit&&!cfg.custom)row+=ibtn('edit','edit','ویرایش',' data-e="'+e+'" data-id="'+id+'"');
+if(canDel)row+=ibtn('del','trash','حذف',' data-e="'+e+'" data-id="'+id+'"');
+row+='</div></td></tr>';return row;
+}).join('');
+h+='</tbody></table></div><div class="pager"><span>صفحه '+fa(PS.pn)+' از '+fa(pages)+' · '+fa(all.length)+' مورد</span><div style="display:flex;gap:6px"><button class="btn btn-s btn-sm" data-act="pager" data-d="-1"'+(PS.pn<=1?' disabled':'')+'>'+icon('chevR','width:13px;height:13px')+'</button><button class="btn btn-s btn-sm" data-act="pager" data-d="1"'+(PS.pn>=pages?' disabled':'')+'>'+icon('chevL','width:13px;height:13px')+'</button></div></div>';
+return h;
 }
-function legacyNotice(e){return '<div class="card"><div class="empty"><div class="ei">'+icon('lock')+'</div><h4>این بخش نیاز به به‌روزرسانی بک‌اند دارد</h4><p class="sub">فایل EmployeePanelV2.gs را به پروژه Apps Script اضافه و نسخه جدید Deploy کنید.</p></div></div>';}
+function legacyNotice(e){return '<div class="card"><div class="empty"><div class="ei">'+icon('lock')+'</div><h4>این بخش نیاز به بک‌اند یکپارچه دارد</h4><p class="sub">فایل EmpolyeeCode.gs (نسخه V3) را جایگزین و تابع empMigrateMessaging() را یک‌بار اجرا کنید، سپس نسخه جدید Deploy کنید.</p></div></div>';}
 /* ═════════ 12) GENERIC FORM ═════════ */
 function fieldHtml(f,v,rec){
-  var val=v==null?'':v,inp='';
-  if(f.t==='select'){var o=typeof f.opts==='function'?f.opts():f.opts;inp='<select name="'+f.n+'"><option value="">انتخاب کنید</option>'+o.map(function(x){var vv=typeof x==='string'?x:x.v,ll=typeof x==='string'?x:x.l;return '<option value="'+esc(vv)+'"'+(String(val)===String(vv)?' selected':'')+'>'+esc(ll)+'</option>';}).join('')+'</select>';}
-  else if(f.t==='textarea'){inp='<textarea name="'+f.n+'">'+esc(val)+'</textarea>';}
-  else if(f.t==='jdate'){inp='<input name="'+f.n+'" data-jdate value="'+esc(val?jInput(val):'')+'">';}
-  else if(f.t==='time'){inp='<input name="'+f.n+'" type="time" value="'+esc(val)+'">';}
-  else if(f.t==='number'){inp='<input name="'+f.n+'" type="number" step="any" value="'+esc(val)+'">';}
-  else if(f.t==='password'){inp='<input name="'+f.n+'" type="password" value="" autocomplete="new-password">';}
-  else if(f.t==='tel'){inp='<input name="'+f.n+'" value="'+esc(val)+'" placeholder="09xxxxxxxxx" style="direction:ltr;text-align:right">';}
-  else{inp='<input name="'+f.n+'" value="'+esc(val)+'">';}
-  return '<div class="field'+(f.full?' full':'')+'"><label>'+esc(f.l)+(f.req?' <span class="req">*</span>':'')+'</label>'+inp+(f.hint?'<span class="hint">'+esc(f.hint)+'</span>':'')+'</div>';
+var val=v==null?'':v,inp='';
+if(f.t==='select'){var o=typeof f.opts==='function'?f.opts():f.opts;inp='<select name="'+f.n+'"><option value="">انتخاب کنید</option>'+o.map(function(x){var vv=typeof x==='string'?x:x.v,ll=typeof x==='string'?x:x.l;return '<option value="'+esc(vv)+'"'+(String(val)===String(vv)?' selected':'')+'>'+esc(ll)+'</option>';}).join('')+'</select>';}
+else if(f.t==='textarea'){inp='<textarea name="'+f.n+'">'+esc(val)+'</textarea>';}
+else if(f.t==='jdate'){inp='<input name="'+f.n+'" data-jdate value="'+esc(val?jInput(val):'')+'">';}
+else if(f.t==='time'){inp='<input name="'+f.n+'" type="time" value="'+esc(val)+'">';}
+else if(f.t==='number'){inp='<input name="'+f.n+'" type="number" step="any" value="'+esc(val)+'">';}
+else if(f.t==='password'){inp='<input name="'+f.n+'" type="password" value="" autocomplete="new-password">';}
+else if(f.t==='tel'){inp='<input name="'+f.n+'" value="'+esc(val)+'" placeholder="09xxxxxxxxx" style="direction:ltr;text-align:right">';}
+else{inp='<input name="'+f.n+'" value="'+esc(val)+'">';}
+return '<div class="field'+(f.full?' full':'')+'"><label>'+esc(f.l)+(f.req?' <span class="req">*</span>':'')+'</label>'+inp+(f.hint?'<span class="hint">'+esc(f.hint)+'</span>':'')+'</div>';
 }
 function openForm(e,rowIndex){
-  var cfg=CFG[e];var r=rowIndex?(DB[e]||[]).find(function(x){return x.rowIndex===Number(rowIndex);}):{};if(!r)r={};
-  openModal('<div class="mh"><h3>'+(rowIndex?'ویرایش ':'افزودن ')+esc(cfg.singular)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="entity" data-e="'+e+'" data-id="'+(rowIndex||'')+'"><div class="mb"><div class="fgrid">'+cfg.fields.map(function(f){return fieldHtml(f,r[f.n],r);}).join('')+'</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('save','width:15px;height:15px')+' ذخیره</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',true,true);
-  var form=$('#modal form');
-  if(e==='members'){var ws=$('select[name="workerId"]',form);if(ws)ws.addEventListener('change',function(){var w=(DB.workers||[]).find(function(x){return x.workerId===ws.value;});var g=$('select[name="groupId"]',form);if(w&&g&&!g.value&&w.groupId){g.value=w.groupId;zselSync(g);}});}
+var cfg=CFG[e];var r=rowIndex?(DB[e]||[]).find(function(x){return x.rowIndex===Number(rowIndex);}):{};if(!r)r={};
+openModal('<div class="mh"><h3>'+(rowIndex?'ویرایش ':'افزودن ')+esc(cfg.singular)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="entity" data-e="'+e+'" data-id="'+(rowIndex||'')+'"><div class="mb"><div class="fgrid">'+cfg.fields.map(function(f){return fieldHtml(f,r[f.n],r);}).join('')+'</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('save','width:15px;height:15px')+' ذخیره</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',true,true);
+var form=$('#modal form');
+if(e==='members'){var ws=$('select[name="workerId"]',form);if(ws)ws.addEventListener('change',function(){var w=(DB.workers||[]).find(function(x){return x.workerId===ws.value;});var g=$('select[name="groupId"]',form);if(w&&g&&!g.value&&w.groupId){g.value=w.groupId;zselSync(g);}});}
 }
 function submitEntity(form){
-  var e=form.dataset.e,id=form.dataset.id,cfg=CFG[e],obj={};
-  cfg.fields.forEach(function(f){var el=form.elements[f.n],v=el?String(el.value).trim():'';if(f.t==='jdate'&&v)v=jStore(v);if(f.t==='number')v=num(v);obj[f.n]=v;});
-  if(id)obj.rowIndex=Number(id);
-  var fn={workers:'saveEmployeeWorker',groups:'saveEmployeeGroup',members:'employeeSaveGroupMember',tasks:'employeeSaveTask'}[e];
-  var sub=form.querySelector('[type="submit"]');sub.disabled=true;
-  return api(fn,obj,TOKEN).then(function(){closeModal();toast('ذخیره شد.','ok');return reload();}).catch(function(err){sub.disabled=false;toast(err.message,'err');});
+var e=form.dataset.e,id=form.dataset.id,cfg=CFG[e],obj={};
+cfg.fields.forEach(function(f){var el=form.elements[f.n],v=el?String(el.value).trim():'';if(f.t==='jdate'&&v)v=jStore(v);if(f.t==='number')v=num(v);obj[f.n]=v;});
+if(id)obj.rowIndex=Number(id);
+var fn={workers:'saveEmployeeWorker',groups:'saveEmployeeGroup',members:'employeeSaveGroupMember',tasks:'employeeSaveTask'}[e];
+var sub=form.querySelector('[type="submit"]');sub.disabled=true;
+return api(fn,obj,TOKEN).then(function(){closeModal();toast('ذخیره شد.','ok');return reload();}).catch(function(err){sub.disabled=false;toast(err.message,'err');});
 }
 function delEntity(e,ids){
-  if(!ids.length)return;var cfg=CFG[e];
-  var backup=ids.map(function(id){return (DB[e]||[]).find(function(x){return x.rowIndex===Number(id);});}).filter(Boolean);
-  var fn={workers:'deleteEmployeeWorker',groups:'deleteEmployeeGroup',members:'employeeDeleteGroupMember',tasks:'employeeDeleteTask'}[e];
-  confirmBox('حذف '+cfg.singular,'آیا از حذف <b>'+fa(ids.length)+'</b> مورد مطمئن هستید؟',function(){
-    Promise.all(ids.map(function(id){return api(fn,Number(id),TOKEN);})).then(function(){return reload();}).then(function(){
-      toast('حذف شد.','warn',{label:'بازگردانی',fn:function(){
-        var saveFn={workers:'saveEmployeeWorker',groups:'saveEmployeeGroup',members:'employeeSaveGroupMember',tasks:'employeeSaveTask'}[e];
-        Promise.all(backup.map(function(b){var c=Object.assign({},b);delete c.rowIndex;return api(saveFn,c,TOKEN);})).then(reload).then(function(){toast('بازگردانی شد.','ok');}).catch(function(x){toast(x.message,'err');});
-      }});
-    }).catch(function(x){toast(x.message,'err');});
-  });
+if(!ids.length)return;var cfg=CFG[e];
+var backup=ids.map(function(id){return (DB[e]||[]).find(function(x){return x.rowIndex===Number(id);});}).filter(Boolean);
+var fn={workers:'deleteEmployeeWorker',groups:'deleteEmployeeGroup',members:'employeeDeleteGroupMember',tasks:'employeeDeleteTask'}[e];
+confirmBox('حذف '+cfg.singular,'آیا از حذف <b>'+fa(ids.length)+'</b> مورد مطمئن هستید؟',function(){
+Promise.all(ids.map(function(id){return api(fn,Number(id),TOKEN);})).then(function(){return reload();}).then(function(){
+toast('حذف شد.','warn',{label:'بازگردانی',fn:function(){
+var saveFn={workers:'saveEmployeeWorker',groups:'saveEmployeeGroup',members:'employeeSaveGroupMember',tasks:'employeeSaveTask'}[e];
+Promise.all(backup.map(function(b){var c=Object.assign({},b);delete c.rowIndex;return api(saveFn,c,TOKEN);})).then(reload).then(function(){toast('بازگردانی شد.','ok');}).catch(function(x){toast(x.message,'err');});
+}});
+}).catch(function(x){toast(x.message,'err');});
+});
 }
 function bulkStatus(e){
-  var el=$('#bulkStatus');if(!el||!el.value){toast('یک وضعیت انتخاب کنید.','err');return;}
-  var ids=Array.from(PS.sel);if(!ids.length)return;
-  api('employeeBulkStatus',e,ids,el.value,TOKEN).then(function(){PS.sel=new Set();toast('اعمال شد.','ok');return reload();}).catch(function(x){toast(x.message,'err');});
+var el=$('#bulkStatus');if(!el||!el.value){toast('یک وضعیت انتخاب کنید.','err');return;}
+var ids=Array.from(PS.sel);if(!ids.length)return;
+api('employeeBulkStatus',e,ids,el.value,TOKEN).then(function(){PS.sel=new Set();toast('اعمال شد.','ok');return reload();}).catch(function(x){toast(x.message,'err');});
 }
-/* ═════════ 13) APPLICANT (جذب و استخدام) ═════════ */
+/* ═════════ 13) APPLICANT ═════════ */
 var AP_STATUS=['جدید','در حال بررسی','در انتظار مصاحبه','تأیید شده','رد شده','استخدام شده','بایگانی'];
 var AP_REVIEW=['بررسی نشده','تأیید اولیه','رد اولیه','نیازمند بررسی بیشتر'];
 var AP_INTER=['انجام نشده','تأیید','رد','نیازمند پیگیری'];
 function apOpts(list,sel){return list.map(function(x){return '<option value="'+esc(x)+'"'+(x===sel?' selected':'')+'>'+esc(x)+'</option>';}).join('');}
 function openApplicantForm(caseNumber){
-  var r=caseNumber?(DB.applicants||[]).find(function(x){return x.caseNumber===caseNumber;}):null;
-  var b=myBranch();var isEdit=!!r;r=r||{province:b.province||'',city:b.city||'',status:'جدید',initialReview:'بررسی نشده',phoneInterviewResult:'انجام نشده',inPersonInterviewResult:'انجام نشده'};
-  var provOpts='<option value="">انتخاب استان</option>'+PROVINCES.map(function(p){return '<option'+(p===r.province?' selected':'')+'>'+esc(p)+'</option>';}).join('');
-  var cityList=citiesOf(r.province);var cityOpts='<option value="">انتخاب شهر</option>'+cityList.map(function(c){return '<option'+(c===r.city?' selected':'')+'>'+esc(c)+'</option>';}).join('');
-  openModal('<div class="mh"><h3>'+(isEdit?'ویرایش پرونده '+esc(r.caseNumber):'ثبت کارجوی جدید')+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-  '<form data-form="applicant" data-case="'+esc(r.caseNumber||'')+'"><div class="mb">'+
-  '<div class="sec-t" style="margin-top:0">۱. اطلاعات هویتی</div><div class="fgrid">'+
-  '<div class="field"><label>نام <span class="req">*</span></label><input name="firstName" value="'+esc(r.firstName||'')+'" required></div>'+
-  '<div class="field"><label>نام خانوادگی <span class="req">*</span></label><input name="lastName" value="'+esc(r.lastName||'')+'" required></div>'+
-  '<div class="field"><label>جنسیت</label><select name="gender">'+apOpts(['','مرد','زن'],r.gender)+'</select></div>'+
-  '<div class="field"><label>تاریخ تولد <span class="req">*</span></label><input name="birthDate" data-jdate data-age="apAge" value="'+esc(r.birthDate||'')+'" required></div>'+
-  '<div class="field"><label>سن (خودکار)</label><input id="apAge" readonly value="'+esc(r.age||'')+'"></div>'+
-  '<div class="field"><label>وضعیت تأهل</label><select name="maritalStatus">'+apOpts(['','مجرد','متأهل','سایر'],r.maritalStatus)+'</select></div></div>'+
-  '<div class="sec-t">۲. تخصص و مهارت</div><div class="fgrid">'+
-  '<div class="field"><label>تخصص اصلی <span class="req">*</span></label><input name="specialty" value="'+esc(r.specialty||'')+'" required></div>'+
-  '<div class="field"><label>مدت فعالیت</label><input name="experience" value="'+esc(r.experience||'')+'" placeholder="مثلاً ۳ سال"></div>'+
-  '<div class="field"><label>میزان تحصیلات</label><select name="education">'+apOpts(['','زیر دیپلم','دیپلم','کاردانی','کارشناسی','کارشناسی ارشد','دکتری','سایر'],r.education)+'</select></div>'+
-  '<div class="field"><label>رشته تحصیلی</label><input name="fieldOfStudy" value="'+esc(r.fieldOfStudy||'')+'"></div>'+
-  '<div class="field full"><label>مهارت‌های دیگر</label><textarea name="otherSkills">'+esc(r.otherSkills||'')+'</textarea></div></div>'+
-  '<div class="sec-t">۳. تماس و محل سکونت</div><div class="fgrid">'+
-  '<div class="field"><label>استان <span class="req">*</span></label><select name="province" required>'+provOpts+'</select></div>'+
-  '<div class="field"><label>شهر <span class="req">*</span></label><select name="city" required>'+cityOpts+'</select></div>'+
-  '<div class="field full"><label>آدرس دقیق</label><textarea name="address">'+esc(r.address||r.residence||'')+'</textarea></div>'+
-  '<div class="field"><label>شماره تماس <span class="req">*</span></label><input name="phone" value="'+esc(r.phone||'')+'" placeholder="09xxxxxxxxx" style="direction:ltr;text-align:right" required></div>'+
-  '<div class="field"><label>پیام‌رسان</label><select name="messenger">'+apOpts(['','بله','واتساپ','تلگرام','روبیکا','ایتا','سایر'],r.messenger)+'</select></div>'+
-  '<div class="field"><label>آی‌دی پیام‌رسان</label><input name="messengerId" value="'+esc(r.messengerId||'')+'"></div>'+
-  '<div class="field full"><span class="hint" id="routeHint"></span></div></div>'+
-  '<div class="sec-t">۴. آشنایی و موقعیت</div><div class="fgrid">'+
-  '<div class="field"><label>نحوه آشنایی</label><select name="source">'+apOpts(['','دیوار','شیپور','معرفی دوستان','شبکه‌های اجتماعی','مراجعه حضوری','سایت','سایر'],r.source)+'</select></div>'+
-  '<div class="field"><label>معرف</label><input name="referrer" value="'+esc(r.referrer||'')+'"></div>'+
-  '<div class="field full"><label>موقعیت درخواستی <span class="req">*</span></label><input name="requestedPosition" value="'+esc(r.requestedPosition||'')+'" required></div></div>'+
-  '<div class="sec-t">۵. گردش کار جذب</div><div class="fgrid">'+
-  '<div class="field"><label>بررسی اولیه</label><select name="initialReview">'+apOpts(AP_REVIEW,r.initialReview)+'</select></div>'+
-  '<div class="field"><label>وضعیت پرونده</label><select name="status">'+apOpts(AP_STATUS,r.status)+'</select></div>'+
-  '<div class="field"><label>تاریخ مصاحبه تلفنی</label><input name="phoneInterviewDate" data-jdate value="'+esc(r.phoneInterviewDate||'')+'"></div>'+
-  '<div class="field"><label>نتیجه مصاحبه تلفنی</label><select name="phoneInterviewResult">'+apOpts(AP_INTER,r.phoneInterviewResult)+'</select></div>'+
-  '<div class="field"><label>تاریخ مصاحبه حضوری</label><input name="inPersonInterviewDate" data-jdate value="'+esc(r.inPersonInterviewDate||'')+'"></div>'+
-  '<div class="field"><label>نتیجه مصاحبه حضوری</label><select name="inPersonInterviewResult">'+apOpts(AP_INTER,r.inPersonInterviewResult)+'</select></div>'+
-  '<div class="field full"><label>توضیحات</label><textarea name="notes">'+esc(r.notes||'')+'</textarea></div></div>'+
-  '</div><div class="mf"><button class="btn btn-p" type="submit">'+icon('save','width:15px;height:15px')+' '+(isEdit?'ذخیره تغییرات':'ثبت پرونده')+'</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',true,true);
-  linkProvinceCity($('#modal form'));updateRouteHint();
-  var bd=$('#modal form').elements.birthDate;if(bd&&bd.value)calcAge(bd);
+var r=caseNumber?(DB.applicants||[]).find(function(x){return x.caseNumber===caseNumber;}):null;
+var b=myBranch();var isEdit=!!r;r=r||{province:b.province||'',city:b.city||'',status:'جدید',initialReview:'بررسی نشده',phoneInterviewResult:'انجام نشده',inPersonInterviewResult:'انجام نشده'};
+var provOpts='<option value="">انتخاب استان</option>'+PROVINCES.map(function(p){return '<option'+(p===r.province?' selected':'')+'>'+esc(p)+'</option>';}).join('');
+var cityList=citiesOf(r.province);var cityOpts='<option value="">انتخاب شهر</option>'+cityList.map(function(c){return '<option'+(c===r.city?' selected':'')+'>'+esc(c)+'</option>';}).join('');
+openModal('<div class="mh"><h3>'+(isEdit?'ویرایش پرونده '+esc(r.caseNumber):'ثبت کارجوی جدید')+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<form data-form="applicant" data-case="'+esc(r.caseNumber||'')+'"><div class="mb">'+
+'<div class="sec-t" style="margin-top:0">۱. اطلاعات هویتی</div><div class="fgrid">'+
+'<div class="field"><label>نام <span class="req">*</span></label><input name="firstName" value="'+esc(r.firstName||'')+'" required></div>'+
+'<div class="field"><label>نام خانوادگی <span class="req">*</span></label><input name="lastName" value="'+esc(r.lastName||'')+'" required></div>'+
+'<div class="field"><label>جنسیت</label><select name="gender">'+apOpts(['','مرد','زن'],r.gender)+'</select></div>'+
+'<div class="field"><label>تاریخ تولد <span class="req">*</span></label><input name="birthDate" data-jdate data-age="apAge" value="'+esc(r.birthDate||'')+'" required></div>'+
+'<div class="field"><label>سن (خودکار)</label><input id="apAge" readonly value="'+esc(r.age||'')+'"></div>'+
+'<div class="field"><label>وضعیت تأهل</label><select name="maritalStatus">'+apOpts(['','مجرد','متأهل','سایر'],r.maritalStatus)+'</select></div></div>'+
+'<div class="sec-t">۲. تخصص و مهارت</div><div class="fgrid">'+
+'<div class="field"><label>تخصص اصلی <span class="req">*</span></label><input name="specialty" value="'+esc(r.specialty||'')+'" required></div>'+
+'<div class="field"><label>مدت فعالیت</label><input name="experience" value="'+esc(r.experience||'')+'" placeholder="مثلاً ۳ سال"></div>'+
+'<div class="field"><label>میزان تحصیلات</label><select name="education">'+apOpts(['','زیر دیپلم','دیپلم','کاردانی','کارشناسی','کارشناسی ارشد','دکتری','سایر'],r.education)+'</select></div>'+
+'<div class="field"><label>رشته تحصیلی</label><input name="fieldOfStudy" value="'+esc(r.fieldOfStudy||'')+'"></div>'+
+'<div class="field full"><label>مهارت‌های دیگر</label><textarea name="otherSkills">'+esc(r.otherSkills||'')+'</textarea></div></div>'+
+'<div class="sec-t">۳. تماس و محل سکونت</div><div class="fgrid">'+
+'<div class="field"><label>استان <span class="req">*</span></label><select name="province" required>'+provOpts+'</select></div>'+
+'<div class="field"><label>شهر <span class="req">*</span></label><select name="city" required>'+cityOpts+'</select></div>'+
+'<div class="field full"><label>آدرس دقیق</label><textarea name="address">'+esc(r.address||r.residence||'')+'</textarea></div>'+
+'<div class="field"><label>شماره تماس <span class="req">*</span></label><input name="phone" value="'+esc(r.phone||'')+'" placeholder="09xxxxxxxxx" style="direction:ltr;text-align:right" required></div>'+
+'<div class="field"><label>پیام‌رسان</label><select name="messenger">'+apOpts(['','بله','واتساپ','تلگرام','روبیکا','ایتا','سایر'],r.messenger)+'</select></div>'+
+'<div class="field"><label>آی‌دی پیام‌رسان</label><input name="messengerId" value="'+esc(r.messengerId||'')+'"></div>'+
+'<div class="field full"><span class="hint" id="routeHint"></span></div></div>'+
+'<div class="sec-t">۴. آشنایی و موقعیت</div><div class="fgrid">'+
+'<div class="field"><label>نحوه آشنایی</label><select name="source">'+apOpts(['','دیوار','شیپور','معرفی دوستان','شبکه‌های اجتماعی','مراجعه حضوری','سایت','سایر'],r.source)+'</select></div>'+
+'<div class="field"><label>معرف</label><input name="referrer" value="'+esc(r.referrer||'')+'"></div>'+
+'<div class="field full"><label>موقعیت درخواستی <span class="req">*</span></label><input name="requestedPosition" value="'+esc(r.requestedPosition||'')+'" required></div></div>'+
+'<div class="sec-t">۵. گردش کار جذب</div><div class="fgrid">'+
+'<div class="field"><label>بررسی اولیه</label><select name="initialReview">'+apOpts(AP_REVIEW,r.initialReview)+'</select></div>'+
+'<div class="field"><label>وضعیت پرونده</label><select name="status">'+apOpts(AP_STATUS,r.status)+'</select></div>'+
+'<div class="field"><label>تاریخ مصاحبه تلفنی</label><input name="phoneInterviewDate" data-jdate value="'+esc(r.phoneInterviewDate||'')+'"></div>'+
+'<div class="field"><label>نتیجه مصاحبه تلفنی</label><select name="phoneInterviewResult">'+apOpts(AP_INTER,r.phoneInterviewResult)+'</select></div>'+
+'<div class="field"><label>تاریخ مصاحبه حضوری</label><input name="inPersonInterviewDate" data-jdate value="'+esc(r.inPersonInterviewDate||'')+'"></div>'+
+'<div class="field"><label>نتیجه مصاحبه حضوری</label><select name="inPersonInterviewResult">'+apOpts(AP_INTER,r.inPersonInterviewResult)+'</select></div>'+
+'<div class="field full"><label>توضیحات</label><textarea name="notes">'+esc(r.notes||'')+'</textarea></div></div>'+
+'</div><div class="mf"><button class="btn btn-p" type="submit">'+icon('save','width:15px;height:15px')+' '+(isEdit?'ذخیره تغییرات':'ثبت پرونده')+'</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',true,true);
+linkProvinceCity($('#modal form'));updateRouteHint();
+var bd=$('#modal form').elements.birthDate;if(bd&&bd.value)calcAge(bd);
 }
 function submitApplicant(form){
-  var o={};Array.prototype.forEach.call(form.elements,function(el){if(el.name)o[el.name]=String(el.value).trim();});
-  if(!o.firstName||!o.lastName||!o.specialty||!o.requestedPosition){toast('فیلدهای ستاره‌دار الزامی است.','err');return;}
-  if(!/^09\d{9}$/.test(en(o.phone).replace(/[\s-]/g,''))){toast('شماره تماس باید ۱۱ رقم و با 09 شروع شود.','err');return;}
-  if(!parseJ(o.birthDate)){toast('تاریخ تولد معتبر نیست.','err');return;}
-  var caseNo=form.dataset.case;var sub=form.querySelector('[type="submit"]');sub.disabled=true;
-  var call=caseNo?api('updateEmployeeJobApplicantFull',caseNo,o,TOKEN):api('saveEmployeeJobApplicant',o,TOKEN);
-  return call.then(function(r){closeModal();toast(caseNo?'پرونده به‌روزرسانی شد.':'پرونده '+ (r.caseNumber||'')+' ثبت شد.','ok');return reload();}).catch(function(e){sub.disabled=false;toast(e.message,'err');});
+var o={};Array.prototype.forEach.call(form.elements,function(el){if(el.name)o[el.name]=String(el.value).trim();});
+if(!o.firstName||!o.lastName||!o.specialty||!o.requestedPosition){toast('فیلدهای ستاره‌دار الزامی است.','err');return;}
+if(!/^09\d{9}$/.test(en(o.phone).replace(/[\s-]/g,''))){toast('شماره تماس باید ۱۱ رقم و با 09 شروع شود.','err');return;}
+if(!parseJ(o.birthDate)){toast('تاریخ تولد معتبر نیست.','err');return;}
+var caseNo=form.dataset.case;var sub=form.querySelector('[type="submit"]');sub.disabled=true;
+var call=caseNo?api('updateEmployeeJobApplicantFull',caseNo,o,TOKEN):api('saveEmployeeJobApplicant',o,TOKEN);
+return call.then(function(r){closeModal();toast(caseNo?'پرونده به‌روزرسانی شد.':'پرونده '+(r.caseNumber||'')+' ثبت شد.','ok');return reload();}).catch(function(e){sub.disabled=false;toast(e.message,'err');});
 }
 function applicantStatusModal(caseNumber){
-  var r=(DB.applicants||[]).find(function(x){return x.caseNumber===caseNumber;});if(!r)return;
-  openModal('<div class="mh"><h3>تغییر وضعیت '+esc(caseNumber)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="ap-status" data-case="'+esc(caseNumber)+'"><div class="mb"><div class="field"><label>وضعیت جدید</label><select name="status">'+apOpts(AP_STATUS,r.status)+'</select></div></div><div class="mf"><button class="btn btn-p" type="submit">اعمال</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+var r=(DB.applicants||[]).find(function(x){return x.caseNumber===caseNumber;});if(!r)return;
+openModal('<div class="mh"><h3>تغییر وضعیت '+esc(caseNumber)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="ap-status" data-case="'+esc(caseNumber)+'"><div class="mb"><div class="field"><label>وضعیت جدید</label><select name="status">'+apOpts(AP_STATUS,r.status)+'</select></div></div><div class="mf"><button class="btn btn-p" type="submit">اعمال</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+}
+function hireApplicant(caseNumber){
+var r=(DB.applicants||[]).find(function(x){return x.caseNumber===caseNumber;});if(!r)return;
+confirmBox('استخدام کارجو','پرونده <b>'+esc(fullName(r))+'</b> استخدام و یک نیروی جدید در شعبه ایجاد شود؟',function(){
+api('employeeHireApplicant',caseNumber,TOKEN).then(function(res){
+closeDrawer();
+openModal('<div class="mh"><h3>استخدام انجام شد</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><div class="mb">'+kv([['کد نیرو','<b class="ltr">'+esc(res.workerId)+'</b>'],['نام کاربری','<b class="ltr">'+esc(res.username)+'</b>'],['رمز عبور اولیه','<b class="ltr">'+esc(res.password)+'</b>'],['وضعیت',pill('فعال')]])+'<p class="hint" style="margin-top:10px">این اطلاعات را به نیرو تحویل دهید؛ رمز عبور قابل تغییر است.</p></div><div class="mf"><button class="btn btn-p" data-act="mclose">متوجه شدم</button></div>',false,true);
+toast('کارجو استخدام شد.','ok');return reload();
+}).catch(function(e){toast(e.message,'err');});
+},'بله، استخدام شود','خیر',false);
 }
 /* ═════════ 14) DRAWERS ═════════ */
 function viewEntity(e,id){
-  var r=(DB[e]||[]).find(function(x){return x.rowIndex===Number(id);});if(!r)return;
-  var cfg=CFG[e],body='',foot='';
-  if(e==='orders'){
-    body=kv([['شناسه','<b style="color:var(--brandDeep)">'+esc(r.requestId)+'</b>'],['وضعیت',pill(r.status)],['مشتری',esc(r.customerName)],['تماس',fa(r.phone)],['خدمت',esc(r.service)],['شهر',esc(r.city)],['اجرا',jDisp(r.execDate)+' · '+fa(r.execTime)],['نوع اقدام',pill(r.actionType)],['مسئول',esc(r.verifier)],['گروه',esc(r.groupName||groupName(r.groupId))],['آدرس',esc(r.addrFrom),1],['توضیحات',esc(r.notes),1]])+'<div class="sec-t">صورت‌حساب</div>'+kv([['قیمت پایه',money(r.basePrice)],['تخفیف',money(r.discount)],['مالیات',money(r.tax)],['مبلغ نهایی',money(r.finalPrice)]]);
-    foot+=ibtn('order-status','edit','تغییر وضعیت',' data-e="orders" data-id="'+id+'"')+btn('convert','تبدیل به کارت','shuffle','btn-p',' data-e="orders" data-id="'+id+'"')+btn('invoice','فاکتور','receipt','btn-s',' data-e="orders" data-id="'+id+'"');
-  }else if(e==='applicants'){
-    body=kv([['پرونده',esc(r.caseNumber)],['وضعیت',pill(r.status)],['نام',esc(fullName(r))],['تماس',fa(r.phone)],['جنسیت',pill(r.gender)],['تاریخ تولد',esc(r.birthDate)],['سن',esc(r.age)],['تخصص',esc(r.specialty)],['سابقه',esc(r.experience)],['تحصیلات',esc(r.education)],['استان/شهر',esc(r.province)+' / '+esc(r.city)],['آدرس',esc(r.address||r.residence),1],['موقعیت',esc(r.requestedPosition)],['بررسی اولیه',pill(r.initialReview)],['مصاحبه تلفنی',esc(r.phoneInterviewDate)+' · '+pill(r.phoneInterviewResult)],['مصاحبه حضوری',esc(r.inPersonInterviewDate)+' · '+pill(r.inPersonInterviewResult)],['ثبت‌کننده',esc(r.createdBy)],['توضیحات',esc(r.notes),1]]);
-    foot+=btn('applicant-edit','ویرایش کامل','edit','btn-p',' data-id="'+id+'"')+btn('applicant-status','تغییر وضعیت','check','btn-s',' data-id="'+id+'"');
-  }else if(e==='workers'){
-    body='<div style="display:flex;gap:14px;align-items:center;margin-bottom:14px">'+av(fullName(r),r.photo,'lg')+'<div><b style="font-size:16px">'+esc(fullName(r))+'</b><div class="sub">'+pill(r.operations)+' · '+esc(r.workerId)+'</div></div></div>'+kv([['نام کاربری',esc(r.username)],['تماس',fa(r.contact)],['ایمیل',esc(r.email)],['سمت',esc(r.jobTitle)],['تخصص',esc(r.specialization)],['گروه',esc(groupName(r.groupId))],['استخدام',jDisp(r.hireDate)],['وضعیت',pill(r.status)],['آدرس',esc(r.address),1]]);
-    foot+=btn('edit','ویرایش','edit','btn-p',' data-e="workers" data-id="'+id+'"')+btn('del','حذف','trash','btn-d',' data-e="workers" data-id="'+id+'"');
-  }else if(e==='groups'){
-    var ms=(DB.members||[]).filter(function(m){return m.groupId===r.groupId;});
-    body=kv([['کد',esc(r.groupId)],['نام',esc(r.name)],['سرپرست',esc(r.supervisorName)],['منطقه',esc(r.area)],['نوع',esc(r.groupType)],['وضعیت',pill(r.status)],['توضیحات',esc(r.description),1]])+'<div class="sec-t">اعضا ('+fa(ms.length)+')</div>'+(ms.length?ms.map(function(m){return '<div class="rank">'+av(workerName(m.workerId)||m.username,'')+'<div class="info"><b>'+esc(workerName(m.workerId)||m.username)+'</b><small>'+esc(m.username)+'</small></div>'+pill(m.role)+'</div>';}).join(''):'<p class="sub">عضوی ثبت نشده است.</p>');
-    foot+=btn('members','اعضای گروه','groups','btn-s',' data-e="groups" data-id="'+id+'"')+btn('edit','ویرایش','edit','btn-p',' data-e="groups" data-id="'+id+'"')+btn('del','حذف','trash','btn-d',' data-e="groups" data-id="'+id+'"');
-  }else if(e==='members'){
-    body=kv([['گروه',esc(groupName(r.groupId))],['نیرو',esc(workerName(r.workerId)||r.workerId)],['نام کاربری',esc(r.username)],['نقش',pill(r.role)],['عضویت',jDisp(r.joinDate)],['وضعیت',pill(r.status)]]);
-    foot+=btn('edit','ویرایش','edit','btn-p',' data-e="members" data-id="'+id+'"')+btn('del','حذف','trash','btn-d',' data-e="members" data-id="'+id+'"');
-  }else if(e==='tasks'){
-    body=kv([['شناسه',esc(r.taskId)],['مشتری',esc(r.customerName||cuName(r.customerId))],['اجرا',jDisp(r.execDate)+' · '+fa(r.execTime)],['تکرار',pill(r.recType)],['وضعیت',pill(r.status)],['توضیحات',esc(r.notes),1]]);
-    foot+=btn('edit','ویرایش','edit','btn-p',' data-e="tasks" data-id="'+id+'"')+btn('del','حذف','trash','btn-d',' data-e="tasks" data-id="'+id+'"');
-  }else{body=kv(cfg.cols.map(function(c){return [c.l,c.r?c.r(r):esc(r[c.k]==null?'—':r[c.k])];}));}
-  openDrawer('<div class="dh"><h3>'+esc(cfg.singular)+'</h3><button class="ibtn" data-act="dclose">'+icon('x')+'</button></div><div class="db">'+body+'</div><div class="df">'+foot+'</div>');
+var r=(DB[e]||[]).find(function(x){return x.rowIndex===Number(id);});if(!r)return;
+var cfg=CFG[e],body='',foot='';
+if(e==='orders'){
+body=kv([['شناسه','<b style="color:var(--brandDeep)">'+esc(r.requestId)+'</b>'],['وضعیت',pill(r.status)],['مشتری',esc(r.customerName)],['تماس',fa(r.phone)],['خدمت',esc(r.service)],['شهر',esc(r.city)],['اجرا',jDisp(r.execDate)+' · '+fa(r.execTime)],['نوع اقدام',pill(r.actionType)],['مسئول',esc(r.verifier)],['گروه',esc(r.groupName||groupName(r.groupId))],['آدرس',esc(r.addrFrom),1],['توضیحات',esc(r.notes),1]])+'<div class="sec-t">صورت‌حساب</div>'+kv([['قیمت پایه',money(r.basePrice)],['تخفیف',money(r.discount)],['مالیات',money(r.tax)],['مبلغ نهایی',money(r.finalPrice)]]);
+foot+=btn('order-status','تغییر وضعیت','edit','btn-s',' data-e="orders" data-id="'+id+'"')+btn('convert','تبدیل به کارت','shuffle','btn-p',' data-e="orders" data-id="'+id+'"')+btn('invoice','فاکتور','receipt','btn-s',' data-e="orders" data-id="'+id+'"');
+}else if(e==='applicants'){
+body=kv([['پرونده',esc(r.caseNumber)],['وضعیت',pill(r.status)],['نام',esc(fullName(r))],['تماس',fa(r.phone)],['جنسیت',pill(r.gender)],['تاریخ تولد',esc(r.birthDate)],['سن',esc(r.age)],['تخصص',esc(r.specialty)],['سابقه',esc(r.experience)],['تحصیلات',esc(r.education)],['استان/شهر',esc(r.province)+' / '+esc(r.city)],['آدرس',esc(r.address||r.residence),1],['موقعیت',esc(r.requestedPosition)],['بررسی اولیه',pill(r.initialReview)],['مصاحبه تلفنی',esc(r.phoneInterviewDate)+' · '+pill(r.phoneInterviewResult)],['مصاحبه حضوری',esc(r.inPersonInterviewDate)+' · '+pill(r.inPersonInterviewResult)],['ثبت‌کننده',esc(r.createdBy)],['توضیحات',esc(r.notes),1]]);
+foot+=btn('applicant-edit','ویرایش کامل','edit','btn-p',' data-id="'+id+'"')+btn('applicant-status','تغییر وضعیت','check','btn-s',' data-id="'+id+'"');
+if(r.status==='تأیید شده')foot+=btn('applicant-hire','استخدام','star','btn-s',' data-id="'+id+'"');
+}else if(e==='workers'){
+body='<div style="display:flex;gap:14px;align-items:center;margin-bottom:14px">'+av(fullName(r),r.photo,'lg')+'<div><b style="font-size:16px">'+esc(fullName(r))+'</b><div class="sub">'+pill(r.operations)+' · '+esc(r.workerId)+'</div></div></div>'+kv([['نام کاربری',esc(r.username)],['تماس',fa(r.contact)],['ایمیل',esc(r.email)],['سمت',esc(r.jobTitle)],['تخصص',esc(r.specialization)],['گروه',esc(groupName(r.groupId))],['استخدام',jDisp(r.hireDate)],['وضعیت',pill(r.status)],['آدرس',esc(r.address),1]]);
+foot+=btn('edit','ویرایش','edit','btn-p',' data-e="workers" data-id="'+id+'"')+btn('del','حذف','trash','btn-d',' data-e="workers" data-id="'+id+'"');
+}else if(e==='groups'){
+var ms=(DB.members||[]).filter(function(m){return m.groupId===r.groupId;});
+body=kv([['کد',esc(r.groupId)],['نام',esc(r.name)],['سرپرست',esc(r.supervisorName)],['منطقه',esc(r.area)],['نوع',esc(r.groupType)],['وضعیت',pill(r.status)],['توضیحات',esc(r.description),1]])+'<div class="sec-t">اعضا ('+fa(ms.length)+')</div>'+(ms.length?ms.map(function(m){return '<div class="rank">'+av(workerName(m.workerId)||m.username,'')+'<div class="info"><b>'+esc(workerName(m.workerId)||m.username)+'</b><small>'+esc(m.username)+'</small></div>'+pill(m.role)+'</div>';}).join(''):'<p class="sub">عضوی ثبت نشده است.</p>');
+foot+=btn('members','اعضای گروه','groups','btn-s',' data-e="groups" data-id="'+id+'"')+btn('edit','ویرایش','edit','btn-p',' data-e="groups" data-id="'+id+'"')+btn('del','حذف','trash','btn-d',' data-e="groups" data-id="'+id+'"');
+}else if(e==='members'){
+body=kv([['گروه',esc(groupName(r.groupId))],['نیرو',esc(workerName(r.workerId)||r.workerId)],['نام کاربری',esc(r.username)],['نقش',pill(r.role)],['عضویت',jDisp(r.joinDate)],['وضعیت',pill(r.status)]]);
+foot+=btn('edit','ویرایش','edit','btn-p',' data-e="members" data-id="'+id+'"')+btn('del','حذف','trash','btn-d',' data-e="members" data-id="'+id+'"');
+}else if(e==='tasks'){
+body=kv([['شناسه',esc(r.taskId)],['مشتری',esc(r.customerName||cuName(r.customerId))],['اجرا',jDisp(r.execDate)+' · '+fa(r.execTime)],['تکرار',pill(r.recType)],['وضعیت',pill(r.status)],['توضیحات',esc(r.notes),1]]);
+foot+=btn('edit','ویرایش','edit','btn-p',' data-e="tasks" data-id="'+id+'"')+btn('del','حذف','trash','btn-d',' data-e="tasks" data-id="'+id+'"');
+}else{body=kv(cfg.cols.map(function(c){return [c.l,c.r?c.r(r):esc(r[c.k]==null?'—':r[c.k])];}));}
+openDrawer('<div class="dh"><h3>'+esc(cfg.singular)+'</h3><button class="ibtn" data-act="dclose">'+icon('x')+'</button></div><div class="db">'+body+'</div><div class="df">'+foot+'</div>');
 }
 /* ═════════ 15) ORDER ACTIONS ═════════ */
 function orderStatusModal(id){
-  var r=(DB.orders||[]).find(function(x){return x.rowIndex===Number(id);});if(!r)return;
-  var st=['جدید','ثبت اولیه','در حال بررسی','در حال انجام','تکمیل شده','لغو شده'];
-  openModal('<div class="mh"><h3>تغییر وضعیت '+esc(r.requestId)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="order-status" data-req="'+esc(r.requestId)+'"><div class="mb"><div class="field"><label>وضعیت جدید</label><select name="status">'+st.map(function(s){return '<option'+(s===r.status?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select></div></div><div class="mf"><button class="btn btn-p" type="submit">اعمال</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+var r=(DB.orders||[]).find(function(x){return x.rowIndex===Number(id);});if(!r)return;
+var st=['جدید','ثبت اولیه','در حال بررسی','در حال انجام','تکمیل شده','لغو شده'];
+openModal('<div class="mh"><h3>تغییر وضعیت '+esc(r.requestId)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="order-status" data-req="'+esc(r.requestId)+'"><div class="mb"><div class="field"><label>وضعیت جدید</label><select name="status">'+st.map(function(s){return '<option'+(s===r.status?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select></div></div><div class="mf"><button class="btn btn-p" type="submit">اعمال</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
 }
 function convertModal(id){
-  var r=(DB.orders||[]).find(function(x){return x.rowIndex===Number(id);});if(!r)return;
-  openModal('<div class="mh"><h3>تبدیل '+esc(r.requestId)+' به کارت</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="convert" data-req="'+esc(r.requestId)+'"><div class="mb"><div class="fgrid"><div class="field"><label>گروه <span class="req">*</span></label><select name="groupId" required><option value="">انتخاب گروه</option>'+grOpts().map(function(g){return '<option value="'+esc(g.v)+'">'+esc(g.l)+'</option>';}).join('')+'</select></div><div class="field"><label>نیرو (اختیاری)</label><select name="workerId" disabled><option value="">ابتدا گروه را انتخاب کنید</option></select></div></div></div><div class="mf"><button class="btn btn-p" type="submit">تبدیل و تخصیص</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
-  var f=$('#modal form');f.elements.groupId.addEventListener('change',function(){var gid=f.elements.groupId.value;var ws=f.elements.workerId;if(!gid){ws.disabled=true;ws.innerHTML='<option value="">ابتدا گروه را انتخاب کنید</option>';zselSync(ws);return;}api('getWorkersByGroupEmp',gid,TOKEN).then(function(list){ws.innerHTML='<option value="">بدون تخصیص (استخر گروه)</option>'+list.map(function(w){return '<option value="'+esc(w.id)+'">'+esc(w.name)+' ('+esc(w.operations)+')</option>';}).join('');ws.disabled=false;zselSync(ws);}).catch(function(e){toast(e.message,'err');});});
+var r=(DB.orders||[]).find(function(x){return x.rowIndex===Number(id);});if(!r)return;
+openModal('<div class="mh"><h3>تبدیل '+esc(r.requestId)+' به کارت</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="convert" data-req="'+esc(r.requestId)+'"><div class="mb"><div class="fgrid"><div class="field"><label>گروه <span class="req">*</span></label><select name="groupId" required><option value="">انتخاب گروه</option>'+grOpts().map(function(g){return '<option value="'+esc(g.v)+'">'+esc(g.l)+'</option>';}).join('')+'</select></div><div class="field"><label>نیرو (اختیاری)</label><select name="workerId" disabled><option value="">ابتدا گروه را انتخاب کنید</option></select></div></div></div><div class="mf"><button class="btn btn-p" type="submit">تبدیل و تخصیص</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+var f=$('#modal form');f.elements.groupId.addEventListener('change',function(){var gid=f.elements.groupId.value;var ws=f.elements.workerId;if(!gid){ws.disabled=true;ws.innerHTML='<option value="">ابتدا گروه را انتخاب کنید</option>';zselSync(ws);return;}api('getWorkersByGroupEmp',gid,TOKEN).then(function(list){ws.innerHTML='<option value="">بدون تخصیص (استخر گروه)</option>'+list.map(function(w){return '<option value="'+esc(w.id)+'">'+esc(w.name)+' ('+esc(w.operations)+')</option>';}).join('');ws.disabled=false;zselSync(ws);}).catch(function(e){toast(e.message,'err');});});
 }
 function invoiceModal(id){
-  var o=(DB.orders||[]).find(function(x){return x.rowIndex===Number(id);});if(!o)return;
-  var rows=[['مشتری',o.customerName],['تماس',fa(o.phone)],['خدمت',o.service],['اجرا',jDisp(o.execDate)+' '+fa(o.execTime)],['آدرس',o.addrFrom]];
-  openModal('<div class="mh"><h3>فاکتور '+esc(o.requestId)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><div class="mb"><div id="invBox" style="background:#fff;color:#17213B;border-radius:14px;padding:24px"><div style="text-align:center;border-bottom:2px solid #0B1736;padding-bottom:12px;margin-bottom:14px"><h2 style="color:#0B1736">Zingo<span style="color:#FF6B1A">Vingo</span></h2><div style="font-size:11px;color:#5C6784">صورت‌حساب '+esc(o.requestId)+'</div></div>'+rows.map(function(x){return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed #ddd"><span>'+x[0]+'</span><b>'+esc(x[1]||'—')+'</b></div>';}).join('')+'<div style="display:flex;justify-content:space-between;padding:5px 0"><span>قیمت پایه</span><b>'+money(o.basePrice)+'</b></div><div style="display:flex;justify-content:space-between;padding:5px 0"><span>تخفیف</span><b>−'+money(o.discount)+'</b></div><div style="display:flex;justify-content:space-between;padding:5px 0"><span>مالیات</span><b>'+money(o.tax)+'</b></div><div style="display:flex;justify-content:space-between;font-size:16px;font-weight:900;color:#E4570B;border-top:2px solid #0B1736;margin-top:10px;padding-top:10px"><span>نهایی</span><span>'+money(o.finalPrice)+'</span></div></div></div><div class="mf">'+btn('print-inv','چاپ / PDF','print','btn-p')+'<button class="btn btn-s" data-act="mclose">بستن</button></div>');
+var o=(DB.orders||[]).find(function(x){return x.rowIndex===Number(id);});if(!o)return;
+var rows=[['مشتری',o.customerName],['تماس',fa(o.phone)],['خدمت',o.service],['اجرا',jDisp(o.execDate)+' '+fa(o.execTime)],['آدرس',o.addrFrom]];
+openModal('<div class="mh"><h3>فاکتور '+esc(o.requestId)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><div class="mb"><div id="invBox" style="background:#fff;color:#17213B;border-radius:14px;padding:24px"><div style="text-align:center;border-bottom:2px solid #0B1736;padding-bottom:12px;margin-bottom:14px"><h2 style="color:#0B1736">Zingo<span style="color:#FF6B1A">Vingo</span></h2><div style="font-size:11px;color:#5C6784">صورت‌حساب '+esc(o.requestId)+'</div></div>'+rows.map(function(x){return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed #ddd"><span>'+x[0]+'</span><b>'+esc(x[1]||'—')+'</b></div>';}).join('')+'<div style="display:flex;justify-content:space-between;padding:5px 0"><span>قیمت پایه</span><b>'+money(o.basePrice)+'</b></div><div style="display:flex;justify-content:space-between;padding:5px 0"><span>تخفیف</span><b>−'+money(o.discount)+'</b></div><div style="display:flex;justify-content:space-between;padding:5px 0"><span>مالیات</span><b>'+money(o.tax)+'</b></div><div style="display:flex;justify-content:space-between;font-size:16px;font-weight:900;color:#E4570B;border-top:2px solid #0B1736;margin-top:10px;padding-top:10px"><span>نهایی</span><span>'+money(o.finalPrice)+'</span></div></div></div><div class="mf">'+btn('print-inv','چاپ / PDF','print','btn-p')+'<button class="btn btn-s" data-act="mclose">بستن</button></div>');
 }
 /* ═════════ 16) CARDS / KANBAN ═════════ */
 var KCOL=[['جدید','var(--blue)'],['تخصیص به شعبه','var(--teal)'],['تخصیص به گروه','var(--pink)'],['تخصیص به کارگر','var(--violet)'],['در حال انجام','var(--amber)'],['تکمیل شده','var(--green)'],['تعلیق','var(--slate)'],['ارجاع به سرپرست','var(--pink)'],['لغو شده','var(--red)']];
 function cardsPage(){
-  var q=en(PS.q||'').toLowerCase();
-  var cards=(DB.cards||[]).filter(function(c){return !q||[c.cardId,c.customerName,c.requestId,c.service].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});
-  var h=pageHead('کارت‌های عملیاتی',fa(cards.length)+' کارت · فقط شعبه شما','<button class="btn btn-sm '+(PS.view==='kanban'?'btn-p':'btn-s')+'" data-act="cards-view" data-mode="kanban">'+icon('grid','width:14px;height:14px')+' کانبان</button><button class="btn btn-sm '+(PS.view==='table'?'btn-p':'btn-s')+'" data-act="cards-view" data-mode="table">'+icon('list','width:14px;height:14px')+' جدول</button>');
-  h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-search placeholder="جستجو در کارت‌ها…" value="'+esc(PS.q||'')+'"></div></div>';
-  if(PS.view==='table'){
-    h+='<div class="tw"><table class="tb"><thead><tr><th>کارت</th><th>مشتری</th><th>خدمت</th><th>نیرو</th><th>اجرا</th><th>مبلغ</th><th>وضعیت</th><th style="text-align:left">عملیات</th></tr></thead><tbody>'+cards.map(function(c){return '<tr><td><b>'+esc(c.cardId)+'</b></td><td>'+esc(c.customerName)+'</td><td>'+esc(c.service)+'</td><td>'+esc(workerName(c.workerId)||'—')+'</td><td>'+jDisp(c.execDate)+'</td><td class="num">'+money(c.amount)+'</td><td>'+pill(c.status)+'</td><td><div class="ra">'+ibtn('card-view','eye','مشاهده',' data-id="'+esc(c.cardId)+'"')+ibtn('card-status','edit','تغییر وضعیت',' data-id="'+esc(c.cardId)+'"')+'</div></td></tr>';}).join('')+'</tbody></table></div>';return h;
-  }
-  h+='<div class="kanban">'+KCOL.map(function(k){var list=cards.filter(function(c){return c.status===k[0];});return '<div class="kcol" data-col="'+esc(k[0])+'"><div class="kch"><i style="background:'+k[1]+'"></i>'+esc(k[0])+'<span>'+fa(list.length)+'</span></div>'+list.map(function(c){return '<div class="kcard" draggable="true" data-card="'+esc(c.cardId)+'" data-act="card-view" data-id="'+esc(c.cardId)+'"><b>'+esc(c.customerName)+'</b><small>'+esc(c.cardId)+' · '+esc(c.service)+'</small><small>'+jDisp(c.execDate)+' · '+fa(c.execTime)+'</small><div class="kfoot"><span class="ka">'+moneyC(c.amount)+' ریال</span>'+av(workerName(c.workerId)||'؟','')+'</div></div>';}).join('')+(list.length?'':'<div class="sub" style="text-align:center;padding:16px 0">—</div>')+'</div>';}).join('')+'</div>';
-  return h;
+var q=en(PS.q||'').toLowerCase();
+var cards=(DB.cards||[]).filter(function(c){return !q||[c.cardId,c.customerName,c.requestId,c.service].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});
+var h=pageHead('کارت‌های عملیاتی',fa(cards.length)+' کارت · فقط شعبه شما','<button class="btn btn-sm '+(PS.view==='kanban'?'btn-p':'btn-s')+'" data-act="cards-view" data-mode="kanban">'+icon('grid','width:14px;height:14px')+' کانبان</button><button class="btn btn-sm '+(PS.view==='table'?'btn-p':'btn-s')+'" data-act="cards-view" data-mode="table">'+icon('list','width:14px;height:14px')+' جدول</button>');
+h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-search placeholder="جستجو در کارت‌ها…" value="'+esc(PS.q||'')+'"></div></div>';
+if(PS.view==='table'){
+h+='<div class="tw"><table class="tb"><thead><tr><th>کارت</th><th>مشتری</th><th>خدمت</th><th>نیرو</th><th>اجرا</th><th>مبلغ</th><th>وضعیت</th><th style="text-align:left">عملیات</th></tr></thead><tbody>'+cards.map(function(c){return '<tr><td><b>'+esc(c.cardId)+'</b></td><td>'+esc(c.customerName)+'</td><td>'+esc(c.service)+'</td><td>'+esc(workerName(c.workerId)||'—')+'</td><td>'+jDisp(c.execDate)+'</td><td class="num">'+money(c.amount)+'</td><td>'+pill(c.status)+'</td><td><div class="ra">'+ibtn('card-view','eye','مشاهده',' data-id="'+esc(c.cardId)+'"')+ibtn('card-status','edit','تغییر وضعیت',' data-id="'+esc(c.cardId)+'"')+'</div></td></tr>';}).join('')+'</tbody></table></div>';return h;
+}
+h+='<div class="kanban">'+KCOL.map(function(k){var list=cards.filter(function(c){return c.status===k[0];});return '<div class="kcol" data-col="'+esc(k[0])+'"><div class="kch"><i style="background:'+k[1]+'"></i>'+esc(k[0])+'<span>'+fa(list.length)+'</span></div>'+list.map(function(c){return '<div class="kcard" draggable="true" data-card="'+esc(c.cardId)+'" data-act="card-view" data-id="'+esc(c.cardId)+'"><b>'+esc(c.customerName)+'</b><small>'+esc(c.cardId)+' · '+esc(c.service)+'</small><small>'+jDisp(c.execDate)+' · '+fa(c.execTime)+'</small><div class="kfoot"><span class="ka">'+moneyC(c.amount)+' ریال</span>'+av(workerName(c.workerId)||'؟','')+'</div></div>';}).join('')+(list.length?'':'<div class="sub" style="text-align:center;padding:16px 0">—</div>')+'</div>';}).join('')+'</div>';
+return h;
 }
 function cardDrawer(id){
-  var c=(DB.cards||[]).find(function(x){return x.cardId===id;});if(!c)return;
-  var hist=(DB.cardHistory||[]).filter(function(h){return h.cardId===id;});
-  var body=kv([['کارت',esc(c.cardId)],['وضعیت',pill(c.status)],['سفارش',esc(c.requestId)],['مشتری',esc(c.customerName)],['خدمت',esc(c.service)],['نیرو',esc(workerName(c.workerId)||'تخصیص‌نیافته')],['اجرا',jDisp(c.execDate)+' · '+fa(c.execTime)],['مبلغ',money(c.amount)],['آدرس',esc(c.address),1],['توضیحات',esc(c.notes),1]])+'<div class="sec-t">تاریخچه وضعیت</div>'+(hist.length?hist.map(function(h){return '<div class="rank"><div class="info"><b>'+esc(h.from||'ایجاد')+' ← '+esc(h.to)+'</b><small>'+jDT(h.at)+' · '+esc(h.userId)+'</small></div></div>';}).join(''):'<p class="sub">سابقه‌ای ثبت نشده است.</p>');
-  openDrawer('<div class="dh"><h3>کارت '+esc(c.cardId)+'</h3><button class="ibtn" data-act="dclose">'+icon('x')+'</button></div><div class="db">'+body+'</div><div class="df">'+btn('card-status','تغییر وضعیت','check','btn-p',' data-id="'+esc(id)+'"')+btn('card-assign','تخصیص نیرو','worker','btn-s',' data-id="'+esc(id)+'"')+btn('thread-new','پیام سازمانی','msg','btn-s',' data-id="'+esc(id)+'"')+'</div>');
+var c=(DB.cards||[]).find(function(x){return x.cardId===id;});if(!c)return;
+var hist=(DB.cardHistory||[]).filter(function(h){return h.cardId===id;});
+var body=kv([['کارت',esc(c.cardId)],['وضعیت',pill(c.status)],['سفارش',esc(c.requestId)],['مشتری',esc(c.customerName)],['خدمت',esc(c.service)],['نیرو',esc(workerName(c.workerId)||'تخصیص‌نیافته')],['اجرا',jDisp(c.execDate)+' · '+fa(c.execTime)],['مبلغ',money(c.amount)],['آدرس',esc(c.address),1],['توضیحات',esc(c.notes),1]])+'<div class="sec-t">تاریخچه وضعیت</div>'+(hist.length?hist.map(function(h){return '<div class="rank"><div class="info"><b>'+esc(h.from||'ایجاد')+' ← '+esc(h.to)+'</b><small>'+jDT(h.at)+' · '+esc(h.userId)+'</small></div></div>';}).join(''):'<p class="sub">سابقه‌ای ثبت نشده است.</p>');
+openDrawer('<div class="dh"><h3>کارت '+esc(c.cardId)+'</h3><button class="ibtn" data-act="dclose">'+icon('x')+'</button></div><div class="db">'+body+'</div><div class="df">'+btn('card-status','تغییر وضعیت','check','btn-p',' data-id="'+esc(id)+'"')+btn('card-assign','تخصیص نیرو','worker','btn-s',' data-id="'+esc(id)+'"')+btn('thread-new','گفتگوی سازمانی','msg','btn-s',' data-id="'+esc(id)+'"')+'</div>');
 }
 function cardStatusModal(id){
-  var c=(DB.cards||[]).find(function(x){return x.cardId===id;});if(!c)return;
-  openModal('<div class="mh"><h3>تغییر وضعیت '+esc(id)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="card-status" data-id="'+esc(id)+'"><div class="mb"><div class="fgrid"><div class="field"><label>وضعیت جدید</label><select name="status">'+KCOL.map(function(k){return '<option'+(c.status===k[0]?' selected':'')+'>'+esc(k[0])+'</option>';}).join('')+'</select></div><div class="field"><label>اجراکننده</label><select name="workerId"><option value="">بدون تغییر</option>'+(DB.workers||[]).filter(function(w){return w.operations==='worker';}).map(function(w){return '<option value="'+esc(w.workerId)+'"'+(c.workerId===w.workerId?' selected':'')+'>'+esc(fullName(w))+'</option>';}).join('')+'</select></div></div></div><div class="mf"><button class="btn btn-p" type="submit">ثبت</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+var c=(DB.cards||[]).find(function(x){return x.cardId===id;});if(!c)return;
+openModal('<div class="mh"><h3>تغییر وضعیت '+esc(id)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="card-status" data-id="'+esc(id)+'"><div class="mb"><div class="fgrid"><div class="field"><label>وضعیت جدید</label><select name="status">'+KCOL.map(function(k){return '<option'+(c.status===k[0]?' selected':'')+'>'+esc(k[0])+'</option>';}).join('')+'</select></div><div class="field"><label>اجراکننده</label><select name="workerId"><option value="">بدون تغییر</option>'+(DB.workers||[]).filter(function(w){return w.operations==='worker';}).map(function(w){return '<option value="'+esc(w.workerId)+'"'+(c.workerId===w.workerId?' selected':'')+'>'+esc(fullName(w))+'</option>';}).join('')+'</select></div></div></div><div class="mf"><button class="btn btn-p" type="submit">ثبت</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
 }
 function cardAssignModal(id){
-  var c=(DB.cards||[]).find(function(x){return x.cardId===id;});if(!c)return;
-  openModal('<div class="mh"><h3>تخصیص کارت '+esc(id)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="card-assign" data-id="'+esc(id)+'"><div class="mb"><div class="field"><label>نیروی اجراکننده</label><select name="workerId"><option value="">بازگشت به استخر گروه</option>'+(DB.workers||[]).filter(function(w){return w.operations==='worker';}).map(function(w){return '<option value="'+esc(w.workerId)+'"'+(c.workerId===w.workerId?' selected':'')+'>'+esc(fullName(w))+' — '+esc(w.specialization||'')+'</option>';}).join('')+'</select></div></div><div class="mf"><button class="btn btn-p" type="submit">ثبت تخصیص</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+var c=(DB.cards||[]).find(function(x){return x.cardId===id;});if(!c)return;
+openModal('<div class="mh"><h3>تخصیص کارت '+esc(id)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="card-assign" data-id="'+esc(id)+'"><div class="mb"><div class="field"><label>نیروی اجراکننده</label><select name="workerId"><option value="">بازگشت به استخر گروه</option>'+(DB.workers||[]).filter(function(w){return w.operations==='worker';}).map(function(w){return '<option value="'+esc(w.workerId)+'"'+(c.workerId===w.workerId?' selected':'')+'>'+esc(fullName(w))+' — '+esc(w.specialization||'')+'</option>';}).join('')+'</select></div></div><div class="mf"><button class="btn btn-p" type="submit">ثبت تخصیص</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
 }
 /* ═════════ 17) PLANNER ═════════ */
 function plannerPage(){
-  var start=new Date(PS.week||new Date());start.setHours(12,0,0,0);start.setDate(start.getDate()-((start.getDay()+1)%7));
-  var days=[];for(var i=0;i<7;i++){var d=new Date(start);d.setDate(start.getDate()+i);days.push(d);}
-  var keys=days.map(gKey);var cards=(DB.cards||[]).filter(function(c){return keys.indexOf(c.execDate)>=0;});
-  if(PS.pWorker)cards=cards.filter(function(c){return c.workerId===PS.pWorker;});
-  var tk=gKey(new Date());
-  var acts='<button class="btn btn-s btn-sm" data-act="week" data-d="-7">هفته قبل</button><button class="btn btn-p btn-sm" data-act="week" data-d="0">هفته جاری</button><button class="btn btn-s btn-sm" data-act="week" data-d="7">هفته بعد</button><select class="sel" data-pworker><option value="">همه نیروها</option>'+(DB.workers||[]).filter(function(w){return w.operations==='worker';}).map(function(w){return '<option value="'+esc(w.workerId)+'"'+(PS.pWorker===w.workerId?' selected':'')+'>'+esc(fullName(w))+'</option>';}).join('')+'</select>';
-  var h=pageHead('برنامه هفتگی',jDisp(days[0])+' تا '+jDisp(days[6])+' · '+fa(cards.length)+' کارت',acts);
-  h+='<div class="tw"><div class="pl-grid"><div class="pl-h">ساعت</div>';
-  h+=days.map(function(d){return '<div class="pl-h'+(gKey(d)===tk?' today':'')+'">'+new Intl.DateTimeFormat('fa-IR',{weekday:'short'}).format(d)+'<br><small>'+jDisp(d)+'</small></div>';}).join('');
-  for(var hr=6;hr<23;hr++){h+='<div class="pl-t">'+fa(String(hr).padStart(2,'0'))+':۰۰</div>';h+=days.map(function(d){var list=cards.filter(function(c){return c.execDate===gKey(d)&&num(String(c.execTime||'').split(':')[0])===hr;});return '<div class="pl-c">'+list.map(function(c){return '<button class="pl-e" data-act="card-view" data-id="'+esc(c.cardId)+'"><b>'+fa(c.execTime)+' '+esc(c.cardId)+'</b><small>'+esc(c.customerName)+'</small></button>';}).join('')+'</div>';}).join('');}
-  h+='</div></div>';return h;
+var start=new Date(PS.week||new Date());start.setHours(12,0,0,0);start.setDate(start.getDate()-((start.getDay()+1)%7));
+var days=[];for(var i=0;i<7;i++){var d=new Date(start);d.setDate(start.getDate()+i);days.push(d);}
+var keys=days.map(gKey);var cards=(DB.cards||[]).filter(function(c){return keys.indexOf(c.execDate)>=0;});
+if(PS.pWorker)cards=cards.filter(function(c){return c.workerId===PS.pWorker;});
+var tk=gKey(new Date());
+var acts='<button class="btn btn-s btn-sm" data-act="week" data-d="-7">هفته قبل</button><button class="btn btn-p btn-sm" data-act="week" data-d="0">هفته جاری</button><button class="btn btn-s btn-sm" data-act="week" data-d="7">هفته بعد</button><select class="sel" data-pworker><option value="">همه نیروها</option>'+(DB.workers||[]).filter(function(w){return w.operations==='worker';}).map(function(w){return '<option value="'+esc(w.workerId)+'"'+(PS.pWorker===w.workerId?' selected':'')+'>'+esc(fullName(w))+'</option>';}).join('')+'</select>';
+var h=pageHead('برنامه هفتگی',jDisp(days[0])+' تا '+jDisp(days[6])+' · '+fa(cards.length)+' کارت',acts);
+h+='<div class="tw"><div class="pl-grid"><div class="pl-h">ساعت</div>';
+h+=days.map(function(d){return '<div class="pl-h'+(gKey(d)===tk?' today':'')+'">'+new Intl.DateTimeFormat('fa-IR',{weekday:'short'}).format(d)+'<br><small>'+jDisp(d)+'</small></div>';}).join('');
+for(var hr=6;hr<23;hr++){h+='<div class="pl-t">'+fa(String(hr).padStart(2,'0'))+':۰۰</div>';h+=days.map(function(d){var list=cards.filter(function(c){return c.execDate===gKey(d)&&num(String(c.execTime||'').split(':')[0])===hr;});return '<div class="pl-c">'+list.map(function(c){return '<button class="pl-e" data-act="card-view" data-id="'+esc(c.cardId)+'"><b>'+fa(c.execTime)+' '+esc(c.cardId)+'</b><small>'+esc(c.customerName)+'</small></button>';}).join('')+'</div>';}).join('');}
+h+='</div></div>';return h;
 }
-/* ═════════ 18) SUPPORT / THREADS / ADMIN SUPPORT ═════════ */
-function supportPage(){
-  var rows=DB.support||[];
-  var h=pageHead('پشتیبانی مشتریان',fa(rows.length)+' پیام · '+fa(rows.filter(function(r){return r.status==='unread';}).length)+' پاسخ‌داده‌نشده · فقط مشتریان شعبه',btn('refresh','بروزرسانی','undo','btn-s'));
-  h+='<div class="card">'+(rows.length?rows.map(function(m){return '<div class="thread"><div style="flex:1;min-width:0"><b>'+esc(m.subject||'بدون موضوع')+'</b><div class="sub">'+esc(m.senderName)+' · '+esc(m.createdAt)+' '+pill(m.status)+'</div><div style="background:var(--surface2);padding:9px;border-radius:9px;margin:7px 0;font-size:12px;white-space:pre-wrap">'+esc(m.message)+'</div>'+(m.reply?'<div style="background:rgba(14,159,110,.1);padding:9px;border-radius:9px;border-right:3px solid var(--green);font-size:12px"><b>پاسخ:</b> '+esc(m.reply)+'</div>':'')+'</div>'+btn('support-reply',m.reply?'ویرایش پاسخ':'پاسخ','msg','btn-p btn-sm',' data-id="'+m.rowIndex+'"')+'</div>';}).join(''):'<div class="empty"><div class="ei">'+icon('msg')+'</div><h4>پیامی نیست</h4></div>')+'</div>';
-  return h;
+/* ═════════ 18) THREADED MESSAGING (سه کانال، یک موتور) ═════════ */
+function ticketsOf(channel){
+var rows=(DB[CH_MAP[channel]]||[]).slice();
+var q=en(PS.tq||'').trim().toLowerCase();
+if(q)rows=rows.filter(function(t){return [t.subject,t.ticketNo,t.ownerName,t.ownerUsername,t.preview,t.threadId,t.cardId,t.customerId].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});
+if(PS.tstate)rows=rows.filter(function(t){return String(t.state||'')===PS.tstate;});
+rows.sort(function(a,b){return String(b.lastMessageAt||b.createdAt||'').localeCompare(String(a.lastMessageAt||a.createdAt||''));});
+return rows;
 }
-function supportReplyModal(id){
-  var m=(DB.support||[]).find(function(x){return x.rowIndex===Number(id);});if(!m)return;
-  openModal('<div class="mh"><h3>پاسخ به: '+esc(m.subject)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="support-reply" data-id="'+esc(m.conversationId)+'"><div class="mb"><div style="background:rgba(255,255,255,.06);padding:10px;border-radius:10px;font-size:12px;margin-bottom:12px;white-space:pre-wrap">'+esc(m.message)+'</div><div class="field"><label>متن پاسخ <span class="req">*</span></label><textarea name="reply">'+esc(m.reply||'')+'</textarea></div></div><div class="mf"><button class="btn btn-p" type="submit">ثبت پاسخ</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+function ticketMeta(t){
+var ch=t.channel||'';
+if(ch==='INTERNAL')return 'کارت '+esc(t.cardId||'—')+' · '+esc(t.workerUsername||t.ownerUsername||'—')+' ↔ '+esc(t.supervisorUsername||t.peerUsername||'—');
+if(ch==='CUSTOMER_SUPPORT')return esc(t.ownerName||t.senderName||'مشتری')+' · <span class="ltr">'+esc(t.customerId||t.ownerId||'')+'</span>';
+return esc(t.ownerName||t.username||'کارمند')+' · شعبه '+esc(t.branchId||USER.branchId||'');
 }
-function threadsPage(){
-  if(DB._legacy)return legacyNotice('threads');
-  var rows=DB.threads||[];
-  var h=pageHead('مکاتبات سازمانی',fa(rows.length)+' گفتگو · فقط شعبه شما',btn('refresh','بروزرسانی','undo','btn-s'));
-  h+='<div class="card">'+(rows.length?rows.map(function(t){return '<div class="thread"><div style="flex:1"><b>'+esc(t.subject)+'</b><div class="sub">کارت '+esc(t.cardId)+' · '+esc(t.workerUsername)+' ↔ '+esc(t.supervisorUsername)+'</div><small class="sub">'+esc(t.preview||'')+'</small></div><div style="display:flex;gap:6px;align-items:center">'+pill(t.status)+btn('thread-open','گفتگو','msg','btn-p btn-sm',' data-id="'+esc(t.threadId)+'"')+'</div></div>';}).join(''):'<div class="empty"><div class="ei">'+icon('msg')+'</div><h4>مکاتبه‌ای نیست</h4><p class="sub">از کارت‌های عملیاتی می‌توانید گفتگوی جدید آغاز کنید.</p></div>')+'</div>';
-  return h;
+function ticketsPage(channel){
+if(DB._legacy)return legacyNotice(CH_MAP[channel]);
+var rows=ticketsOf(channel),all=(DB[CH_MAP[channel]]||[]);
+var open=all.filter(function(t){return t.state==='OPEN';}).length;
+var closed=all.filter(function(t){return t.state==='CLOSED';}).length;
+var acts=btn('refresh','بروزرسانی','undo','btn-s');
+if(channel==='INTERNAL')acts=btn('thread-new','گفتگوی جدید','plus','btn-p')+acts;
+if(channel==='EMPLOYEE_SUPPORT')acts=btn('ticket-new','پیام جدید','send','btn-p',' data-channel="EMPLOYEE_SUPPORT"')+acts;
+var h=pageHead(CH_TITLE[channel],fa(all.length)+' گفتگو · '+fa(open)+' در انتظار پاسخ · '+fa(closed)+' بسته · فقط شعبه '+esc(USER.branchId||''),acts);
+h+='<div class="grid kpis" style="margin-bottom:16px">'+
+[['کل گفتگوها',fa(all.length),'msg','var(--blue)'],['در انتظار پاسخ',fa(open),'clock','var(--amber)'],['خوانده‌نشده',fa(unreadOf(CH_MAP[channel])),'bell','var(--red)'],['بسته‌شده',fa(closed),'lock','var(--slate)']].map(function(x){
+return '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,'+x[3]+' 14%,transparent);color:'+x[3]+'">'+icon(x[2])+'</span></div><div class="l">'+x[0]+'</div><div class="v">'+x[1]+'</div></div>';}).join('')+'</div>';
+h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-tsearch placeholder="جستجو در موضوع، شماره تیکت، طرف گفتگو…" value="'+esc(PS.tq||'')+'"></div>'+
+'<select class="sel" data-tstate><option value="">وضعیت: همه</option>'+[['OPEN','در انتظار پاسخ'],['ANSWERED','پاسخ داده شده'],['CLOSED','بسته']].map(function(s){return '<option value="'+s[0]+'"'+(PS.tstate===s[0]?' selected':'')+'>'+s[1]+'</option>';}).join('')+'</select></div>';
+if(!rows.length){
+h+='<div class="card"><div class="empty"><div class="ei">'+icon(channel==='EMPLOYEE_SUPPORT'?'headset':'msg')+'</div><h4>گفتگویی یافت نشد</h4><p class="sub">'+(channel==='INTERNAL'?'از کارت‌های عملیاتی می‌توانید گفتگوی جدید آغاز کنید.':channel==='EMPLOYEE_SUPPORT'?'برای گزارش مشکل یا درخواست، پیام جدید ارسال کنید.':'هنوز پیامی از مشتریان این شعبه ثبت نشده است.')+'</p></div></div>';
+return h;
 }
-function openThread(id){
-  api('employeeGetThread',id,TOKEN).then(function(r){
-    openModal('<div class="mh"><h3>'+esc(r.thread.subject)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="thread-reply" data-id="'+esc(id)+'"><div class="mb">'+r.messages.map(function(m){return '<div class="msgb'+(m.senderRole==='employee'?' me':'')+'"><b>'+esc(m.senderUsername)+' ('+esc(m.senderRole)+')</b><div class="body">'+esc(m.body)+'</div><small>'+jDT(m.createdAt)+'</small></div>';}).join('')+'<div class="field" style="margin-top:12px"><label>پاسخ شما</label><textarea name="body" required></textarea></div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ارسال</button><button type="button" class="btn btn-s" data-act="mclose">بستن</button></div></form>',false,true);
-  }).catch(function(e){toast(e.message,'err');});
+h+='<div class="card">'+rows.map(function(t){
+var un=num(t.unread);
+var st=t.state||'OPEN';
+return '<div class="thread'+(un>0?' unread':'')+'"><div style="flex:1;min-width:0">'+
+'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>'+esc(t.subject||'بدون موضوع')+'</b>'+(t.ticketNo?'<span class="tno">'+esc(t.ticketNo)+'</span>':'')+(un>0?'<span class="ubdg">'+fa(un)+' جدید</span>':'')+'</div>'+
+'<div class="tmeta">'+ticketMeta(t)+'<span>·</span><span>'+fa(num(t.messageCount))+' پیام</span><span>·</span><span>'+jDT(t.lastMessageAt||t.createdAt)+'</span></div>'+
+'<div class="tprev">'+esc(t.preview||t.message||'—')+'</div></div>'+
+'<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">'+pill(t.status||st)+
+btn('chat-open','گفتگو','msg','btn-p btn-sm',' data-id="'+esc(t.threadId)+'"')+
+(st==='CLOSED'?btn('chat-status','بازکردن','unlock','btn-s btn-sm',' data-id="'+esc(t.threadId)+'" data-state="OPEN"'):btn('chat-status','بستن','lock','btn-s btn-sm',' data-id="'+esc(t.threadId)+'" data-state="CLOSED"'))+
+'</div></div>';
+}).join('')+'</div>';
+return h;
 }
-function newThreadModal(cardId){
-  openModal('<div class="mh"><h3>گفتگوی سازمانی جدید</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="thread-new" data-id="'+esc(cardId||'')+'"><div class="mb"><div class="fgrid">'+(cardId?'':'<div class="field full"><label>کارت مرتبط</label><select name="cardId" required><option value="">انتخاب کارت</option>'+(DB.cards||[]).map(function(c){return '<option value="'+esc(c.cardId)+'">'+esc(c.cardId)+' — '+esc(c.customerName)+'</option>';}).join('')+'</select></div>')+'<div class="field full"><label>موضوع</label><input name="subject" required></div><div class="field full"><label>متن پیام</label><textarea name="body" required></textarea></div></div></div><div class="mf"><button class="btn btn-p" type="submit">ایجاد گفتگو</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+function chatOpen(threadId){
+return api('employeeMessageGet',TOKEN,threadId).then(function(r){
+var t=r.thread,msgs=r.messages||[];
+var canNote=(t.channel!=='EMPLOYEE_SUPPORT');
+var closed=(t.state==='CLOSED');
+var bubbles=msgs.map(function(m){
+if(m.messageType==='SYSTEM')return '<div class="msgb sys">'+esc(m.body)+' · '+jDT(m.createdAt)+'</div>';
+var mine=(m.senderUsername===USER.username);
+var note=(m.visibility==='STAFF');
+return '<div class="msgb '+(mine?'me':'them')+(note?' note':'')+'"><b>'+esc(m.senderName||m.senderUsername)+' <span style="font-weight:600;opacity:.7">('+esc(m.senderRole)+')</span>'+(note?' '+icon('lock','width:12px;height:12px;vertical-align:-2px'):'')+'</b><div class="body">'+esc(m.body)+'</div><small>'+jDT(m.createdAt)+(m.editedAt?' · ویرایش‌شده':'')+(m.readAt?' · دیده شد':'')+'</small></div>';
+}).join('');
+var head='<div class="mh"><h3>'+esc(t.subject||'گفتگو')+'</h3>'+(t.ticketNo?'<span class="tno">'+esc(t.ticketNo)+'</span>':'')+pill(t.status||t.state)+'<button class="ibtn" data-act="chat-open" data-id="'+esc(threadId)+'" title="بروزرسانی">'+icon('undo')+'</button><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>';
+var body='<div class="chatbox" id="chatBox">'+(bubbles||'<p class="hint" style="text-align:center;padding:14px">پیامی ثبت نشده است.</p>')+'</div>'+
+'<div class="field"><label>پیام شما <span class="req">*</span></label><textarea name="body" required placeholder="متن پیام را بنویسید…"></textarea></div>';
+var foot='<button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ارسال</button>'+
+(closed?btn('chat-status','بازکردن گفتگو','unlock','btn-s',' data-id="'+esc(threadId)+'" data-state="OPEN"'):btn('chat-status','بستن گفتگو','lock','btn-s',' data-id="'+esc(threadId)+'" data-state="CLOSED"'))+
+(canNote?'<label class="notechk"><input type="checkbox" name="internalNote"> یادداشت داخلی (برای مشتری/نیرو نمایش داده نمی‌شود)</label>':'<span class="notechk"></span>');
+openModal(head+'<form data-form="chat-reply" data-id="'+esc(threadId)+'"><div class="mb">'+body+'</div><div class="mf">'+foot+'</div></form>',false,true);
+var box=$('#chatBox');if(box)box.scrollTop=box.scrollHeight;
+}).catch(function(e){toast(e.message,'err');});
 }
-function adminSupportPage(){
-  if(DB._legacy)return legacyNotice('adminSupport');
-  var rows=DB.adminSupport||[];
-  var h=pageHead('ارتباط با پشتیبانی','ارسال پیام به مدیر سامانه و پیگیری پاسخ‌ها',btn('admin-msg-new','پیام جدید','send','btn-p')+btn('refresh','بروزرسانی','undo','btn-s'));
-  h+='<div class="card">'+(rows.length?rows.map(function(m){return '<div class="thread"><div style="flex:1;min-width:0"><b>'+esc(m.subject)+'</b><div class="sub">'+esc(m.username)+' · '+jDT(m.createdAt)+' '+pill(m.status)+'</div><div style="background:var(--surface2);padding:9px;border-radius:9px;margin:7px 0;font-size:12px;white-space:pre-wrap">'+esc(m.body)+'</div>'+(m.reply?'<div style="background:rgba(14,159,110,.1);padding:9px;border-radius:9px;border-right:3px solid var(--green);font-size:12px"><b>پاسخ پشتیبانی:</b> '+esc(m.reply)+'<div class="sub">'+jDT(m.repliedAt)+'</div></div>':'<div class="sub" style="color:var(--amber)">در انتظار پاسخ پشتیبانی…</div>')+'</div></div>';}).join(''):'<div class="empty"><div class="ei">'+icon('headset')+'</div><h4>پیامی ارسال نشده است</h4><p class="sub">برای گزارش مشکل یا درخواست، پیام جدید ارسال کنید.</p></div>')+'</div>';
-  return h;
+function newTicketModal(channel,cardId){
+var isInt=(channel==='INTERNAL');
+var cardField='';
+if(isInt&&!cardId){
+cardField='<div class="field full"><label>کارت مرتبط <span class="req">*</span></label><select name="cardId" required><option value="">انتخاب کارت</option>'+(DB.cards||[]).map(function(c){return '<option value="'+esc(c.cardId)+'">'+esc(c.cardId)+' — '+esc(c.customerName)+'</option>';}).join('')+'</select></div>';
 }
-function adminMsgModal(){
-  openModal('<div class="mh"><h3>پیام به پشتیبانی سامانه</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="admin-msg"><div class="mb"><div class="fgrid"><div class="field full"><label>موضوع <span class="req">*</span></label><input name="subject" required placeholder="مثلاً مشکل در ثبت سفارش"></div><div class="field full"><label>شرح پیام <span class="req">*</span></label><textarea name="body" required style="min-height:120px"></textarea></div></div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ارسال به پشتیبانی</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+openModal('<div class="mh"><h3>'+(isInt?'گفتگوی سازمانی جدید':'پیام جدید به پشتیبانی سامانه')+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<form data-form="ticket-new" data-channel="'+esc(channel)+'" data-card="'+esc(cardId||'')+'"><div class="mb"><div class="fgrid">'+cardField+
+'<div class="field full"><label>موضوع <span class="req">*</span></label><input name="subject" required placeholder="'+(isInt?'مثلاً پیگیری اجرای کارت':'مثلاً مشکل در ثبت سفارش')+'"></div>'+
+'<div class="field full"><label>متن پیام <span class="req">*</span></label><textarea name="body" required style="min-height:120px"></textarea></div>'+
+'</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ایجاد گفتگو</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
 }
 /* ═════════ 19) COMING SOON ═════════ */
 function soonPage(kind){
-  var fin=kind==='finance';
-  var title=fin?'امور مالی شعبه':'خدمات شعبه';
-  var desc=fin?'مدیریت درآمد، هزینه‌ها، تسویه نیروها و گزارش‌های مالی شعبه به‌زودی به این پنل اضافه می‌شود.':'تعریف و مدیریت خدمات اختصاصی شعبه، نرخ‌گذاری محلی و ظرفیت‌سنجی به‌زودی فعال می‌شود.';
-  var items=fin?[['wallet','درآمد و هزینه','ثبت و دسته‌بندی تراکنش‌های مالی شعبه'],['report','تسویه نیروها','محاسبه کارکرد و پرداخت متخصصان'],['receipt','فاکتورهای شعبه','صدور و پیگیری فاکتورهای محلی'],['lock','دسترسی امن','مشاهده فقط داده‌های مالی شعبه خود']]:[['svc','کاتالوگ خدمات','خدمات فعال و غیرفعال شعبه'],['zap','نرخ‌گذاری محلی','تعریف نرخ‌های اختصاصی هر شعبه'],['groups','ظرفیت‌سنجی','تعیین ظرفیت گروه‌ها برای هر خدمت'],['cal','زمان‌بندی','تقویم ارائه خدمات شعبه']];
-  var h='<div class="soon-hero"><span class="tag">'+icon('clock','width:13px;height:13px')+' به‌زودی</span><h2>'+title+'</h2><p>'+desc+'</p><div class="acts" style="margin-top:16px">'+btn('soon-request','اطلاع‌رسانی هنگام فعال‌سازی','bell','btn-p',' data-kind="'+kind+'"')+'</div></div>';
-  h+='<div class="soon-grid">'+items.map(function(x){return '<div class="soon-card"><div class="ic" style="background:rgba(255,107,26,.12);color:var(--brandDeep)">'+icon(x[0])+'</div><h4>'+x[1]+'</h4><p>'+x[2]+'</p></div>';}).join('')+'</div>';
-  return h;
+var fin=kind==='finance';
+var title=fin?'امور مالی شعبه':'خدمات شعبه';
+var desc=fin?'مدیریت درآمد، هزینه‌ها، تسویه نیروها و گزارش‌های مالی شعبه به‌زودی به این پنل اضافه می‌شود.':'تعریف و مدیریت خدمات اختصاصی شعبه، نرخ‌گذاری محلی و ظرفیت‌سنجی به‌زودی فعال می‌شود.';
+var items=fin?[['wallet','درآمد و هزینه','ثبت و دسته‌بندی تراکنش‌های مالی شعبه'],['report','تسویه نیروها','محاسبه کارکرد و پرداخت متخصصان'],['receipt','فاکتورهای شعبه','صدور و پیگیری فاکتورهای محلی'],['lock','دسترسی امن','مشاهده فقط داده‌های مالی شعبه خود']]:[['svc','کاتالوگ خدمات','خدمات فعال و غیرفعال شعبه'],['zap','نرخ‌گذاری محلی','تعریف نرخ‌های اختصاصی هر شعبه'],['groups','ظرفیت‌سنجی','تعیین ظرفیت گروه‌ها برای هر خدمت'],['cal','زمان‌بندی','تقویم ارائه خدمات شعبه']];
+var h='<div class="soon-hero"><span class="tag">'+icon('clock','width:13px;height:13px')+' به‌زودی</span><h2>'+title+'</h2><p>'+desc+'</p><div class="acts" style="margin-top:16px">'+btn('soon-request','اطلاع‌رسانی هنگام فعال‌سازی','bell','btn-p',' data-kind="'+kind+'"')+'</div></div>';
+h+='<div class="soon-grid">'+items.map(function(x){return '<div class="soon-card"><div class="ic" style="background:rgba(255,107,26,.12);color:var(--brandDeep)">'+icon(x[0])+'</div><h4>'+x[1]+'</h4><p>'+x[2]+'</p></div>';}).join('')+'</div>';
+return h;
 }
 /* ═════════ 20) REPORTS ═════════ */
 function reportsPage(){
-  var os=DB.orders||[],f=PS.filters||{};
-  if(f.from){var k1=jStore(f.from);if(k1)os=os.filter(function(o){return gKey(o.createdAt)>=k1;});}
-  if(f.to){var k2=jStore(f.to);if(k2)os=os.filter(function(o){return gKey(o.createdAt)<=k2;});}
-  if(f.service)os=os.filter(function(o){return String(o.service||'').indexOf(f.service)>=0;});
-  var valid=os.filter(function(o){return o.status!=='لغو شده';});
-  var rev=valid.reduce(function(s,o){return s+num(o.finalPrice);},0);
-  var months=lastMonths(6);
-  var byM=months.map(function(m){return valid.filter(function(o){return jMonthKey(o.createdAt)===m.key;}).reduce(function(s,o){return s+num(o.finalPrice);},0);});
-  var bySvc={},bySt={};os.forEach(function(o){bySvc[o.service]=(bySvc[o.service]||0)+1;bySt[o.status]=(bySt[o.status]||0)+1;});
-  window._rep={months:months,byM:byM,bySt:bySt,bySvc:bySvc};
-  var h=pageHead('گزارش‌های شعبه',fa(os.length)+' سفارش در بازه انتخابی',btn('export','خروجی تراکنش‌ها','dl','btn-s',' data-e="orders"'));
-  h+='<div class="toolbar"><input class="inp" data-filter="from" data-jdate placeholder="از تاریخ" value="'+esc(f.from||'')+'" style="width:150px"><input class="inp" data-filter="to" data-jdate placeholder="تا تاریخ" value="'+esc(f.to||'')+'" style="width:150px"><input class="inp" data-filter="service" placeholder="خدمت" value="'+esc(f.service||'')+'" style="width:150px"></div>';
-  var kk=[['تعداد سفارش',fa(os.length),'orders','var(--blue)'],['درآمد کل',moneyC(rev)+' ریال','wallet','var(--brand)'],['تکمیل شده',fa(valid.filter(function(o){return o.status==='تکمیل شده';}).length),'check','var(--green)'],['لغو شده',fa(os.filter(function(o){return o.status==='لغو شده';}).length),'x','var(--red)'],['میانگین سفارش',moneyC(os.length?Math.round(rev/os.length):0)+' ریال','report','var(--teal)']];
-  h+='<div class="grid kpis" style="margin-bottom:18px">'+kk.map(function(x){return '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,'+x[3]+' 14%,transparent);color:'+x[3]+'">'+icon(x[2])+'</span></div><div class="l">'+x[0]+'</div><div class="v" style="font-size:19px">'+x[1]+'</div></div>';}).join('')+'</div>';
-  h+='<div class="grid charts" style="margin-bottom:18px"><div class="cbox"><h3>'+icon('report','width:15px;height:15px;color:var(--brand)')+' درآمد ماهانه</h3><div class="cwrap"><canvas id="rM"></canvas></div></div><div class="cbox"><h3>'+icon('orders','width:15px;height:15px;color:var(--blue)')+' توزیع وضعیت</h3><div class="cwrap"><canvas id="rS"></canvas></div></div></div>';
-  h+='<div class="card"><h3 style="margin-bottom:12px">ریز تراکنش‌ها ('+fa(os.length)+')</h3><div class="tw"><table class="tb"><thead><tr><th>تاریخ</th><th>شناسه</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>وضعیت</th></tr></thead><tbody>'+os.slice(0,80).map(function(o){return '<tr><td>'+jDT(o.createdAt)+'</td><td><b>'+esc(o.requestId)+'</b></td><td>'+esc(o.customerName)+'</td><td>'+esc(o.service)+'</td><td class="num">'+money(o.finalPrice)+'</td><td>'+pill(o.status)+'</td></tr>';}).join('')+'</tbody></table></div></div>';
-  return h;
+var os=DB.orders||[],f=PS.filters||{};
+if(f.from){var k1=jStore(f.from);if(k1)os=os.filter(function(o){return gKey(o.createdAt)>=k1;});}
+if(f.to){var k2=jStore(f.to);if(k2)os=os.filter(function(o){return gKey(o.createdAt)<=k2;});}
+if(f.service)os=os.filter(function(o){return String(o.service||'').indexOf(f.service)>=0;});
+var valid=os.filter(function(o){return o.status!=='لغو شده';});
+var rev=valid.reduce(function(s,o){return s+num(o.finalPrice);},0);
+var months=lastMonths(6);
+var byM=months.map(function(m){return valid.filter(function(o){return jMonthKey(o.createdAt)===m.key;}).reduce(function(s,o){return s+num(o.finalPrice);},0);});
+var bySvc={},bySt={};os.forEach(function(o){bySvc[o.service]=(bySvc[o.service]||0)+1;bySt[o.status]=(bySt[o.status]||0)+1;});
+window._rep={months:months,byM:byM,bySt:bySt,bySvc:bySvc};
+var h=pageHead('گزارش‌های شعبه',fa(os.length)+' سفارش در بازه انتخابی',btn('export','خروجی تراکنش‌ها','dl','btn-s',' data-e="orders"'));
+h+='<div class="toolbar"><input class="inp" data-filter="from" data-jdate placeholder="از تاریخ" value="'+esc(f.from||'')+'" style="width:150px"><input class="inp" data-filter="to" data-jdate placeholder="تا تاریخ" value="'+esc(f.to||'')+'" style="width:150px"><input class="inp" data-filter="service" placeholder="خدمت" value="'+esc(f.service||'')+'" style="width:150px"></div>';
+var kk=[['تعداد سفارش',fa(os.length),'orders','var(--blue)'],['درآمد کل',moneyC(rev)+' ریال','wallet','var(--brand)'],['تکمیل شده',fa(valid.filter(function(o){return o.status==='تکمیل شده';}).length),'check','var(--green)'],['لغو شده',fa(os.filter(function(o){return o.status==='لغو شده';}).length),'x','var(--red)'],['میانگین سفارش',moneyC(os.length?Math.round(rev/os.length):0)+' ریال','report','var(--teal)']];
+h+='<div class="grid kpis" style="margin-bottom:18px">'+kk.map(function(x){return '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,'+x[3]+' 14%,transparent);color:'+x[3]+'">'+icon(x[2])+'</span></div><div class="l">'+x[0]+'</div><div class="v" style="font-size:19px">'+x[1]+'</div></div>';}).join('')+'</div>';
+h+='<div class="grid charts" style="margin-bottom:18px"><div class="cbox"><h3>'+icon('report','width:15px;height:15px;color:var(--brand)')+' درآمد ماهانه</h3><div class="cwrap"><canvas id="rM"></canvas></div></div><div class="cbox"><h3>'+icon('orders','width:15px;height:15px;color:var(--blue)')+' توزیع وضعیت</h3><div class="cwrap"><canvas id="rS"></canvas></div></div></div>';
+h+='<div class="card"><h3 style="margin-bottom:12px">ریز تراکنش‌ها ('+fa(os.length)+')</h3><div class="tw"><table class="tb"><thead><tr><th>تاریخ</th><th>شناسه</th><th>مشتری</th><th>خدمت</th><th>مبلغ</th><th>وضعیت</th></tr></thead><tbody>'+os.slice(0,80).map(function(o){return '<tr><td>'+jDT(o.createdAt)+'</td><td><b>'+esc(o.requestId)+'</b></td><td>'+esc(o.customerName)+'</td><td>'+esc(o.service)+'</td><td class="num">'+money(o.finalPrice)+'</td><td>'+pill(o.status)+'</td></tr>';}).join('')+'</tbody></table></div></div>';
+return h;
 }
 function drawReportCharts(){
-  if(!window.Chart||!window._rep)return;var d=window._rep,pal=['--brand','--blue','--teal','--violet','--pink','--amber','--green','--slate'].map(cssVar),grid=cssVar('--line');
-  var mk=function(id,cfg){var el=$('#'+id);if(el)CH.push(new Chart(el,cfg));};
-  mk('rM',{type:'bar',data:{labels:d.months.map(function(m){return m.label;}),datasets:[{data:d.byM,backgroundColor:pal[0],borderRadius:9}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:grid},ticks:{callback:function(v){return moneyC(v);}}}}}});
-  var sk=Object.keys(d.bySt);mk('rS',{type:'doughnut',data:{labels:sk,datasets:[{data:sk.map(function(k){return d.bySt[k];}),backgroundColor:pal,borderWidth:2,borderColor:cssVar('--surface')}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}}}});
+if(!window.Chart||!window._rep)return;var d=window._rep,pal=['--brand','--blue','--teal','--violet','--pink','--amber','--green','--slate'].map(cssVar),grid=cssVar('--line');
+var mk=function(id,cfg){var el=$('#'+id);if(el)CH.push(new Chart(el,cfg));};
+mk('rM',{type:'bar',data:{labels:d.months.map(function(m){return m.label;}),datasets:[{data:d.byM,backgroundColor:pal[0],borderRadius:9}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:grid},ticks:{callback:function(v){return moneyC(v);}}}}}});
+var sk=Object.keys(d.bySt);mk('rS',{type:'doughnut',data:{labels:sk,datasets:[{data:sk.map(function(k){return d.bySt[k];}),backgroundColor:pal,borderWidth:2,borderColor:cssVar('--surface')}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}}}});
 }
 /* ═════════ 21) DASHBOARD ═════════ */
 function spark(vals,color){vals=vals&&vals.length?vals:[0,0];var w=120,h=34,n=Math.max(1,vals.length-1);var max=Math.max.apply(null,vals.concat([1])),min=Math.min.apply(null,vals.concat([0]));var pts=vals.map(function(v,i){return [(i/n)*w,h-4-((v-min)/((max-min)||1))*(h-8)];});var line=pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ');return '<svg class="spark" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none"><polygon points="0,'+h+' '+line+' '+w+','+h+'" fill="'+color+'" opacity=".15"/><polyline points="'+line+'" fill="none" stroke="'+color+'" stroke-width="2"/></svg>';}
 function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
 function resolveColor(c){return c.indexOf('var(')===0?cssVar(c.slice(4,-1)):c;}
 function dashboard(){
-  var os=DB.orders||[],cs=DB.cards||[],ap=DB.applicants||[],sup=DB.support||[];
-  var now=new Date(),tm=jMonthKey(now);
-  var mRev=os.filter(function(o){return jMonthKey(o.createdAt)===tm&&o.status!=='لغو شده';}).reduce(function(s,o){return s+num(o.finalPrice);},0);
-  var months=lastMonths(6);
-  var revM=months.map(function(m){return os.filter(function(o){return jMonthKey(o.createdAt)===m.key&&o.status!=='لغو شده';}).reduce(function(s,o){return s+num(o.finalPrice);},0);});
-  var cntM=months.map(function(m){return os.filter(function(o){return jMonthKey(o.createdAt)===m.key;}).length;});
-  var pending=os.filter(function(o){return /^(جدید|ثبت اولیه)$/.test(o.status);}).length;
-  var active=cs.filter(function(c){return !/تکمیل|لغو/.test(c.status);}).length;
-  var hr=now.getHours(),greet=hr<12?'صبح بخیر':hr<17?'ظهر بخیر':'عصر بخیر';
-  window._dash={months:months,revM:revM,os:os};
-  var k=[['سفارش‌های شعبه',fa(os.length),'orders','var(--blue)',cntM,'۶ ماه اخیر'],['درآمد این ماه',moneyC(mRev)+' ریال','wallet','var(--brand)',revM,JM[g2j(now.getFullYear(),now.getMonth()+1,1)[1]-1]],['در انتظار بررسی',fa(pending),'clock','var(--amber)',cntM,'جدید + ثبت اولیه'],['کارت فعال',fa(active),'cards','var(--violet)',cntM,'در جریان اجرا'],['کارجوی جدید',fa(ap.filter(function(a){return a.status==='جدید';}).length),'applicant','var(--teal)',cntM,'در انتظار بررسی'],['پیام پاسخ‌داده‌نشده',fa(sup.filter(function(s){return s.status==='unread';}).length),'msg','var(--pink)',cntM,'مشتریان شعبه'],['نیروهای فعال',fa((DB.workers||[]).filter(function(w){return w.status==='فعال';}).length),'worker','var(--green)',cntM,'متخصص و سرپرست'],['گروه‌های شعبه',fa((DB.groups||[]).length),'groups','var(--slate)',cntM,'تیم‌های عملیاتی']];
-  var h='<div class="hero"><span class="dchip">'+icon('cal','width:14px;height:14px')+' '+jDisp(now)+'</span><h2>'+greet+'، '+esc(String(USER.name||'').split(' ')[0])+'</h2><p>نمای زنده شعبه '+esc(myBranch().name||USER.branchId||'')+' — '+fa(pending)+' سفارش در انتظار و '+fa(active)+' کارت فعال.</p><div class="acts">'+btn('new-applicant','ثبت کارجو','plus','btn-p')+'<button class="btn btn-s" data-act="go" data-page="orders">'+icon('orders','width:15px;height:15px')+' سفارش‌ها</button><button class="btn btn-s" data-act="go" data-page="cards">'+icon('cards','width:15px;height:15px')+' کارت‌ها</button><button class="btn btn-s" data-act="go" data-page="planner">'+icon('cal','width:15px;height:15px')+' برنامه هفته</button></div></div>';
-  h+='<div class="grid kpis" style="margin-bottom:18px">'+k.map(function(x){return '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,'+x[3]+' 14%,transparent);color:'+x[3]+'">'+icon(x[2])+'</span></div><div class="l">'+esc(x[0])+'</div><div class="v">'+x[1]+'</div><div class="s">'+esc(x[5])+'</div>'+spark(x[4],resolveColor(x[3]))+'</div>';}).join('')+'</div>';
-  h+='<div class="grid charts" style="margin-bottom:18px"><div class="cbox"><h3>'+icon('report','width:15px;height:15px;color:var(--brand)')+' روند درآمد (۶ ماه)</h3><div class="cwrap"><canvas id="chRev"></canvas></div></div><div class="cbox"><h3>'+icon('orders','width:15px;height:15px;color:var(--blue)')+' توزیع وضعیت سفارش‌ها</h3><div class="cwrap"><canvas id="chStatus"></canvas></div></div></div>';
-  var recent=os.slice().sort(function(a,b){return String(b.createdAt).localeCompare(String(a.createdAt));}).slice(0,6);
-  var topW=(DB.workers||[]).map(function(w){return {w:w,n:cs.filter(function(c){return c.workerId===w.workerId&&c.status==='تکمیل شده';}).length};}).filter(function(x){return x.n>0;}).sort(function(a,b){return b.n-a.n;}).slice(0,5);
-  h+='<div class="grid charts"><div class="cbox"><h3>'+icon('orders','width:15px;height:15px;color:var(--brand)')+' آخرین سفارش‌ها</h3>'+(recent.length?recent.map(function(o){return '<div class="rank"><div class="info"><b>'+esc(o.customerName)+' — '+esc(o.service)+'</b><small>'+esc(o.requestId)+' · '+jDisp(o.createdAt)+'</small></div><span class="v">'+moneyC(o.finalPrice)+'</span>'+pill(o.status)+'</div>';}).join(''):'<p class="sub">سفارشی ثبت نشده است.</p>')+'</div><div class="cbox"><h3>'+icon('star','width:15px;height:15px;color:var(--amber)')+' نیروهای برتر</h3>'+(topW.length?topW.map(function(x,i){return '<div class="rank"><span class="rk">'+fa(i+1)+'</span>'+av(fullName(x.w),x.w.photo)+'<div class="info"><b>'+esc(fullName(x.w))+'</b><small>'+esc(x.w.specialization||'')+'</small></div><span class="v">'+fa(x.n)+' کارت</span></div>';}).join(''):'<p class="sub">داده‌ای نیست.</p>')+'</div></div>';
-  return h;
+var os=DB.orders||[],cs=DB.cards||[],ap=DB.applicants||[];
+var now=new Date(),tm=jMonthKey(now);
+var mRev=os.filter(function(o){return jMonthKey(o.createdAt)===tm&&o.status!=='لغو شده';}).reduce(function(s,o){return s+num(o.finalPrice);},0);
+var months=lastMonths(6);
+var revM=months.map(function(m){return os.filter(function(o){return jMonthKey(o.createdAt)===m.key&&o.status!=='لغو شده';}).reduce(function(s,o){return s+num(o.finalPrice);},0);});
+var cntM=months.map(function(m){return os.filter(function(o){return jMonthKey(o.createdAt)===m.key;}).length;});
+var pending=os.filter(function(o){return /^(جدید|ثبت اولیه)$/.test(o.status);}).length;
+var active=cs.filter(function(c){return !/تکمیل|لغو/.test(c.status);}).length;
+var unSup=unreadOf('support'),unThr=unreadOf('threads'),unAdm=unreadOf('adminSupport');
+var hr=now.getHours(),greet=hr<12?'صبح بخیر':hr<17?'ظهر بخیر':'عصر بخیر';
+window._dash={months:months,revM:revM,os:os};
+var k=[['سفارش‌های شعبه',fa(os.length),'orders','var(--blue)',cntM,'۶ ماه اخیر'],['درآمد این ماه',moneyC(mRev)+' ریال','wallet','var(--brand)',revM,JM[g2j(now.getFullYear(),now.getMonth()+1,1)[1]-1]],['در انتظار بررسی',fa(pending),'clock','var(--amber)',cntM,'جدید + ثبت اولیه'],['کارت فعال',fa(active),'cards','var(--violet)',cntM,'در جریان اجرا'],['کارجوی جدید',fa(ap.filter(function(a){return a.status==='جدید';}).length),'applicant','var(--teal)',cntM,'در انتظار بررسی'],['گفتگوی خوانده‌نشده',fa(unSup+unThr+unAdm),'msg','var(--pink)',cntM,'مشتری '+fa(unSup)+' · سازمانی '+fa(unThr)+' · پشتیبانی '+fa(unAdm)],['نیروهای فعال',fa((DB.workers||[]).filter(function(w){return w.status==='فعال';}).length),'worker','var(--green)',cntM,'متخصص و سرپرست'],['گروه‌های شعبه',fa((DB.groups||[]).length),'groups','var(--slate)',cntM,'تیم‌های عملیاتی']];
+var h='<div class="hero"><span class="dchip">'+icon('cal','width:14px;height:14px')+' '+jDisp(now)+'</span><h2>'+greet+'، '+esc(String(USER.name||'').split(' ')[0])+'</h2><p>نمای زنده شعبه '+esc(myBranch().name||USER.branchId||'')+' — '+fa(pending)+' سفارش در انتظار و '+fa(active)+' کارت فعال.</p><div class="acts">'+btn('new-applicant','ثبت کارجو','plus','btn-p')+'<button class="btn btn-s" data-act="go" data-page="orders">'+icon('orders','width:15px;height:15px')+' سفارش‌ها</button><button class="btn btn-s" data-act="go" data-page="cards">'+icon('cards','width:15px;height:15px')+' کارت‌ها</button><button class="btn btn-s" data-act="go" data-page="support">'+icon('msg','width:15px;height:15px')+' گفتگوها</button></div></div>';
+h+='<div class="grid kpis" style="margin-bottom:18px">'+k.map(function(x){return '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,'+x[3]+' 14%,transparent);color:'+x[3]+'">'+icon(x[2])+'</span></div><div class="l">'+esc(x[0])+'</div><div class="v">'+x[1]+'</div><div class="s">'+esc(x[5])+'</div>'+spark(x[4],resolveColor(x[3]))+'</div>';}).join('')+'</div>';
+h+='<div class="grid charts" style="margin-bottom:18px"><div class="cbox"><h3>'+icon('report','width:15px;height:15px;color:var(--brand)')+' روند درآمد (۶ ماه)</h3><div class="cwrap"><canvas id="chRev"></canvas></div></div><div class="cbox"><h3>'+icon('orders','width:15px;height:15px;color:var(--blue)')+' توزیع وضعیت سفارش‌ها</h3><div class="cwrap"><canvas id="chStatus"></canvas></div></div></div>';
+var recent=os.slice().sort(function(a,b){return String(b.createdAt).localeCompare(String(a.createdAt));}).slice(0,6);
+var topW=(DB.workers||[]).map(function(w){return {w:w,n:cs.filter(function(c){return c.workerId===w.workerId&&c.status==='تکمیل شده';}).length};}).filter(function(x){return x.n>0;}).sort(function(a,b){return b.n-a.n;}).slice(0,5);
+var lastTickets=allTickets().filter(function(t){return num(t.unread)>0;}).slice(0,5);
+h+='<div class="grid charts"><div class="cbox"><h3>'+icon('orders','width:15px;height:15px;color:var(--brand)')+' آخرین سفارش‌ها</h3>'+(recent.length?recent.map(function(o){return '<div class="rank"><div class="info"><b>'+esc(o.customerName)+' — '+esc(o.service)+'</b><small>'+esc(o.requestId)+' · '+jDisp(o.createdAt)+'</small></div><span class="v">'+moneyC(o.finalPrice)+'</span>'+pill(o.status)+'</div>';}).join(''):'<p class="sub">سفارشی ثبت نشده است.</p>')+'</div>'+
+'<div class="cbox"><h3>'+icon('msg','width:15px;height:15px;color:var(--pink)')+' گفتگوهای خوانده‌نشده</h3>'+(lastTickets.length?lastTickets.map(function(t){return '<div class="rank" data-act="chat-open" data-id="'+esc(t.threadId)+'" style="cursor:pointer"><div class="info"><b>'+esc(t.subject||'بدون موضوع')+'</b><small>'+esc(CH_TITLE[t.channel]||'')+' · '+jDT(t.lastMessageAt)+'</small></div><span class="ubdg">'+fa(num(t.unread))+'</span></div>';}).join(''):'<p class="sub">گفتگوی خوانده‌نشده‌ای نیست.</p>')+
+'<h3 style="margin-top:18px">'+icon('star','width:15px;height:15px;color:var(--amber)')+' نیروهای برتر</h3>'+(topW.length?topW.map(function(x,i){return '<div class="rank"><span class="rk">'+fa(i+1)+'</span>'+av(fullName(x.w),x.w.photo)+'<div class="info"><b>'+esc(fullName(x.w))+'</b><small>'+esc(x.w.specialization||'')+'</small></div><span class="v">'+fa(x.n)+' کارت</span></div>';}).join(''):'<p class="sub">داده‌ای نیست.</p>')+'</div></div>';
+return h;
 }
 function drawDashboardCharts(){
-  if(!window.Chart||!window._dash)return;var d=window._dash,pal=['--brand','--blue','--teal','--violet','--pink','--amber','--green','--slate'].map(cssVar),grid=cssVar('--line');
-  Chart.defaults.font.family='Vazirmatn';Chart.defaults.color=cssVar('--muted');
-  var st={};d.os.forEach(function(o){st[o.status]=(st[o.status]||0)+1;});
-  var mk=function(id,cfg){var el=$('#'+id);if(el)CH.push(new Chart(el,cfg));};
-  mk('chRev',{type:'line',data:{labels:d.months.map(function(m){return m.label;}),datasets:[{data:d.revM,borderColor:pal[0],backgroundColor:'rgba(255,107,26,.15)',fill:true,tension:.4,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:grid}},y:{grid:{color:grid},ticks:{callback:function(v){return moneyC(v);}}}}}});
-  mk('chStatus',{type:'doughnut',data:{labels:Object.keys(st),datasets:[{data:Object.keys(st).map(function(k){return st[k];}),backgroundColor:pal,borderWidth:2,borderColor:cssVar('--surface')}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}}}});
+if(!window.Chart||!window._dash)return;var d=window._dash,pal=['--brand','--blue','--teal','--violet','--pink','--amber','--green','--slate'].map(cssVar),grid=cssVar('--line');
+Chart.defaults.font.family='Vazirmatn';Chart.defaults.color=cssVar('--muted');
+var st={};d.os.forEach(function(o){st[o.status]=(st[o.status]||0)+1;});
+var mk=function(id,cfg){var el=$('#'+id);if(el)CH.push(new Chart(el,cfg));};
+mk('chRev',{type:'line',data:{labels:d.months.map(function(m){return m.label;}),datasets:[{data:d.revM,borderColor:pal[0],backgroundColor:'rgba(255,107,26,.15)',fill:true,tension:.4,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:grid}},y:{grid:{color:grid},ticks:{callback:function(v){return moneyC(v);}}}}}});
+mk('chStatus',{type:'doughnut',data:{labels:Object.keys(st),datasets:[{data:Object.keys(st).map(function(k){return st[k];}),backgroundColor:pal,borderWidth:2,borderColor:cssVar('--surface')}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}}}});
 }
 /* ═════════ 22) PROFILE ═════════ */
 function profilePage(){
-  return api('getEmployeeProfile',TOKEN).then(function(p){
-    var h=pageHead('پروفایل من','حساب کاربری شما در شعبه');
-    h+='<div class="card" style="margin-bottom:16px"><div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">'+av(p.name,p.avatar,'lg')+'<div><b style="font-size:18px">'+esc(p.name)+'</b><div class="sub">'+pill('Employee')+' · <span class="ltr">'+esc(p.empId)+'</span></div><div class="sub" style="margin-top:5px">شعبه: '+esc(p.branchId)+'</div></div></div></div>';
-    h+='<div class="card"><form data-form="profile"><div class="fgrid"><div class="field"><label>نام کاربری</label><input value="'+esc(p.username)+'" readonly></div><div class="field"><label>رمز عبور جدید</label><input name="password" type="password" placeholder="خالی = بدون تغییر"></div><div class="field full"><label>نشانی عکس پروفایل (URL)</label><input name="avatar" value="'+esc(p.avatar||'')+'" placeholder="https://…"></div></div><br><button class="btn btn-p" type="submit">'+icon('save','width:15px;height:15px')+' ذخیره تغییرات</button></form></div>';
-    return h;
-  });
+return api('getEmployeeProfile',TOKEN).then(function(p){
+var h=pageHead('پروفایل من','حساب کاربری شما در شعبه');
+h+='<div class="card" style="margin-bottom:16px"><div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">'+av(p.name,p.avatar,'lg')+'<div><b style="font-size:18px">'+esc(p.name)+'</b><div class="sub">'+pill('Employee')+' · <span class="ltr">'+esc(p.empId)+'</span></div><div class="sub" style="margin-top:5px">شعبه: '+esc(p.branchId)+'</div></div></div></div>';
+h+='<div class="card"><form data-form="profile"><div class="fgrid"><div class="field"><label>نام کاربری</label><input value="'+esc(p.username)+'" readonly></div><div class="field"><label>رمز عبور جدید</label><input name="password" type="password" placeholder="خالی = بدون تغییر"></div><div class="field"><label>موبایل</label><input name="phone" value="'+esc(p.phone||'')+'"></div><div class="field"><label>ایمیل</label><input name="email" value="'+esc(p.email||'')+'"></div><div class="field full"><label>نشانی عکس پروفایل (URL)</label><input name="avatar" value="'+esc(p.avatar||'')+'" placeholder="https://…"></div><div class="field full"><label>آدرس</label><textarea name="address">'+esc(p.address||'')+'</textarea></div></div><br><button class="btn btn-p" type="submit">'+icon('save','width:15px;height:15px')+' ذخیره تغییرات</button></form></div>';
+return h;
+});
 }
 /* ═════════ 23) NOTIFICATIONS / SEARCH ═════════ */
 function notifications(){
-  var read=[];try{read=JSON.parse(localStorage.getItem('zv_emp_read_notifs')||'[]');}catch(e){}
-  var out=[];
-  (DB.orders||[]).filter(function(o){return o.status==='جدید';}).slice(0,4).forEach(function(o){out.push({id:'o'+o.requestId,kind:'orders',title:'سفارش جدید',body:o.customerName+' — '+o.service,at:o.createdAt});});
-  (DB.support||[]).filter(function(s){return s.status==='unread';}).slice(0,4).forEach(function(s){out.push({id:'s'+s.conversationId,kind:'support',title:'پیام مشتری',body:s.subject||s.senderName,at:s.createdAt});});
-  (DB.applicants||[]).filter(function(a){return a.status==='جدید';}).slice(0,3).forEach(function(a){out.push({id:'a'+a.caseNumber,kind:'applicants',title:'کارجوی جدید',body:fullName(a),at:a.createdAt});});
-  (DB.adminSupport||[]).filter(function(m){return m.reply;}).slice(0,3).forEach(function(m){out.push({id:'m'+m.id,kind:'adminSupport',title:'پاسخ پشتیبانی',body:m.subject,at:m.repliedAt});});
-  return out.map(function(n){return Object.assign({},n,{read:read.indexOf(n.id)>=0});});
+var read=[];try{read=JSON.parse(localStorage.getItem('zv_emp_read_notifs')||'[]');}catch(e){}
+var out=[];
+(DB.orders||[]).filter(function(o){return o.status==='جدید';}).slice(0,4).forEach(function(o){out.push({id:'o'+o.requestId,kind:'orders',title:'سفارش جدید',body:o.customerName+' — '+o.service,at:o.createdAt});});
+[['support','پیام مشتری','cust'],['threads','مکاتبه سازمانی','msg'],['adminSupport','پاسخ پشتیبانی','headset']].forEach(function(cfg){
+(DB[cfg[0]]||[]).filter(function(t){return num(t.unread)>0&&t.state!=='CLOSED';}).slice(0,4).forEach(function(t){
+out.push({id:'t'+t.threadId,kind:cfg[0],threadId:t.threadId,title:cfg[1],body:(t.subject||'بدون موضوع')+' · '+fa(num(t.unread))+' پیام جدید',at:t.lastMessageAt||t.createdAt,ic:cfg[2]});
+});
+});
+(DB.applicants||[]).filter(function(a){return a.status==='جدید';}).slice(0,3).forEach(function(a){out.push({id:'a'+a.caseNumber,kind:'applicants',title:'کارجوی جدید',body:fullName(a),at:a.createdAt});});
+return out.map(function(n){return Object.assign({},n,{read:read.indexOf(n.id)>=0});});
 }
 function toggleNotif(){
-  var p=$('#notifPanel');if(p.classList.contains('show')){p.classList.remove('show');return;}
-  var items=notifications();
-  p.innerHTML='<div class="nph"><span>'+icon('bell','width:15px;height:15px')+' اعلان‌ها</span><button class="btn btn-s btn-sm" data-act="notif-read">خواندن همه</button></div><div class="npl">'+(items.length?items.map(function(n){var ic=n.kind==='orders'?'orders':n.kind==='support'?'msg':n.kind==='applicants'?'applicant':'headset';return '<div class="npi" data-act="notif-open" data-kind="'+esc(n.kind)+'"><span class="ni">'+icon(ic,'width:16px;height:16px')+'</span><div><b>'+esc(n.title)+'</b><small>'+esc(n.body)+'</small><small>'+jDT(n.at)+'</small></div></div>';}).join(''):'<div class="empty" style="padding:26px"><p class="sub">اعلانی نیست.</p></div>')+'</div>';
-  p.classList.add('show');
+var p=$('#notifPanel');if(p.classList.contains('show')){p.classList.remove('show');return;}
+var items=notifications();
+p.innerHTML='<div class="nph"><span>'+icon('bell','width:15px;height:15px')+' اعلان‌ها</span><button class="btn btn-s btn-sm" data-act="notif-read">خواندن همه</button></div><div class="npl">'+(items.length?items.map(function(n){var ic=n.ic||(n.kind==='orders'?'orders':n.kind==='applicants'?'applicant':'msg');return '<div class="npi" data-act="notif-open" data-kind="'+esc(n.kind)+'" data-id="'+esc(n.threadId||'')+'"><span class="ni">'+icon(ic,'width:16px;height:16px')+'</span><div><b>'+esc(n.title)+'</b><small>'+esc(n.body)+'</small><small>'+jDT(n.at)+'</small></div></div>';}).join(''):'<div class="empty" style="padding:26px"><p class="sub">اعلانی نیست.</p></div>')+'</div>';
+p.classList.add('show');
 }
 function histGet(){try{return JSON.parse(localStorage.getItem(HKEY)||'[]');}catch(e){return [];}}
 function histSet(a){try{localStorage.setItem(HKEY,JSON.stringify(a.slice(0,15)));}catch(e){}}
@@ -988,29 +1070,34 @@ function histPush(q){q=String(q||'').trim();if(q.length<2)return;var a=histGet()
 function openCmdk(){$('#cmdk').classList.add('show');$('#ckInput').value='';cmdkSearch();setTimeout(function(){$('#ckInput').focus();},40);}
 function closeCmdk(){$('#cmdk').classList.remove('show');}
 function cmdkSearch(){
-  var raw=$('#ckInput').value.trim(),q=en(raw).toLowerCase(),out=[];
-  $('#ckClearBtn').style.display=histGet().length?'inline-flex':'none';
-  if(!q){
-    var hist=histGet();
-    var h='<div class="ckg"><span>'+icon('history','width:13px;height:13px')+' سوابق جستجو</span></div>';
-    h+=hist.length?hist.map(function(x){return '<div class="cki" data-act="ck-hist" data-q="'+esc(x.q)+'">'+icon('search','width:15px;height:15px;color:var(--muted)')+'<span>'+esc(x.q)+'</span><small>'+jDT(x.at)+'</small></div>';}).join(''):'<div class="empty" style="padding:20px"><p class="sub">هنوز جستجویی ثبت نشده است.</p></div>';
-    h+='<div class="ckg"><span>میان‌برها</span></div><div class="cki" data-act="ck-go-page" data-page="applicants">'+icon('applicant','width:16px;height:16px;color:var(--brand)')+'<span>جذب و استخدام</span><small>صفحه</small></div><div class="cki" data-act="ck-go-page" data-page="cards">'+icon('cards','width:16px;height:16px;color:var(--brand)')+'<span>کارت‌های عملیاتی</span><small>صفحه</small></div><div class="cki" data-act="ck-new-applicant">'+icon('plus','width:16px;height:16px;color:var(--brand)')+'<span>ثبت کارجوی جدید</span><small>میان‌بر</small></div>';
-    $('#ckList').innerHTML=h;return;
-  }
-  var add=function(rows,fn){rows.filter(function(r){return Object.keys(r).some(function(k){return en(String(r[k]==null?'':r[k])).toLowerCase().indexOf(q)>=0;});}).slice(0,5).forEach(function(r){out.push(fn(r));});};
-  add(DB.orders||[],function(o){return {t:o.customerName+' — '+o.service,s:o.requestId,i:'orders',a:'view',e:'orders',id:o.rowIndex};});
-  add(DB.cards||[],function(c){return {t:c.cardId+' — '+c.customerName,s:c.status,i:'cards',a:'card-view',e:'',id:c.cardId};});
-  add(DB.applicants||[],function(a){return {t:fullName(a),s:a.caseNumber,i:'applicant',a:'view',e:'applicants',id:a.rowIndex};});
-  add(DB.workers||[],function(w){return {t:fullName(w),s:w.operations,i:'worker',a:'view',e:'workers',id:w.rowIndex};});
-  add(DB.groups||[],function(g){return {t:g.name,s:g.groupId,i:'groups',a:'view',e:'groups',id:g.rowIndex};});
-  $('#ckList').innerHTML=out.length?'<div class="ckg"><span>نتایج ('+fa(out.length)+')</span></div>'+out.map(function(it){return '<div class="cki" data-act="ck-go" data-a="'+it.a+'" data-e="'+esc(it.e)+'" data-id="'+esc(it.id)+'">'+icon(it.i,'width:16px;height:16px;color:var(--brand)')+'<span>'+esc(it.t)+'</span><small>'+esc(it.s)+'</small></div>';}).join(''):'<div class="empty" style="padding:28px"><p class="sub">نتیجه‌ای یافت نشد.</p></div>';
+var raw=$('#ckInput').value.trim(),q=en(raw).toLowerCase(),out=[];
+$('#ckClearBtn').style.display=histGet().length?'inline-flex':'none';
+if(!q){
+var hist=histGet();
+var h='<div class="ckg"><span>'+icon('history','width:13px;height:13px')+' سوابق جستجو</span></div>';
+h+=hist.length?hist.map(function(x){return '<div class="cki" data-act="ck-hist" data-q="'+esc(x.q)+'">'+icon('search','width:15px;height:15px;color:var(--muted)')+'<span>'+esc(x.q)+'</span><small>'+jDT(x.at)+'</small></div>';}).join(''):'<div class="empty" style="padding:20px"><p class="sub">هنوز جستجویی ثبت نشده است.</p></div>';
+h+='<div class="ckg"><span>میان‌برها</span></div><div class="cki" data-act="ck-go-page" data-page="applicants">'+icon('applicant','width:16px;height:16px;color:var(--brand)')+'<span>جذب و استخدام</span><small>صفحه</small></div><div class="cki" data-act="ck-go-page" data-page="support">'+icon('msg','width:16px;height:16px;color:var(--brand)')+'<span>پشتیبانی مشتریان</span><small>صفحه</small></div><div class="cki" data-act="ck-new-applicant">'+icon('plus','width:16px;height:16px;color:var(--brand)')+'<span>ثبت کارجوی جدید</span><small>میان‌بر</small></div>';
+$('#ckList').innerHTML=h;return;
+}
+var add=function(rows,fn){rows.filter(function(r){return Object.keys(r).some(function(k){return en(String(r[k]==null?'':r[k])).toLowerCase().indexOf(q)>=0;});}).slice(0,5).forEach(function(r){out.push(fn(r));});};
+add(DB.orders||[],function(o){return {t:o.customerName+' — '+o.service,s:o.requestId,i:'orders',a:'view',e:'orders',id:o.rowIndex};});
+add(DB.cards||[],function(c){return {t:c.cardId+' — '+c.customerName,s:c.status,i:'cards',a:'card-view',e:'',id:c.cardId};});
+add(DB.applicants||[],function(a){return {t:fullName(a),s:a.caseNumber,i:'applicant',a:'view',e:'applicants',id:a.rowIndex};});
+add(DB.workers||[],function(w){return {t:fullName(w),s:w.operations,i:'worker',a:'view',e:'workers',id:w.rowIndex};});
+add(DB.groups||[],function(g){return {t:g.name,s:g.groupId,i:'groups',a:'view',e:'groups',id:g.rowIndex};});
+add(allTickets(),function(t){return {t:t.subject||'بدون موضوع',s:(t.ticketNo||'')+' · '+(CH_TITLE[t.channel]||''),i:'msg',a:'chat-open',e:'',id:t.threadId};});
+$('#ckList').innerHTML=out.length?'<div class="ckg"><span>نتایج ('+fa(out.length)+')</span></div>'+out.map(function(it){return '<div class="cki" data-act="ck-go" data-a="'+it.a+'" data-e="'+esc(it.e)+'" data-id="'+esc(it.id)+'">'+icon(it.i,'width:16px;height:16px;color:var(--brand)')+'<span>'+esc(it.t)+'</span><small>'+esc(it.s)+'</small></div>';}).join(''):'<div class="empty" style="padding:28px"><p class="sub">نتیجه‌ای یافت نشد.</p></div>';
 }
 /* ═════════ 24) CSV ═════════ */
 function exportCSV(e){
-  var cfg=CFG[e],rows=rowsFor(e);
-  var head=cfg.cols.map(function(c){return '"'+c.l+'"';}).join(',');
-  var body=rows.map(function(r){return cfg.cols.map(function(c){return '"'+String(r[c.k]==null?'':r[c.k]).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+head+'\n'+body],{type:'text/csv;charset=utf-8'}));a.download='zingovingo-branch-'+e+'.csv';a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1500);toast('فایل CSV دانلود شد.','ok');
+var cfg=CFG[e],rows=rowsFor(e);
+var head=cfg.cols.map(function(c){return '"'+c.l+'"';}).join(',');
+var body=rows.map(function(r){return cfg.cols.map(function(c){return '"'+String(r[c.k]==null?'':r[c.k]).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+var a=document.createElement('a');
+a.href=URL.createObjectURL(new Blob(['\uFEFF'+head+'\n'+body],{type:'text/csv;charset=utf-8'}));
+a.download='zingovingo-branch-'+e+'.csv';a.click();
+setTimeout(function(){URL.revokeObjectURL(a.href);},1500);
+toast('فایل CSV دانلود شد.','ok');
 }
 /* ═════════ 25) ACTIONS ═════════ */
 var ACT={
@@ -1038,67 +1125,77 @@ var ACT={
 'print-inv':function(){var b=$('#invBox');if(b){$('#printArea').innerHTML=b.outerHTML;window.print();}},
 'applicant-edit':function(d){var r=(DB.applicants||[]).find(function(x){return x.rowIndex===Number(d.id);});if(r)openApplicantForm(r.caseNumber);},
 'applicant-status':function(d){var r=(DB.applicants||[]).find(function(x){return x.rowIndex===Number(d.id);});if(r)applicantStatusModal(r.caseNumber);},
-'members':function(d){var g=(DB.groups||[]).find(function(x){return x.rowIndex===Number(d.id);});if(g){PS.filters={groupId:g.groupId};go('members');PS.filters={groupId:g.groupId};render();}},
+'applicant-hire':function(d){var r=(DB.applicants||[]).find(function(x){return x.rowIndex===Number(d.id);});if(r)hireApplicant(r.caseNumber);},
+'members':function(d){var g=(DB.groups||[]).find(function(x){return x.rowIndex===Number(d.id);});if(g){go('members');PS.filters={groupId:g.groupId};render();}},
 'cards-view':function(d){PS.view=d.mode;render();},
 'card-view':function(d){cardDrawer(d.id);},
 'card-status':function(d){cardStatusModal(d.id);},
 'card-assign':function(d){cardAssignModal(d.id);},
 'week':function(d){var n=num(d.d);PS.week=n?new Date((PS.week||new Date()).getTime()+n*864e5):new Date();render();},
-'support-reply':function(d){supportReplyModal(d.id);},
-'thread-open':function(d){openThread(d.id);},
-'thread-new':function(d){newThreadModal(d.id);},
-'admin-msg-new':function(){adminMsgModal();},
-'soon-request':function(d){var kind=d.kind==='finance'?'امور مالی':'خدمات شعبه';api('employeeSendSupportMessage','درخواست فعال‌سازی '+kind,'با سلام؛ لطفاً هنگام فعال‌سازی بخش «'+kind+'» در پنل کارمند، این شعبه را مطلع کنید. شناسه شعبه: '+(USER.branchId||''),TOKEN).then(function(){toast('درخواست شما به پشتیبانی ارسال شد.','ok');return reload();}).catch(function(e){toast(e.message,'err');});},
+'chat-open':function(d){return chatOpen(d.id);},
+'chat-status':function(d){return api('employeeMessageStatus',TOKEN,d.id,d.state).then(function(){toast(d.state==='CLOSED'?'گفتگو بسته شد.':'گفتگو باز شد.','ok');var open=$('#mback').classList.contains('show');return (open?chatOpen(d.id):Promise.resolve()).then(reload);});},
+'thread-new':function(d){newTicketModal('INTERNAL',d.id||'');},
+'ticket-new':function(d){newTicketModal(d.channel||'EMPLOYEE_SUPPORT','');},
+'soon-request':function(d){var kind=d.kind==='finance'?'امور مالی':'خدمات شعبه';return api('employeeMessageCreate',TOKEN,{channel:'EMPLOYEE_SUPPORT',subject:'درخواست فعال‌سازی '+kind,body:'با سلام؛ لطفاً هنگام فعال‌سازی بخش «'+kind+'» در پنل کارمند، این شعبه را مطلع کنید. شناسه شعبه: '+(USER.branchId||'')}).then(function(){toast('درخواست شما به پشتیبانی ارسال شد.','ok');return reload();});},
 'notif-read':function(){localStorage.setItem('zv_emp_read_notifs',JSON.stringify(notifications().map(function(n){return n.id;})));$('#bellDot').hidden=true;$('#notifPanel').classList.remove('show');},
-'notif-open':function(d){$('#notifPanel').classList.remove('show');go(d.kind);},
-'ck-go':function(d){histPush($('#ckInput').value);closeCmdk();if(d.a==='card-view')cardDrawer(d.id);else viewEntity(d.e,d.id);},
+'notif-open':function(d){$('#notifPanel').classList.remove('show');if(d.id)return chatOpen(d.id).then(reload);go(d.kind);},
+'ck-go':function(d){histPush($('#ckInput').value);closeCmdk();if(d.a==='card-view')cardDrawer(d.id);else if(d.a==='chat-open')return chatOpen(d.id).then(reload);else viewEntity(d.e,d.id);},
 'ck-go-page':function(d){histPush($('#ckInput').value);closeCmdk();go(d.page);},
 'ck-new-applicant':function(){closeCmdk();openApplicantForm();},
 'ck-hist':function(d){$('#ckInput').value=d.q;cmdkSearch();$('#ckInput').focus();},
 'ck-hist-clear':function(){histSet([]);cmdkSearch();toast('سوابق پاک شد.','ok');}
 };
 document.addEventListener('click',function(e){
-  if(!e.target.closest('.jdate-wrap')&&!e.target.closest('#jdatePop'))closeJDate();
-  var el=e.target.closest('[data-act]');
-  if(el){var fn=ACT[el.dataset.act];if(fn){e.preventDefault();e.stopPropagation();try{var res=fn(el.dataset,el,e);if(res&&typeof res.catch==='function')res.catch(function(err){toast(err.message||String(err),'err');});}catch(err){toast(err.message||String(err),'err');}return;}}
-  if(!e.target.closest('.zsel'))closeAllZsel();
-  if(e.target.id==='mback')closeModal();
-  if(e.target.id==='cmdk')closeCmdk();
-  if(!e.target.closest('#notifPanel')&&!e.target.closest('#bellBtn'))$('#notifPanel').classList.remove('show');
+if(!e.target.closest('.jdate-wrap')&&!e.target.closest('#jdatePop'))closeJDate();
+var el=e.target.closest('[data-act]');
+if(el){var fn=ACT[el.dataset.act];if(fn){e.preventDefault();e.stopPropagation();try{var res=fn(el.dataset,el,e);if(res&&typeof res.catch==='function')res.catch(function(err){toast(err.message||String(err),'err');});}catch(err){toast(err.message||String(err),'err');}return;}}
+if(!e.target.closest('.zsel'))closeAllZsel();
+if(e.target.id==='mback')closeModal();
+if(e.target.id==='cmdk')closeCmdk();
+if(!e.target.closest('#notifPanel')&&!e.target.closest('#bellBtn'))$('#notifPanel').classList.remove('show');
 });
 var searchDeb=debounce(function(){PS.pn=1;PS.sel=new Set();render();},280);
-document.addEventListener('input',function(e){var t=e.target;if(t.matches('[data-search]')){PS.q=t.value;searchDeb();return;}if(t.id==='ckInput'){cmdkSearch();return;}});
+var tSearchDeb=debounce(function(){render();},280);
+document.addEventListener('input',function(e){var t=e.target;if(t.matches('[data-search]')){PS.q=t.value;searchDeb();return;}if(t.matches('[data-tsearch]')){PS.tq=t.value;tSearchDeb();return;}if(t.id==='ckInput'){cmdkSearch();return;}});
 document.addEventListener('change',function(e){
-  var t=e.target;
-  if(t.matches('[data-filter]')){PS.filters[t.dataset.filter]=t.value;PS.pn=1;PS.sel=new Set();render();return;}
-  if(t.matches('[data-pworker]')){PS.pWorker=t.value;render();return;}
-  if(t.matches('[data-sel]')){var id=Number(t.dataset.sel);if(t.checked)PS.sel.add(id);else PS.sel.delete(id);render();return;}
-  if(t.matches('[data-selall]')){var ent=PS.page;var rows=rowsFor(ent).slice((PS.pn-1)*12,PS.pn*12);rows.forEach(function(r){if(t.checked)PS.sel.add(r.rowIndex);else PS.sel.delete(r.rowIndex);});render();return;}
+var t=e.target;
+if(t.matches('[data-tstate]')){PS.tstate=t.value;render();return;}
+if(t.matches('[data-filter]')){PS.filters[t.dataset.filter]=t.value;PS.pn=1;PS.sel=new Set();render();return;}
+if(t.matches('[data-pworker]')){PS.pWorker=t.value;render();return;}
+if(t.matches('[data-sel]')){var id=Number(t.dataset.sel);if(t.checked)PS.sel.add(id);else PS.sel.delete(id);render();return;}
+if(t.matches('[data-selall]')){var ent=PS.page;var rows=rowsFor(ent).slice((PS.pn-1)*12,PS.pn*12);rows.forEach(function(r){if(t.checked)PS.sel.add(r.rowIndex);else PS.sel.delete(r.rowIndex);});render();return;}
 });
 document.addEventListener('submit',function(e){
-  var f=e.target,k=f.dataset.form;if(!k)return;e.preventDefault();
-  var run=function(){
-    if(k==='entity')return submitEntity(f);
-    if(k==='applicant')return submitApplicant(f);
-    if(k==='ap-status'){var c=f.dataset.case;var r=(DB.applicants||[]).find(function(x){return x.caseNumber===c;});var o=Object.assign({},r,{status:f.elements.status.value});return api('updateEmployeeJobApplicantFull',c,o,TOKEN).then(function(){closeModal();toast('وضعیت به‌روزرسانی شد.','ok');return reload();});}
-    if(k==='order-status')return api('updateEmployeeOrderStatus',f.dataset.req,f.elements.status.value,TOKEN).then(function(){closeModal();toast('وضعیت تغییر یافت.','ok');return reload();});
-    if(k==='convert'){if(!f.elements.groupId.value){toast('گروه را انتخاب کنید.','err');return;}return api('employeeConvertOrderToCard',f.dataset.req,f.elements.groupId.value,f.elements.workerId.value,TOKEN).then(function(r){closeModal();toast(r.message||'کارت ایجاد شد.','ok');return reload();});}
-    if(k==='card-status')return api('employeeUpdateCardStatus',f.dataset.id,f.elements.status.value,f.elements.workerId.value,TOKEN).then(function(){closeModal();closeDrawer();toast('وضعیت ثبت شد.','ok');return reload();});
-    if(k==='card-assign')return api('employeeUpdateCardStatus',f.dataset.id,'تخصیص به کارگر',f.elements.workerId.value,TOKEN).then(function(){closeModal();closeDrawer();toast('تخصیص ثبت شد.','ok');return reload();});
-    if(k==='support-reply')return api('replyToCustomerConversation',f.dataset.id,f.elements.reply.value,TOKEN).then(function(){closeModal();toast('پاسخ ثبت شد.','ok');return reload();});
-    if(k==='thread-reply')return api('employeeReplyThread',f.dataset.id,f.elements.body.value,TOKEN).then(function(){toast('ارسال شد.','ok');return openThread(f.dataset.id);});
-    if(k==='thread-new'){var cid=f.dataset.id||f.elements.cardId.value;return api('employeeCreateThread',cid,f.elements.subject.value,f.elements.body.value,TOKEN).then(function(){closeModal();toast('گفتگو ایجاد شد.','ok');go('threads');return reload();});}
-    if(k==='admin-msg')return api('employeeSendSupportMessage',f.elements.subject.value,f.elements.body.value,TOKEN).then(function(){closeModal();toast('پیام به پشتیبانی ارسال شد.','ok');return reload();});
-    if(k==='profile'){var p={};if(f.elements.password.value)p.password=f.elements.password.value;if(f.elements.avatar.value)p.avatar=f.elements.avatar.value;return api('updateEmployeeProfile',p,TOKEN).then(function(){toast('پروفایل ذخیره شد.','ok');return reload();});}
-    if(k==='view-name'){var n=f.elements.vname.value.trim();if(!n)return;var a=getViews(f.dataset.e);a.push({id:'v'+Date.now(),name:n,state:{q:PS.q,filters:PS.filters,sort:PS.sort}});localStorage.setItem(viewsKey(f.dataset.e),JSON.stringify(a));closeModal();render();toast('نما ذخیره شد.','ok');}
-  };
-  try{var res=run();if(res&&typeof res.catch==='function')res.catch(function(err){toast(err.message||String(err),'err');});}catch(err){toast(err.message||String(err),'err');}
+var f=e.target,k=f.dataset.form;if(!k)return;e.preventDefault();
+var run=function(){
+if(k==='entity')return submitEntity(f);
+if(k==='applicant')return submitApplicant(f);
+if(k==='ap-status'){var c=f.dataset.case;var r=(DB.applicants||[]).find(function(x){return x.caseNumber===c;});var o=Object.assign({},r,{status:f.elements.status.value});return api('updateEmployeeJobApplicantFull',c,o,TOKEN).then(function(){closeModal();toast('وضعیت به‌روزرسانی شد.','ok');return reload();});}
+if(k==='order-status')return api('updateEmployeeOrderStatus',f.dataset.req,f.elements.status.value,TOKEN).then(function(){closeModal();toast('وضعیت تغییر یافت.','ok');return reload();});
+if(k==='convert'){if(!f.elements.groupId.value){toast('گروه را انتخاب کنید.','err');return;}return api('employeeConvertOrderToCard',f.dataset.req,f.elements.groupId.value,f.elements.workerId.value,TOKEN).then(function(r){closeModal();toast(r.message||'کارت ایجاد شد.','ok');return reload();});}
+if(k==='card-status')return api('employeeUpdateCardStatus',f.dataset.id,f.elements.status.value,f.elements.workerId.value,TOKEN).then(function(){closeModal();closeDrawer();toast('وضعیت ثبت شد.','ok');return reload();});
+if(k==='card-assign')return api('employeeUpdateCardStatus',f.dataset.id,'تخصیص به کارگر',f.elements.workerId.value,TOKEN).then(function(){closeModal();closeDrawer();toast('تخصیص ثبت شد.','ok');return reload();});
+if(k==='chat-reply'){
+var note=f.elements.internalNote&&f.elements.internalNote.checked;
+var sub=f.querySelector('[type="submit"]');sub.disabled=true;
+return api('employeeMessageReply',TOKEN,f.dataset.id,f.elements.body.value,{internalNote:note}).then(function(){toast('پیام ارسال شد.','ok');return chatOpen(f.dataset.id).then(reload);}).catch(function(err){sub.disabled=false;throw err;});
+}
+if(k==='ticket-new'){
+var ch=f.dataset.channel;
+var p={channel:ch,subject:f.elements.subject.value,body:f.elements.body.value};
+if(ch==='INTERNAL'){p.cardId=f.dataset.card||(f.elements.cardId?f.elements.cardId.value:'');if(!p.cardId){toast('کارت مرتبط را انتخاب کنید.','err');return;}}
+return api('employeeMessageCreate',TOKEN,p).then(function(r){closeModal();toast('گفتگو ایجاد شد.','ok');go(ch==='INTERNAL'?'threads':'adminSupport');return reload().then(function(){if(r&&r.threadId)return chatOpen(r.threadId);});});
+}
+if(k==='profile'){var p={};['password','avatar','phone','email','address'].forEach(function(n){if(f.elements[n]&&f.elements[n].value)p[n]=f.elements[n].value;});return api('updateEmployeeProfile',p,TOKEN).then(function(){toast('پروفایل ذخیره شد.','ok');return reload();});}
+if(k==='view-name'){var n=f.elements.vname.value.trim();if(!n)return;var a=getViews(f.dataset.e);a.push({id:'v'+Date.now(),name:n,state:{q:PS.q,filters:PS.filters,sort:PS.sort}});localStorage.setItem(viewsKey(f.dataset.e),JSON.stringify(a));closeModal();render();toast('نما ذخیره شد.','ok');}
+};
+try{var res=run();if(res&&typeof res.catch==='function')res.catch(function(err){toast(err.message||String(err),'err');});}catch(err){toast(err.message||String(err),'err');}
 });
 document.addEventListener('keydown',function(e){
-  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openCmdk();return;}
-  if(e.key==='Escape'){if($('#jdatePop').classList.contains('open')){closeJDate();return;}if($$('.zsel.open').length){closeAllZsel();return;}closeCmdk();closeModal();closeDrawer();$('#notifPanel').classList.remove('show');return;}
-  if(e.key==='Enter'&&$('#cmdk').classList.contains('show')){var first=$('#ckList .cki');if(first){e.preventDefault();first.click();}return;}
-  if(e.key==='Enter'&&$('#loginView').style.display!=='none'&&(e.target.id==='loginUser'||e.target.id==='loginPass'))doLogin();
+if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openCmdk();return;}
+if(e.key==='Escape'){if($('#jdatePop').classList.contains('open')){closeJDate();return;}if($$('.zsel.open').length){closeAllZsel();return;}closeCmdk();closeModal();closeDrawer();$('#notifPanel').classList.remove('show');return;}
+if(e.key==='Enter'&&$('#cmdk').classList.contains('show')){var first=$('#ckList .cki');if(first){e.preventDefault();first.click();}return;}
+if(e.key==='Enter'&&$('#loginView').style.display!=='none'&&(e.target.id==='loginUser'||e.target.id==='loginPass'))doLogin();
 });
 var dragId=null;
 document.addEventListener('dragstart',function(e){var c=e.target.closest('.kcard');if(!c)return;dragId=c.dataset.card;try{e.dataTransfer.setData('text/plain',dragId);}catch(x){}});
@@ -1110,12 +1207,12 @@ window.addEventListener('scroll',function(){if($('#jdatePop').classList.contains
 window.addEventListener('resize',function(){if($('#jdatePop').classList.contains('open')&&JD.inp)openJDate(JD.inp);});
 /* ═════════ 26) INIT ═════════ */
 (function init(){
-  var th=localStorage.getItem('zv_emp_theme');if(th)document.documentElement.dataset.theme=th;
-  $('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
-  if(!TOKEN){$('#loginView').style.display='grid';return;}
-  $('#loginView').style.display='none';$('#app').style.display='grid';
-  $('#page').innerHTML='<div class="loading"><div class="spinner"></div></div>';
-  api('checkEmployeeAuth',TOKEN).then(function(s){USER={name:s.name,empId:s.empId,branchId:s.branchId,avatar:s.avatar,username:s.username};return loadData();}).then(showApp).catch(function(){localStorage.removeItem('zv_emp_token');TOKEN='';USER=null;$('#app').style.display='none';$('#loginView').style.display='grid';});
+var th=localStorage.getItem('zv_emp_theme');if(th)document.documentElement.dataset.theme=th;
+$('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
+if(!TOKEN){$('#loginView').style.display='grid';return;}
+$('#loginView').style.display='none';$('#app').style.display='grid';
+$('#page').innerHTML='<div class="loading"><div class="spinner"></div></div>';
+api('checkEmployeeAuth',TOKEN).then(function(s){USER={name:s.name,empId:s.empId,branchId:s.branchId,avatar:s.avatar,username:s.username};return loadData();}).then(showApp).catch(function(){localStorage.removeItem('zv_emp_token');TOKEN='';USER=null;$('#app').style.display='none';$('#loginView').style.display='grid';});
 })();
 </script>
 </body>
