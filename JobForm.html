@@ -231,7 +231,7 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
 .footer p{margin:4px 0}
 
 /* ═══════════════════════════════════════════════════
-   11) JALALI DATE PICKER — اصلاح نهایی (Fixed Positioning)
+   11) JALALI DATE PICKER (Fixed Popup Positioning)
    ═══════════════════════════════════════════════════ */
 .ja-date-wrap{position:relative;width:100%;}
 .ja-date-input{padding-left:48px!important;direction:ltr;text-align:right;unicode-bidi:plaintext}
@@ -244,14 +244,14 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
 .ja-date-btn:hover{background:var(--brand);color:#fff}
 .ja-date-pop{
   display:none;
-  /* position: absolute حذف شد و در JS به fixed تغییر می‌کند تا از تله backdrop-filter فرار کند */
-  width:min(320px,calc(100vw - 48px));
+  position:fixed; /* استفاده از fixed برای فرار از تله backdrop-filter کارت‌ها */
+  z-index:99999; /* بالاترین لایه ممکن */
+  width:min(320px,calc(100vw - 32px));
   background:var(--surface);
   border:1px solid var(--line);
   border-radius:13px;
   padding:11px;
-  box-shadow:0 12px 32px rgba(11,23,54,.25);
-  z-index:99999; /* بالاترین لایه ممکن */
+  box-shadow:0 12px 32px rgba(11,23,54,.35);
 }
 .ja-date-pop.open{display:block;animation:zvCalPop .15s ease}
 @keyframes zvCalPop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
@@ -590,8 +590,31 @@ function submitJobForm(ev){
 }
 
 /* ═══════════════════════════════════════════════════
-   JALALI CALENDAR UI (با رفع مشکل Stacking Context)
+   JALALI CALENDAR UI (Smart Fixed Positioning)
    ═══════════════════════════════════════════════════ */
+function placeCalendar(input, pop) {
+  const rect = input.getBoundingClientRect();
+  const pWidth = pop.offsetWidth || 300;
+  const pHeight = pop.offsetHeight || 330;
+
+  // محاسبه موقعیت افقی (جلوگیری از بیرون زدن از سمت چپ یا راست صفحه)
+  let leftPos = rect.left;
+  if (leftPos + pWidth > window.innerWidth - 16) {
+    leftPos = window.innerWidth - pWidth - 16;
+  }
+  if (leftPos < 16) leftPos = 16;
+
+  // محاسبه موقعیت عمودی (اگر پایین صفحه جا نبود، بالای فیلد باز شود)
+  let topPos = rect.bottom + 7;
+  if (topPos + pHeight > window.innerHeight - 16) {
+    topPos = rect.top - pHeight - 7;
+    if (topPos < 16) topPos = 16;
+  }
+
+  pop.style.left = leftPos + 'px';
+  pop.style.top = topPos + 'px';
+}
+
 (function initJalaliCalendar(){
   var months=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
   var wrap=document.querySelector('.ja-date-wrap');
@@ -660,14 +683,19 @@ function submitJobForm(ev){
     if(parts){jy=parts[0];jm=parts[1];}
     render();
     
-    // رفع مشکل رفتن تقویم به زیر کارت‌ها: استفاده از position: fixed و محاسبه مختصات
-    var rect = input.getBoundingClientRect();
-    pop.style.position = 'fixed';
-    pop.style.top = (rect.bottom + 7) + 'px';
-    pop.style.right = (window.innerWidth - rect.right) + 'px';
-    pop.style.zIndex = '99999';
-    
     pop.classList.add('open');
+    // استفاده از requestAnimationFrame برای اطمینان از محاسبه صحیح ابعاد پاپ‌آپ
+    requestAnimationFrame(function() {
+      placeCalendar(input, pop);
+    });
+  });
+
+  // به‌روزرسانی موقعیت در هنگام اسکرول یا تغییر سایز پنجره
+  window.addEventListener('scroll', function() {
+    if (pop.classList.contains('open')) placeCalendar(input, pop);
+  }, true);
+  window.addEventListener('resize', function() {
+    if (pop.classList.contains('open')) placeCalendar(input, pop);
   });
 
   input.addEventListener('input',function(){
