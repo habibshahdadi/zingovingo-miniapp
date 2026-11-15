@@ -231,48 +231,121 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
 .footer p{margin:4px 0}
 
 /* ═══════════════════════════════════════════════════
-   11) JALALI DATE PICKER
+   11) JALALI DATE PICKER — اصلاح‌شده
    ═══════════════════════════════════════════════════ */
-.ja-date-wrap{position:relative;width:100%}
-.ja-date-input{padding-left:48px!important;direction:ltr;text-align:right;unicode-bidi:plaintext}
+.ja-date-wrap{
+  position:relative;
+  width:100%;
+  z-index:1; /* ← کلیدی: لایه والد را مشخص می‌کند */
+}
+.ja-date-input{
+  padding-left:48px!important;
+  direction:ltr;
+  text-align:right;
+  unicode-bidi:plaintext;
+}
 .ja-date-btn{
-  position:absolute;left:6px;top:50%;transform:translateY(-50%);
-  border:0;border-radius:8px;background:var(--surface2);
-  color:var(--navy);padding:6px 9px;cursor:pointer;z-index:2;
+  position:absolute;
+  left:6px;
+  top:50%;
+  transform:translateY(-50%);
+  border:0;
+  border-radius:8px;
+  background:var(--surface2);
+  color:var(--navy);
+  padding:6px 9px;
+  cursor:pointer;
+  z-index:2;
   transition:all var(--tr);
 }
-.ja-date-btn:hover{background:var(--brand);color:#fff}
-.ja-date-pop{
-  display:none;position:absolute;top:calc(100% + 7px);right:0;
-  width:min(320px,calc(100vw - 48px));
-  background:var(--surface);border:1px solid var(--line);
-  border-radius:13px;padding:11px;
-  box-shadow:0 12px 32px rgba(11,23,54,.18);z-index:120;
+.ja-date-btn:hover{
+  background:var(--brand);
+  color:#fff;
 }
-.ja-date-pop.open{display:block}
+.ja-date-pop{
+  display:none;
+  position:absolute;
+  top:calc(100% + 7px);
+  right:0;
+  width:min(320px,calc(100vw - 48px));
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:11px;
+  box-shadow:0 12px 32px rgba(11,23,54,.18);
+  z-index:9999; /* ← کلیدی: همیشه روی همه کارت‌ها */
+}
+.ja-date-pop.open{
+  display:block;
+  animation:zvCalPop .15s ease;
+}
+@keyframes zvCalPop{
+  from{opacity:0;transform:translateY(-6px)}
+  to{opacity:1;transform:none}
+}
 .ja-cal-head{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:4px;margin-bottom:9px;color:var(--navy);font-weight:800;font-size:13px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:4px;
+  margin-bottom:9px;
+  color:var(--navy);
+  font-weight:800;
+  font-size:13px;
 }
 .ja-cal-head button{
-  border:0;background:var(--surface2);border-radius:8px;
-  padding:5px 9px;cursor:pointer;font-size:14px;
+  border:0;
+  background:var(--surface2);
+  border-radius:8px;
+  padding:5px 9px;
+  cursor:pointer;
+  font-size:14px;
   transition:all var(--tr);
 }
-.ja-cal-head button:hover{background:var(--brand);color:#fff}
-.ja-cal-head .year-display{cursor:pointer;padding:2px 8px;border-radius:6px;flex:1;text-align:center}
-.ja-cal-head .year-display:hover{background:rgba(255,107,26,.12)}
-.ja-cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}
+.ja-cal-head button:hover{
+  background:var(--brand);
+  color:#fff;
+}
+.ja-cal-head .year-display{
+  cursor:pointer;
+  padding:2px 8px;
+  border-radius:6px;
+  flex:1;
+  text-align:center;
+}
+.ja-cal-head .year-display:hover{
+  background:rgba(255,107,26,.12);
+}
+.ja-cal-grid{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:4px;
+  text-align:center;
+}
 .ja-cal-grid button{
-  border:0;border-radius:7px;padding:7px 0;
-  background:var(--surface2);cursor:pointer;
-  color:var(--ink);font:inherit;font-size:12px;
+  border:0;
+  border-radius:7px;
+  padding:7px 0;
+  background:var(--surface2);
+  cursor:pointer;
+  color:var(--ink);
+  font:inherit;
+  font-size:12px;
   transition:all var(--tr);
 }
-.ja-cal-grid button:hover{background:rgba(255,107,26,.15);color:var(--brandDeep)}
-.ja-cal-grid .day-label{background:transparent;color:var(--muted);font-weight:700}
-.ja-cal-grid .today{outline:2px solid var(--brand);outline-offset:-2px}
-
+.ja-cal-grid button:hover{
+  background:rgba(255,107,26,.15);
+  color:var(--brandDeep);
+}
+.ja-cal-grid .day-label{
+  background:transparent;
+  color:var(--muted);
+  font-weight:700;
+}
+.ja-cal-grid .today{
+  outline:2px solid var(--brand);
+  outline-offset:-2px;
+}
 /* ═══════════════════════════════════════════════════
    12) RESPONSIVE
    ═══════════════════════════════════════════════════ */
