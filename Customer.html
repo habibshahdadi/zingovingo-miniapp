@@ -776,5 +776,293 @@ document.addEventListener('keydown', e=>{
   }
 });
 </script>
+  <!-- ═══════ ZingoVingo · Structured Development Requests (همه پنل‌ها) ═══════ -->
+<script>
+(function(){
+'use strict';
+if(window.__zvDevReqV1)return;window.__zvDevReqV1=true;
+
+var META=null,LIST=null,FILTER={module:'',status:'',priority:'',kind:'',q:'',mine:false};
+var PAGE_ID='devRequests';
+var st=document.createElement('style');
+st.textContent=[
+'.zvd-sec{font-size:12px;font-weight:900;color:var(--brandDeep);margin:16px 0 10px;display:flex;align-items:center;gap:8px}',
+'.zvd-sec:after{content:"";flex:1;height:1px;background:var(--line)}',
+'.modal.dk .zvd-sec{color:var(--brand2)}.modal.dk .zvd-sec:after{background:#2A3B66}',
+'.zvd-hint{font-size:10.5px;color:var(--muted);line-height:1.9}',
+'.modal.dk .zvd-hint{color:#93A3C8}',
+'.zvd-guide{background:rgba(255,107,26,.08);border:1px solid rgba(255,107,26,.28);border-radius:11px;padding:10px 12px;font-size:11px;line-height:1.95;margin-bottom:14px}',
+'.modal.dk .zvd-guide{background:rgba(255,107,26,.14);border-color:rgba(255,107,26,.4);color:#FFD9BE}',
+'.zvd-guide b{color:var(--brandDeep)}.modal.dk .zvd-guide b{color:#FFB25E}',
+'.zvd-count{font-size:10px;color:var(--muted);font-weight:700}',
+'.zvd-note{white-space:pre-wrap;font-size:11.5px;line-height:2;background:var(--surface2);border:1px solid var(--line);border-radius:11px;padding:11px 13px;max-height:260px;overflow:auto}',
+'.zvd-cell{white-space:normal!important;max-width:330px;line-height:1.85}',
+'.zvd-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;background:rgba(100,116,139,.14);color:var(--slate)}',
+'.zvd-tl{display:flex;flex-direction:column;gap:7px}',
+'.zvd-tl div{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--muted)}',
+'.zvd-bar{height:7px;border-radius:7px;background:var(--surface2);border:1px solid var(--line);overflow:hidden;min-width:70px}',
+'.zvd-bar i{display:block;height:100%;background:var(--grad)}'
+].join('\n');
+document.head.appendChild(st);
+
+function M(){return META||{modules:[],kinds:[],priorities:[],statuses:[],impacts:[],frequencies:[],audiences:[],deadlines:[],rules:{problemMin:20,proposalMin:20,expectedMin:10,exampleMax:600}};}
+function loadMeta(){if(META)return Promise.resolve(META);return api('devMeta',TOKEN).then(function(r){META=r;return r;});}
+function opts(list,sel){return (list||[]).map(function(x){return '<option value="'+esc(x)+'"'+(String(x)===String(sel)?' selected':'')+'>'+esc(x)+'</option>';}).join('');}
+function modOpts(sel){return (M().modules||[]).map(function(m){return '<option value="'+esc(m.id)+'"'+(m.id===sel?' selected':'')+'>'+esc(m.name)+'</option>';}).join('');}
+function modName(id){var m=(M().modules||[]).find(function(x){return x.id===id;});return m?m.name:id;}
+function priColor(p){return p==='بحرانی'?'var(--red)':p==='فوری'?'var(--amber)':p==='مهم'?'var(--violet)':'var(--slate)';}
+function stColor(s){return s==='منتشر شد'?'green':s==='در حال ساخت'?'amber':s==='پذیرفته شده'?'teal':s==='در بررسی'?'violet':s==='رد شده'?'red':'blue';}
+function priPill(p){return '<span class="pill" style="background:color-mix(in srgb,'+priColor(p)+' 14%,transparent);color:'+priColor(p)+'">'+esc(p||'عادی')+'</span>';}
+function stPill(s){return '<span class="pill p-'+stColor(s)+'">'+esc(s||'جدید')+'</span>';}
+
+/* ═════════ فرم ساخت‌یافته ═════════ */
+function devModal(moduleId){
+return loadMeta().then(function(m){
+var r=m.rules||{};
+var mod=(m.modules||[]).find(function(x){return x.id===moduleId;})||(m.modules||[])[0]||{id:'general',name:'سایر'};
+var h='<div class="mh"><h3>ثبت پیشنهاد توسعه</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<form data-form="zvd-submit"><div class="mb">'+
+'<div class="zvd-guide"><b>چارچوب ثبت پیشنهاد:</b> هر درخواست باید «مسئله»، «راهکار» و «معیار پذیرش» مشخص داشته باشد. '+
+'مقادیر اثر، دفعات، ذی‌نفعان و اولویت از فهرست ثابت انتخاب می‌شوند تا پیشنهادها قابل مقایسه و اولویت‌بندی باشند. '+
+'خروجی در شیت <b>DevelopmentRequests</b> با همان ۱۲ ستون ثبت می‌شود.</div>'+
+'<div class="zvd-sec" style="margin-top:0">۱. شناسه درخواست</div><div class="fgrid">'+
+'<div class="field"><label>ماژول <span class="req">*</span></label><select name="module" required data-zvd-mod>'+modOpts(mod.id)+'</select></div>'+
+'<div class="field"><label>عنوان ماژول (خودکار)</label><input name="moduleNameView" value="'+esc(mod.name)+'" readonly></div>'+
+'<div class="field"><label>نوع درخواست <span class="req">*</span></label><select name="kind" required>'+opts(m.kinds,m.kinds&&m.kinds[0])+'</select></div>'+
+'<div class="field"><label>اولویت <span class="req">*</span></label><select name="priority" required>'+opts(m.priorities,'عادی')+'</select><span class="zvd-hint">«بحرانی» فقط با ذکر نمونه واقعی پذیرفته می‌شود.</span></div>'+
+'</div>'+
+'<div class="zvd-sec">۲. شرح ساخت‌یافته</div><div class="fgrid">'+
+'<div class="field full"><label>مسئله / نیاز فعلی <span class="req">*</span> <span class="zvd-count" data-cnt="problem"></span></label>'+
+'<textarea name="problem" required minlength="'+(r.problemMin||20)+'" data-zvd-c="problem" style="min-height:88px" placeholder="الان چه کاری سخت، دستی یا ناممکن است؟ دقیق و بدون کلی‌گویی بنویسید."></textarea></div>'+
+'<div class="field full"><label>راهکار پیشنهادی <span class="req">*</span> <span class="zvd-count" data-cnt="proposal"></span></label>'+
+'<textarea name="proposal" required minlength="'+(r.proposalMin||20)+'" data-zvd-c="proposal" style="min-height:88px" placeholder="پیشنهاد شما دقیقاً چه چیزی اضافه یا تغییر کند؟"></textarea></div>'+
+'<div class="field full"><label>معیار پذیرش / خروجی مورد انتظار <span class="req">*</span> <span class="zvd-count" data-cnt="expected"></span></label>'+
+'<textarea name="expected" required minlength="'+(r.expectedMin||10)+'" data-zvd-c="expected" style="min-height:70px" placeholder="با چه نتیجه مشخصی می‌گویید این نیاز برطرف شده است؟"></textarea></div>'+
+'</div>'+
+'<div class="zvd-sec">۳. اثر و دامنه</div><div class="fgrid">'+
+'<div class="field"><label>اثر کسب‌وکار <span class="req">*</span></label><select name="impact" required>'+opts(m.impacts,'صرفه‌جویی در زمان')+'</select></div>'+
+'<div class="field"><label>دفعات نیاز <span class="req">*</span></label><select name="frequency" required>'+opts(m.frequencies,'هفتگی')+'</select></div>'+
+'<div class="field"><label>کاربران ذی‌نفع <span class="req">*</span></label><select name="audience" required>'+opts(m.audiences,m.role==='Employee'?'کارمند شعبه':m.role==='Branch Manager'?'مدیر شعبه':'ادمین سامانه')+'</select></div>'+
+'<div class="field"><label>زمان مورد نیاز</label><select name="deadline">'+opts(m.deadlines,'بدون محدودیت')+'</select></div>'+
+'<div class="field full"><label>نمونه / مصداق واقعی <span class="zvd-count" data-cnt="example"></span></label>'+
+'<textarea name="example" maxlength="'+(r.exampleMax||600)+'" data-zvd-c="example" style="min-height:64px" placeholder="یک مورد واقعی با تاریخ/شماره سفارش یا کارت ذکر کنید (برای اولویت بحرانی الزامی است)."></textarea></div>'+
+'</div>'+
+'<div class="zvd-sec">۴. ثبت‌کننده</div>'+
+'<div class="kv"><div class="kvi"><small>درخواست‌کننده</small><b>'+esc(m.requesterName||'—')+'</b></div>'+
+'<div class="kvi"><small>نقش</small><b>'+esc(m.role==='Administrator'?'ادمین سامانه':m.role==='Branch Manager'?'مدیر شعبه':'کارمند شعبه')+'</b></div>'+
+'<div class="kvi"><small>شعبه</small><b>'+esc(m.branchId||'ستاد مرکزی')+'</b></div>'+
+'<div class="kvi"><small>وضعیت اولیه</small><b>جدید</b></div></div>'+
+'</div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ثبت در DevelopmentRequests</button>'+
+'<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>';
+openModal(h,true,true);
+var f=$('#modal form');
+var ms=f.querySelector('[data-zvd-mod]');
+if(ms)ms.addEventListener('change',function(){f.elements.moduleNameView.value=modName(ms.value);});
+$$('[data-zvd-c]',f).forEach(function(el){
+var key=el.getAttribute('data-zvd-c'),out=f.querySelector('[data-cnt="'+key+'"]');
+var upd=function(){if(out)out.textContent=fa(el.value.trim().length)+' نویسه';};
+el.addEventListener('input',upd);upd();
+});
+if(typeof decorate==='function')decorate($('#modal'));
+}).catch(function(e){toast(e.message,'err');});
+}
+
+/* ═════════ جدول و صفحه ═════════ */
+function devRowsHtml(res){
+var items=res.items||[];
+if(!items.length)return '<div class="card"><div class="empty"><div class="ei">'+icon('zap')+'</div><h4>درخواستی یافت نشد</h4><p class="sub">با «ثبت پیشنهاد توسعه» اولین درخواست ساخت‌یافته را ایجاد کنید.</p></div></div>';
+return '<div class="tw"><table class="tb"><thead><tr><th>Request-ID</th><th>ماژول</th><th>نوع</th><th>مسئله</th><th>اثر</th><th>دفعات</th><th>اولویت</th><th>وضعیت</th><th>شعبه</th><th>ثبت</th><th style="text-align:left">عملیات</th></tr></thead><tbody>'+
+items.map(function(r){
+return '<tr><td><b class="ltr">'+esc(r.id)+'</b></td>'+
+'<td>'+esc(r.moduleName)+'<br><small class="sub ltr">'+esc(r.module)+'</small></td>'+
+'<td><span class="zvd-tag">'+esc(r.kind)+'</span></td>'+
+'<td class="zvd-cell">'+esc(String(r.fields.problem||r.note).slice(0,150))+(String(r.fields.problem||'').length>150?'…':'')+'</td>'+
+'<td>'+esc(r.impact)+'</td><td>'+esc(r.frequency)+'</td>'+
+'<td>'+priPill(r.priority)+'</td><td>'+stPill(r.status)+'</td>'+
+'<td>'+esc(r.branchLabel)+'</td>'+
+'<td>'+jDT(r.createdAt)+'<br><small class="sub">'+esc(r.createdByName||r.createdBy)+'</small></td>'+
+'<td><div class="ra">'+ibtn('zvd-view','eye','جزئیات',' data-id="'+esc(r.id)+'"')+
+(res.canModerate?ibtn('zvd-del','trash','حذف',' data-id="'+esc(r.id)+'"'):'')+
+'</div></td></tr>';
+}).join('')+'</tbody></table></div>';
+}
+function devPage(){
+return loadMeta().then(function(m){
+return api('devList',FILTER,TOKEN).then(function(res){
+LIST=res;
+var s=res.stats||{},bs=s.byStatus||{},bm=s.byModule||{};
+var total=res.scopeTotal||0;
+var acts=btn('zvd-new','ثبت پیشنهاد توسعه','plus','btn-p')+btn('zvd-refresh','بروزرسانی','undo','btn-s');
+var h=pageHead('درخواست‌های توسعه',fa(res.total)+' مورد از '+fa(total)+' · شیت DevelopmentRequests'+(m.isAdmin?' · همه شعب':' · شعبه '+esc(m.branchId)),acts);
+var kk=[['کل درخواست‌ها',fa(total),'zap','var(--blue)'],['جدید',fa(bs['جدید']||0),'clock','var(--amber)'],
+['در حال ساخت',fa(bs['در حال ساخت']||0),'svc','var(--violet)'],['منتشر شده',fa(bs['منتشر شد']||0),'check','var(--green)'],
+['رد شده',fa(bs['رد شده']||0),'x','var(--red)'],['بحرانی',fa((s.byPriority||{})['بحرانی']||0),'bell','var(--red)']];
+h+='<div class="grid kpis" style="margin-bottom:16px">'+kk.map(function(x){
+return '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,'+x[3]+' 14%,transparent);color:'+x[3]+'">'+icon(x[2])+'</span></div><div class="l">'+x[0]+'</div><div class="v" style="font-size:20px">'+x[1]+'</div></div>';}).join('')+'</div>';
+var mods=Object.keys(bm).sort(function(a,b){return bm[b]-bm[a];}).slice(0,6);
+if(mods.length){
+var mx=Math.max.apply(null,mods.map(function(k){return bm[k];}));
+h+='<div class="card" style="margin-bottom:16px"><h3 style="margin-bottom:12px;display:flex;gap:8px;align-items:center">'+icon('report','width:15px;height:15px;color:var(--brand)')+' تمرکز درخواست‌ها بر اساس ماژول</h3>'+
+mods.map(function(k){return '<div class="rank"><div class="info"><b>'+esc(modName(k))+'</b><small class="ltr">'+esc(k)+'</small></div><span class="zvd-bar" style="flex:0 0 120px"><i style="width:'+Math.round(bm[k]/mx*100)+'%"></i></span><span class="v">'+fa(bm[k])+'</span></div>';}).join('')+'</div>';
+}
+h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-zvd-q placeholder="جستجو در شناسه، متن، ثبت‌کننده…" value="'+esc(FILTER.q||'')+'"></div>'+
+'<select class="sel" data-zvd-f="module"><option value="">ماژول: همه</option>'+modOpts(FILTER.module)+'</select>'+
+'<select class="sel" data-zvd-f="status"><option value="">وضعیت: همه</option>'+opts(m.statuses,FILTER.status)+'</select>'+
+'<select class="sel" data-zvd-f="priority"><option value="">اولویت: همه</option>'+opts(m.priorities,FILTER.priority)+'</select>'+
+'<select class="sel" data-zvd-f="kind"><option value="">نوع: همه</option>'+opts(m.kinds,FILTER.kind)+'</select>'+
+'<label class="notechk" style="margin:0"><input type="checkbox" data-zvd-mine'+(FILTER.mine?' checked':'')+'> فقط درخواست‌های من</label></div>';
+return h+devRowsHtml(res);
+});
+});
+}
+function devDrawer(id){
+return api('devGet',id,TOKEN).then(function(r){
+var v=r.item,f=v.fields||{};
+var body=kv([['Request-ID','<b class="ltr">'+esc(v.id)+'</b>'],['وضعیت',stPill(v.status)],
+['ماژول',esc(v.moduleName)],['کد ماژول','<span class="ltr">'+esc(v.module)+'</span>'],
+['نوع درخواست',esc(v.kind)],['اولویت',priPill(v.priority)],
+['اثر کسب‌وکار',esc(v.impact)],['دفعات نیاز',esc(v.frequency)],
+['کاربران ذی‌نفع',esc(v.audience)],['زمان مورد نیاز',esc(v.deadline)],
+['شعبه',esc(v.branchLabel)],['ثبت‌کننده',esc(v.createdByName)+' <small class="sub ltr">'+esc(v.createdBy)+'</small>']]);
+body+='<div class="sec-t">مسئله / نیاز فعلی</div><div class="zvd-note">'+esc(f.problem||'—')+'</div>';
+body+='<div class="sec-t">راهکار پیشنهادی</div><div class="zvd-note">'+esc(f.proposal||'—')+'</div>';
+body+='<div class="sec-t">معیار پذیرش</div><div class="zvd-note">'+esc(f.expected||'—')+'</div>';
+if(f.example)body+='<div class="sec-t">نمونه / مصداق واقعی</div><div class="zvd-note">'+esc(f.example)+'</div>';
+body+='<div class="sec-t">گردش کار</div><div class="zvd-tl">'+
+'<div>'+icon('plus','width:13px;height:13px')+' ثبت: '+jDT(v.createdAt)+'</div>'+
+'<div>'+icon('edit','width:13px;height:13px')+' آخرین تغییر: '+jDT(v.updatedAt)+' · '+esc(v.updatedBy||'—')+'</div>'+
+(v.releasedAt?'<div>'+icon('check','width:13px;height:13px;color:var(--green)')+' انتشار: '+jDT(v.releasedAt)+'</div>':'')+
+'</div>';
+if(r.canModerate){
+body+='<div class="sec-t">تغییر وضعیت (ادمین)</div><div class="field"><select data-zvd-status="'+esc(v.id)+'">'+opts(r.statuses,v.status)+'</select><span class="hint">با انتخاب «منتشر شد»، ستون ReleasedAt مقدار می‌گیرد.</span></div>';
+}
+body+='<div class="sec-t">متن ثبت‌شده در شیت (Note)</div><div class="zvd-note">'+esc(v.note)+'</div>';
+var foot='';
+if(r.canModerate)foot+=btn('zvd-del','حذف درخواست','trash','btn-d',' data-id="'+esc(v.id)+'"');
+if(r.canWithdraw)foot+=btn('zvd-withdraw','پس‌گرفتن درخواست','undo','btn-d',' data-id="'+esc(v.id)+'"');
+foot+='<button class="btn btn-s" data-act="dclose">بستن</button>';
+openDrawer('<div class="dh"><h3>درخواست '+esc(v.id)+'</h3><button class="ibtn" data-act="dclose">'+icon('x')+'</button></div><div class="db">'+body+'</div><div class="df">'+foot+'</div>');
+if(typeof decorate==='function')decorate($('#drawer'));
+}).catch(function(e){toast(e.message,'err');});
+}
+
+/* ═════════ منو / رندر ═════════ */
+function patchMenu(){
+if(!window.MENU)return;
+if(MENU.some(function(m){return m.id===PAGE_ID;}))return;
+var at=-1;
+for(var i=0;i<MENU.length;i++)if(MENU[i].sec==='در حال توسعه'){at=i+1;break;}
+var item={id:PAGE_ID,l:'درخواست‌های توسعه',ic:'logs',bc:'v'};
+if(at<0){MENU.push({sec:'در حال توسعه'});MENU.push(item);}else MENU.splice(at,0,item);
+if(window.TITLES)TITLES[PAGE_ID]=['درخواست‌های توسعه','پیشنهادهای ساخت‌یافته · شیت DevelopmentRequests'];
+}
+var _render=window.render;
+window.render=function(){
+var p=(window.PS&&PS.page)||'dashboard';
+if(p!==PAGE_ID)return _render.apply(this,arguments);
+if(window.CH)CH.forEach(function(c){try{c.destroy();}catch(e){}});
+var t=(window.TITLES&&TITLES[PAGE_ID])||['درخواست‌های توسعه',''];
+$('#tbTitle').textContent=t[0];$('#tbCrumb').textContent='ZingoVingo · '+t[1];
+var tb=$('#themeBtn');if(tb)tb.innerHTML=icon(root_dark()?'sun':'moon');
+Promise.resolve(devPage()).then(function(h){
+$('#page').innerHTML=h;
+if(typeof decorate==='function')decorate($('#page'));
+if(typeof window.renderNav==='function')window.renderNav();
+if(typeof paintSideUser==='function')paintSideUser();
+if(typeof notifications==='function'){var d=$('#bellDot');if(d)d.hidden=!notifications().some(function(n){return !n.read;});}
+}).catch(function(e){
+$('#page').innerHTML='<div class="card"><div class="empty"><div class="ei">'+icon('x')+'</div><h4>خطا در بارگذاری</h4><p class="sub">'+esc(e.message)+'</p></div></div>';
+});
+};
+function root_dark(){return document.documentElement.dataset.theme==='dark';}
+
+/* ═════════ اکشن‌ها ═════════ */
+if(window.ACT){
+ACT['zvd-new']=function(d){return devModal(d.module||d.kind||'');};
+ACT['zvd-page']=function(){go(PAGE_ID);};
+ACT['zvd-view']=function(d){return devDrawer(d.id);};
+ACT['zvd-refresh']=function(){return render();};
+ACT['zvd-del']=function(d){
+confirmBox('حذف درخواست توسعه','آیا از حذف <b>'+esc(d.id)+'</b> مطمئن هستید؟',function(){
+api('devDelete',d.id,TOKEN).then(function(){closeDrawer();toast('حذف شد.','ok');render();});
+});
+};
+ACT['zvd-withdraw']=function(d){
+confirmBox('پس‌گرفتن درخواست','درخواست <b>'+esc(d.id)+'</b> پس گرفته و حذف شود؟',function(){
+api('devWithdraw',d.id,TOKEN).then(function(){closeDrawer();toast('پس گرفته شد.','ok');render();});
+});
+};
+ACT['soon-request']=function(d){return devModal(d.kind==='roadmap'?'':d.kind);};
+ACT['zv-req']=function(d){return devModal(d.kind==='roadmap'?'':d.kind);};
+ACT['soon-notify']=function(d){
+var k=d.kind||'general';
+return loadMeta().then(function(){
+var mod=(M().modules||[]).some(function(x){return x.id===k;})?k:'general';
+return api('devSubmit',{module:mod,kind:'قابلیت جدید',priority:'عادی',
+problem:'درخواست اطلاع‌رسانی هنگام فعال‌سازی ماژول '+modName(mod)+' برای شعبه '+((window.USER&&USER.branchId)||'ستاد مرکزی')+'.',
+proposal:'افزودن این شعبه به فهرست اطلاع‌رسانی انتشار ماژول '+modName(mod)+'.',
+expected:'ارسال اعلان به این شعبه در زمان انتشار رسمی ماژول.',
+impact:'صرفه‌جویی در زمان',frequency:'موردی',audience:'مدیر شعبه',deadline:'بدون محدودیت'},TOKEN);
+}).then(function(r){toast('درخواست ثبت شد · '+r.id,'ok');go(PAGE_ID);});
+};
+}
+window.soonRequestModal=function(kind){return devModal(kind==='roadmap'?'':kind);};
+window.zReqModal=function(kind){return devModal(kind==='roadmap'?'':kind);};
+window.devTable=function(rows,mod){
+var list=(rows||[]).filter(function(r){return !mod||r.module===mod;});
+if(!list.length)return '<div class="card"><div class="empty"><div class="ei">'+icon('zap')+'</div><h4>درخواستی ثبت نشده است</h4><p class="sub">با «ثبت نیازمندی» اولین درخواست ساخت‌یافته را ایجاد کنید.</p></div></div>';
+return '<div class="card"><h3 style="margin-bottom:12px;display:flex;gap:8px;align-items:center">'+icon('logs','width:15px;height:15px;color:var(--brand)')+' درخواست‌های توسعه ('+fa(list.length)+')</h3>'+
+devRowsHtml({items:list,canModerate:!!(META&&META.canModerate)})+
+'<div style="margin-top:12px">'+btn('zvd-page','مدیریت کامل درخواست‌ها','list','btn-s btn-sm')+'</div></div>';
+};
+
+/* ═════════ رویدادها ═════════ */
+document.addEventListener('submit',function(e){
+var f=e.target;
+if(!f.dataset||f.dataset.form!=='zvd-submit')return;
+e.preventDefault();
+var g=function(n){return f.elements[n]?String(f.elements[n].value).trim():'';};
+var payload={module:g('module'),kind:g('kind'),priority:g('priority'),
+problem:g('problem'),proposal:g('proposal'),expected:g('expected'),
+impact:g('impact'),frequency:g('frequency'),audience:g('audience'),
+deadline:g('deadline'),example:g('example')};
+var r=(META&&META.rules)||{};
+if(payload.problem.length<(r.problemMin||20)){toast('«مسئله فعلی» حداقل '+fa(r.problemMin||20)+' نویسه باشد.','err');return;}
+if(payload.proposal.length<(r.proposalMin||20)){toast('«راهکار پیشنهادی» حداقل '+fa(r.proposalMin||20)+' نویسه باشد.','err');return;}
+if(payload.expected.length<(r.expectedMin||10)){toast('«معیار پذیرش» حداقل '+fa(r.expectedMin||10)+' نویسه باشد.','err');return;}
+if(payload.priority==='بحرانی'&&payload.example.length<10){toast('برای اولویت بحرانی، نمونه واقعی الزامی است.','err');return;}
+var sub=f.querySelector('[type="submit"]');if(sub)sub.disabled=true;
+api('devSubmit',payload,TOKEN).then(function(res){
+closeModal();toast('درخواست ثبت شد · '+res.id,'ok');
+go(PAGE_ID);
+return devDrawer(res.id);
+}).catch(function(err){if(sub)sub.disabled=false;toast(err.message||String(err),'err');});
+});
+var qDeb=null;
+document.addEventListener('input',function(e){
+var t=e.target;
+if(!t.matches||!t.matches('[data-zvd-q]'))return;
+FILTER.q=t.value;clearTimeout(qDeb);qDeb=setTimeout(function(){render();},300);
+});
+document.addEventListener('change',function(e){
+var t=e.target;
+if(t.matches&&t.matches('[data-zvd-f]')){FILTER[t.getAttribute('data-zvd-f')]=t.value;render();return;}
+if(t.matches&&t.matches('[data-zvd-mine]')){FILTER.mine=!!t.checked;render();return;}
+if(t.matches&&t.matches('[data-zvd-status]')){
+var id=t.getAttribute('data-zvd-status');
+api('devSetStatus',id,t.value,TOKEN).then(function(){toast('وضعیت به‌روزرسانی شد.','ok');return devDrawer(id);})
+.catch(function(err){toast(err.message,'err');devDrawer(id);});
+}
+});
+
+/* ═════════ راه‌اندازی ═════════ */
+patchMenu();
+if(window.TITLES)TITLES[PAGE_ID]=['درخواست‌های توسعه','پیشنهادهای ساخت‌یافته · شیت DevelopmentRequests'];
+loadMeta().then(function(){if(typeof window.renderNav==='function')window.renderNav();}).catch(function(){});
+var _load=window.loadData;
+if(typeof _load==='function')window.loadData=function(){return _load.apply(this,arguments).then(function(r){patchMenu();return r;});};
+window.ZVDev={open:devModal,page:devPage,view:devDrawer,meta:function(){return META;},filter:FILTER};
+})();
+</script>
 </body>
 </html>
