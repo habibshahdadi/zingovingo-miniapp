@@ -1,877 +1,793 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <base target="_top">
 <title>پنل کارمند | ZingoVingo</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="zv-api.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet">
+<script>
+window.__zvErrors = [];
+window.__zvModern = (function () { try { new Function('a', 'return a?.b ?? 0'); return true; } catch (e) { return false; } })();
+window.addEventListener('error', function (ev) {
+  var t = ev && ev.target;
+  if (t && t !== window && t.tagName && /^(SCRIPT|LINK|IMG|IFRAME|SOURCE)$/.test(String(t.tagName).toUpperCase())) { console.warn('[ZV] asset failed:', t.src || t.href); return; }
+  var msg = String((ev && ev.message) || '').trim();
+  if (!ev.lineno && (/^Script error\.?$/i.test(msg) || msg === '')) { console.warn('[ZV] cross-origin script error ignored'); return; }
+  window.__zvErrors.push(msg + ' @ ' + (ev.lineno || 0) + ':' + (ev.colno || 0));
+  var b = document.getElementById('zvFatal');
+  if (b) { b.style.display = 'block'; b.textContent = 'خطای اسکریپت: ' + window.__zvErrors.join(' | '); }
+}, true);
+</script>
 <style>
 :root{
-  --navy:#0B1736;--navy-light:#1a2a4d;--orange:#FF6B1A;--orange-light:#ff8533;
-  --bg:#f4f6fb;--text:#172033;--muted:#657086;--line:#dfe4ee;--white:#fff;
-  --green:#067647;--danger:#b42318;--blue:#1849a9;--yellow:#f79009;
-  --shadow:0 2px 10px #17203308;--radius:14px;
+--navy:#0B1736;--navy2:#13234D;--navy3:#1B2F63;--brand:#FF6B1A;--brand2:#FF8A3D;--brandDeep:#E4570B;
+--blue:#2E63E7;--violet:#7C4DFF;--teal:#0FA3A3;--green:#0E9F6E;--amber:#D97706;--red:#E02D3C;--pink:#E0447C;--slate:#64748B;
+--bg:#F3F5FB;--surface:#fff;--surface2:#F6F8FD;--ink:#101A33;--muted:#5C6784;--line:#E2E7F3;--line2:#D3DAEC;
+--scrim:rgba(7,13,31,.58);--sh:0 6px 22px rgba(11,23,54,.07);--sh2:0 16px 44px rgba(11,23,54,.16);
+--r:16px;--tr:180ms ease;--grad:linear-gradient(135deg,#FF6B1A,#FF8A3D 55%,#FFB25E);
+--hero:linear-gradient(120deg,#0B1736,#16295B 45%,#3B2E7E 78%,#7C4DFF 130%);
+--glass:rgba(148,163,184,.16);--glassBrd:rgba(100,116,139,.28);--panBg:rgba(17,26,48,.9);
 }
+[data-theme=dark]{--bg:#070D1F;--surface:#0E1830;--surface2:#121F3D;--ink:#E9EEFC;--muted:#93A0C2;--line:#1D2B4F;--line2:#27375F;--scrim:rgba(2,6,18,.74);--sh:0 8px 26px rgba(0,0,0,.42);--sh2:0 18px 50px rgba(0,0,0,.58);--glass:rgba(203,213,225,.11);--glassBrd:rgba(148,163,184,.26)}
+.brand h1, .lbox h1 { font-family: 'Nunito', 'Vazirmatn', sans-serif !important; font-weight: 900 !important; letter-spacing: -0.5px; }
+.brand h1 span, .lbox h1 span { font-family: 'Nunito', sans-serif !important; font-weight: 900 !important; }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Vazirmatn',Tahoma,Arial,sans-serif;line-height:1.7;font-size:14px}
-button,input,select,textarea{font-family:inherit;font-size:13px}
-
-/* Layout */
-.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy) 0%,#1a2a4d 100%)}
-.login-box{background:#fff;border-radius:20px;padding:40px;width:min(420px,92%);box-shadow:0 20px 60px #0003}
-.login-box h1{color:var(--navy);text-align:center;margin-bottom:8px;font-size:28px}
-.login-box h1 span{color:var(--orange)}
-.login-box .subtitle{text-align:center;color:var(--muted);margin-bottom:24px;font-size:13px}
-.login-box .field{margin-bottom:14px}
-.login-box label{display:block;margin-bottom:6px;font-weight:700;font-size:13px}
-.login-box input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;outline:none}
-.login-box input:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
-.login-box .btn{width:100%;padding:13px;margin-top:8px}
-.login-error{background:#fef3f2;color:var(--danger);padding:10px;border-radius:8px;margin-bottom:12px;font-size:13px;display:none}
-
-.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
-.sidebar{background:var(--navy);color:#fff;padding:0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
-.brand{padding:20px;border-bottom:1px solid var(--navy-light)}
-.brand h2{font-size:22px;font-weight:900}.brand h2 span{color:var(--orange)}
-.brand small{color:#8896b3;font-size:11px}
-.nav-menu{flex:1;padding:12px 0}
-.nav-item{display:flex;align-items:center;gap:10px;padding:12px 20px;cursor:pointer;color:#c8d2e6;font-size:14px;border-right:3px solid transparent;transition:all .2s}
-.nav-item:hover{background:var(--navy-light);color:#fff}
-.nav-item.active{background:var(--navy-light);color:#fff;border-right-color:var(--orange)}
-.sidebar-footer{padding:16px 20px;border-top:1px solid var(--navy-light);font-size:12px}
-.user-info{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.user-avatar{width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:14px;overflow:hidden}
-.user-avatar img{width:100%;height:100%;object-fit:cover}
-.user-name{font-weight:700;font-size:13px}
-.user-role{color:#8896b3;font-size:11px}
-.logout-btn{background:transparent;border:1px solid var(--navy-light);color:#c8d2e6;padding:8px;border-radius:8px;cursor:pointer;width:100%;font-size:12px}
-.logout-btn:hover{background:var(--navy-light);color:#fff}
-
-.main{padding:24px;overflow-x:hidden}
-.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
-.page-title{font-size:20px;color:var(--navy);font-weight:900}
-
-/* Components */
-.btn{border:0;border-radius:10px;padding:9px 16px;font:inherit;font-weight:700;cursor:pointer;transition:all .2s}
-.btn-primary{background:var(--orange);color:#fff}.btn-primary:hover{background:var(--orange-light)}
-.btn-secondary{background:#eef1f7;color:var(--navy)}.btn-secondary:hover{background:#dfe4ee}
-.btn-danger{background:#fef3f2;color:var(--danger)}.btn-danger:hover{background:#fee4e2}
-.btn-sm{padding:5px 10px;font-size:12px}
-
-.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
-.stat-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden}
-.stat-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:var(--orange)}
-.stat-card.green::before{background:var(--green)}.stat-card.blue::before{background:var(--blue)}.stat-card.yellow::before{background:var(--yellow)}
-.stat-label{font-size:12px;color:var(--muted);margin-bottom:6px}
-.stat-value{font-size:24px;font-weight:900;color:var(--navy);font-variant-numeric:tabular-nums}
-
-.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--line)}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{background:#f8f9fc;padding:12px;text-align:right;font-weight:700;color:var(--navy);border-bottom:2px solid var(--line);white-space:nowrap}
-td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
-tr:hover{background:#fafbfd}
-
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.badge-new{background:#eff6ff;color:var(--blue)}.badge-progress{background:#fff7ed;color:#9a3412}
-.badge-done{background:#ecfdf3;color:var(--green)}.badge-cancel{background:#fef3f2;color:var(--danger)}
-.badge-active{background:#ecfdf3;color:var(--green)}.badge-inactive{background:#fef3f2;color:var(--danger)}
-.badge-role{background:var(--navy-light);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px}
-
-.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.form-grid .full{grid-column:1/-1}
-.form-grid .half{grid-column:span 2}
-.field{display:flex;flex-direction:column;gap:5px}
-.field label{font-size:12px;font-weight:700;color:var(--muted)}
-input,select,textarea{font:inherit;border:1px solid #cfd6e3;border-radius:8px;padding:9px 11px;background:#fff;outline:none;width:100%}
-input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
-textarea{min-height:80px;resize:vertical}
-
-.modal{display:none;position:fixed;inset:0;background:#071127a8;z-index:100;padding:18px;align-items:center;justify-content:center}
-.modal.open{display:flex}
-.modal-box{width:min(900px,100%);background:#fff;border-radius:var(--radius);padding:24px;max-height:90vh;overflow-y:auto}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
-.modal-header h2{font-size:18px;color:var(--navy)}
-.modal-close{background:transparent;border:0;font-size:22px;cursor:pointer;color:var(--muted);padding:4px 10px}
-.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
-
-.toast{position:fixed;bottom:20px;left:20px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;z-index:200;display:none;box-shadow:0 10px 30px #0003;font-size:13px}
-.toast.show{display:block;animation:slideIn .3s}
-.toast.success{background:var(--green)}.toast.error{background:var(--danger)}
-@keyframes slideIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-
-.loading{text-align:center;padding:40px;color:var(--muted)}
-.spinner{display:inline-block;width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--orange);border-radius:50%;animation:spin 1s linear infinite}
+body{font-family:Vazirmatn,Tahoma,sans-serif;background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.8;min-height:100vh;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(700px 420px at 92% -6%,rgba(255,107,26,.14),transparent 60%),radial-gradient(640px 460px at -8% 108%,rgba(46,99,231,.13),transparent 60%),radial-gradient(520px 380px at 55% 118%,rgba(124,77,255,.09),transparent 60%)}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid rgba(255,107,26,.45);outline-offset:2px;border-radius:8px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--line2),var(--slate));border-radius:9px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--brand2),var(--brandDeep))}
+svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#zvFatal{display:none;position:fixed;top:0;left:0;right:0;z-index:999;background:#E02D3C;color:#fff;padding:10px 16px;font-size:12px;direction:ltr;text-align:left}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:8px 16px;border-radius:11px;border:1px solid transparent;font-size:12.5px;font-weight:800;cursor:pointer;transition:all var(--tr);white-space:nowrap}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-p{background:var(--grad);color:#fff;box-shadow:0 6px 18px rgba(255,107,26,.35)}
+.btn-s{background:var(--surface2);border-color:var(--line);color:var(--ink)}
+.btn-s:hover{border-color:var(--brand);color:var(--brandDeep)}
+.btn-d{background:rgba(224,45,60,.12);color:var(--red)}
+.btn-sm{min-height:30px;padding:5px 11px;font-size:11.5px}
+.btn-i{width:31px;height:31px;min-height:31px;padding:0;border-radius:9px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:18px}
+.grid{display:grid;gap:16px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--sh);position:relative;overflow:hidden;transition:transform var(--tr)}
+.kpi:hover{transform:translateY(-3px)}
+.kpi .top{display:flex;justify-content:space-between;align-items:center}
+.kpi .chip{width:38px;height:38px;border-radius:12px;display:grid;place-items:center}
+.kpi .l{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:10px}
+.kpi .v{font-size:22px;font-weight:900;font-variant-numeric:tabular-nums;margin-top:2px}
+.kpi .s{font-size:10.5px;color:var(--muted)}
+.hero{background:var(--hero);color:#fff;border-radius:20px;padding:26px 28px;position:relative;overflow:hidden;margin-bottom:18px}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(420px 220px at 88% 20%,rgba(255,107,26,.42),transparent 60%),radial-gradient(300px 200px at 10% 110%,rgba(15,163,163,.32),transparent 60%)}
+.hero:after{content:"";position:absolute;inset:0;opacity:.17;background-image:radial-gradient(rgba(255,255,255,.85) 1px,transparent 1px);background-size:22px 22px}
+.hero>*{position:relative;z-index:1}
+.hero h2{font-size:21px;font-weight:900}
+.hero p{color:#C9D4F2;font-size:12px;margin-top:4px}
+.hero .dchip{position:absolute;left:26px;top:24px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24);padding:7px 14px;border-radius:12px;font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:7px}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,var(--navy),#1a2a4d)}
+.lbox{background:var(--surface);border-radius:22px;padding:34px;width:min(430px,100%);box-shadow:0 20px 60px #0004}
+.lbox h1{text-align:center;color:var(--ink);font-size:27px}
+.lbox h1 span{color:var(--brand)}
+.lbox .sub{text-align:center;color:var(--muted);font-size:12px;margin:6px 0 20px}
+.errbox{display:none;background:rgba(224,45,60,.1);color:var(--red);padding:10px;border-radius:10px;font-size:12px;margin-bottom:12px}
+#app{display:none;grid-template-columns:266px minmax(0,1fr);min-height:100vh}
+.sidebar{background:linear-gradient(180deg,#0A1531,#0B1736 42%,#0E1D42);color:#C7D1E8;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;z-index:60}
+.brand{display:flex;gap:11px;align-items:center;padding:20px}
+.mark{width:42px;height:42px;border-radius:14px;background:var(--grad);display:grid;place-items:center;color:#fff;box-shadow:0 6px 18px rgba(255,107,26,.45)}
+.brand h1{font-size:19px;color:#fff}
+.brand h1 span{color:var(--brand2)}
+.brand small{display:block;font-size:10px;color:#7E8DB1}
+.nav{flex:1;padding:6px 12px 12px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:9.5px 12px;margin:2px 0;border-radius:11px;color:#B9C4DE;font-size:12.5px;font-weight:700;cursor:pointer;transition:all var(--tr);position:relative}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.on{background:linear-gradient(90deg,rgba(255,107,26,.2),rgba(255,107,26,.05));color:#fff}
+.nav-item.on:before{content:"";position:absolute;right:-12px;top:8px;bottom:8px;width:3.5px;border-radius:4px;background:var(--grad)}
+.side-foot{padding:14px;border-top:1px solid rgba(255,255,255,.07)}
+.uchip{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.05)}
+.uchip b{color:#fff;font-size:12.5px;display:block}
+.uchip small{color:#7E8DB1;font-size:10px}
+.av{width:36px;height:36px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:900;overflow:hidden;flex:0 0 auto;cursor:pointer}
+.av img{width:100%;height:100%;object-fit:cover}
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:12px 26px;background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topbar h2{font-size:17px;font-weight:900}
+.crumb{font-size:11px;color:var(--muted)}
+.sp{flex:1}
+.ibtn{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--muted);transition:all var(--tr);position:relative}
+.ibtn:hover{color:var(--brand);border-color:var(--brand)}
+.menu-btn{display:none}
+#page{padding:24px 26px 60px;max-width:1560px;width:100%;margin:0 auto}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.ph h1{font-size:20px;font-weight:900}
+.ph .sub{font-size:11.5px;color:var(--muted)}
+.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.inp,.sel{min-height:37px;padding:7px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-size:12px}
+.inp:focus,.sel:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px rgba(255,107,26,.12)}
+.tw{overflow:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table.tb{width:100%;border-collapse:collapse;font-size:12.5px;min-width:780px}
+.tb th{position:sticky;top:0;background:var(--surface2);color:var(--muted);font-size:11px;font-weight:900;text-align:right;padding:11px 13px;border-bottom:1px solid var(--line);white-space:nowrap;z-index:2}
+.tb td{padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+.tb tbody tr:hover{background:color-mix(in srgb,var(--brand) 4%,var(--surface))}
+.num{font-variant-numeric:tabular-nums}
+.ltr{direction:ltr;text-align:right}
+.ra{display:flex;gap:5px;justify-content:flex-end}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3.5px 11px;border-radius:20px;font-size:11px;font-weight:800;white-space:nowrap}
+.pill:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.p-blue{background:rgba(46,99,231,.12);color:var(--blue)}
+.p-green{background:rgba(14,159,110,.13);color:var(--green)}
+.p-amber{background:rgba(217,119,6,.13);color:var(--amber)}
+.p-red{background:rgba(224,45,60,.12);color:var(--red)}
+.p-violet{background:rgba(124,77,255,.12);color:var(--violet)}
+.p-gray{background:rgba(100,116,139,.14);color:var(--slate)}
+.p-brand{background:rgba(255,107,26,.13);color:var(--brandDeep)}
+.pager{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 4px 0;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+.empty{text-align:center;padding:52px 20px;color:var(--muted)}
+.empty .ei{width:74px;height:74px;margin:0 auto 14px;border-radius:22px;background:linear-gradient(135deg,rgba(255,107,26,.14),rgba(124,77,255,.12));display:grid;place-items:center;color:var(--brand)}
+.empty .ei .ic{width:32px;height:32px}
+.empty h4{color:var(--ink);font-size:14px;margin-bottom:4px}
+.scrim{position:fixed;inset:0;background:var(--scrim);backdrop-filter:blur(3px);z-index:90;opacity:0;pointer-events:none;transition:opacity .22s}
+.scrim.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;left:0;height:100vh;width:min(520px,100%);background:var(--surface);z-index:95;transform:translateX(-103%);transition:transform .28s cubic-bezier(.3,.9,.3,1);display:flex;flex-direction:column;border-right:1px solid var(--line);box-shadow:var(--sh2)}
+.drawer.show{transform:none}
+.dh,.mh{display:flex;align-items:center;gap:11px;padding:17px 20px;border-bottom:1px solid var(--line);flex:0 0 auto}
+.dh h3,.mh h3{font-size:15px;font-weight:900;flex:1}
+.db{flex:1;overflow-y:auto;padding:18px 20px;min-height:0}
+.df{padding:13px 20px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;flex:0 0 auto}
+.mback{position:fixed;inset:0;z-index:100;background:var(--scrim);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow-y:auto}
+.mback.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--line);border-radius:20px;width:min(640px,100%);box-shadow:var(--sh2);max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+.modal.w{width:min(1020px,100%)}
+.modal>form{display:flex;flex-direction:column;min-height:0;flex:1;overflow:hidden}
+.mb{padding:20px 22px;overflow-y:auto;flex:1 1 auto;min-height:0}
+.mf{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:9px;flex-wrap:wrap;flex:0 0 auto}
+.modal.dk{background:linear-gradient(165deg,#0D1830,#15264C);border-color:#2A3B66;color:#fff}
+.modal.dk .mh,.modal.dk .mf{border-color:#2A3B66}
+.modal.dk .mh h3{color:#fff}
+.modal.dk .field label{color:#D3DCF5}
+.modal.dk .field input,.modal.dk .field textarea{background:rgba(255,255,255,.08);border-color:#33477A;color:#fff}
+.modal.dk .field input::placeholder,.modal.dk .field textarea::placeholder{color:#8494BC}
+.modal.dk .btn-s{background:rgba(255,255,255,.09);border-color:#33477A;color:#fff}
+.modal.dk .hint{color:#93A3C8}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.fgrid .full{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-size:11.5px;font-weight:800;color:var(--muted)}
+.req{color:var(--red)}
+.field input,.field textarea{min-height:40px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);font-size:12.5px;width:100%}
+.field textarea{min-height:78px;resize:vertical}
+.field input:focus,.field textarea:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px rgba(255,107,26,.14)}
+.field .hint{font-size:10px;color:var(--muted)}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kvi{background:var(--surface2);border:1px solid var(--line);border-radius:11px;padding:9px 12px;min-width:0}
+.kvi small{display:block;font-size:10px;color:var(--muted)}
+.kvi b{font-size:12.5px;font-weight:800;word-break:break-word}
+.kvi.full{grid-column:1/-1}
+.sec-t{font-size:12px;font-weight:900;color:var(--brandDeep);margin:18px 0 10px;display:flex;align-items:center;gap:8px}
+.sec-t::after{content:'';flex:1;height:1px;background:var(--line)}
+#toasts{position:fixed;bottom:18px;left:18px;z-index:200;display:flex;flex-direction:column-reverse;gap:9px;max-width:min(390px,90vw)}
+.toast{display:flex;align-items:center;gap:10px;background:var(--navy);color:#fff;padding:12px 16px;border-radius:13px;font-size:12.5px;box-shadow:var(--sh2);border-right:4px solid var(--blue)}
+.toast.ok{border-right-color:var(--green)}
+.toast.err{border-right-color:var(--red)}
+.toast.warn{border-right-color:var(--amber)}
+.toast button{background:rgba(255,255,255,.16);border:0;color:#fff;font-weight:900;font-size:11.5px;padding:5px 12px;border-radius:8px;cursor:pointer;margin-right:auto}
+.loading{text-align:center;padding:44px;color:var(--muted)}
+.spinner{display:inline-block;width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-.menu-toggle{display:none;background:var(--navy);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
-@media(max-width:900px){
-  body.employee-menu-open{overflow:hidden}
-  body.employee-menu-open:after{content:"";position:fixed;inset:0;background:#07112780;z-index:40}
-  .app{grid-template-columns:1fr}
-  .sidebar{position:fixed;right:-280px;width:260px;z-index:50;transition:right .3s}
-  .sidebar.open{right:0}
-  .menu-toggle{display:block}
-  .form-grid{grid-template-columns:1fr}
+@media(max-width:1120px){
+#app{grid-template-columns:1fr}
+.sidebar{position:fixed;right:0;top:0;width:272px;transform:translateX(105%);transition:transform .28s;z-index:96;box-shadow:var(--sh2)}
+.sidebar.open{transform:none}
+.menu-btn{display:grid}
 }
-
-/* Jalali Date Picker */
-.ja-date-wrap{position:relative;width:100%}
-.ja-date-input{padding-left:48px!important;direction:ltr;text-align:right;unicode-bidi:plaintext}
-.ja-date-btn{position:absolute;left:6px;top:50%;transform:translateY(-50%);border:0;border-radius:8px;background:#eef1f7;color:var(--navy);padding:6px 9px;cursor:pointer;z-index:2}
-.ja-date-pop{display:none;position:absolute;top:calc(100% + 7px);right:0;width:min(320px,calc(100vw - 48px));background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px;box-shadow:0 12px 32px #17203325;z-index:120}
-.ja-date-pop.open{display:block}
-.ja-cal-head{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:9px;color:var(--navy);font-weight:800;font-size:13px}
-.ja-cal-head button{border:0;background:#eef1f7;border-radius:8px;padding:5px 9px;cursor:pointer;font-size:14px}
-.ja-cal-head .year-display{cursor:pointer;padding:2px 8px;border-radius:6px;flex:1;text-align:center}
-.ja-cal-head .year-display:hover{background:#ffe4d6}
-.ja-cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}
-.ja-cal-grid button{border:0;border-radius:7px;padding:7px 0;background:#f4f6fb;cursor:pointer;color:var(--text);font:inherit;font-size:12px}
-.ja-cal-grid button:hover{background:#ffe4d6}
-.ja-cal-grid .day-label{background:#fff;color:var(--muted);font-weight:700}
-.ja-cal-grid .today{outline:1px solid var(--orange)}
+@media(max-width:760px){
+#page{padding:16px 14px 70px}
+.topbar{padding:10px 14px}
+.fgrid,.kv{grid-template-columns:1fr}
+.hero .dchip{display:none}
+.drawer{width:100%}
+.topbar .btn-p span{display:none}
+}
 </style>
 </head>
 <body>
-
-<!-- Login Page -->
-<div id="loginPage" class="login-page">
-  <div class="login-box">
-    <h1>Zingo<span>Vingo</span></h1>
-    <div class="subtitle">پنل کارمند شعبه</div>
-    <div id="loginError" class="login-error"></div>
-    <div class="field"><label>نام کاربری</label><input id="loginUser" autocomplete="username"></div>
-    <div class="field"><label>رمز عبور</label><input id="loginPass" type="password" autocomplete="current-password"></div>
-    <button class="btn btn-primary" onclick="doLogin()">ورود به پنل</button>
-  </div>
+<div id="zvFatal"></div>
+<div id="loginView" class="login">
+<div class="lbox">
+<h1 class="zv-brand">Zingo<span>Vingo</span></h1>
+<div class="sub">پنل کارمند شعبه</div>
+<div id="loginError" class="errbox"></div>
+<div class="field" style="margin-bottom:12px"><label>نام کاربری</label><input id="loginUser" autocomplete="username"></div>
+<div class="field" style="margin-bottom:16px"><label>رمز عبور</label><input id="loginPass" type="password" autocomplete="current-password"></div>
+<button class="btn btn-p" style="width:100%" id="loginBtn" data-act="login">ورود به پنل</button>
 </div>
-
-<!-- App Container -->
-<div id="appContainer" class="app" style="display:none">
-  <aside class="sidebar" id="sidebar">
-    <div class="brand"><h2>Zingo<span>Vingo</span></h2><small>پنل کارمند</small></div>
-    <nav class="nav-menu" id="navMenu"></nav>
-    <div class="sidebar-footer">
-      <div class="user-info">
-        <div class="user-avatar" id="userAvatar">?</div>
-        <div><div class="user-name" id="userName">—</div><div class="user-role" id="userRole">کارمند</div></div>
-      </div>
-      <button class="logout-btn" onclick="doLogout()">🚪 خروج</button>
-    </div>
-  </aside>
-  <main class="main">
-    <button class="menu-toggle" id="mobileMenuToggle" type="button" onclick="toggleEmployeeMenu()">☰ منو</button>
-    <div id="pageContent"><div class="loading"><div class="spinner"></div></div></div>
-  </main>
 </div>
-
-<div id="toast" class="toast"></div>
-<div id="modal" class="modal"><div class="modal-box" id="modalBox"></div></div>
+<div id="app">
+<aside class="sidebar" id="sidebar">
+<div class="brand">
+<div class="mark"><svg class="ic" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg></div>
+<div><h1 class="zv-brand">Zingo<span>Vingo</span></h1><small>پنل کارمند</small></div>
+</div>
+<nav class="nav" id="nav"></nav>
+<div class="side-foot">
+<div class="uchip">
+<div class="av" id="sideAv"></div>
+<div style="flex:1;min-width:0"><b id="sideName"></b><small id="sideRole"></small></div>
+<button class="ibtn" data-act="logout" title="خروج"><svg class="ic" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
+</div>
+</div>
+</aside>
+<div class="main">
+<header class="topbar">
+<button class="ibtn menu-btn" data-act="menu"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+<div><h2 id="tbTitle">داشبورد</h2><div class="crumb" id="tbCrumb"></div></div>
+<div class="sp"></div>
+<button class="ibtn" data-act="theme" id="themeBtn"></button>
+</header>
+<main id="page"></main>
+</div>
+</div>
+<div class="scrim" id="scrim" data-act="scrim"></div>
+<aside class="drawer" id="drawer"></aside>
+<div class="mback" id="mback"><div class="modal" id="modal"></div></div>
+<div id="toasts"></div>
 
 <script>
-const $ = id => document.getElementById(id);
-const money = n => new Intl.NumberFormat('en-US').format(Math.round(Number(n)||0)) + ' ریال';
-const toFa = n => new Intl.NumberFormat('fa-IR').format(n);
-const esc = v => String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* ================= 1) UTILITIES & ICONS ================= */
+const $=s=>document.querySelector(s);
+const $$=s=>Array.prototype.slice.call(document.querySelectorAll(s));
+function esc(v){var m={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};return String(v==null?'':v).replace(/[&<>"']/g,function(c){return m[c];});}
+function fa(v){return String(v==null?'':v).replace(/\d/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'[Number(d)];});}
+function en(v){return String(v==null?'':v).replace(/[۰-۹]/g,function(d){return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d));}).replace(/[٠-٩]/g,function(d){return String('٠١٢٣٤٥٦٧٨٩'.indexOf(d));});}
+function num(v){var n=Number(en(v).replace(/[٬,\s]/g,''));return isFinite(n)?n:0;}
+var NF=new Intl.NumberFormat('fa-IR');
+function money(n){return NF.format(Math.round(num(n)))+' ریال';}
+function fullName(r){if(!r)return '—';var n=[r.firstName,r.lastName].filter(Boolean).join(' ');return n||r.name||r.username||'—';}
 
-let currentToken = localStorage.getItem('zv_emp_token') || null;
-let currentUser = null;
-
-const MENU_ITEMS = [
-  { id: 'dashboard', label: '📊 داشبورد' },
-  { id: 'orders', label: '📋 سفارشات' },
-  { id: 'cards', label: '🎫 کارت‌ها' },
-  { id: 'groups', label: '👥 گروه‌ها' },
-  { id: 'workers', label: '👷 نیروها' },
-  { id: 'jobApplicants', label: '📝 ثبت کارجو' },
-  { id: 'customerSupport', label: '💬 پشتیبانی مشتریان', badge: true },
-  { id: 'reports', label: '📈 گزارشات' },
-  { id: 'profile', label: '👤 پروفایل من' }
-];
-
-function toast(msg, type='info') { 
-  const t = $('toast'); t.textContent = msg; t.className = 'toast show ' + type; 
-  setTimeout(() => t.classList.remove('show'), 3500); 
-}
-function openModal(html) { $('modalBox').innerHTML = html; $('modal').classList.add('open'); }
-function closeModal() { $('modal').classList.remove('open'); }
-$('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
-function statusBadge(s) { 
-  return '<span class="badge badge-' + (/جدید|ثبت/.test(s)?'new':/تکمیل/.test(s)?'done':/لغو/.test(s)?'cancel':'progress') + '">' + s + '</span>'; 
-}
-
-function doLogin() {
-  const u = $('loginUser').value.trim(), p = $('loginPass').value;
-  if (!u || !p) { $('loginError').textContent = 'نام کاربری و رمز را وارد کنید'; $('loginError').style.display = 'block'; return; }
-  $('loginError').style.display = 'none';
-  google.script.run.withSuccessHandler(r => {
-    if (r && r.success) {
-      currentToken = r.token; currentUser = r.user;
-      localStorage.setItem('zv_emp_token', r.token);
-      localStorage.setItem('zv_emp_user', JSON.stringify(r.user));
-      showApp(r.user);
-    } else { $('loginError').textContent = r.message || 'خطا'; $('loginError').style.display = 'block'; }
-  }).withFailureHandler(e => { $('loginError').textContent = e.message; $('loginError').style.display = 'block'; }).employeeLogin(u, p);
-}
-
-function doLogout() {
-  if (currentToken) google.script.run.employeeLogout(currentToken);
-  localStorage.removeItem('zv_emp_token'); localStorage.removeItem('zv_emp_user');
-  location.reload();
-}
-
-function toggleEmployeeMenu() {
-  const side = $('sidebar');
-  if (!side) return;
-  side.classList.toggle('open');
-  document.body.classList.toggle('employee-menu-open', side.classList.contains('open'));
-}
-function closeEmployeeMenu() {
-  const side = $('sidebar');
-  if (side) side.classList.remove('open');
-  document.body.classList.remove('employee-menu-open');
-}
-document.addEventListener('click', function(e) {
-  const side = $('sidebar');
-  if (!side || !side.classList.contains('open')) return;
-  if (e.target.closest('#sidebar') || e.target.closest('#mobileMenuToggle')) return;
-  closeEmployeeMenu();
-}, true);
-
-function showApp(user) {
-  currentUser = user;
-  $('loginPage').style.display = 'none'; $('appContainer').style.display = 'grid';
-  $('userName').textContent = user.name;
-  $('userRole').innerHTML = 'کارمند <span class="badge-role">' + (user.branchId || '—') + '</span>';
-  const av = $('userAvatar');
-  if (user.avatar) av.innerHTML = '<img src="' + user.avatar + '">'; else av.textContent = user.name ? user.name.charAt(0) : '?';
-  
-  $('navMenu').innerHTML = MENU_ITEMS.map(i => 
-    '<div class="nav-item" data-page="' + i.id + '">' +
-    '<span>' + i.label + '</span>' +
-    (i.badge ? '<span class="badge-role" style="margin-right:8px;background:var(--danger);display:none">0</span>' : '') +
-    '</div>'
-  ).join('');
-  
-  $('navMenu').querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-      $('navMenu').querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      item.classList.add('active');
-      closeEmployeeMenu();
-      loadPage(item.dataset.page);
-    });
-  });
-  loadPage('dashboard');
-  
-  google.script.run.withSuccessHandler(n => {
-    const badge = document.querySelector('[data-page="customerSupport"] .badge-role');
-    if (badge) {
-      badge.textContent = toFa(n || 0);
-      badge.style.display = n > 0 ? 'inline-block' : 'none';
-    }
-  }).getUnansweredCustomerCount(currentToken);
-}
-
-(function checkSession() {
-  const saved = localStorage.getItem('zv_emp_user');
-  if (currentToken && saved) { currentUser = JSON.parse(saved); showApp(currentUser); }
-})();
-
-function loadPage(page) {
-  $('pageContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  const loaders = { 
-    dashboard: loadDashboard, orders: loadOrders, cards: loadCards, groups: loadGroups, 
-    workers: loadWorkers, jobApplicants: loadJobApplicants, customerSupport: loadCustomerSupport, 
-    reports: loadReports, profile: loadProfile 
-  };
-  (loaders[page] || loadDashboard)();
-}
-
-function loadDashboard() {
-  google.script.run.withSuccessHandler(stats => {
-    $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">داشبورد کارمند (' + (currentUser.branchId || '—') + ')</h1></div>' +
-    '<div class="stats-grid">' +
-    '<div class="stat-card"><div class="stat-label">کل سفارشات شعبه</div><div class="stat-value">' + toFa(stats.totalOrders) + '</div></div>' +
-    '<div class="stat-card yellow"><div class="stat-label">در انتظار</div><div class="stat-value">' + toFa(stats.pendingOrders) + '</div></div>' +
-    '<div class="stat-card green"><div class="stat-label">تکمیل شده</div><div class="stat-value">' + toFa(stats.completedOrders) + '</div></div>' +
-    '<div class="stat-card blue"><div class="stat-label">درآمد کل</div><div class="stat-value">' + money(stats.totalRevenue) + '</div></div>' +
-    '</div>';
-  }).getEmployeeDashboard(currentToken);
-}
-
-function loadOrders() {
-  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">سفارشات شعبه</h1></div><div class="card"><div id="ordersTable"></div></div>';
-  fetchOrders();
-}
-function fetchOrders() {
-  const filters = { fromDate: $('ordFrom')?.value || '', toDate: $('ordTo')?.value || '', customerId: $('ordCustId')?.value || '', requestId: $('ordReqId')?.value || '', groupId: $('ordGroupId')?.value || '', status: $('ordStatus')?.value || 'همه' };
-  $('ordersTable').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  google.script.run.withSuccessHandler(rows => {
-    if (!rows.length) { $('ordersTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">سفارشی با این فیلترها یافت نشد</div>'; return; }
-    $('ordersTable').innerHTML = '<div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>کد</th><th>مشتری</th><th>موبایل</th><th>خدمت</th><th>مبلغ</th><th>گروه</th><th>ثبت‌کننده</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
-    rows.map(r => '<tr><td>' + r.date + '</td><td><strong>' + r.requestId + '</strong></td><td>' + r.customer + '</td><td style="direction:ltr">' + r.phone + '</td><td>' + r.service + '</td><td>' + money(r.finalPrice) + '</td><td>' + (r.groupName || '—') + '</td><td>' + (r.operatorName || 'مشتری') + '</td><td>' + statusBadge(r.status) + '</td><td><button class="btn btn-sm btn-secondary" onclick="changeOrderStatus(\'' + r.requestId + '\',\'' + r.status + '\')">تغییر وضعیت</button> <button class="btn btn-sm btn-primary" onclick="openConvertModal(\'' + r.requestId + '\')">🎫</button></td></tr>').join('') + '</tbody></table></div>';
-  }).withFailureHandler(e => { $('ordersTable').innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger)">' + e.message + '</div>'; }).getEmployeeOrders(filters, currentToken);
-}
-function changeOrderStatus(requestId, currentStatus) {
-  const statuses = ['جدید', 'ثبت اولیه', 'در حال بررسی', 'در حال انجام', 'تکمیل شده', 'لغو شده'];
-  openModal('<div class="modal-header"><h2>تغییر وضعیت</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
-  '<div class="field"><label>وضعیت جدید</label><select id="newOrderStatus">' + statuses.map(s => '<option ' + (s===currentStatus?'selected':'') + '>' + s + '</option>').join('') + '</select></div>' +
-  '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="applyOrderStatus(\'' + requestId + '\')">اعمال</button></div>');
-}
-function applyOrderStatus(requestId) {
-  google.script.run.withSuccessHandler(r => { closeModal(); toast(r.message, 'success'); loadOrders(); }).withFailureHandler(e => toast(e.message, 'error')).updateEmployeeOrderStatus(requestId, $('newOrderStatus').value, currentToken);
-}
-function openConvertModal(requestId) {
-  google.script.run.withSuccessHandler(groups => {
-    let groupOpts = '<option value="">-- انتخاب گروه --</option>';
-    groups.forEach(g => groupOpts += '<option value="' + g.groupId + '">' + g.name + ' (' + g.groupId + ')</option>');
-    openModal('<div class="modal-header"><h2>تبدیل به کارت</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
-    '<div class="form-grid">' +
-    '<div class="field"><label>تخصیص به گروه *</label><select id="targetGroup" onchange="loadGroupWorkers()">' + groupOpts + '</select></div>' +
-    '<div class="field"><label>تخصیص به نیرو (اختیاری)</label><select id="targetWorker" disabled><option value="">ابتدا گروه را انتخاب کنید</option></select></div>' +
-    '</div>' +
-    '<div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="executeConvert(\'' + requestId + '\')">تأیید</button></div>');
-  }).withFailureHandler(e => toast(e.message, 'error')).getGroupsForDropdownEmp(currentToken);
-}
-function loadGroupWorkers() {
-  const groupId = $('targetGroup').value;
-  if (!groupId) { $('targetWorker').disabled = true; $('targetWorker').innerHTML = '<option value="">ابتدا گروه را انتخاب کنید</option>'; return; }
-  google.script.run.withSuccessHandler(workers => {
-    let workerOpts = '<option value="">بدون تخصیص (استخر گروه)</option>';
-    workers.forEach(w => workerOpts += '<option value="' + w.id + '">' + w.name + ' (' + w.operations + ')</option>');
-    $('targetWorker').innerHTML = workerOpts;
-    $('targetWorker').disabled = false;
-  }).withFailureHandler(e => toast(e.message, 'error')).getWorkersByGroupEmp(groupId, currentToken);
-}
-function executeConvert(requestId) {
-  const groupId = $('targetGroup').value, workerId = $('targetWorker').value;
-  if (!groupId) { toast('لطفاً یک گروه انتخاب کنید', 'error'); return; }
-  google.script.run.withSuccessHandler(r => { closeModal(); toast(r.message, 'success'); loadOrders(); }).withFailureHandler(e => toast(e.message, 'error')).employeeConvertOrderToCard(requestId, groupId, workerId, currentToken);
-}
-
-function loadCards() {
-  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">کارت‌های شعبه</h1></div><div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">مدیریت کارت‌ها از طریق بخش سفارشات انجام می‌شود.</div></div>';
-}
-
-function loadGroups() {
-  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">گروه‌های شعبه</h1><button class="btn btn-primary" onclick="editGroup()">+ گروه جدید</button></div><div id="grpContent"></div>';
-  google.script.run.withSuccessHandler(list => {
-    if (!list || !list.length) { $('grpContent').innerHTML = '<div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">گروهی ثبت نشده است.</div></div>'; return; }
-    $('grpContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>سرپرست</th><th>منطقه</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
-    list.map(g => '<tr><td>' + g.groupId + '</td><td>' + g.name + '</td><td>' + (g.supervisorName||'—') + '</td><td>' + (g.area||'—') + '</td><td><span class="badge badge-' + (g.status==='فعال'?'active':'inactive') + '">' + g.status + '</span></td><td><button class="btn btn-sm btn-secondary" onclick=\'editGroup(' + JSON.stringify(g).replace(/'/g,"&#39;") + ')\'>✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteGrp(' + g.rowIndex + ')">🗑</button></td></tr>').join('') + '</tbody></table></div></div>';
-  }).withFailureHandler(e => toast(e.message, 'error')).getEmployeeGroups(currentToken);
-}
-function editGroup(g) {
-  g = g || {};
-  openModal('<div class="modal-header"><h2>' + (g.rowIndex?'ویرایش':'افزودن') + ' گروه</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
-  '<div class="form-grid">' +
-  '<div class="field"><label>کد گروه</label><input id="gId" value="' + (g.groupId||'') + '"></div>' +
-  '<div class="field"><label>نام گروه *</label><input id="gName" value="' + (g.name||'') + '"></div>' +
-  '<div class="field"><label>سرپرست (username)</label><input id="gSup" value="' + (g.supervisorName||'') + '"></div>' +
-  '<div class="field"><label>استان</label><input id="gProv" value="' + (g.province||'') + '"></div>' +
-  '<div class="field"><label>شهر</label><input id="gCity" value="' + (g.city||'') + '"></div>' +
-  '<div class="field"><label>منطقه فعالیت</label><input id="gArea" value="' + (g.area||'') + '"></div>' +
-  '<div class="field"><label>نوع گروه</label><input id="gType" value="' + (g.groupType||'') + '"></div>' +
-  '<div class="field"><label>تعداد اعضا</label><input id="gMembers" type="number" value="' + (g.totalMembers||0) + '"></div>' +
-  '<div class="field"><label>رتبه (Rank)</label><input id="gRank" value="' + (g.rank||'') + '"></div>' +
-  '<div class="field"><label>وضعیت</label><select id="gStatus"><option ' + (g.status==='فعال'?'selected':'') + '>فعال</option><option ' + (g.status==='غیرفعال'?'selected':'') + '>غیرفعال</option></select></div>' +
-  '<div class="field full"><label>توضیحات</label><textarea id="gDesc">' + (g.description||'') + '</textarea></div>' +
-  '<div class="field full"><label>یادداشت‌ها</label><textarea id="gNotes">' + (g.notes||'') + '</textarea></div>' +
-  '</div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveGrp(' + (g.rowIndex||'null') + ')">ذخیره</button></div>');
-}
-function saveGrp(rowIndex) {
-  const data = { rowIndex: rowIndex, groupId: $('gId').value, name: $('gName').value, supervisorName: $('gSup').value, province: $('gProv').value, city: $('gCity').value, area: $('gArea').value, groupType: $('gType').value, totalMembers: $('gMembers').value, rank: $('gRank').value, status: $('gStatus').value, description: $('gDesc').value, notes: $('gNotes').value };
-  google.script.run.withSuccessHandler(() => { closeModal(); toast('ذخیره شد', 'success'); loadGroups(); }).withFailureHandler(e => toast(e.message, 'error')).saveEmployeeGroup(data, currentToken);
-}
-function deleteGrp(rowIndex) {
-  if (!confirm('حذف شود؟')) return;
-  google.script.run.withSuccessHandler(() => { toast('حذف شد', 'success'); loadGroups(); }).withFailureHandler(e => toast(e.message, 'error')).deleteEmployeeGroup(rowIndex, currentToken);
-}
-
-function loadWorkers() {
-  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">نیروهای شعبه</h1><button class="btn btn-primary" onclick="editWorker()">+ نیروی جدید</button></div><div id="wrkContent"></div>';
-  google.script.run.withSuccessHandler(list => {
-    if (!list || !list.length) { $('wrkContent').innerHTML = '<div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">نیرویی ثبت نشده است.</div></div>'; return; }
-    $('wrkContent').innerHTML = '<div class="card"><div class="table-wrap"><table><thead><tr><th>کد</th><th>نام</th><th>یوزرنیم</th><th>نوع</th><th>سمت</th><th>موبایل</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>' +
-    list.map(w => '<tr><td>' + w.workerId + '</td><td>' + w.firstName + ' ' + w.lastName + '</td><td>' + w.username + '</td><td><span class="badge badge-new">' + w.operations + '</span></td><td>' + (w.jobTitle||'—') + '</td><td style="direction:ltr">' + w.contact + '</td><td><span class="badge badge-' + (w.status==='فعال'?'active':'inactive') + '">' + w.status + '</span></td><td><button class="btn btn-sm btn-secondary" onclick=\'editWorker(' + JSON.stringify(w).replace(/'/g,"&#39;") + ')\'>✏️</button> <button class="btn btn-sm btn-danger" onclick="deleteWrk(' + w.rowIndex + ')">🗑</button></td></tr>').join('') + '</tbody></table></div></div>';
-  }).withFailureHandler(e => toast(e.message, 'error')).getEmployeeWorkers(currentToken);
-}
-function editWorker(w) {
-  w = w || {};
-  openModal('<div class="modal-header"><h2>' + (w.rowIndex?'ویرایش':'افزودن') + ' نیرو</h2><button class="modal-close" onclick="closeModal()">✕</button></div>' +
-  '<div class="form-grid">' +
-  '<div class="field"><label>کد نیرو</label><input id="wId" value="' + (w.workerId||'') + '"></div>' +
-  '<div class="field"><label>نام *</label><input id="wFirst" value="' + (w.firstName||'') + '"></div>' +
-  '<div class="field"><label>نام خانوادگی *</label><input id="wLast" value="' + (w.lastName||'') + '"></div>' +
-  '<div class="field"><label>نام پدر</label><input id="wFather" value="' + (w.fatherName||'') + '"></div>' +
-  '<div class="field"><label>جنسیت</label><select id="wGender"><option ' + (w.gender==='مرد'?'selected':'') + '>مرد</option><option ' + (w.gender==='زن'?'selected':'') + '>زن</option></select></div>' +
-  '<div class="field"><label>کد ملی</label><input id="wNat" value="' + (w.nationalId||'') + '"></div>' +
-  '<div class="field"><label>شماره شناسنامه</label><input id="wBirthCert" value="' + (w.birthCert||'') + '"></div>' +
-  '<div class="field"><label>تاریخ تولد (شمسی)</label><input id="wBirthday" class="ja-jalali-date" value="' + (w.birthday||'') + '"></div>' +
-  '<div class="field"><label>نام کاربری *</label><input id="wUser" value="' + (w.username||'') + '" ' + (w.rowIndex?'readonly':'') + '></div>' +
-  '<div class="field"><label>رمز عبور ' + (w.rowIndex?'(خالی=بدون تغییر)':'*') + '</label><input id="wPass" type="password"></div>' +
-  '<div class="field"><label>نوع فعالیت *</label><select id="wOps"><option value="worker" ' + (w.operations==='worker'?'selected':'') + '>worker</option><option value="Supervisor" ' + (w.operations==='Supervisor'?'selected':'') + '>Supervisor</option><option value="operator" ' + (w.operations==='operator'?'selected':'') + '>operator</option></select></div>' +
-  '<div class="field"><label>سمت شغلی</label><input id="wJob" value="' + (w.jobTitle||'') + '"></div>' +
-  '<div class="field"><label>تخصص</label><input id="wSpec" value="' + (w.specialization||'') + '"></div>' +
-  '<div class="field"><label>ایمیل</label><input id="wEmail" value="' + (w.email||'') + '"></div>' +
-  '<div class="field"><label>موبایل</label><input id="wContact" value="' + (w.contact||'') + '"></div>' +
-  '<div class="field"><label>عکس پروفایل (URL)</label><input id="wPhoto" value="' + (w.photo||'') + '"></div>' +
-  '<div class="field"><label>استان</label><input id="wProv" value="' + (w.province||'') + '"></div>' +
-  '<div class="field"><label>شهر</label><input id="wCity" value="' + (w.city||'') + '"></div>' +
-  '<div class="field"><label>تاریخ استخدام (شمسی)</label><input id="wHire" class="ja-jalali-date" value="' + (w.hireDate||'') + '"></div>' +
-  '<div class="field"><label>وضعیت</label><select id="wStatus"><option ' + (w.status==='فعال'?'selected':'') + '>فعال</option><option ' + (w.status==='غیرفعال'?'selected':'') + '>غیرفعال</option></select></div>' +
-  '<div class="field half"><label>نام تماس اضطراری</label><input id="wEmergName" value="' + (w.emergencyName||'') + '"></div>' +
-  '<div class="field half"><label>شماره تماس اضطراری</label><input id="wEmerg" value="' + (w.emergency||'') + '"></div>' +
-  '<div class="field full"><label>آدرس</label><textarea id="wAddr">' + (w.address||'') + '</textarea></div>' +
-  '<div class="field full"><label>توضیحات</label><textarea id="wDesc">' + (w.description||'') + '</textarea></div>' +
-  '<div class="field full"><label>یادداشت‌ها</label><textarea id="wNotes">' + (w.notes||'') + '</textarea></div>' +
-  '</div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveWrk(' + (w.rowIndex||'null') + ')">ذخیره</button></div>');
-  setTimeout(() => initApplicantJalaliDates(), 100);
-}
-function saveWrk(rowIndex) {
-  const data = { rowIndex: rowIndex, workerId: $('wId').value, firstName: $('wFirst').value, lastName: $('wLast').value, fatherName: $('wFather').value, gender: $('wGender').value, nationalId: $('wNat').value, birthCert: $('wBirthCert').value, birthday: $('wBirthday').value, username: $('wUser').value, password: $('wPass').value, operations: $('wOps').value, jobTitle: $('wJob').value, specialization: $('wSpec').value, email: $('wEmail').value, contact: $('wContact').value, photo: $('wPhoto').value, province: $('wProv').value, city: $('wCity').value, hireDate: $('wHire').value, status: $('wStatus').value, emergencyName: $('wEmergName').value, emergency: $('wEmerg').value, address: $('wAddr').value, description: $('wDesc').value, notes: $('wNotes').value };
-  if (!rowIndex && !data.password) { toast('رمز عبور الزامی است', 'error'); return; }
-  google.script.run.withSuccessHandler(() => { closeModal(); toast('ذخیره شد', 'success'); loadWorkers(); }).withFailureHandler(e => toast(e.message, 'error')).saveEmployeeWorker(data, currentToken);
-}
-function deleteWrk(rowIndex) {
-  if (!confirm('حذف شود؟')) return;
-  google.script.run.withSuccessHandler(() => { toast('حذف شد', 'success'); loadWorkers(); }).withFailureHandler(e => toast(e.message, 'error')).deleteEmployeeWorker(rowIndex, currentToken);
-}
-
-// ==================== پشتیبانی مشتریان ====================
-function loadCustomerSupport() {
-  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">پیام‌های مشتریان</h1><button class="btn btn-primary" onclick="loadCustomerSupport()">🔄 بروزرسانی</button></div><div id="supportStats" style="margin-bottom:16px"></div><div id="supportList"><div class="loading"><div class="spinner"></div></div></div>';
-  fetchCustomerSupport();
-}
-function fetchCustomerSupport() {
-  google.script.run.withSuccessHandler(rows => {
-    const unread = rows.filter(r => r.status === 'unread').length;
-    const answered = rows.filter(r => r.status === 'answered').length;
-    $('supportStats').innerHTML = '<div class="stats-grid" style="grid-template-columns:repeat(3,1fr)"><div class="stat-card"><div class="stat-label">کل پیام‌ها</div><div class="stat-value">' + toFa(rows.length) + '</div></div><div class="stat-card yellow"><div class="stat-label">پاسخ‌داده‌نشده</div><div class="stat-value">' + toFa(unread) + '</div></div><div class="stat-card green"><div class="stat-label">پاسخ‌داده‌شده</div><div class="stat-value">' + toFa(answered) + '</div></div></div>';
-    if (!rows.length) { $('supportList').innerHTML = '<div class="card"><div style="padding:20px;text-align:center;color:var(--muted)">هنوز پیامی از مشتریان ثبت نشده است.</div></div>'; return; }
-    $('supportList').innerHTML = rows.map(r => '<div class="card" style="margin-bottom:12px;border-right:4px solid ' + (r.status === 'unread' ? 'var(--danger)' : 'var(--green)') + '"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><strong style="color:var(--navy);font-size:14px">' + esc(r.subject || 'بدون موضوع') + '</strong><div style="font-size:11px;color:var(--muted);margin-top:4px">از: ' + esc(r.senderName) + ' (' + esc(r.customerId) + ') | ' + esc(r.createdAt) + '</div></div><span class="badge badge-' + (r.status === 'unread' ? 'cancel' : 'done') + '">' + (r.status === 'unread' ? 'پاسخ‌داده‌نشده' : 'پاسخ‌داده‌شده') + '</span></div><div style="background:#f8f9fc;padding:12px;border-radius:8px;margin-bottom:10px;font-size:13px;white-space:pre-wrap">' + esc(r.message) + '</div>' + (r.reply ? '<div style="background:#ecfdf3;padding:12px;border-radius:8px;font-size:13px;border-right:3px solid var(--green)"><strong>پاسخ شما:</strong><div style="margin-top:6px;white-space:pre-wrap">' + esc(r.reply) + '</div></div>' : '') + '<div style="margin-top:10px;display:flex;gap:8px"><button class="btn btn-sm btn-primary" onclick="openReplyModal(\'' + esc(r.conversationId) + '\',\'' + esc(r.subject) + '\')">' + (r.reply ? '✏️ ویرایش پاسخ' : '↩️ پاسخ') + '</button></div></div>').join('');
-  }).withFailureHandler(e => { $('supportList').innerHTML = '<div class="card"><div style="padding:20px;text-align:center;color:var(--danger)">' + esc(e.message) + '</div></div>'; }).getCustomerConversationsForEmployee(currentToken);
-}
-function openReplyModal(convId, subject) {
-  openModal('<div class="modal-header"><h2>پاسخ به: ' + esc(subject) + '</h2><button class="modal-close" onclick="closeModal()">✕</button></div><div class="field" style="margin-bottom:14px"><label>متن پاسخ</label><textarea id="replyText" style="min-height:120px" placeholder="پاسخ خود را بنویسید..."></textarea></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="sendReplyToCustomer(\'' + esc(convId) + '\')">ارسال پاسخ</button></div>');
-}
-function sendReplyToCustomer(convId) {
-  const text = $('replyText').value.trim();
-  if (!text) return toast('متن پاسخ را وارد کنید', 'error');
-  google.script.run.withSuccessHandler(() => { closeModal(); toast('پاسخ ثبت شد', 'success'); loadCustomerSupport(); }).withFailureHandler(e => toast(e.message, 'error')).replyToCustomerConversation(convId, text, currentToken);
-}
-
-// ==================== ثبت کارجو (نسخه به‌روز شده با استان/شهر/آدرس) ====================
-const provinceCities = {
-  'آذربایجان شرقی':['تبریز','مراغه','مرند','میانه','اهر','بناب','شبستر','اسکو','سراب','عجب‌شیر','ملکان','جلفا'],
-  'آذربایجان غربی':['ارومیه','خوی','بوکان','مهاباد','میاندوآب','سلماس','نقده','پیرانشهر','ماکو','تکاب'],
-  'اردبیل':['اردبیل','پارس‌آباد','مشگین‌شهر','خلخال','گرمی','نمین','بیله‌سوار'],
-  'اصفهان':['اصفهان','کاشان','خمینی‌شهر','نجف‌آباد','شاهین‌شهر','فلاورجان','گلپایگان','زرین‌شهر','نائین','آران و بیدگل'],
-  'البرز':['کرج','فردیس','نظرآباد','هشتگرد','محمدشهر','ماهدشت','طالقان'],
-  'ایلام':['ایلام','دهلران','آبدانان','ایوان','دره‌شهر','مهران'],
-  'بوشهر':['بوشهر','برازجان','گناوه','کنگان','جم','دیر','خورموج'],
-  'تهران':['تهران','ری','اسلامشهر','شهریار','قدس','ملارد','ورامین','پاکدشت','دماوند','پردیس','رباط‌کریم','قرچک'],
-  'چهارمحال و بختیاری':['شهرکرد','بروجن','فارسان','لردگان','اردل'],
-  'خراسان جنوبی':['بیرجند','قائن','فردوس','طبس','نهبندان'],
-  'خراسان رضوی':['مشهد','نیشابور','سبزوار','تربت حیدریه','کاشمر','قوچان','تربت جام','چناران','خواف'],
-  'خراسان شمالی':['بجنورد','شیروان','اسفراین','آشخانه','جاجرم'],
-  'خوزستان':['اهواز','دزفول','آبادان','خرمشهر','ماهشهر','بهبهان','ایذه','شوشتر','اندیمشک','شوش'],
-  'زنجان':['زنجان','ابهر','خرمدره','قیدار'],
-  'سمنان':['سمنان','شاهرود','دامغان','گرمسار'],
-  'سیستان و بلوچستان':['زاهدان','زابل','چابهار','ایرانشهر','سراوان','خاش','کنارک','نیک‌شهر'],
-  'فارس':['شیراز','مرودشت','کازرون','جهرم','فسا','لار','داراب','نی‌ریز','آباده'],
-  'قزوین':['قزوین','تاکستان','الوند','آبیک','بوئین‌زهرا'],
-  'قم':['قم','جعفریه','کهک'],
-  'کردستان':['سنندج','سقز','مریوان','بانه','قروه','کامیاران','بیجار'],
-  'کرمان':['کرمان','سیرجان','رفسنجان','جیرفت','بم','زرند','شهربابک'],
-  'کرمانشاه':['کرمانشاه','اسلام‌آباد غرب','هرسین','کنگاور','جوانرود','پاوه'],
-  'کهگیلویه و بویراحمد':['یاسوج','دوگنبدان','دهدشت','لیکک'],
-  'گلستان':['گرگان','گنبدکاووس','علی‌آباد کتول','بندر ترکمن','آق‌قلا','کردکوی'],
-  'گیلان':['رشت','بندر انزلی','لاهیجان','لنگرود','آستارا','تالش','رودسر','فومن'],
-  'لرستان':['خرم‌آباد','بروجرد','دورود','الیگودرز','کوهدشت','ازنا'],
-  'مازندران':['ساری','بابل','آمل','قائم‌شهر','بابلسر','نوشهر','چالوس','تنکابن','بهشهر'],
-  'مرکزی':['اراک','ساوه','خمین','محلات','دلیجان','شازند'],
-  'هرمزگان':['بندرعباس','میناب','قشم','کیش','بندر لنگه','حاجی‌آباد'],
-  'همدان':['همدان','ملایر','نهاوند','تویسرکان','کبودرآهنگ'],
-  'یزد':['یزد','میبد','اردکان','بافق','مهریز']
+const IC={
+dash:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
+orders:'<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/>',
+cards:'<rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 10h20M6 15h4"/>',
+groups:'<path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/>',
+worker:'<path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z"/>',
+applicant:'<path d="M15 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>',
+msg:'<path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.86L3 21l1.9-5.2A8.4 8.4 0 1 1 21 11.5z"/>',
+report:'<path d="M3 3v18h18"/><path d="M7 15v3M12 10v8M17 6v12"/>',
+user:'<circle cx="12" cy="8" r="4.5"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',
+x:'<path d="M18 6 6 18M6 6l12 12"/>',
+check:'<path d="m4.5 12.5 5 5 10-11"/>',
+edit:'<path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>',
+trash:'<path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>',
+eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+shuffle:'<path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>',
+receipt:'<path d="M4 2v20l2-1.5L8 22l2-1.5L12 22l2-1.5L16 22l2-1.5L20 22V2l-2 1.5L16 2l-2 1.5L12 2l-2 1.5L8 2 6 3.5z"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+cal:'<rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+wallet:'<path d="M20 7H4a2 2 0 0 1 0-4h14v4M4 7v12a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1"/>'
 };
+function icon(n,s){return '<svg class="ic" viewBox="0 0 24 24"'+(s?' style="'+s+'"':'')+'>'+(IC[n]||IC.dash)+'</svg>';}
 
-function loadJobApplicants() {
-  $('pageContent').innerHTML = `
-    <div class="page-header"><div><h1 class="page-title">مدیریت کارجویان و استخدام</h1><div style="color:var(--muted);font-size:12px">تشکیل پرونده و ثبت مراحل جذب نیروی انسانی</div></div></div>
-    <div class="card" style="border-right:4px solid var(--orange)">
-      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin:0">
-        <div class="stat-card"><div class="stat-label">تاریخ امروز</div><div class="stat-value" id="jaToday" style="font-size:17px">—</div></div>
-        <div class="stat-card blue"><div class="stat-label">شناسه ثبت‌کننده</div><div class="stat-value" id="jaCreator" style="font-size:17px">—</div></div>
-        <div class="stat-card green"><div class="stat-label">آخرین پرونده ثبت شده</div><div class="stat-value" id="jaLastId" style="font-size:17px">—</div></div>
-      </div>
-    </div>
-    <div class="card">
-      <h3 style="color:var(--navy);margin-bottom:14px">ثبت متقاضی جدید</h3>
-      <form id="jobApplicantForm" onsubmit="submitJobApplicant(event)">
-        <div class="form-grid">
-          <div class="field"><label>نام *</label><input id="jaFirstName" required maxlength="80"></div>
-          <div class="field"><label>نام خانوادگی *</label><input id="jaLastName" required maxlength="100"></div>
-          <div class="field"><label>جنسیت *</label><select id="jaGender" required><option value="">انتخاب کنید</option><option>مرد</option><option>زن</option></select></div>
-          <div class="field"><label>تاریخ تولد *</label><input id="jaBirthDate" class="ja-jalali-date" autocomplete="off" placeholder="۱۳۷۵/۰۵/۲۲" required></div>
-          <div class="field"><label>سن</label><input id="jaAge" readonly placeholder="محاسبه خودکار"></div>
-          <div class="field"><label>وضعیت تأهل</label><select id="jaMarital"><option value="">انتخاب کنید</option><option>مجرد</option><option>متأهل</option><option>سایر</option></select></div>
-          <div class="field"><label>تخصص اصلی *</label><input id="jaSpecialty" required maxlength="150"></div>
-          <div class="field"><label>موقعیت درخواستی *</label><input id="jaRequestedPosition" required maxlength="150"></div>
-          <div class="field"><label>شماره تماس *</label><input id="jaPhone" inputmode="tel" maxlength="15" placeholder="09xxxxxxxxx" required></div>
-          <div class="field"><label>استان</label><select id="jaProvince"><option value="">انتخاب استان</option>${Object.keys(provinceCities).map(p => `<option>${p}</option>`).join('')}</select></div>
-          <div class="field"><label>شهر</label><select id="jaCity" disabled><option value="">ابتدا استان را انتخاب کنید</option></select></div>
-          <div class="field full"><label>آدرس دقیق</label><textarea id="jaAddress" rows="2" placeholder="خیابان، کوچه، پلاک، واحد…"></textarea></div>
-          <div class="field"><label>میزان تحصیلات</label><select id="jaEducation"><option value="">انتخاب کنید</option><option>زیر دیپلم</option><option>دیپلم</option><option>کاردانی</option><option>کارشناسی</option><option>کارشناسی ارشد</option><option>دکتری</option><option>سایر</option></select></div>
-          <div class="field"><label>رشته تحصیلی</label><input id="jaFieldOfStudy" maxlength="120"></div>
-          <div class="field full"><label>مهارت‌های دیگر</label><textarea id="jaSkills" placeholder="سایر توانایی‌ها و مهارت‌ها"></textarea></div>
-          <div class="field"><label>نحوه آشنایی</label><select id="jaSource"><option value="">انتخاب کنید</option><option>دیوار</option><option>شیپور</option><option>معرفی دوستان</option><option>شبکه‌های اجتماعی</option><option>مراجعه حضوری</option><option>سایر</option></select></div>
-          <div class="field"><label>معرف</label><input id="jaReferrer" maxlength="120"></div>
-        </div>
-        <div class="modal-footer" style="margin-top:16px;border-top:1px solid var(--line);padding-top:16px">
-          <button type="reset" class="btn btn-secondary">پاک کردن فرم</button>
-          <button id="jaSubmitBtn" type="submit" class="btn btn-primary">ثبت پرونده متقاضی</button>
-        </div>
-      </form>
-    </div>
-    <div class="card" style="margin-top:18px">
-      <h3 style="color:var(--navy);margin-bottom:14px">جستجو و مدیریت پرونده‌های کارجویان</h3>
-      <div class="filters" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
-        <div class="field"><label>شناسه پرونده</label><input id="jaFilterCase" placeholder="JA.000001"></div>
-        <div class="field"><label>تاریخ ثبت از</label><input id="jaFilterFrom" class="ja-jalali-date" placeholder="۱۴۰۵/۰۱/۰۱"></div>
-        <div class="field"><label>تاریخ ثبت تا</label><input id="jaFilterTo" class="ja-jalali-date" placeholder="۱۴۰۵/۱۲/۲۹"></div>
-        <div class="field"><label>وضعیت پرونده</label><select id="jaFilterStatus"><option value="">همه وضعیت‌ها</option><option>جدید</option><option>در حال بررسی</option><option>در انتظار مصاحبه</option><option>تأیید شده</option><option>رد شده</option><option>استخدام شده</option><option>بایگانی</option></select></div>
-        <div class="field"><label>تخصص</label><input id="jaFilterSpecialty" placeholder="جستجوی تخصص"></div>
-        <div class="field"><label>موقعیت درخواستی</label><input id="jaFilterPosition" placeholder="جستجوی موقعیت"></div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px">
-        <button class="btn btn-primary" type="button" onclick="searchJobApplicants()">جستجو</button>
-        <button class="btn btn-secondary" type="button" onclick="resetJobApplicantFilters()">پاک کردن فیلترها</button>
-      </div>
-      <div id="jaRecent"><div class="loading">برای نمایش پرونده‌ها دکمه جستجو را بزنید.</div></div>
-    </div>`;
-  
-  $('jaToday').textContent = new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-  $('jaCreator').textContent = currentUser && currentUser.empId ? currentUser.empId : '—';
-  
-  $('jaBirthDate').addEventListener('input', calculateApplicantAge);
-  $('jaBirthDate').addEventListener('change', calculateApplicantAge);
-  $('jaPhone').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9۰-۹+]/g,'').slice(0,15); });
-  
-  $('jaProvince').addEventListener('change', function() {
-    const p = this.value;
-    const citySelect = $('jaCity');
-    citySelect.innerHTML = '<option value="">انتخاب شهر</option>';
-    if (p && provinceCities[p]) {
-      provinceCities[p].forEach(c => {
-        citySelect.innerHTML += `<option>${c}</option>`;
-      });
-      citySelect.disabled = false;
-    } else {
-      citySelect.disabled = true;
+/* ================= 2) STATE & API ================= */
+var TOKEN=localStorage.getItem('zv_emp_token')||'';
+var USER=null;
+
+function api(fn, ...args) {
+    return new Promise((resolve, reject) => {
+        google.script.run.withSuccessHandler(resolve).withFailureHandler(reject)[fn](...args);
+    });
+}
+
+function toast(msg,type,action){
+var t=document.createElement('div');
+t.className='toast '+(type||'');
+t.innerHTML=icon(type==='ok'?'check':type==='err'?'x':'zap','width:16px;height:16px')+'<span>'+esc(msg)+'</span>'+(action?'<button type="button">'+esc(action.label)+'</button>':'');
+if(action)t.querySelector('button').onclick=function(){action.fn();t.remove();};
+$('#toasts').appendChild(t);
+setTimeout(function(){t.remove();},action?8000:3800);
+}
+
+function openModal(html,wide,dark){
+var m=$('#modal');
+m.className='modal'+(wide?' w':'')+(dark?' dk':'');
+m.innerHTML=html;
+$('#mback').classList.add('show');
+document.body.style.overflow='hidden';
+}
+function closeModal(){$('#mback').classList.remove('show');document.body.style.overflow='';}
+function openDrawer(html){
+$('#drawer').innerHTML=html;
+$('#drawer').classList.add('show');
+$('#scrim').classList.add('show');
+document.body.style.overflow='hidden';
+}
+function closeDrawer(){$('#drawer').classList.remove('show');$('#scrim').classList.remove('show');document.body.style.overflow='';}
+function closeOverlays(){closeDrawer();$('#sidebar').classList.remove('open');$('#scrim').classList.remove('show');}
+
+function kv(p){return '<div class="kv">'+p.map(function(x){return '<div class="kvi'+(x[2]?' full':'')+'"><small>'+esc(x[0])+'</small><b>'+(x[1]==null?'—':x[1])+'</b></div>';}).join('')+'</div>';}
+function pageHead(t,s,a){return '<div class="ph"><div><h1>'+esc(t)+'</h1><div class="sub">'+esc(s)+'</div></div><div style="display:flex;gap:8px;flex-wrap:wrap">'+(a||'')+'</div></div>';}
+function btn(act,label,ic,cls,extra){return '<button class="btn '+(cls||'btn-s')+'" data-act="'+act+'"'+(extra||'')+'>'+(ic?icon(ic,'width:15px;height:15px'):'')+' '+esc(label)+'</button>';}
+function ibtn(act,ic,title,extra){return '<button class="btn btn-s btn-i" title="'+esc(title)+'" data-act="'+act+'"'+(extra||'')+'>'+icon(ic,'width:14px;height:14px')+'</button>';}
+
+/* ================= 3) NAV & SHELL ================= */
+const MENU=[
+{id:'dashboard',l:'داشبورد',ic:'dash'},
+{id:'orders',l:'سفارشات',ic:'orders'},
+{id:'cards',l:'کارت‌ها',ic:'cards'},
+{id:'groups',l:'گروه‌ها',ic:'groups'},
+{id:'workers',l:'نیروها',ic:'worker'},
+{id:'applicants',l:'جذب و استخدام',ic:'applicant'},
+{id:'support',l:'پشتیبانی مشتریان',ic:'msg'},
+{id:'reports',l:'گزارش‌ها',ic:'report'},
+{id:'profile',l:'پروفایل من',ic:'user'}
+];
+const TITLES={dashboard:['داشبورد','نمای کلی عملکرد'],orders:['سفارشات','مدیریت و پیگیری سفارشات شعبه'],cards:['کارت‌ها','مدیریت کارت‌های عملیاتی'],groups:['گروه‌ها','مدیریت گروه‌های شعبه'],workers:['نیروها','مدیریت نیروهای تحت پوشش'],applicants:['جذب و استخدام','مدیریت پرونده‌های کارجویان'],support:['پشتیبانی مشتریان','پاسخ به پیام‌ها'],reports:['گزارش‌ها','تحلیل عملکرد شعبه'],profile:['پروفایل من','حساب کاربری']};
+
+function renderNav(){
+$('#nav').innerHTML=MENU.map(function(m){
+return '<div class="nav-item'+(PS.page===m.id?' on':'')+'" data-act="go" data-page="'+m.id+'">'+icon(m.ic,'width:17px;height:17px')+'<span>'+esc(m.l)+'</span></div>';
+}).join('');
+}
+
+function toggleTheme(){
+var t=document.documentElement.dataset.theme==='dark'?'light':'dark';
+document.documentElement.dataset.theme=t;localStorage.setItem('zv_emp_theme',t);
+$('#themeBtn').innerHTML=icon(t==='dark'?'sun':'moon');
+}
+
+var PS={page:'dashboard'};
+function go(p){
+PS.page=p;
+$('#sidebar').classList.remove('open');$('#scrim').classList.remove('show');
+render();
+}
+
+function render(){
+var p=PS.page||'dashboard',t=TITLES[p]||TITLES.dashboard;
+$('#tbTitle').textContent=t[0];
+$('#tbCrumb').textContent='ZingoVingo · '+t[1];
+$('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
+
+if($('#sideName')) $('#sideName').textContent=USER?USER.name:'—';
+if($('#sideRole')) $('#sideRole').textContent='کارمند';
+if($('#sideAv') && USER) $('#sideAv').innerHTML=USER.avatar?'<img src="'+esc(USER.avatar)+'" alt="">':esc(String(USER.name||'؟').trim().charAt(0));
+
+var out='';
+if(p==='dashboard') out=loadDashboardUI();
+else if(p==='orders') out=loadOrdersUI();
+else if(p==='cards') out=loadCardsUI();
+else if(p==='groups') out=loadGroupsUI();
+else if(p==='workers') out=loadWorkersUI();
+else if(p==='applicants') out=loadApplicantsUI();
+else if(p==='support') out=loadSupportUI();
+else if(p==='reports') out=loadReportsUI();
+else if(p==='profile') out=loadProfileUI();
+
+Promise.resolve(out).then(function(h){
+$('#page').innerHTML=h;
+renderNav();
+if(p==='applicants') initApplicantFilters();
+}).catch(function(e){
+$('#page').innerHTML='<div class="card"><div class="empty"><div class="ei">'+icon('x')+'</div><h4>خطا در بارگذاری</h4><p class="sub">'+esc(e.message)+'</p></div></div>';
+});
+}
+
+/* ================= 4) PAGE LOADERS ================= */
+function loadDashboardUI(){
+return api('getEmployeeDashboard', TOKEN).then(stats => {
+let h = '<div class="hero"><span class="dchip">'+icon('cal')+' '+new Date().toLocaleDateString('fa-IR')+'</span>';
+h += '<h2>داشبورد کارمند</h2><p>نمای کلی عملکرد و سفارشات شعبه</p></div>';
+h += '<div class="grid kpis">';
+h += '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,var(--blue) 14%,transparent);color:var(--blue)">'+icon('orders')+'</span></div><div class="l">کل سفارشات</div><div class="v">'+fa(stats.totalOrders)+'</div></div>';
+h += '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,var(--amber) 14%,transparent);color:var(--amber)">'+icon('clock')+'</span></div><div class="l">در انتظار</div><div class="v">'+fa(stats.pendingOrders)+'</div></div>';
+h += '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,var(--green) 14%,transparent);color:var(--green)">'+icon('check')+'</span></div><div class="l">تکمیل شده</div><div class="v">'+fa(stats.completedOrders)+'</div></div>';
+h += '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,var(--brand) 14%,transparent);color:var(--brand)">'+icon('wallet')+'</span></div><div class="l">درآمد کل</div><div class="v">'+money(stats.totalRevenue)+'</div></div>';
+h += '</div>';
+return h;
+});
+}
+
+function loadOrdersUI(){
+return '<div class="ph"><div><h1>سفارشات شعبه</h1></div></div>' +
+'<div class="toolbar">' +
+'<input class="inp" id="ordSearch" placeholder="جستجو..." style="flex:1">' +
+'<select class="sel" id="ordStatus"><option value="همه">همه وضعیت‌ها</option><option>جدید</option><option>ثبت اولیه</option><option>در حال انجام</option><option>تکمیل شده</option><option>لغو شده</option></select>' +
+btn('fetch-orders', 'جستجو', 'search', 'btn-p') +
+'</div><div id="ordersContent"><div class="loading"><div class="spinner"></div></div></div>';
+}
+
+function fetchOrders(){
+const filters = {
+    search: $('ordSearch')?.value || '',
+    status: $('ordStatus')?.value || 'همه'
+};
+$('#ordersContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+api('getEmployeeOrders', filters, TOKEN).then(rows => {
+    if(!rows.length) { $('#ordersContent').innerHTML = '<div class="card"><div class="empty"><h4>سفارشی یافت نشد</h4></div></div>'; return; }
+    let h = '<div class="tw"><table class="tb"><thead><tr><th>تاریخ</th><th>کد</th><th>مشتری</th><th>موبایل</th><th>خدمت</th><th>مبلغ</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>';
+    rows.forEach(r => {
+        h += '<tr><td>'+esc(r.date)+'</td><td><b>'+esc(r.requestId)+'</b></td><td>'+esc(r.customer)+'</td><td class="ltr">'+esc(r.phone)+'</td><td>'+esc(r.service)+'</td><td>'+money(r.finalPrice)+'</td><td><span class="pill p-'+(r.status==='تکمیل شده'?'green':r.status==='لغو شده'?'red':'amber')+'">'+esc(r.status)+'</span></td>';
+        h += '<td><div class="ra">'+ibtn('change-status', 'edit', 'تغییر وضعیت', 'data-id="'+esc(r.requestId)+'" data-status="'+esc(r.status)+'"') + ibtn('convert-card', 'shuffle', 'تبدیل به کارت', 'data-id="'+esc(r.requestId)+'"') + '</div></td></tr>';
+    });
+    h += '</tbody></table></div>';
+    $('#ordersContent').innerHTML = h;
+}).catch(e => { $('#ordersContent').innerHTML = '<div class="card"><div class="empty"><h4 style="color:var(--red)">'+esc(e.message)+'</h4></div></div>'; });
+}
+
+function loadCardsUI(){
+return '<div class="ph"><div><h1>کارت‌های شعبه</h1></div></div><div class="card"><div class="empty"><h4>مدیریت کارت‌ها از طریق بخش سفارشات انجام می‌شود.</h4></div></div>';
+}
+
+function loadGroupsUI(){
+return '<div class="ph"><div><h1>گروه‌های شعبه</h1></div><div>'+btn('new-group', 'گروه جدید', 'plus', 'btn-p')+'</div></div><div id="groupsContent"><div class="loading"><div class="spinner"></div></div></div>';
+}
+
+function fetchGroups(){
+$('#groupsContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+api('getEmployeeGroups', TOKEN).then(list => {
+    if(!list.length) { $('#groupsContent').innerHTML = '<div class="card"><div class="empty"><h4>گروهی ثبت نشده است</h4></div></div>'; return; }
+    let h = '<div class="tw"><table class="tb"><thead><tr><th>کد</th><th>نام</th><th>سرپرست</th><th>منطقه</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>';
+    list.forEach(g => {
+        h += '<tr><td>'+esc(g.groupId)+'</td><td>'+esc(g.name)+'</td><td>'+esc(g.supervisorName)+'</td><td>'+esc(g.area)+'</td><td><span class="pill p-'+(g.status==='فعال'?'green':'red')+'">'+esc(g.status)+'</span></td>';
+        h += '<td><div class="ra">'+ibtn('edit-group', 'edit', 'ویرایش', 'data=\''+JSON.stringify(g).replace(/'/g,"&#39;")+'\'') + ibtn('delete-group', 'trash', 'حذف', 'data-row="'+g.rowIndex+'"') + '</div></td></tr>';
+    });
+    h += '</tbody></table></div>';
+    $('#groupsContent').innerHTML = h;
+}).catch(e => { $('#groupsContent').innerHTML = '<div class="card"><div class="empty"><h4 style="color:var(--red)">'+esc(e.message)+'</h4></div></div>'; });
+}
+
+function loadWorkersUI(){
+return '<div class="ph"><div><h1>نیروهای شعبه</h1></div><div>'+btn('new-worker', 'نیروی جدید', 'plus', 'btn-p')+'</div></div><div id="workersContent"><div class="loading"><div class="spinner"></div></div></div>';
+}
+
+function fetchWorkers(){
+$('#workersContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+api('getEmployeeWorkers', TOKEN).then(list => {
+    if(!list.length) { $('#workersContent').innerHTML = '<div class="card"><div class="empty"><h4>نیرویی ثبت نشده است</h4></div></div>'; return; }
+    let h = '<div class="tw"><table class="tb"><thead><tr><th>کد</th><th>نام</th><th>یوزرنیم</th><th>نوع</th><th>سمت</th><th>موبایل</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>';
+    list.forEach(w => {
+        h += '<tr><td>'+esc(w.workerId)+'</td><td>'+esc(w.firstName+' '+w.lastName)+'</td><td>'+esc(w.username)+'</td><td><span class="pill p-blue">'+esc(w.operations)+'</span></td><td>'+esc(w.jobTitle)+'</td><td class="ltr">'+esc(w.contact)+'</td><td><span class="pill p-'+(w.status==='فعال'?'green':'red')+'">'+esc(w.status)+'</span></td>';
+        h += '<td><div class="ra">'+ibtn('edit-worker', 'edit', 'ویرایش', 'data=\''+JSON.stringify(w).replace(/'/g,"&#39;")+'\'') + ibtn('delete-worker', 'trash', 'حذف', 'data-row="'+w.rowIndex+'"') + '</div></td></tr>';
+    });
+    h += '</tbody></table></div>';
+    $('#workersContent').innerHTML = h;
+}).catch(e => { $('#workersContent').innerHTML = '<div class="card"><div class="empty"><h4 style="color:var(--red)">'+esc(e.message)+'</h4></div></div>'; });
+}
+
+function loadApplicantsUI(){
+return '<div class="ph"><div><h1>جذب و استخدام</h1><div class="sub">مدیریت پرونده‌های کارجویان</div></div><div>'+btn('new-applicant', 'پرونده جدید', 'plus', 'btn-p')+'</div></div>' +
+'<div class="toolbar">' +
+'<select class="sel" id="jaFilterBranch"><option value="">همه شعب</option></select>' +
+'<select class="sel" id="jaFilterStatus"><option value="">همه وضعیت‌ها</option><option>جدید</option><option>در حال بررسی</option><option>در انتظار مصاحبه</option><option>تأیید شده</option><option>رد شده</option><option>استخدام شده</option><option>بایگانی</option></select>' +
+'<input class="inp" id="jaFilterSpecialty" placeholder="تخصص...">' +
+btn('fetch-applicants', 'جستجو', 'search', 'btn-p') +
+'</div><div id="applicantsContent"><div class="loading"><div class="spinner"></div></div></div>';
+}
+
+function initApplicantFilters(){
+    // Populate branches (mock or fetched if available, here we use a generic list or fetch)
+    // For safety, we'll just leave "همه شعب" or fetch if API exists. 
+    // Assuming we filter client-side or backend handles it.
+    fetchApplicants();
+}
+
+function fetchApplicants(){
+const filters = {
+    branch: $('jaFilterBranch')?.value || '',
+    status: $('jaFilterStatus')?.value || '',
+    specialty: $('jaFilterSpecialty')?.value || ''
+};
+$('#applicantsContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+api('searchEmployeeJobApplicants', filters, TOKEN).then(rows => {
+    // Client-side branch filter fallback if backend doesn't support it
+    if(filters.branch) {
+        rows = rows.filter(r => r.branchId === filters.branch || r.branch === filters.branch);
     }
-  });
-
-  initApplicantJalaliDates();
-  searchJobApplicants();
+    
+    if(!rows.length) { $('#applicantsContent').innerHTML = '<div class="card"><div class="empty"><h4>پرونده‌ای یافت نشد</h4></div></div>'; return; }
+    let h = '<div class="tw"><table class="tb"><thead><tr><th>شماره پرونده</th><th>نام متقاضی</th><th>تخصص</th><th>موقعیت</th><th>سن</th><th>تاریخ ثبت</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody>';
+    rows.forEach((r, i) => {
+        let statusClass = r.status==='تأیید شده'||r.status==='استخدام شده'?'green':r.status==='رد شده'||r.status==='بایگانی'?'red':'amber';
+        h += '<tr><td><b>'+esc(r.caseNumber)+'</b></td><td>'+esc(r.fullName)+'</td><td>'+esc(r.specialty)+'</td><td>'+esc(r.requestedPosition)+'</td><td>'+esc(r.age)+'</td><td>'+esc(r.createdAt)+'</td><td><span class="pill p-'+statusClass+'">'+esc(r.status)+'</span></td>';
+        h += '<td><div class="ra">'+ibtn('edit-applicant', 'edit', 'ویرایش کامل', 'data=\''+JSON.stringify(r).replace(/'/g,"&#39;")+'\'') + '</div></td></tr>';
+    });
+    h += '</tbody></table></div>';
+    $('#applicantsContent').innerHTML = h;
+}).catch(e => { $('#applicantsContent').innerHTML = '<div class="card"><div class="empty"><h4 style="color:var(--red)">'+esc(e.message)+'</h4></div></div>'; });
 }
 
-function applicantNormalizeDigits(v){return String(v||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));}
-function applicantG2J(gy,gm,gd){const gdm=[0,31,((gy%4===0&&gy%100!==0)||gy%400===0)?29:28,31,30,31,30,31,31,30,31,30,31];let gy2=gm>2?gy+1:gy;let days=355666+365*gy+Math.floor((gy2+3)/4)-Math.floor((gy2+99)/100)+Math.floor((gy2+399)/400)+gd;for(let i=1;i<gm;i++)days+=gdm[i];let jy=-1595+33*Math.floor(days/12053);days%=12053;jy+=4*Math.floor(days/1461);days%=1461;if(days>365){jy+=Math.floor((days-1)/365);days=(days-1)%365}let jm,jd;if(days<186){jm=1+Math.floor(days/31);jd=1+days%31}else{jm=7+Math.floor((days-186)/30);jd=1+(days-186)%30}return[jy,jm,jd]}
-function applicantJ2G(jy,jm,jd){jy+=1595;let days=-355668+365*jy+Math.floor(jy/33)*8+Math.floor(((jy%33)+3)/4)+jd+(jm<7?(jm-1)*31:(jm-7)*30+186);let gy=400*Math.floor(days/146097);days%=146097;if(days>36524){gy+=100*Math.floor(--days/36524);days%=36524;if(days>=365)days++}gy+=4*Math.floor(days/1461);days%=1461;if(days>365){gy+=Math.floor((days-1)/365);days=(days-1)%365}let gd=days+1;const leap=gy%4===0&&(gy%100!==0||gy%400===0);const months=[0,31,leap?29:28,31,30,31,30,31,31,30,31,30,31];let gm=1;while(gm<=12&&gd>months[gm]){gd-=months[gm];gm++}return[gy,gm,gd]}
-function applicantIsJalaliLeap(y){const g=applicantJ2G(y,12,30);const j=applicantG2J(g[0],g[1],g[2]);return j[0]===y&&j[1]===12&&j[2]===30;}
-function applicantJalaliParts(value){const v=applicantNormalizeDigits(value).replace(/[.\-]/g,'/').trim();const m=v.match(/^(13\d{2}|14\d{2})\/(\d{1,2})\/(\d{1,2})$/);if(!m)return null;const y=+m[1],mo=+m[2],d=+m[3];if(mo<1||mo>12||d<1||d>(mo<=6?31:mo<=11?30:(applicantIsJalaliLeap(y)?30:29)))return null;return[y,mo,d]}
-function applicantFaDigits(v){return String(v).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[+d]);}
-function calculateApplicantAge(){const b=applicantJalaliParts($('jaBirthDate').value);if(!b){$('jaAge').value='';return;}const now=new Date(),t=applicantG2J(now.getFullYear(),now.getMonth()+1,now.getDate());let age=t[0]-b[0];if(t[1]<b[1]||(t[1]===b[1]&&t[2]<b[2]))age--; $('jaAge').value=age>=0&&age<120?applicantFaDigits(age):'';}
+function loadSupportUI(){
+return '<div class="ph"><div><h1>پشتیبانی مشتریان</h1></div><div>'+btn('fetch-support', 'بروزرسانی', 'check', 'btn-s')+'</div></div><div id="supportContent"><div class="loading"><div class="spinner"></div></div></div>';
+}
 
-function initApplicantJalaliDates(){
-  const names=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
-  document.querySelectorAll('.ja-jalali-date').forEach((el)=>{
-    if(el.dataset.jaDateReady==='1') return;
-    el.dataset.jaDateReady='1'; el.type='text'; el.inputMode='text'; el.autocomplete='off'; el.classList.add('ja-date-input');
-    const wrap=document.createElement('div'); wrap.className='ja-date-wrap'; el.parentNode.insertBefore(wrap,el); wrap.appendChild(el);
-    const btn=document.createElement('button'); btn.type='button'; btn.className='ja-date-btn'; btn.textContent='📅'; btn.setAttribute('aria-label','باز کردن تقویم شمسی'); wrap.appendChild(btn);
-    const pop=document.createElement('div'); pop.className='ja-date-pop'; wrap.appendChild(pop);
-    let now=new Date(),jy,jm; [jy,jm]=applicantG2J(now.getFullYear(),now.getMonth()+1,now.getDate());
-    function render(){
-      const today=applicantG2J(now.getFullYear(),now.getMonth()+1,now.getDate());
-      const max=jm<=6?31:jm<=11?30:(applicantIsJalaliLeap(jy)?30:29);
-      const first=applicantJ2G(jy,jm,1); const weekday=(new Date(first[0],first[1]-1,first[2]).getDay()+1)%7;
-      let html='<div class="ja-cal-head"><button type="button" data-prev-year title="سال قبل">«</button><button type="button" data-prev title="ماه قبل">‹</button><span class="year-display" data-year-input title="کلیک برای تغییر سال">'+names[jm-1]+' '+applicantFaDigits(jy)+'</span><button type="button" data-next title="ماه بعد">›</button><button type="button" data-next-year title="سال بعد">»</button></div><div class="ja-cal-grid">';
-      ['ش','ی','د','س','چ','پ','ج'].forEach(x=>html+='<button type="button" class="day-label" disabled>'+x+'</button>');
-      for(let i=0;i<weekday;i++)html+='<span></span>';
-      for(let d=1;d<=max;d++){ const isToday = today[0]===jy && today[1]===jm && today[2]===d; html+='<button type="button" data-day="'+d+'" class="'+(isToday?'today':'')+'">'+applicantFaDigits(d)+'</button>'; }
-      html+='</div>'; pop.innerHTML=html;
-      pop.querySelector('[data-prev]').onclick=(e)=>{e.stopPropagation(); jm--; if(jm<1){jm=12;jy--} render()};
-      pop.querySelector('[data-next]').onclick=(e)=>{e.stopPropagation(); jm++; if(jm>12){jm=1;jy++} render()};
-      pop.querySelector('[data-prev-year]').onclick=(e)=>{e.stopPropagation(); jy--; render()};
-      pop.querySelector('[data-next-year]').onclick=(e)=>{e.stopPropagation(); jy++; render()};
-      pop.querySelector('[data-year-input]').onclick=(e)=>{
-        e.stopPropagation();
-        const input=document.createElement('input'); input.type='number'; input.min='1300'; input.max='1500'; input.value=jy;
-        input.style.cssText='width:70px;text-align:center;font-weight:bold;border:1px solid var(--orange);border-radius:6px;padding:2px;font-size:13px';
-        e.target.replaceWith(input); input.focus(); input.select();
-        const saveYear=()=>{ const newYear=parseInt(input.value); if(newYear>=1300 && newYear<=1500){jy=newYear; render();} };
-        input.addEventListener('blur', saveYear);
-        input.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter'){ev.preventDefault(); saveYear();} if(ev.key==='Escape'){render();} });
-      };
-      pop.querySelectorAll('[data-day]').forEach(b=>b.onclick=(e)=>{
-        e.stopPropagation(); const day=+b.dataset.day;
-        el.value=jy+'/'+String(jm).padStart(2,'0')+'/'+String(day).padStart(2,'0');
-        pop.classList.remove('open'); el.dispatchEvent(new Event('input',{bubbles:true})); el.dispatchEvent(new Event('change',{bubbles:true}));
-      });
+function fetchSupport(){
+$('#supportContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+api('getCustomerConversationsForEmployee', TOKEN).then(rows => {
+    if(!rows.length) { $('#supportContent').innerHTML = '<div class="card"><div class="empty"><h4>پیامی ثبت نشده است</h4></div></div>'; return; }
+    let h = '';
+    rows.forEach(r => {
+        let statusClass = r.status==='unread'?'red':'green';
+        let statusText = r.status==='unread'?'پاسخ‌داده‌نشده':'پاسخ‌داده‌شده';
+        h += '<div class="card" style="margin-bottom:12px;border-right:4px solid var(--'+(r.status==='unread'?'red':'green')+')">';
+        h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><b style="font-size:14px">'+esc(r.subject||'بدون موضوع')+'</b><div style="font-size:11px;color:var(--muted);margin-top:4px">از: '+esc(r.senderName)+' ('+esc(r.customerId)+') | '+esc(r.createdAt)+'</div></div>';
+        h += '<span class="pill p-'+statusClass+'">'+statusText+'</span></div>';
+        h += '<div style="background:var(--surface2);padding:12px;border-radius:8px;margin-bottom:10px;font-size:13px;white-space:pre-wrap">'+esc(r.message)+'</div>';
+        if(r.reply) h += '<div style="background:rgba(14,159,110,.1);padding:12px;border-radius:8px;font-size:13px;border-right:3px solid var(--green)"><b>پاسخ شما:</b><div style="margin-top:6px;white-space:pre-wrap">'+esc(r.reply)+'</div></div>';
+        h += '<div style="margin-top:10px;display:flex;gap:8px">'+btn('reply-support', r.reply?'ویرایش پاسخ':'پاسخ', 'msg', 'btn-p', 'data-id="'+esc(r.conversationId)+'" data-subject="'+esc(r.subject)+'"')+'</div></div>';
+    });
+    $('#supportContent').innerHTML = h;
+}).catch(e => { $('#supportContent').innerHTML = '<div class="card"><div class="empty"><h4 style="color:var(--red)">'+esc(e.message)+'</h4></div></div>'; });
+}
+
+function loadReportsUI(){
+return '<div class="ph"><div><h1>گزارشات شعبه</h1></div></div>' +
+'<div class="card"><div class="toolbar">' +
+'<input class="inp" id="repFrom" placeholder="از تاریخ (۱۴۰۵/۰۱/۰۱)">' +
+'<input class="inp" id="repTo" placeholder="تا تاریخ (۱۴۰۵/۱۲/۲۹)">' +
+btn('fetch-reports', 'نمایش', 'search', 'btn-p') +
+'</div><div id="reportsContent"></div></div>';
+}
+
+function fetchReports(){
+$('#reportsContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+api('getEmployeeReports', TOKEN, $('repFrom')?.value||'', $('repTo')?.value||'').then(rep => {
+    let h = '<div class="grid kpis" style="margin-bottom:18px">';
+    h += '<div class="kpi"><div class="l">کل کارت‌ها</div><div class="v">'+fa(rep.totalCards)+'</div></div>';
+    h += '<div class="kpi"><div class="l">تکمیل شده</div><div class="v">'+fa(rep.completedCards)+'</div></div>';
+    h += '<div class="kpi"><div class="l">درآمد</div><div class="v">'+money(rep.totalRevenue)+'</div></div>';
+    h += '</div>';
+    h += '<div class="card"><h3 style="margin-bottom:12px">توزیع وضعیت</h3>';
+    Object.entries(rep.byStatus).forEach(kv => {
+        h += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)"><span>'+esc(kv[0])+'</span><strong>'+fa(kv[1])+'</strong></div>';
+    });
+    h += '</div>';
+    $('#reportsContent').innerHTML = h;
+}).catch(e => { $('#reportsContent').innerHTML = '<div class="card"><div class="empty"><h4 style="color:var(--red)">'+esc(e.message)+'</h4></div></div>'; });
+}
+
+function loadProfileUI(){
+return api('getEmployeeProfile', TOKEN).then(p => {
+    let h = '<div class="ph"><div><h1>پروفایل من</h1></div></div>';
+    h += '<div class="card"><div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">';
+    h += '<div style="width:100px;height:100px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900;overflow:hidden">';
+    h += p.avatar ? '<img src="'+esc(p.avatar)+'" style="width:100%;height:100%;object-fit:cover">' : esc((p.name||'?').charAt(0));
+    h += '</div><div><b style="font-size:18px">'+esc(p.name)+'</b><div style="color:var(--muted);font-size:11px;margin-top:6px">کارمند · '+esc(p.empId)+'</div></div></div></div>';
+    h += '<div class="card"><h3 style="margin-bottom:12px">تغییر رمز عبور</h3>';
+    h += '<div class="field" style="max-width:300px"><label>رمز عبور جدید</label><input id="newPass" type="password" placeholder="رمز جدید"></div>';
+    h += btn('update-profile', 'بروزرسانی رمز', 'check', 'btn-p', 'style="margin-top:10px"');
+    h += '</div>';
+    return h;
+});
+}
+
+/* ================= 5) ACTIONS & MODALS ================= */
+document.addEventListener('click', function(e){
+    const t = e.target.closest('[data-act]');
+    if(!t) return;
+    const act = t.dataset.act;
+    
+    if(act === 'logout') {
+        if(TOKEN) api('employeeLogout', TOKEN);
+        localStorage.removeItem('zv_emp_token'); localStorage.removeItem('zv_emp_user');
+        location.reload();
     }
-    btn.addEventListener('click',(e)=>{
-      e.stopPropagation(); document.querySelectorAll('.ja-date-pop.open').forEach(x=>x.classList.remove('open'));
-      const parts=applicantJalaliParts(el.value); if(parts){jy=parts[0];jm=parts[1];} else {const d=new Date();[jy,jm]=applicantG2J(d.getFullYear(),d.getMonth()+1,d.getDate());}
-      render(); pop.classList.toggle('open');
-    });
-    el.addEventListener('input',()=>{ 
-      let digits=applicantNormalizeDigits(el.value).replace(/\D/g,'').slice(0,8);
-      if(digits.length>4)digits=digits.slice(0,4)+'/'+digits.slice(4);
-      if(digits.length>7)digits=digits.slice(0,7)+'/'+digits.slice(7);
-      el.value=digits;
-      if(el.id==='jaBirthDate')calculateApplicantAge(); 
-    });
-    el.addEventListener('blur',()=>{
-      if(!el.value.trim())return;
-      const parts=applicantJalaliParts(el.value);
-      if(!parts){ toast('تاریخ معتبر نیست؛ قالب صحیح ۱۴۰۵/۰۸/۱۲ است.','error'); if(el.id==='jaBirthDate')$('jaAge').value=''; return; }
-      el.value=parts[0]+'/'+String(parts[1]).padStart(2,'0')+'/'+String(parts[2]).padStart(2,'0');
-      if(el.id==='jaBirthDate')calculateApplicantAge();
-    });
-  });
-  document.addEventListener('click',e=>{ if(!e.target.closest('.ja-date-wrap'))document.querySelectorAll('.ja-date-pop.open').forEach(x=>x.classList.remove('open')); });
-}
+    else if(act === 'theme') {
+        toggleTheme();
+    }
+    else if(act === 'menu') {
+        $('#sidebar').classList.toggle('open');
+        $('#scrim').classList.toggle('show', $('#sidebar').classList.contains('open'));
+    }
+    else if(act === 'scrim') {
+        closeOverlays();
+    }
+    else if(act === 'go') {
+        go(t.dataset.page);
+    }
+    else if(act === 'fetch-orders') {
+        fetchOrders();
+    }
+    else if(act === 'change-status') {
+        const statuses = ['جدید', 'ثبت اولیه', 'در حال بررسی', 'در حال انجام', 'تکمیل شده', 'لغو شده'];
+        let opts = statuses.map(s => '<option '+(s===t.dataset.status?'selected':'')+'>'+s+'</option>').join('');
+        openModal('<div class="mh"><h3>تغییر وضعیت سفارش</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+        '<div class="mb"><div class="field"><label>وضعیت جدید</label><select id="newOrderStatus">'+opts+'</select></div></div>'+
+        '<div class="mf"><button class="btn btn-s" data-act="mclose">انصراف</button><button class="btn btn-p" data-act="apply-order-status" data-id="'+t.dataset.id+'">اعمال</button></div>', true, true);
+    }
+    else if(act === 'apply-order-status') {
+        api('updateEmployeeOrderStatus', t.dataset.id, $('#newOrderStatus').value, TOKEN).then(() => {
+            closeModal(); toast('وضعیت تغییر یافت', 'ok'); fetchOrders();
+        }).catch(e => toast(e.message, 'err'));
+    }
+    else if(act === 'convert-card') {
+        api('getGroupsForDropdownEmp', TOKEN).then(groups => {
+            let opts = '<option value="">-- انتخاب گروه --</option>' + groups.map(g => '<option value="'+g.groupId+'">'+esc(g.name)+' ('+esc(g.groupId)+')</option>').join('');
+            openModal('<div class="mh"><h3>تبدیل به کارت</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+            '<div class="mb"><div class="fgrid"><div class="field"><label>تخصیص به گروه *</label><select id="targetGroup" data-act="load-group-workers">'+opts+'</select></div>'+
+            '<div class="field"><label>تخصیص به نیرو</label><select id="targetWorker" disabled><option value="">ابتدا گروه را انتخاب کنید</option></select></div></div></div>'+
+            '<div class="mf"><button class="btn btn-s" data-act="mclose">انصراف</button><button class="btn btn-p" data-act="execute-convert" data-id="'+t.dataset.id+'">تأیید</button></div>', true, true);
+        }).catch(e => toast(e.message, 'err'));
+    }
+    else if(act === 'load-group-workers') {
+        const groupId = $('#targetGroup').value;
+        if(!groupId) { $('#targetWorker').disabled=true; $('#targetWorker').innerHTML='<option value="">ابتدا گروه را انتخاب کنید</option>'; return; }
+        api('getWorkersByGroupEmp', groupId, TOKEN).then(workers => {
+            let opts = '<option value="">بدون تخصیص (استخر گروه)</option>' + workers.map(w => '<option value="'+w.id+'">'+esc(w.name)+' ('+esc(w.operations)+')</option>').join('');
+            $('#targetWorker').innerHTML = opts;
+            $('#targetWorker').disabled = false;
+        }).catch(e => toast(e.message, 'err'));
+    }
+    else if(act === 'execute-convert') {
+        const groupId = $('#targetGroup').value;
+        const workerId = $('#targetWorker').value;
+        if(!groupId) { toast('لطفاً یک گروه انتخاب کنید', 'err'); return; }
+        api('employeeConvertOrderToCard', t.dataset.id, groupId, workerId, TOKEN).then(() => {
+            closeModal(); toast('کارت با موفقیت ایجاد شد', 'ok'); fetchOrders();
+        }).catch(e => toast(e.message, 'err'));
+    }
+    else if(act === 'fetch-groups') {
+        fetchGroups();
+    }
+    else if(act === 'new-group') {
+        openModal('<div class="mh"><h3>گروه جدید</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+        '<div class="mb"><div class="fgrid"><div class="field"><label>نام گروه *</label><input id="gName"></div>'+
+        '<div class="field"><label>سرپرست</label><input id="gSup"></div>'+
+        '<div class="field"><label>منطقه</label><input id="gArea"></div>'+
+        '<div class="field"><label>وضعیت</label><select id="gStatus"><option>فعال</option><option>غیرفعال</option></select></div></div></div>'+
+        '<div class="mf"><button class="btn btn-s" data-act="mclose">انصراف</button><button class="btn btn-p" data-act="save-group">ذخیره</button></div>', true, true);
+    }
+    else if(act === 'save-group') {
+        const data = { name: $('#gName').value, supervisorName: $('#gSup').value, area: $('#gArea').value, status: $('#gStatus').value };
+        api('saveEmployeeGroup', data, TOKEN).then(() => {
+            closeModal(); toast('ذخیره شد', 'ok'); fetchGroups();
+        }).catch(e => toast(e.message, 'err'));
+    }
+    else if(act === 'delete-group') {
+        if(!confirm('حذف شود؟')) return;
+        api('deleteEmployeeGroup', t.dataset.row, TOKEN).then(() => {
+            toast('حذف شد', 'ok'); fetchGroups();
+        }).catch(e => toast(e.message, 'err'));
+    }
+    else if(act === 'edit-group') {
+        const g = JSON.parse(t.dataset.data.replace(/&#39;/g, "'"));
+        openModal('<div class="mh"><h3>ویرایش گروه</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+        '<div class="mb"><div class="fgrid"><div class="field"><label>نام گروه *</label><input id="gName" value="'+esc(g.name)+'"></div>'+
+        '<div class="field"><label>سرپرست</label><input id="gSup" value="'+esc(g.supervisorName)+'"></div>'+
+        '<div class="field"><label>منطقه</label><input id="gArea" value="'+esc(g.area)+'"></div>'+
+        '<div class="field"><label>وضعیت</label><select id="gStatus"><option '+(g.status==='فعال'?'selected':'')+'>فعال</option><option '+(g.status==='غیرفعال'?'selected':'')+'>غیرفعال</option></select></div></div></div>'+
+        '<div class="mf"><button class="btn btn-s" data-act="mclose">انصراف</button><button class="btn btn-p" data-act="save-group-edit" data-row="'+g.rowIndex+'">ذخیره</button></div>', true, true);
+    }
+    else if(act === 'save-group-edit') {
+        const data = { rowIndex: t.dataset.row, name: $('#gName').value, supervisorName: $('#gSup').value, area: $('#gArea').value, status: $('#gStatus').value };
+        api('saveEmployeeGroup', data, TOKEN).then(() => {
+            closeModal(); toast('ذخیره شد', 'ok'); fetchGroups();
+        }).catch(e => toast(e.message, 'err'));
+    }
+    else if(act === 'fetch-workers') {
+        fetchWorkers();
+    }
+    else if(act === 'new-worker') {
+        openModal('<div class="mh"><h3>نیروی جدید</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+        '<div class="mb"><div class="fgrid"><div class="field"><label>نام *</label><input id="wFirst"></div>'+
+        '<div class="field"><label>نام خانوادگی *</label><input id="wLast"></div>'+
+        '<div class="field"><label>یوزرنیم *</label><input id="wUser"></div>'+
+        '<div class="field"><label>رمز عبور *</label><input id="wPass" type="password"></div>'+
+        '<div class="field"><label>نوع</label><select id="wOps"><option value="worker">worker</option><option value="Supervisor">Supervisor</option><option value="operator">operator</option></select></div>'+
+        '<div class="field"><label>سمت</label><input id="wJob"></div>'+
+        '<div class="field"><label>موبایل</label><input id="wContact"></div>'+
+        '<div class="field"><label>وضعیت</label><select id="wStatus"><option>فعال</option><option>غیرفعال</option></select></div></div></div>'+
+        '<div class="mf"><button class="btn btn-s" data-act="mclose">انصراف</button><button class="btn btn-p" data-act="save-worker">ذخیره</button></div>', true, true);
+    }
+    else if(act === 'save-worker') {
+        const data = { firstName: $('#wFirst').value, lastName: $('#wLast').value, username: $('#wUser').value, password: $('#wPass').value, operations: $('#wOps').value, jobTitle: $('#wJob').value, contact: $('#wContact').value, status: $('#wStatus').value };
+        api('saveEmployeeWorker', data, TOKEN).then(() => {
+            closeModal(); toast('ذخیره شد', 'ok'); fetchWorkers();
+        }).catch(e => toast(e.message, 'err'));
+    }
+    else if(act === 'delete-worker') {
+        if(!confirm('حذف شود؟')) return;
+        api('deleteEmployeeWorker', t.dataset.row, TOKEN).then(() => {
+            toast('حذف شد', 'ok'); fetchWorkers();
+        }).catch(e => toast(e.message, 'err'));
+    }
+    else if(act === 'edit-worker') {
+        const w = JSON.parse(t.dataset.data.replace(/&#39;/g, "'"));
+        openModal('<div class="mh"><h3>ویرایش نیرو</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+        '<div class="mb"><div class="fgrid"><div class="field"><label>نام *</label><input id="wFirst" value="'+esc(w.firstName)+'"></div>'+
+        '<div class="field"><label>نام خانوادگی *</label><input id="wLast" value="'+esc(w.lastName)+'"></div>'+
+        '<div class="field"><label>یوزرنیم</label><input id="wUser" value="'+esc(w.username)+'" readonly></div>'+
+        '<div class="field"><label>رمز عبور (خالی=بدون تغییر)</label><input id="wPass" type="password"></div>'+
+        '<div class="field"><label>نوع</label><select id="wOps"><option value="worker" '+(w.operations==='worker'?'selected':'')+'>worker</option><option value="Supervisor" '+(w.operations==='Supervisor'?'selected':'')+'>Supervisor</option><option value="operator" '+(w.operations==='operator'?'selected':'')+'>operator</option></select></div>'+
+        '<div class="field"><label>سمت</label><input id="wJob" value="'+esc(w.jobTitle)+'"></div>'+
+        '<div class="field"><label>موبایل</label><input id="wContact" value="'+esc(w.contact)+'"></div>'+
+        '<div class="field"><label>وضعیت</label><select id="wStatus"><option '+(w.status==='فعال'?'selected':'')+'>فعال</option><option '+(w.status==='غیرفعال'?'selected':'')+'>غیرفعال</option></select></div></div></div>'+
+        '<div class="mf"><button class="btn btn-s" data-act="mclose">انصراف</button><button class="btn btn-p" data-act="save-worker-edit" data-row="'+w.rowIndex+'">ذخیره</button></div>', true, true);
+    }
+    else if(act === 'save-worker-edit') {
+        const data = { rowIndex: t.dataset.row, firstName: $('#wFirst').value, lastName: $('#wLast').value, username: $('#wUser').value, password: $('#wPass').value, operations: $('#wOps').value, jobTitle: $('#wJob').value, contact: $('#wContact').value, status: $('#wStatus').value };
+        api('saveEmployeeWorker', data, TOKEN).then(() => {
+            closeModal(); toast('ذخیره شد', 'ok'); fetchWorkers();
+        }).catch(e => toast(e.message, 'err'));
+    }
+    else if(act === 'fetch-applicants') {
+        fetchApplicants();
+    }
+    else if(act === 'new-applicant') {
+        toast('لطفاً از فرم عمومی ثبت درخواست همکاری استفاده کنید', 'warn');
+    }
+    else if(act === 'edit-applicant') {
+        const r = JSON.parse(t.dataset.data.replace(/&#39;/g, "'"));
+        openModal('<div class="mh"><h3>ویرایش پرونده '+esc(r.caseNumber)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+        '<div class="mb"><div class="fgrid">'+
+        '<div class="field"><label>نام *</label><input id="ja-first" value="'+esc(r.firstName)+'"></div>'+
+        '<div class="field"><label>نام خانوادگی *</label><input id="ja-last" value="'+esc(r.lastName)+'"></div>'+
+        '<div class="field"><label>تخصص *</label><input id="ja-spec" value="'+esc(r.specialty)+'"></div>'+
+        '<div class="field"><label>موقعیت</label><input id="ja-pos" value="'+esc(r.requestedPosition)+'"></div>'+
+        '<div class="field"><label>تاریخ مصاحبه تلفنی</label><input id="ja-phone-date" value="'+esc(r.phoneInterviewDate)+'"></div>'+
+        '<div class="field"><label>نتیجه مصاحبه تلفنی</label><select id="ja-phone-res"><option '+(r.phoneInterviewResult==='انجام نشده'?'selected':'')+'>انجام نشده</option><option '+(r.phoneInterviewResult==='تأیید'?'selected':'')+'>تأیید</option><option '+(r.phoneInterviewResult==='رد'?'selected':'')+'>رد</option></select></div>'+
+        '<div class="field"><label>وضعیت پرونده</label><select id="ja-status"><option '+(r.status==='جدید'?'selected':'')+'>جدید</option><option '+(r.status==='در حال بررسی'?'selected':'')+'>در حال بررسی</option><option '+(r.status==='تأیید شده'?'selected':'')+'>تأیید شده</option><option '+(r.status==='رد شده'?'selected':'')+'>رد شده</option><option '+(r.status==='استخدام شده'?'selected':'')+'>استخدام شده</option></select></div>'+
+        '<div class="field full"><label>توضیحات</label><textarea id="ja-notes">'+esc(r.notes)+'</textarea></div>'+
+        '</div></div>'+
+        '<div class="mf"><button class="btn btn-s" data-act="mclose">انصراف</button><button class="btn btn-p" data-act="save-applicant" data-case="'+esc(r.caseNumber)+'">ذخیره</button></div>', true, true);
+    }
+    else if(act === 'save-applicant') {
+        const changes = {
+            firstName: $('#ja-first').value, lastName: $('#ja-last').value, specialty: $('#ja-spec').value,
+            requestedPosition: $('#ja-pos').value, phoneInterviewDate: $('#ja-phone-date').value,
+            phoneInterviewResult: $('#ja-phone-res').value, status: $('#ja-status').value, notes: $('#ja-notes').value
+        };
+        api('updateEmployeeJobApplicantFull', t.dataset.case, changes, TOKEN).then(() => {
+            closeModal(); toast('ذخیره شد', 'ok'); fetchApplicants();
+        }).catch(e => toast(e.message, 'err'));
+    }
+    else if(act === 'fetch-support') {
+        fetchSupport();
+    }
+    else if(act === 'reply-support') {
+        openModal('<div class="mh"><h3>پاسخ به: '+esc(t.dataset.subject)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+        '<div class="mb"><div class="field"><label>متن پاسخ</label><textarea id="replyText" style="min-height:120px"></textarea></div></div>'+
+        '<div class="mf"><button class="btn btn-s" data-act="mclose">انصراف</button><button class="btn btn-p" data-act="send-reply" data-id="'+t.dataset.id+'">ارسال</button></div>', true, true);
+    }
+    else if(act === 'send-reply') {
+        const text = $('#replyText').value;
+        if(!text) { toast('متن پاسخ را وارد کنید', 'err'); return; }
+        api('replyToCustomerConversation', t.dataset.id, text, TOKEN).then(() => {
+            closeModal(); toast('پاسخ ثبت شد', 'ok'); fetchSupport();
+        }).catch(e => toast(e.message, 'err'));
+    }
+    else if(act === 'fetch-reports') {
+        fetchReports();
+    }
+    else if(act === 'update-profile') {
+        const pass = $('#newPass').value;
+        if(!pass) { toast('رمز عبور را وارد کنید', 'err'); return; }
+        api('updateEmployeeProfile', {password: pass}, TOKEN).then(() => {
+            toast('رمز عبور بروزرسانی شد', 'ok'); $('#newPass').value=''; render();
+        }).catch(e => toast(e.message, 'err'));
+    }
+});
 
-function submitJobApplicant(ev){
-  ev.preventDefault();
-  const phone = $('jaPhone').value.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
-  if(!/^09\d{9}$/.test(phone)) return toast('شماره تماس باید با 09 و ۱۱ رقم وارد شود.','error');
-  if(!applicantJalaliParts($('jaBirthDate').value)) return toast('تاریخ تولد را با تقویم شمسی انتخاب کنید.','error');
-  calculateApplicantAge();
-  
-  const data = {
-    firstName: $('jaFirstName').value.trim(), lastName: $('jaLastName').value.trim(), gender: $('jaGender').value,
-    birthDate: $('jaBirthDate').value.trim(), age: $('jaAge').value, maritalStatus: $('jaMarital').value,
-    specialty: $('jaSpecialty').value.trim(), experience: $('jaExperience').value.trim(), otherSkills: $('jaSkills').value.trim(),
-    education: $('jaEducation').value, fieldOfStudy: $('jaFieldOfStudy').value.trim(), 
-    province: $('jaProvince').value, city: $('jaCity').value, address: $('jaAddress').value.trim(),
-    phone: phone, messenger: $('jaMessenger').value, messengerId: $('jaMessengerId').value.trim(),
-    source: $('jaSource').value, referrer: $('jaReferrer').value.trim(), requestedPosition: $('jaRequestedPosition').value.trim()
-  };
-  
-  const btn = $('jaSubmitBtn'); btn.disabled=true; btn.textContent='در حال ثبت…';
-  google.script.run.withSuccessHandler(r => {
-    btn.disabled=false; btn.textContent='ثبت پرونده متقاضی';
-    toast('پرونده با شماره '+r.caseNumber+' ثبت شد.','success');
-    $('jobApplicantForm').reset(); $('jaAge').value=''; 
-    $('jaToday').textContent = new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-    searchJobApplicants();
-  }).withFailureHandler(e => {
-    btn.disabled=false; btn.textContent='ثبت پرونده متقاضی';
-    toast(e.message || 'ثبت پرونده ناموفق بود.','error');
-  }).saveEmployeeJobApplicant(data, currentToken);
-}
-
-function searchJobApplicants(){
-  const filters = { caseNumber: $('jaFilterCase').value.trim(), dateFrom: $('jaFilterFrom').value.trim(), dateTo: $('jaFilterTo').value.trim(), status: $('jaFilterStatus').value, specialty: $('jaFilterSpecialty').value.trim(), requestedPosition: $('jaFilterPosition').value.trim() };
-  $('jaRecent').innerHTML = '<div class="loading">در حال جستجوی پرونده‌ها…</div>';
-  google.script.run.withSuccessHandler(renderAllJobApplicants).withFailureHandler(e => $('jaRecent').innerHTML = '<div class="loading" style="color:var(--danger)">'+esc(e.message||'جستجو ناموفق بود')+'</div>').searchEmployeeJobApplicants(filters, currentToken);
-}
-function resetJobApplicantFilters(){ ['jaFilterCase','jaFilterFrom','jaFilterTo','jaFilterSpecialty','jaFilterPosition'].forEach(id => $(id).value=''); $('jaFilterStatus').value=''; searchJobApplicants(); }
-
-function jaOptions(options, selected){ return options.map(x => '<option value="'+esc(x)+'" '+(x===selected?'selected':'')+'>'+esc(x||'— انتخاب —')+'</option>').join(''); }
-
-function renderAllJobApplicants(rows){
-  if(!rows || !rows.length){
-    $('jaRecent').innerHTML = '<div style="padding:18px;text-align:center;color:var(--muted)">پرونده‌ای با این فیلترها پیدا نشد.</div>';
-    return;
-  }
-  
-  let html = `<div style="margin-bottom:8px;color:var(--muted);font-size:12px">تعداد پرونده‌های پیدا شده: ${toFa(rows.length)}</div>
-  <div class="table-wrap"><table><thead><tr>
-    <th>شماره پرونده</th><th>نام متقاضی</th><th>تخصص</th><th>موقعیت</th><th>سن</th><th>تاریخ ثبت</th><th>بررسی اولیه</th><th>وضعیت پرونده</th><th>عملیات</th>
-  </tr></thead><tbody>`;
-  
-  rows.forEach((r, i) => {
-    html += `<tr>
-      <td><strong>${esc(r.caseNumber)}</strong></td>
-      <td>${esc(r.fullName)}</td>
-      <td>${esc(r.specialty)}</td>
-      <td>${esc(r.requestedPosition)}</td>
-      <td>${esc(r.age)}</td>
-      <td>${esc(r.createdAt)}</td>
-      <td>${esc(r.initialReview)}</td>
-      <td><span class="badge badge-${r.status==='تأیید شده'||r.status==='استخدام شده'?'done':r.status==='رد شده'||r.status==='بایگانی'?'cancel':'progress'}">${esc(r.status)}</span></td>
-      <td><button class="btn btn-secondary btn-sm" type="button" onclick="toggleApplicantOperation('${esc(r.caseNumber)}')">✏️ ویرایش کامل</button></td>
-    </tr>
-    <tr id="ja-op-${i}" style="display:none">
-      <td colspan="9">
-        <div class="card" style="margin:8px 0;background:#f8f9fc">
-          <strong style="color:var(--navy);font-size:15px">ویرایش کامل پرونده ${esc(r.caseNumber)}</strong>
-          <div style="display:flex;gap:15px;margin:10px 0;font-size:12px;color:var(--muted);background:#fff;padding:10px;border-radius:8px;border:1px solid var(--line)">
-            <span>📅 تاریخ ثبت: <b>${esc(r.createdAt)}</b></span>
-            <span>👤 ثبت‌کننده: <b>${esc(r.createdBy || 'نامشخص')}</b></span>
-          </div>
-          
-          <div class="form-grid" style="margin-top:12px">
-            <div class="field"><label>نام *</label><input id="ja-op-first-${i}" value="${esc(r.firstName)}"></div>
-            <div class="field"><label>نام خانوادگی *</label><input id="ja-op-last-${i}" value="${esc(r.lastName)}"></div>
-            <div class="field"><label>جنسیت</label><select id="ja-op-gender-${i}">${jaOptions(['مرد','زن'], r.gender)}</select></div>
-            <div class="field"><label>تاریخ تولد *</label><input id="ja-op-birth-${i}" class="ja-jalali-date" value="${esc(r.birthDate)}" placeholder="۱۴۰۵/۰۸/۱۲"></div>
-            <div class="field"><label>وضعیت تأهل</label><select id="ja-op-marital-${i}">${jaOptions(['','مجرد','متأهل','سایر'], r.maritalStatus)}</select></div>
-            <div class="field"><label>تخصص اصلی *</label><input id="ja-op-specialty-${i}" value="${esc(r.specialty)}"></div>
-            <div class="field"><label>مدت فعالیت</label><input id="ja-op-exp-${i}" value="${esc(r.experience)}"></div>
-            <div class="field full"><label>مهارت‌های دیگر</label><textarea id="ja-op-skills-${i}">${esc(r.otherSkills)}</textarea></div>
-            <div class="field"><label>میزان تحصیلات</label><select id="ja-op-edu-${i}">${jaOptions(['','زیر دیپلم','دیپلم','کاردانی','کارشناسی','کارشناسی ارشد','دکتری','سایر'], r.education)}</select></div>
-            <div class="field"><label>رشته تحصیلی</label><input id="ja-op-field-${i}" value="${esc(r.fieldOfStudy)}"></div>
-            <div class="field"><label>استان</label><select id="ja-op-prov-${i}">${jaOptions(['',...Object.keys(provinceCities)], r.province)}</select></div>
-            <div class="field"><label>شهر</label><select id="ja-op-city-${i}" ${!r.city?'disabled':''}>${r.province && provinceCities[r.province] ? jaOptions(['',...provinceCities[r.province]], r.city) : '<option value="">ابتدا استان را انتخاب کنید</option>'}</select></div>
-            <div class="field full"><label>آدرس دقیق</label><textarea id="ja-op-address-${i}" rows="2">${esc(r.address)}</textarea></div>
-            <div class="field"><label>شماره تماس *</label><input id="ja-op-phone-${i}" value="${esc(r.phone)}"></div>
-            <div class="field"><label>پیام‌رسان</label><select id="ja-op-mess-${i}">${jaOptions(['','بله','واتساپ','تلگرام','روبیکا','ایتا','سایر'], r.messenger)}</select></div>
-            <div class="field"><label>آی‌دی پیام‌رسان</label><input id="ja-op-messid-${i}" value="${esc(r.messengerId)}"></div>
-            <div class="field"><label>نحوه آشنایی</label><select id="ja-op-source-${i}">${jaOptions(['','دیوار','شیپور','معرفی دوستان','شبکه‌های اجتماعی','مراجعه حضوری','سایر'], r.source)}</select></div>
-            <div class="field"><label>معرف</label><input id="ja-op-ref-${i}" value="${esc(r.referrer)}"></div>
-            <div class="field"><label>موقعیت درخواستی</label><input id="ja-op-pos-${i}" value="${esc(r.requestedPosition)}"></div>
-          </div>
-          
-          <hr style="margin:16px 0;border:0;border-top:1px solid var(--line)">
-          <strong style="color:var(--navy)">گردش کار و مصاحبه</strong>
-          <div class="form-grid" style="margin-top:12px">
-            <div class="field"><label>بررسی اولیه</label><select id="ja-op-review-${i}">${jaOptions(['بررسی نشده','تأیید اولیه','رد اولیه','نیازمند بررسی بیشتر'], r.initialReview)}</select></div>
-            <div class="field"><label>تاریخ مصاحبه تلفنی</label><input id="ja-op-phone-date-${i}" class="ja-jalali-date" value="${esc(r.phoneInterviewDate)}" placeholder="۱۴۰۵/۰۸/۱۲"></div>
-            <div class="field"><label>تاریخ مصاحبه حضوری</label><input id="ja-op-person-date-${i}" class="ja-jalali-date" value="${esc(r.inPersonInterviewDate)}" placeholder="۱۴۰۵/۰۸/۱۲"></div>
-            <div class="field"><label>نتیجه مصاحبه تلفنی</label><select id="ja-op-phone-result-${i}">${jaOptions(['انجام نشده','تأیید','رد','نیازمند پیگیری'], r.phoneInterviewResult)}</select></div>
-            <div class="field"><label>نتیجه مصاحبه حضوری</label><select id="ja-op-person-result-${i}">${jaOptions(['انجام نشده','تأیید','رد','نیازمند پیگیری'], r.inPersonInterviewResult)}</select></div>
-            <div class="field"><label>وضعیت پرونده</label><select id="ja-op-status-${i}">${jaOptions(['جدید','در حال بررسی','در انتظار مصاحبه','تأیید شده','رد شده','استخدام شده','بایگانی'], r.status)}</select></div>
-            <div class="field full"><label>توضیحات</label><textarea id="ja-op-notes-${i}" rows="2">${esc(r.notes)}</textarea></div>
-          </div>
-          
-          <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px">
-            <button class="btn btn-secondary btn-sm" type="button" onclick="cancelApplicantOperation(${i})">لغو</button>
-            <button class="btn btn-primary btn-sm" type="button" onclick="saveApplicantOperationFull(${i},'${esc(r.caseNumber)}')">💾 ذخیره تمام تغییرات</button>
-          </div>
-        </div>
-      </td>
-    </tr>`;
-  });
-  
-  html += '</tbody></table></div>';
-  $('jaRecent').innerHTML = html;
-  window.jaRenderedApplicants = rows;
-  
-  // Re-initialize date pickers for the newly rendered edit rows
-  setTimeout(() => {
-    initApplicantJalaliDates();
-    // Re-attach province/city listener for edit rows
-    document.querySelectorAll('[id^="ja-op-prov-"]').forEach(select => {
-      select.addEventListener('change', function() {
-        const p = this.value;
-        const citySelect = this.parentElement.nextElementSibling.querySelector('select');
-        citySelect.innerHTML = '<option value="">انتخاب شهر</option>';
-        if (p && provinceCities[p]) {
-          provinceCities[p].forEach(c => {
-            citySelect.innerHTML += `<option>${c}</option>`;
-          });
-          citySelect.disabled = false;
-        } else {
-          citySelect.disabled = true;
-        }
-      });
-    });
-  }, 100);
-}
-
-function toggleApplicantOperation(caseNo){
-  const rows = window.jaRenderedApplicants || [];
-  const i = rows.findIndex(x => x.caseNumber === caseNo);
-  if(i<0) return;
-  const tr = $('ja-op-'+i);
-  const opening = tr.style.display === 'none';
-  tr.style.display = opening ? 'table-row' : 'none';
-}
-function cancelApplicantOperation(i){ const tr = $('ja-op-'+i); if(tr) tr.style.display = 'none'; }
-
-function saveApplicantOperationFull(i, caseNo){
-  const changes = {
-    firstName: $('ja-op-first-'+i).value.trim(),
-    lastName: $('ja-op-last-'+i).value.trim(),
-    gender: $('ja-op-gender-'+i).value,
-    birthDate: $('ja-op-birth-'+i).value.trim(),
-    maritalStatus: $('ja-op-marital-'+i).value,
-    specialty: $('ja-op-specialty-'+i).value.trim(),
-    experience: $('ja-op-exp-'+i).value.trim(),
-    otherSkills: $('ja-op-skills-'+i).value.trim(),
-    education: $('ja-op-edu-'+i).value,
-    fieldOfStudy: $('ja-op-field-'+i).value.trim(),
-    province: $('ja-op-prov-'+i).value,
-    city: $('ja-op-city-'+i).value,
-    address: $('ja-op-address-'+i).value.trim(),
-    phone: $('ja-op-phone-'+i).value.trim(),
-    messenger: $('ja-op-mess-'+i).value,
-    messengerId: $('ja-op-messid-'+i).value.trim(),
-    source: $('ja-op-source-'+i).value,
-    referrer: $('ja-op-ref-'+i).value.trim(),
-    requestedPosition: $('ja-op-pos-'+i).value.trim(),
-    initialReview: $('ja-op-review-'+i).value,
-    phoneInterviewDate: $('ja-op-phone-date-'+i).value.trim(),
-    inPersonInterviewDate: $('ja-op-person-date-'+i).value.trim(),
-    phoneInterviewResult: $('ja-op-phone-result-'+i).value,
-    inPersonInterviewResult: $('ja-op-person-result-'+i).value,
-    status: $('ja-op-status-'+i).value,
-    notes: $('ja-op-notes-'+i).value.trim()
-  };
-  
-  if(!changes.firstName) return toast('نام الزامی است','error');
-  if(!changes.lastName) return toast('نام خانوادگی الزامی است','error');
-  if(!changes.specialty) return toast('تخصص اصلی الزامی است','error');
-  const phone = changes.phone.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
-  if(!/^09\d{9}$/.test(phone)) return toast('شماره تماس معتبر نیست','error');
-  if(!applicantJalaliParts(changes.birthDate)) return toast('تاریخ تولد معتبر نیست','error');
-  
-  for(const key of ['phoneInterviewDate','inPersonInterviewDate']){
-    if(changes[key] && !applicantJalaliParts(changes[key])) return toast('تاریخ مصاحبه معتبر نیست.','error');
-  }
-  
-  const btn = $(`ja-op-${i}`).querySelector('.btn-primary');
-  btn.disabled = true;
-  btn.textContent = 'در حال ذخیره…';
-  
-  google.script.run.withSuccessHandler(() => {
-    toast('تمام تغییرات پرونده ذخیره شد.','success');
-    searchJobApplicants();
-  }).withFailureHandler(e => {
-    btn.disabled = false;
-    btn.textContent = '💾 ذخیره تمام تغییرات';
-    toast(e.message || 'ذخیره تغییرات ناموفق بود.','error');
-  }).updateEmployeeJobApplicantFull(caseNo, changes, currentToken);
-}
-
-function loadReports() {
-  $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">گزارشات شعبه</h1></div><div class="card"><div class="filters"><div class="field"><label>از تاریخ</label><input id="repFrom" placeholder="1405/01/01"></div><div class="field"><label>تا تاریخ</label><input id="repTo" placeholder="1405/12/29"></div><div class="field" style="justify-content:flex-end"><button class="btn btn-primary" onclick="fetchReports()">نمایش</button></div></div><div id="repContent"></div></div>';
-}
-function fetchReports() {
-  google.script.run.withSuccessHandler(rep => {
-    $('repContent').innerHTML = '<div class="stats-grid"><div class="stat-card"><div class="stat-label">تعداد</div><div class="stat-value">' + toFa(rep.count) + '</div></div><div class="stat-card green"><div class="stat-label">درآمد</div><div class="stat-value">' + money(rep.totalRevenue) + '</div></div></div><div class="card" style="margin-top:16px"><h3>توزیع وضعیت</h3>' + Object.entries(rep.byStatus).map(kv => '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)"><span>' + kv[0] + '</span><strong>' + toFa(kv[1]) + '</strong></div>').join('') + '</div><div class="card" style="margin-top:16px"><h3>ریز تراکنش‌ها</h3><div class="table-wrap"><table><thead><tr><th>تاریخ</th><th>کد</th><th>خدمت</th><th>مبلغ</th><th>وضعیت</th></tr></thead><tbody>' + rep.transactions.map(t => '<tr><td>' + t.date + '</td><td>' + t.requestId + '</td><td>' + t.service + '</td><td>' + money(t.amount) + '</td><td>' + statusBadge(t.status) + '</td></tr>').join('') + '</tbody></table></div></div>';
-  }).getEmployeeReports(currentToken, $('repFrom').value, $('repTo').value);
-}
-
-function loadProfile() {
-  google.script.run.withSuccessHandler(p => {
-    $('pageContent').innerHTML = '<div class="page-header"><h1 class="page-title">پروفایل من</h1></div><div class="card"><div class="employee-profile"><div class="employee-avatar-large">' + (p.avatar ? '<img src="'+p.avatar+'">' : (p.name||'?').charAt(0)) + '</div><div class="employee-details"><div class="detail-item"><div class="detail-label">شناسه یکتا</div><div class="detail-value">' + p.empId + '</div></div><div class="detail-item"><div class="detail-label">نام</div><div class="detail-value">' + p.name + '</div></div><div class="detail-item"><div class="detail-label">نام کاربری</div><div class="detail-value">' + p.username + '</div></div><div class="detail-item"><div class="detail-label">نقش</div><div class="detail-value">' + p.role + '</div></div><div class="detail-item"><div class="detail-label">کد شعبه</div><div class="detail-value">' + p.branchId + '</div></div></div></div></div><div class="card" style="margin-top:16px"><h3 style="margin-bottom:12px;color:var(--navy)">تغییر رمز عبور</h3><div class="field" style="max-width:300px"><label>رمز عبور جدید</label><input id="newPass" type="password" placeholder="رمز جدید"></div><button class="btn btn-primary" style="margin-top:10px" onclick="updateProfile()">بروزرسانی رمز</button></div>';
-  }).getEmployeeProfile(currentToken);
-}
-function updateProfile() {
-  const pass = $('newPass').value;
-  if (!pass) return toast('رمز عبور را وارد کنید', 'error');
-  google.script.run.withSuccessHandler(() => { toast('رمز عبور بروزرسانی شد', 'success'); $('newPass').value = ''; }).withFailureHandler(e => toast(e.message, 'error')).updateEmployeeProfile({ password: pass }, currentToken);
-}
-
-document.addEventListener('keydown', e => { if (e.key === 'Enter' && $('loginPage').style.display !== 'none') doLogin(); });
+/* ================= 6) INIT ================= */
+(function init(){
+    var th=localStorage.getItem('zv_emp_theme');
+    if(th) document.documentElement.dataset.theme=th;
+    $('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
+    
+    const saved = localStorage.getItem('zv_emp_user');
+    if(TOKEN && saved) { 
+        USER = JSON.parse(saved); 
+        $('#loginView').style.display='none';
+        $('#app').style.display='grid';
+        render();
+    }
+})();
 </script>
 </body>
 </html>
