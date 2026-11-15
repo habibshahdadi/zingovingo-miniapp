@@ -597,11 +597,11 @@ var e=(DB.employees||[]).find(function(x){return String(x.empId)===String(USER.e
 return (e&&e.photo)||USER.avatar||'';
 }
 function paintSideUser(){
-if(!USER)return;
-$('#sideName').textContent=USER.name||'—';
-$('#sideRole').textContent=USER.roleFa||'کارمند';
-var p=myPhoto();
-$('#sideAv').innerHTML=p?'<img src="'+esc(p)+'" alt="">':esc(String(USER.name||'؟').trim().charAt(0));
+    if(!USER)return;
+    $('#sideName').textContent=USER.name||'—';
+    $('#sideRole').textContent=USER.roleFa||'کارمند'; // اصلاح شده
+    var p=myPhoto();
+    $('#sideAv').innerHTML=p?'<img src="'+esc(p)+'" alt="">':esc(String(USER.name||'؟').trim().charAt(0));
 }
 function applyFavicon(){
 var u=(DB.settings&&DB.settings.FAVICON_URL)||'';
@@ -971,30 +971,36 @@ var TITLES={dashboard:['داشبورد','نمای زنده سامانه'],report
 /* ═════════ 10) AUTH ═════════ */
 function setLoginErr(m){var e=$('#loginError');e.textContent=m;e.style.display='block';}
 function doLogin(){
-var u=$('#loginUser').value.trim(),p=$('#loginPass').value;
-if(!u||!p){setLoginErr('نام کاربری و رمز عبور را وارد کنید.');return;}
-$('#loginError').style.display='none';
-var b=$('#loginBtn');b.disabled=true;b.textContent='در حال ورود…';
-api('employeeLogin',u,p).then(function(r){
-TOKEN=r.token;USER=r.user;localStorage.setItem('zv_emp_token',TOKEN);
-return loadData();
-}).then(showApp).catch(function(e){setLoginErr(e.message);}).then(function(){b.disabled=false;b.textContent='ورود به پنل';});
+    var u=$('#loginUser').value.trim(),p=$('#loginPass').value;
+    if(!u||!p){setLoginErr('نام کاربری و رمز عبور را وارد کنید.');return;}
+    $('#loginError').style.display='none';
+    var b=$('#loginBtn');b.disabled=true;b.textContent='در حال ورود…';
+    
+    // اصلاح شده: فراخوانی employeeLogin به‌جای adminLogin
+    api('employeeLogin',u,p).then(function(r){
+        TOKEN=r.token;USER=r.user;
+        localStorage.setItem('zv_emp_token',TOKEN); // اصلاح شده: ذخیره توکن کارمند
+        return loadData();
+    }).then(showApp).catch(function(e){setLoginErr(e.message);}).then(function(){
+        b.disabled=false;b.textContent='ورود به پنل';
+    });
 }
 function confirmLogout(){
-confirmBox('خروج از پنل','آیا برای خروج از پنل مطمئن هستید؟',function(){
-api('employeeLogout',TOKEN).catch(function(){}).then(function(){
-localStorage.removeItem('zv_emp_token');TOKEN='';USER=null;location.reload();
-});
-},'بله، خروج از پنل','خیر، ماندن در پنل');
+    confirmBox('خروج از پنل','آیا برای خروج از پنل مطمئن هستید؟',function(){
+        api('employeeLogout',TOKEN).catch(function(){}).then(function(){
+            localStorage.removeItem('zv_emp_token');TOKEN='';USER=null;location.reload();
+        });
+    },'بله، خروج از پنل','خیر، ماندن در پنل');
 }
 function loadData(){return api('admCCBootstrap',TOKEN).then(function(r){USER=r.user;DB=r.data||{};applyFavicon();});}
 function showApp(){
-$('#loginView').style.display='none';
-$('#app').style.display='grid';
-paintSideUser();
-go('dashboard');
+    $('#loginView').style.display='none';
+    $('#app').style.display='grid';
+    paintSideUser();
+    go('dashboard');
 }
 function reload(){return loadData().then(render);}
+
 /* ═════════ 11) SHELL ═════════ */
 function renderNav(){
 $('#nav').innerHTML=MENU.map(function(m){
@@ -2123,18 +2129,23 @@ api('admCCCardStatus',id,c.dataset.col,'',TOKEN).then(function(){toast('وضعی
 document.addEventListener('dragend',function(){dragId=null;$$('.kcol.over').forEach(function(c){c.classList.remove('over');});});
 /* ═════════ 28) INIT ═════════ */
 (function init(){
-var th=localStorage.getItem('zv_emp_theme');
-if(th)document.documentElement.dataset.theme=th;
-$('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
-if(!TOKEN){$('#loginView').style.display='grid';return;}
-$('#loginView').style.display='none';
-$('#app').style.display='grid';
-$('#page').innerHTML='<div class="loading"><div class="spinner"></div></div>';
-api('admCCSession',TOKEN).then(function(r){USER=r.user;return loadData();})
-.then(showApp).catch(function(){
-localStorage.removeItem('zv_emp_token');TOKEN='';USER=null;
-$('#app').style.display='none';$('#loginView').style.display='grid';
-});
+    // اصلاح شده: خواندن تم کارمند به‌جای ادمین
+    var th=localStorage.getItem('zv_emp_theme');
+    if(th)document.documentElement.dataset.theme=th;
+    $('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
+    
+    if(!TOKEN){$('#loginView').style.display='grid';return;}
+    
+    $('#loginView').style.display='none';
+    $('#app').style.display='grid';
+    $('#page').innerHTML='<div class="loading"><div class="spinner"></div></div>';
+    
+    // تلاش برای بارگذاری داده‌ها با توکن کارمند
+    loadData().then(showApp).catch(function(){
+        // اگر توکن نامعتبر بود، پاکسازی و بازگشت به صفحه ورود
+        localStorage.removeItem('zv_emp_token');TOKEN='';USER=null;
+        $('#app').style.display='none';$('#loginView').style.display='grid';
+    });
 })();
 </script>
 </body>
