@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<base target="_top">
+<title>مرکز فرمان مدیر کل | ZingoVingo</title>
+<meta name="zv-api-url" content="https://script.google.com/macros/s/AKfycbwjFAiqfPiLijKT5sF63GQocU7tWvrlfFbZCY9CQ39_R_tMT9xq_dZFVSkR-mCaPhgh/exec">
+<link id="zvFavicon" rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet">
+<script>
+window.__zvErrors=[];
+window.addEventListener('error',function(ev){
+var t=ev&&ev.target;
+if(t&&t!==window&&t.tagName&&/^(SCRIPT|LINK|IMG|IFRAME|SOURCE)$/.test(String(t.tagName).toUpperCase())){console.warn('[ZV] asset:',t.src||t.href);return;}
+var m=String((ev&&ev.message)||'').trim();
+if(!ev.lineno&&(/^Script error\.?$/i.test(m)||m==='')){return;}
+window.__zvErrors.push(m+' @ '+(ev.lineno||0));
+var b=document.getElementById('zvFatal');if(b){b.style.display='block';b.textContent='خطای اسکریپت: '+window.__zvErrors.join(' | ');}
+},true);
+window.addEventListener('unhandledrejection',function(ev){console.warn('[ZV] rejected:',ev&&ev.reason);});
+</script>
+<script src="zv-compat.js"></script>
+<script src="zv-api.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+<style>
+:root{--navy:#0B1736;--navy2:#13234D;--brand:#FF6B1A;--brand2:#FF8A3D;--brandDeep:#E4570B;
+--blue:#2E63E7;--violet:#7C4DFF;--teal:#0FA3A3;--green:#0E9F6E;--amber:#D97706;--red:#E02D3C;--pink:#E0447C;--slate:#64748B;
+--bg:#F3F5FB;--surface:#fff;--surface2:#F6F8FD;--ink:#101A33;--muted:#5C6784;--line:#E2E7F3;--line2:#D3DAEC;
+--scrim:rgba(7,13,31,.58);--sh:0 6px 22px rgba(11,23,54,.07);--sh2:0 16px 44px rgba(11,23,54,.16);
+--r:16px;--tr:180ms ease;--grad:linear-gradient(135deg,#FF6B1A,#FF8A3D 55%,#FFB25E);
+--hero:linear-gradient(120deg,#0B1736,#16295B 40%,#3B2E7E 74%,#7C4DFF 128%);
+--glass:rgba(148,163,184,.16);--glassBrd:rgba(100,116,139,.28);--panBg:rgba(17,26,48,.95);--rail:78px}
+[data-theme=dark]{--bg:#070D1F;--surface:#0E1830;--surface2:#121F3D;--ink:#E9EEFC;--muted:#93A0C2;--line:#1D2B4F;--line2:#27375F;--scrim:rgba(2,6,18,.74);--sh:0 8px 26px rgba(0,0,0,.42);--sh2:0 18px 50px rgba(0,0,0,.58);--glass:rgba(203,213,225,.11);--glassBrd:rgba(148,163,184,.26)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Vazirmatn,Tahoma,sans-serif;background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.8;min-height:100vh;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(700px 420px at 92% -6%,rgba(255,107,26,.14),transparent 60%),radial-gradient(640px 460px at -8% 108%,rgba(124,77,255,.14),transparent 60%),radial-gradient(520px 380px at 55% 118%,rgba(15,163,163,.09),transparent 60%)}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid rgba(255,107,26,.45);outline-offset:2px;border-radius:8px}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--line2),var(--slate));border-radius:9px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--brand2),var(--brandDeep))}
+svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#zvFatal{display:none;position:fixed;top:0;left:0;right:0;z-index:999;background:#E02D3C;color:#fff;padding:10px 16px;font-size:12px;direction:ltr}
+.brand h1,.lbox h1{font-family:'Nunito','Vazirmatn',sans-serif!important;font-weight:900!important;letter-spacing:-.5px}
+.brand h1 span,.lbox h1 span{color:var(--brand2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:8px 16px;border-radius:11px;border:1px solid transparent;font-size:12.5px;font-weight:800;cursor:pointer;transition:all var(--tr);white-space:nowrap}
+.btn:hover{transform:translateY(-1px)}.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-p{background:var(--grad);color:#fff;box-shadow:0 6px 18px rgba(255,107,26,.35)}
+.btn-v{background:linear-gradient(135deg,#7C4DFF,#9E7BFF);color:#fff;box-shadow:0 6px 18px rgba(124,77,255,.32)}
+.btn-s{background:var(--surface2);border-color:var(--line);color:var(--ink)}.btn-s:hover{border-color:var(--brand);color:var(--brandDeep)}
+.btn-d{background:rgba(224,45,60,.12);color:var(--red)}
+.btn-sm{min-height:30px;padding:5px 11px;font-size:11.5px}
+.btn-i{width:31px;height:31px;min-height:31px;padding:0;border-radius:9px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:18px}
+.grid{display:grid;gap:16px}.kpis{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--sh);position:relative;overflow:hidden;transition:transform var(--tr)}
+.kpi:hover{transform:translateY(-3px)}
+.kpi .top{display:flex;justify-content:space-between;align-items:center}
+.kpi .chip{width:38px;height:38px;border-radius:12px;display:grid;place-items:center}
+.kpi .l{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:10px}
+.kpi .v{font-size:21px;font-weight:900;font-variant-numeric:tabular-nums;margin-top:2px}
+.kpi .s{font-size:10.5px;color:var(--muted)}
+.kpi svg.spark{position:absolute;bottom:0;left:0;width:100%;height:34px;opacity:.5;pointer-events:none}
+.hero{background:var(--hero);color:#fff;border-radius:20px;padding:26px 28px;position:relative;overflow:hidden;margin-bottom:18px}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(420px 220px at 88% 18%,rgba(255,107,26,.4),transparent 60%),radial-gradient(320px 210px at 8% 112%,rgba(15,163,163,.3),transparent 60%)}
+.hero:after{content:"";position:absolute;inset:0;opacity:.16;background-image:radial-gradient(rgba(255,255,255,.85) 1px,transparent 1px);background-size:22px 22px}
+.hero>*{position:relative;z-index:1}
+.hero h2{font-size:21px;font-weight:900}.hero p{color:#D3DCF5;font-size:12px;margin-top:4px}
+.hero .acts{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap}
+.hero .btn-s{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.22);color:#fff}
+.hero .dchip{position:absolute;left:26px;top:24px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24);padding:7px 14px;border-radius:12px;font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:7px}
+.gauge{display:flex;align-items:center;gap:16px;margin-top:18px;flex-wrap:wrap}
+.gauge .ring{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;position:relative;flex:0 0 96px}
+.gauge .ring b{font-size:24px;font-weight:900}
+.gauge .ring small{position:absolute;bottom:16px;font-size:9px;opacity:.8}
+.gauge .txt{flex:1;min-width:200px}
+.gauge .txt b{font-size:14px;display:block}
+.gauge .txt span{font-size:11.5px;color:#D3DCF5}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,var(--navy),#3B2E7E)}
+.lbox{background:var(--surface);border-radius:22px;padding:34px;width:min(430px,100%);box-shadow:0 20px 60px #0004}
+.lbox h1{text-align:center;color:var(--ink);font-size:27px}
+.lbox .sub{text-align:center;color:var(--muted);font-size:12px;margin:6px 0 20px}
+.errbox{display:none;background:rgba(224,45,60,.1);color:var(--red);padding:10px;border-radius:10px;font-size:12px;margin-bottom:12px}
+.zv-login-logo{display:flex;justify-content:center;margin:0 auto 14px;width:82px;height:82px}
+.zv-login-logo img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 20px rgba(11,23,54,.22))}
+#app{display:none;grid-template-columns:272px minmax(0,1fr);min-height:100vh;transition:grid-template-columns 240ms cubic-bezier(.3,.9,.3,1)}
+.sidebar{background:linear-gradient(180deg,#0A1531,#0B1736 40%,#1A1440);color:#C7D1E8;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;z-index:60;transition:width 240ms cubic-bezier(.3,.9,.3,1)}
+.brand{display:flex;gap:11px;align-items:center;padding:20px}
+.mark{width:42px;height:42px;border-radius:14px;background:var(--grad);display:grid;place-items:center;color:#fff;box-shadow:0 6px 18px rgba(255,107,26,.45);overflow:hidden}
+.mark.zv-logo{background:transparent!important;box-shadow:none!important}
+.mark img{width:100%;height:100%;object-fit:contain}
+.brand h1{font-size:19px;color:#fff}.brand small{display:block;font-size:10px;color:#8E9BC4}
+.nav{flex:1;padding:6px 12px 12px}
+.nav-sec{font-size:10px;font-weight:800;color:#7C89B4;margin:15px 10px 6px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:9.5px 12px;margin:2px 0;border-radius:11px;color:#B9C4DE;font-size:12.5px;font-weight:700;cursor:pointer;transition:all var(--tr);position:relative}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.on{background:linear-gradient(90deg,rgba(255,107,26,.22),rgba(124,77,255,.12));color:#fff}
+.nav-item.on:before{content:"";position:absolute;right:-12px;top:8px;bottom:8px;width:3.5px;border-radius:4px;background:var(--grad)}
+.nav-item.soon{opacity:.72}
+.bdg{margin-right:auto;background:var(--brand);color:#fff;font-size:10px;font-weight:900;min-width:20px;height:20px;padding:0 6px;border-radius:12px;display:grid;place-items:center}
+.bdg.b{background:var(--blue)}.bdg.r{background:var(--red)}.bdg.v{background:var(--violet)}.bdg.t{background:var(--teal)}.bdg.a{background:var(--amber)}
+.side-foot{padding:14px;border-top:1px solid rgba(255,255,255,.08)}
+.uchip{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.05)}
+.uchip b{color:#fff;font-size:12.5px;display:block}.uchip small{color:#8E9BC4;font-size:10px}
+.av{width:36px;height:36px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:900;overflow:hidden;flex:0 0 auto;cursor:pointer}
+.av img{width:100%;height:100%;object-fit:cover}
+.av.lg{width:96px;height:96px;font-size:32px;border:3px solid var(--surface);box-shadow:0 0 0 2px var(--line)}
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:12px 26px;background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topbar h2{font-size:17px;font-weight:900}.crumb{font-size:11px;color:var(--muted)}.sp{flex:1}
+.sbtn{display:flex;align-items:center;gap:9px;padding:8px 14px;border:1px solid var(--line);border-radius:11px;background:var(--surface2);color:var(--muted);cursor:pointer;font-size:12px;min-width:200px}
+.sbtn kbd{margin-right:auto;background:var(--surface);border:1px solid var(--line2);border-radius:6px;padding:1px 7px;font-size:10px}
+.ibtn{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--muted);position:relative}
+.ibtn:hover{color:var(--brand);border-color:var(--brand)}
+.ibtn .dot{position:absolute;top:7px;left:8px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--surface)}
+.rail-btn .ra{transition:transform 240ms}
+html.zv-rail .rail-btn{color:var(--brandDeep);border-color:rgba(255,107,26,.45);background:rgba(255,107,26,.1)}
+html.zv-rail .rail-btn .ra{transform:scaleX(-1)}
+html.zv-rail #app{grid-template-columns:var(--rail) minmax(0,1fr)}
+html.zv-rail .sidebar{width:var(--rail);overflow-x:hidden}
+html.zv-rail .sidebar .brand{padding:18px 0;justify-content:center;gap:0}
+html.zv-rail .sidebar .brand>div:last-child{display:none}
+html.zv-rail .sidebar .mark{width:40px;height:40px}
+html.zv-rail .sidebar .nav{padding:6px 10px 12px}
+html.zv-rail .sidebar .nav-sec{font-size:0;height:1px;margin:14px 8px 12px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);overflow:hidden}
+html.zv-rail .sidebar .nav-item{justify-content:center;gap:0;padding:11px 0}
+html.zv-rail .sidebar .nav-item>span{display:none}
+html.zv-rail .sidebar .nav-item .bdg{position:absolute;top:5px;left:7px;margin:0;min-width:9px;width:9px;height:9px;padding:0;font-size:0;box-shadow:0 0 0 2px #0B1736}
+html.zv-rail .sidebar .side-foot{padding:12px 8px}
+html.zv-rail .sidebar .uchip{flex-direction:column;gap:9px;padding:10px 4px}
+html.zv-rail .sidebar .uchip>div:not(.av){display:none}
+html.zv-rail .sidebar .av{width:34px;height:34px;font-size:14px}
+#zvTip{position:fixed;z-index:300;pointer-events:none;background:linear-gradient(135deg,#0B1736,#3B2E7E);color:#fff;font-size:11.5px;font-weight:800;padding:7px 12px;border-radius:10px;white-space:nowrap;border:1px solid rgba(255,138,61,.35);box-shadow:0 12px 30px rgba(3,7,20,.45);opacity:0;transition:opacity 140ms}
+#zvTip.on{opacity:1}
+#zvTip b{color:#FFB25E;margin-right:6px;font-size:10.5px}
+#page{padding:24px 26px 60px;max-width:1620px;width:100%;margin:0 auto}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.ph h1{font-size:20px;font-weight:900}.ph .sub{font-size:11.5px;color:var(--muted)}
+.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.inp,.sel{min-height:37px;padding:7px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-size:12px}
+.inp:focus,.sel:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px rgba(255,107,26,.12)}
+.sw{position:relative;min-width:230px;flex:1;max-width:340px}
+.sw .ic{position:absolute;right:11px;top:10px;width:16px;height:16px;color:var(--muted)}
+.sw input{width:100%;padding-right:36px}
+.bulk{display:none;align-items:center;gap:10px;flex-wrap:wrap;background:linear-gradient(90deg,rgba(255,107,26,.1),rgba(124,77,255,.08));border:1px solid rgba(255,107,26,.3);padding:9px 14px;border-radius:12px;margin-bottom:12px;font-size:12px}
+.bulk.show{display:flex}
+.tw{overflow:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table.tb{width:100%;border-collapse:collapse;font-size:12.5px;min-width:820px}
+.tb th{position:sticky;top:0;background:var(--surface2);color:var(--muted);font-size:11px;font-weight:900;text-align:right;padding:11px 13px;border-bottom:1px solid var(--line);white-space:nowrap;z-index:2;cursor:pointer}
+.tb td{padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+.tb tbody tr:hover{background:color-mix(in srgb,var(--brand) 4%,var(--surface))}
+.num{font-variant-numeric:tabular-nums}.ltr{direction:ltr;text-align:right}
+.ra{display:flex;gap:5px;justify-content:flex-end}
+input[type=checkbox]{width:16px;height:16px;accent-color:var(--brand);cursor:pointer}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3.5px 11px;border-radius:20px;font-size:11px;font-weight:800;white-space:nowrap}
+.pill:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.p-blue{background:rgba(46,99,231,.12);color:var(--blue)}.p-green{background:rgba(14,159,110,.13);color:var(--green)}
+.p-amber{background:rgba(217,119,6,.13);color:var(--amber)}.p-red{background:rgba(224,45,60,.12);color:var(--red)}
+.p-violet{background:rgba(124,77,255,.12);color:var(--violet)}.p-teal{background:rgba(15,163,163,.13);color:var(--teal)}
+.p-gray{background:rgba(100,116,139,.14);color:var(--slate)}.p-brand{background:rgba(255,107,26,.13);color:var(--brandDeep)}
+.p-pink{background:rgba(224,68,124,.12);color:var(--pink)}
+.pager{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 4px 0;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+.empty{text-align:center;padding:52px 20px;color:var(--muted)}
+.empty .ei{width:74px;height:74px;margin:0 auto 14px;border-radius:22px;background:linear-gradient(135deg,rgba(255,107,26,.14),rgba(124,77,255,.14));display:grid;place-items:center;color:var(--brand)}
+.empty .ei .ic{width:32px;height:32px}.empty h4{color:var(--ink);font-size:14px;margin-bottom:4px}
+.tabs{display:flex;gap:5px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto}
+.tab{padding:9px 16px;font-size:12.5px;font-weight:800;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap}
+.tab.on{color:var(--brandDeep);border-bottom-color:var(--brand)}
+.charts{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.cbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
+.cbox h3{font-size:13px;font-weight:900;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.cwrap{position:relative;height:250px}
+.rank{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:11px;background:var(--surface2);margin-bottom:7px;font-size:12px}
+.rank .rk{width:24px;height:24px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-size:10.5px;font-weight:900;flex:0 0 auto}
+.rank .info{flex:1;min-width:0}.rank b{display:block;font-size:12px}.rank small{color:var(--muted);font-size:10px}
+.rank .v{font-weight:900;color:var(--brandDeep)}
+.bar{height:8px;border-radius:8px;background:var(--surface2);border:1px solid var(--line);overflow:hidden;min-width:80px}
+.bar i{display:block;height:100%;background:var(--grad);width:0;transition:width .9s cubic-bezier(.3,.9,.3,1)}
+.kanban{display:flex;gap:13px;overflow-x:auto;padding-bottom:14px;align-items:flex-start}
+.kcol{min-width:270px;width:270px;flex:0 0 auto;background:var(--surface2);border:1px solid var(--line);border-radius:15px;padding:10px}
+.kcol.over{border-color:var(--brand);background:rgba(255,107,26,.07)}
+.kch{display:flex;align-items:center;gap:8px;padding:4px 6px 10px;font-size:12px;font-weight:900}
+.kch i{width:9px;height:9px;border-radius:50%}
+.kch span{margin-right:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:10.5px;padding:1px 9px;color:var(--muted)}
+.kcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:9px;cursor:grab;box-shadow:var(--sh)}
+.kcard b{font-size:12.5px;display:block;margin:3px 0}.kcard small{display:block;color:var(--muted);font-size:10.5px}
+.kfoot{display:flex;justify-content:space-between;align-items:center;margin-top:9px;padding-top:8px;border-top:1px dashed var(--line)}
+.scrim{position:fixed;inset:0;background:var(--scrim);backdrop-filter:blur(3px);z-index:90;opacity:0;pointer-events:none;transition:opacity .22s}
+.scrim.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;left:0;height:100vh;width:min(560px,100%);background:var(--surface);z-index:95;transform:translateX(-103%);transition:transform .28s cubic-bezier(.3,.9,.3,1);display:flex;flex-direction:column;border-right:1px solid var(--line);box-shadow:var(--sh2)}
+.drawer.show{transform:none}
+.dh,.mh{display:flex;align-items:center;gap:11px;padding:17px 20px;border-bottom:1px solid var(--line);flex:0 0 auto}
+.dh h3,.mh h3{font-size:15px;font-weight:900;flex:1}
+.db{flex:1;overflow-y:auto;padding:18px 20px;min-height:0}
+.df{padding:13px 20px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;flex:0 0 auto}
+.mback{position:fixed;inset:0;z-index:100;background:var(--scrim);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow-y:auto}
+.mback.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--line);border-radius:20px;width:min(660px,100%);box-shadow:var(--sh2);max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+.modal.w{width:min(1060px,100%)}
+.modal>form{display:flex;flex-direction:column;min-height:0;flex:1;overflow:hidden}
+.mb{padding:20px 22px;overflow-y:auto;flex:1 1 auto;min-height:0}
+.mf{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:9px;flex-wrap:wrap;flex:0 0 auto;align-items:center}
+.modal.dk{background:linear-gradient(165deg,#0D1830,#1D1A44);border-color:#2E3A66;color:#fff}
+.modal.dk .mh,.modal.dk .mf{border-color:#2E3A66}.modal.dk .mh h3{color:#fff}
+.modal.dk .field label{color:#D3DCF5}
+.modal.dk .field input,.modal.dk .field textarea{background:rgba(255,255,255,.08);border-color:#3A4880;color:#fff}
+.modal.dk .field input[readonly]{background:rgba(255,107,26,.14);border-color:rgba(255,107,26,.4);color:#FFC79E;font-weight:800}
+.modal.dk .btn-s{background:rgba(255,255,255,.09);border-color:#3A4880;color:#fff}
+.modal.dk .hint{color:#93A3C8}.modal.dk .sec-t{color:var(--brand2)}
+.modal.dk .zsel-btn{background:rgba(203,213,225,.13);border-color:#44528C;color:#fff}
+.modal.dk .zsel-pan{background:rgba(17,26,48,.98)!important}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.fgrid .full{grid-column:1/-1}
+.fgrid .third{grid-column:span 1}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-size:11.5px;font-weight:800;color:var(--muted)}
+.req{color:var(--red)}
+.field input,.field textarea{min-height:40px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);font-size:12.5px;width:100%}
+.field textarea{min-height:78px;resize:vertical}
+.field input:focus,.field textarea:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px rgba(255,107,26,.14)}
+.field .hint{font-size:10px;color:var(--muted)}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kvi{background:var(--surface2);border:1px solid var(--line);border-radius:11px;padding:9px 12px;min-width:0}
+.kvi small{display:block;font-size:10px;color:var(--muted)}.kvi b{font-size:12.5px;font-weight:800;word-break:break-word}
+.kvi.full{grid-column:1/-1}
+.sec-t{font-size:12px;font-weight:900;color:var(--brandDeep);margin:18px 0 10px;display:flex;align-items:center;gap:8px}
+.sec-t:after{content:"";flex:1;height:1px;background:var(--line)}
+select{background:var(--glass);border:1px solid var(--glassBrd);color:inherit}
+select option{background:#111A30;color:#fff}
+.zsel{position:relative;width:100%}
+.zsel>select{position:absolute!important;width:1px!important;height:1px!important;opacity:0;pointer-events:none;padding:0!important;border:0!important;margin:0!important}
+.zsel-btn{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:40px;padding:9px 12px;border:1px solid var(--glassBrd);border-radius:10px;background:var(--glass);backdrop-filter:blur(12px);color:inherit;font-size:12.5px;font-weight:600;cursor:pointer;text-align:right;transition:all var(--tr)}
+.zsel-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.zsel-btn:hover{border-color:var(--brand)}
+.zsel.open .zsel-btn{border-color:var(--brand);box-shadow:0 0 0 3px rgba(255,107,26,.16)}
+.zsel-btn .ic{width:15px;height:15px;opacity:.75;transition:transform var(--tr)}
+.zsel.open .zsel-btn .ic{transform:rotate(180deg)}
+.zsel-pan{display:none;position:absolute;top:calc(100% + 6px);right:0;left:0;z-index:190;max-height:250px;overflow-y:auto;padding:6px;border-radius:13px;border:1px solid rgba(203,213,225,.22);background:var(--panBg);backdrop-filter:blur(20px);box-shadow:0 20px 48px rgba(3,7,20,.5)}
+.zsel.open .zsel-pan{display:block}
+.zsel-opt{padding:8px 11px;border-radius:9px;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer}
+.zsel-opt:hover{background:rgba(255,107,26,.24)}
+.zsel-opt.on{background:rgba(255,107,26,.34);font-weight:800}
+.zsel-opt.muted{color:#A9B6D4}
+.toolbar .zsel,.bulk .zsel{width:auto;min-width:158px}
+.toolbar .zsel-btn,.bulk .zsel-btn{min-height:37px;font-size:12px}
+.jdw{position:relative;width:100%}.jdw input{padding-left:42px!important}
+.jdb{position:absolute;left:6px;top:50%;transform:translateY(-50%);border:0;border-radius:8px;background:rgba(255,107,26,.14);color:var(--brandDeep);padding:6px 8px;cursor:pointer;z-index:2;display:grid;place-items:center}
+.jpop{display:none;position:fixed;z-index:400;width:min(320px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:11px;box-shadow:var(--sh2)}
+.jpop.open{display:block}
+.jh{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:9px;font-weight:800;font-size:13px}
+.jh button{border:0;background:var(--surface2);border-radius:8px;padding:5px 9px;cursor:pointer;font-size:14px}
+.jh button:hover{background:var(--brand);color:#fff}
+.jh .yr{flex:1;text-align:center}
+.jg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}
+.jg button{border:0;border-radius:7px;padding:7px 0;background:var(--surface2);cursor:pointer;font:inherit;font-size:12px}
+.jg button:hover{background:rgba(255,107,26,.18);color:var(--brandDeep)}
+.jg .dl{background:transparent;color:var(--muted);font-weight:700;cursor:default}
+.jg .today{outline:2px solid var(--brand);outline-offset:-2px}
+#cmdk{position:fixed;inset:0;z-index:120;background:var(--scrim);backdrop-filter:blur(5px);display:none;justify-content:center;padding:11vh 16px}
+#cmdk.show{display:flex}
+.ck{width:min(680px,100%);background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh2);overflow:hidden;height:fit-content}
+.ck-top{display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--line);padding:4px 14px 4px 6px}
+.ck-top input{flex:1;border:0;background:transparent;padding:15px 6px;font-size:15px;outline:none}
+.ckl{max-height:420px;overflow-y:auto;padding:8px}
+.ckg{font-size:10px;font-weight:900;color:var(--muted);padding:9px 12px 5px}
+.cki{display:flex;gap:11px;align-items:center;padding:9px 12px;border-radius:11px;cursor:pointer;font-size:12.5px}
+.cki:hover{background:rgba(255,107,26,.09)}
+.cki small{color:var(--muted);margin-right:auto;font-size:10.5px}
+#toasts{position:fixed;bottom:18px;left:18px;z-index:200;display:flex;flex-direction:column-reverse;gap:9px;max-width:min(400px,90vw)}
+.toast{display:flex;align-items:center;gap:10px;background:var(--navy);color:#fff;padding:12px 16px;border-radius:13px;font-size:12.5px;box-shadow:var(--sh2);border-right:4px solid var(--blue)}
+.toast.ok{border-right-color:var(--green)}.toast.err{border-right-color:var(--red)}.toast.warn{border-right-color:var(--amber)}
+.toast button{background:rgba(255,255,255,.16);border:0;color:#fff;font-weight:900;font-size:11.5px;padding:5px 12px;border-radius:8px;cursor:pointer;margin-right:auto}
+#notifPanel{position:fixed;top:66px;left:22px;z-index:85;width:min(400px,94vw);background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh2);display:none;overflow:hidden}
+#notifPanel.show{display:block}
+.nph{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-bottom:1px solid var(--line);font-weight:900}
+.npl{max-height:420px;overflow-y:auto}
+.npi{display:flex;gap:11px;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer}
+.npi:hover{background:var(--surface2)}
+.npi .ni{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto;background:rgba(255,107,26,.12);color:var(--brand)}
+.npi b{font-size:12px;display:block}.npi small{color:var(--muted);font-size:10.5px;display:block}
+.ins{border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:11px;background:var(--surface);box-shadow:var(--sh);border-right:4px solid var(--slate)}
+.ins.critical{border-right-color:var(--red)}.ins.warning{border-right-color:var(--amber)}
+.ins.info{border-right-color:var(--blue)}.ins.good{border-right-color:var(--green)}
+.ins-h{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.ins-h b{font-size:13.5px;flex:1;min-width:200px}
+.ins-ev{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.ins-ev span{font-size:10.5px;background:var(--surface2);border:1px solid var(--line);border-radius:20px;padding:3px 10px;color:var(--muted)}
+.ins-rec{margin-top:9px;font-size:12px;line-height:1.95;background:var(--surface2);border-radius:10px;padding:9px 12px}
+.ins-f{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.ins-imp{font-size:11px;font-weight:900;color:var(--brandDeep);margin-right:auto}
+.note-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.note{border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--sh);position:relative;overflow:hidden;transition:transform var(--tr)}
+.note:hover{transform:translateY(-3px)}
+.note:before{content:"";position:absolute;top:0;right:0;left:0;height:4px}
+.note.زرد:before{background:#F5C33B}.note.آبی:before{background:var(--blue)}.note.سبز:before{background:var(--green)}
+.note.قرمز:before{background:var(--red)}.note.بنفش:before{background:var(--violet)}.note.خاکستری:before{background:var(--slate)}
+.note h4{font-size:13.5px;font-weight:900;margin:6px 0 7px;display:flex;gap:7px;align-items:center}
+.note p{font-size:11.5px;color:var(--muted);white-space:pre-wrap;line-height:1.95;max-height:150px;overflow:auto}
+.note .nf{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.note.done{opacity:.62}
+.soon-hero{background:var(--hero);color:#fff;border-radius:20px;padding:30px;position:relative;overflow:hidden;margin-bottom:18px}
+.soon-hero:before{content:"";position:absolute;inset:0;background:radial-gradient(420px 220px at 86% 15%,rgba(255,107,26,.4),transparent 60%)}
+.soon-hero>*{position:relative;z-index:1}
+.soon-hero .tag{display:inline-flex;gap:6px;align-items:center;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:800;margin-bottom:12px}
+.soon-hero h2{font-size:22px;font-weight:900;margin-bottom:8px}
+.soon-hero p{color:#D3DCF5;font-size:12.5px;max-width:720px;line-height:2}
+.prog{height:9px;border-radius:9px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:16px;max-width:460px}
+.prog i{display:block;height:100%;width:0;background:var(--grad);transition:width 1s cubic-bezier(.3,.9,.3,1)}
+.prog-l{display:flex;justify-content:space-between;max-width:460px;font-size:11px;color:#D3DCF5;margin-top:6px;font-weight:700}
+.soon-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.soon-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--sh)}
+.soon-card .sic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;margin-bottom:10px}
+.soon-card h4{font-size:13.5px;font-weight:900;margin-bottom:6px}
+.soon-card p{font-size:11.5px;color:var(--muted);line-height:1.9}
+.pe-frame{position:relative;width:min(300px,100%);aspect-ratio:1;margin:12px auto;border-radius:14px;overflow:hidden;background:#0B1736;touch-action:none;cursor:grab}
+.pe-frame img{position:absolute;max-width:none;user-select:none;pointer-events:none}
+.pe-row{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:12px}
+.pe-row input[type=range]{flex:1;accent-color:var(--brand)}
+.asset-pv{display:flex;align-items:center;gap:14px;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+.asset-stage{width:64px;height:64px;flex:0 0 64px;border-radius:12px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,#0B1736,#3B2E7E)}
+.asset-stage img{width:100%;height:100%;object-fit:contain;padding:6px}
+#printArea{display:none}
+.loading{text-align:center;padding:44px;color:var(--muted)}
+.spinner{display:inline-block;width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:1120px){
+#app,html.zv-rail #app{grid-template-columns:1fr}
+.sidebar,html.zv-rail .sidebar{position:fixed;right:0;top:0;width:276px;transform:translateX(105%);transition:transform .28s;z-index:96;box-shadow:var(--sh2)}
+.sidebar.open{transform:none}
+html.zv-rail .sidebar .brand{padding:20px;justify-content:flex-start;gap:11px}
+html.zv-rail .sidebar .brand>div:last-child{display:block}
+html.zv-rail .sidebar .nav-sec{font-size:10px;height:auto;margin:15px 10px 6px;background:none;color:#7C89B4}
+html.zv-rail .sidebar .nav-item{justify-content:flex-start;gap:11px;padding:9.5px 12px}
+html.zv-rail .sidebar .nav-item>span{display:inline}
+html.zv-rail .sidebar .nav-item .bdg{position:static;margin-right:auto;min-width:20px;width:auto;height:20px;padding:0 6px;font-size:10px;box-shadow:none}
+html.zv-rail .sidebar .uchip{flex-direction:row;padding:9px 10px}
+html.zv-rail .sidebar .uchip>div:not(.av){display:block}
+#zvTip{display:none!important}
+}
+@media(max-width:760px){
+#page{padding:16px 14px 70px}.topbar{padding:10px 14px}
+.sbtn{min-width:0}.sbtn span,.sbtn kbd,.crumb{display:none}
+.fgrid,.kv{grid-template-columns:1fr}.hero .dchip{display:none}
+.kcol{width:83vw;min-width:83vw}.drawer{width:100%}.topbar .btn-p span{display:none}
+#notifPanel{left:3vw}.toolbar .zsel,.bulk .zsel{width:100%}
+.zv-login-logo{width:68px;height:68px}
+}
+@media print{body>*{display:none!important}#printArea{display:block!important;font-family:Vazirmatn,Tahoma,sans-serif}}
+</style>
+</head>
+<body>
+<div id="zvFatal"></div>
+<div id="loginView" class="login">
+<div class="lbox">
+<h1>Zingo<span>Vingo</span></h1>
+<div class="sub">مرکز فرمان مدیر کل — تصمیم‌گیری یکپارچه</div>
+<div id="loginError" class="errbox"></div>
+<div class="field" style="margin-bottom:12px"><label>نام کاربری یا ایمیل</label><input id="loginUser" autocomplete="username"></div>
+<div class="field" style="margin-bottom:16px"><label>رمز عبور</label><input id="loginPass" type="password" autocomplete="current-password"></div>
+<button class="btn btn-p" style="width:100%" id="loginBtn" data-act="login">ورود به مرکز فرمان</button>
+<div style="text-align:center;margin-top:16px;font-size:12px"><a href="?page=portal" style="color:var(--brand)">بازگشت به درگاه نقش‌ها</a></div>
+</div>
+</div>
+<div id="app">
+<aside class="sidebar" id="sidebar">
+<div class="brand">
+<div class="mark"><svg class="ic" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg></div>
+<div><h1>Zingo<span>Vingo</span></h1><small>مرکز فرمان مدیر کل</small></div>
+</div>
+<nav class="nav" id="nav"></nav>
+<div class="side-foot">
+<div class="uchip">
+<div class="av" id="sideAv" data-act="my-photo"></div>
+<div style="flex:1;min-width:0"><b id="sideName"></b><small id="sideRole"></small></div>
+<button class="ibtn" data-act="logout" title="خروج"><svg class="ic" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
+</div>
+</div>
+</aside>
+<div class="main">
+<header class="topbar">
+<button class="ibtn rail-btn" id="railBtn" data-act="rail" title="جمع کردن منو (Ctrl+B)"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9 4v16"/><path class="ra" d="M16.5 9.5 14 12l2.5 2.5"/></svg></button>
+<div><h2 id="tbTitle">داشبورد</h2><div class="crumb" id="tbCrumb"></div></div>
+<div class="sp"></div>
+<button class="sbtn" data-act="cmdk"><svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>جستجوی سراسری…</span><kbd>Ctrl K</kbd></button>
+<button class="ibtn" data-act="bell" id="bellBtn"><svg class="ic" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot" id="bellDot" hidden></span></button>
+<button class="ibtn" data-act="theme" id="themeBtn"></button>
+<button class="btn btn-p" data-act="quick-add"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M12 5v14M5 12h14"/></svg><span>ثبت سریع</span></button>
+</header>
+<main id="page"></main>
+</div>
+</div>
+<div class="scrim" id="scrim" data-act="scrim"></div>
+<aside class="drawer" id="drawer"></aside>
+<div class="mback" id="mback"><div class="modal" id="modal"></div></div>
+<div id="cmdk"><div class="ck">
+<div class="ck-top"><svg class="ic" viewBox="0 0 24 24" style="width:17px;height:17px;color:var(--muted)"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input id="ckInput" placeholder="جستجو در قرارداد، پروژه، مالی، سرمایه، یادداشت، تصمیم…" autocomplete="off"></div>
+<div class="ckl" id="ckList"></div>
+</div></div>
+<div id="notifPanel"></div>
+<div id="toasts"></div>
+<div id="printArea"></div>
+<div class="jpop" id="jpop"></div>
+<input type="file" id="peFile" accept="image/jpeg,image/png,image/webp" hidden>
+<input type="file" id="assetFile" accept="image/png,image/svg+xml,image/jpeg,image/webp" hidden>
+<script>
+'use strict';
+/* ═════════ 1) UTIL ═════════ */
+var $=function(s,r){return (r||document).querySelector(s);};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function esc(v){var m={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};return String(v==null?'':v).replace(/[&<>"']/g,function(c){return m[c];});}
+function fa(v){return String(v==null?'':v).replace(/\d/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'[+d];});}
+function en(v){return String(v==null?'':v).replace(/[۰-۹]/g,function(d){return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d));}).replace(/[٠-٩]/g,function(d){return String('٠١٢٣٤٥٦٧٨٩'.indexOf(d));});}
+function num(v){var n=Number(en(v).replace(/[٬,\s]/g,''));return isFinite(n)?n:0;}
+var NF=new Intl.NumberFormat('fa-IR');
+function money(n){return NF.format(Math.round(num(n)))+' '+((DB.company&&DB.company.currency)||'ریال');}
+function moneyC(n){n=num(n);var u=(DB.company&&DB.company.currency)||'ریال';if(Math.abs(n)>=1e9)return fa((n/1e9).toFixed(1))+' میلیارد '+u;if(Math.abs(n)>=1e6)return fa((n/1e6).toFixed(1))+' میلیون '+u;return NF.format(Math.round(n))+' '+u;}
+function pct(v){return fa(Math.round(num(v)*10)/10)+'٪';}
+function debounce(f,ms){var t;return function(){var a=arguments,s=this;clearTimeout(t);t=setTimeout(function(){f.apply(s,a);},ms);};}
+function g2j(gy,gm,gd){var lp=(gy%4===0&&gy%100!==0)||gy%400===0;var M=[0,31,lp?29:28,31,30,31,30,31,31,30,31,30,31];var y2=gm>2?gy+1:gy;var d=355666+365*gy+Math.floor((y2+3)/4)-Math.floor((y2+99)/100)+Math.floor((y2+399)/400)+gd;for(var i=1;i<gm;i++)d+=M[i];var jy=-1595+33*Math.floor(d/12053);d%=12053;jy+=4*Math.floor(d/1461);d%=1461;if(d>365){jy+=Math.floor((d-1)/365);d=(d-1)%365;}var jm,jd;if(d<186){jm=1+Math.floor(d/31);jd=1+d%31;}else{jm=7+Math.floor((d-186)/30);jd=1+(d-186)%30;}return[jy,jm,jd];}
+function j2g(jy,jm,jd){jy+=1595;var d=-355668+365*jy+Math.floor(jy/33)*8+Math.floor(((jy%33)+3)/4)+jd+(jm<7?(jm-1)*31:(jm-7)*30+186);var gy=400*Math.floor(d/146097);d%=146097;if(d>36524){gy+=100*Math.floor(--d/36524);d%=36524;if(d>=365)d++;}gy+=4*Math.floor(d/1461);d%=1461;if(d>365){gy+=Math.floor((d-1)/365);d=(d-1)%365;}var gd=d+1;var lp=gy%4===0&&(gy%100!==0||gy%400===0);var M=[0,31,lp?29:28,31,30,31,30,31,31,30,31,30,31];var gm=1;while(gm<=12&&gd>M[gm]){gd-=M[gm];gm++;}return[gy,gm,gd];}
+function jLeap(y){var g=j2g(y,12,30),j=g2j(g[0],g[1],g[2]);return j[0]===y&&j[1]===12&&j[2]===30;}
+function jDays(y,m){return m<=6?31:(m<=11?30:(jLeap(y)?30:29));}
+function parseJ(s){var m=en(s).trim().replace(/[.\-]/g,'/').match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);if(!m)return null;var y=+m[1],mo=+m[2],d=+m[3];if(mo<1||mo>12||d<1||d>jDays(y,mo))return null;return[y,mo,d];}
+function jStore(s){var p=parseJ(s);if(!p)return '';var g=j2g(p[0],p[1],p[2]);return g[0]+'-'+String(g[1]).padStart(2,'0')+'-'+String(g[2]).padStart(2,'0');}
+function jDisp(v){if(!v)return '—';var d=new Date(v);if(isNaN(d.getTime()))return esc(v);var j=g2j(d.getFullYear(),d.getMonth()+1,d.getDate());return fa(j[0]+'/'+String(j[1]).padStart(2,'0')+'/'+String(j[2]).padStart(2,'0'));}
+function jInput(v){if(!v)return '';var d=new Date(v);if(isNaN(d.getTime()))return '';var j=g2j(d.getFullYear(),d.getMonth()+1,d.getDate());return j[0]+'/'+String(j[1]).padStart(2,'0')+'/'+String(j[2]).padStart(2,'0');}
+function jDT(v){if(!v)return '—';var d=new Date(v);if(isNaN(d.getTime()))return jDisp(v);return jDisp(v)+' · '+fa(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));}
+function gKey(v){var d=new Date(v);return isNaN(d.getTime())?'':d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+var JM=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+function jMonthLabel(k){if(!k)return '—';var p=String(k).split('-');return (JM[(+p[1]||1)-1]||'')+' '+fa(p[0]);}
+function today(){return gKey(new Date());}
+function daysBetween(a,b){var x=new Date(a),y=new Date(b);if(isNaN(x)||isNaN(y))return 0;return Math.round((y-x)/864e5);}
+/* ═════════ 2) ICONS ═════════ */
+var IC={
+dash:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
+contract:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/>',
+capacity:'<path d="M3 12h4l3 8 4-16 3 8h4"/>',
+project:'<path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/>',
+finance:'<path d="M20 7H4a2 2 0 0 1 0-4h14v4M4 7v12a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1"/><path d="M16 13h2"/>',
+pnl:'<path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/>',
+invest:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+equity:'<circle cx="12" cy="12" r="9"/><path d="M12 3v9l7 5"/>',
+target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+note:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>',
+brain:'<path d="M9.5 2A3.5 3.5 0 0 0 6 5.5v.6A3 3 0 0 0 4 9a3 3 0 0 0 1 2.2A3 3 0 0 0 4 14a3 3 0 0 0 2 2.8V18a3 3 0 0 0 6 0V4.5A2.5 2.5 0 0 0 9.5 2z"/><path d="M14.5 2A3.5 3.5 0 0 1 18 5.5v.6A3 3 0 0 1 20 9a3 3 0 0 1-1 2.2A3 3 0 0 1 20 14a3 3 0 0 1-2 2.8V18a3 3 0 0 1-6 0"/>',
+decision:'<path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+chart:'<path d="M3 3v18h18"/><path d="M7 15v3M12 10v8M17 6v12"/>',
+report:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15h6"/>',
+orders:'<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/>',
+branch:'<path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/>',
+people:'<path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/>',
+msg:'<path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.86L3 21l1.9-5.2A8.4 8.4 0 1 1 21 11.5z"/>',
+zap:'<path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/>',
+settings:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"/><path d="M1 14h6M9 8h6M17 16h6"/>',
+user:'<circle cx="12" cy="8" r="4.5"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+x:'<path d="M18 6 6 18M6 6l12 12"/>',check:'<path d="m4.5 12.5 5 5 10-11"/>',
+edit:'<path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>',
+trash:'<path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>',
+eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+dl:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
+up:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
+print:'<path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+sun:'<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22"/>',
+moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+cal:'<rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
+pin:'<path d="M12 17v5M9 3h6l-1 6 3 3H7l3-3-1-6z"/>',
+save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',
+cam:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+chevL:'<path d="m15 18-6-6 6-6"/>',chevR:'<path d="m9 18 6-6-6-6"/>',chevD:'<path d="m6 9 6 6 6-6"/>',
+undo:'<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/>',
+send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
+grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
+image:'<rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="m21 15-5-5L5 21"/>',
+alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+flask:'<path d="M9 2h6M10 2v6L4.5 18A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-3L14 8V2"/><path d="M7 15h10"/>',
+box:'<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/>'
+};
+function icon(n,s){return '<svg class="ic" viewBox="0 0 24 24"'+(s?' style="'+s+'"':'')+'>'+(IC[n]||IC.grid)+'</svg>';}
+/* ═════════ 3) STATE ═════════ */
+var STC={'فعال':'green','پیش‌نویس':'gray','در مذاکره':'violet','در حال انقضا':'amber','منقضی':'red','فسخ شده':'red','تسویه شده':'teal',
+'تکمیل شده':'green','معلق':'amber','لغو شده':'red','ایده':'gray','برنامه‌ریزی':'violet','در حال اجرا':'amber','متوقف':'red',
+'در انتظار':'gray','در حال انجام':'amber','مسدود':'red','پرداخت شده':'green','معوق':'red','درآمد':'green','هزینه':'red',
+'ثابت':'violet','متغیر':'blue','سرمایه‌ای':'teal','واگذار شده':'gray','کم':'green','متوسط':'amber','زیاد':'red',
+'پیشنهادی':'gray','در بررسی':'violet','تصویب شده':'teal','اجرا شده':'green','رد شده':'red','حقیقی':'blue','حقوقی':'violet',
+'بله':'green','خیر':'gray','سبز':'green','زرد':'amber','قرمز':'red','عادی':'gray','مهم':'violet','فوری':'amber','بحرانی':'red',
+'OPEN':'blue','ANSWERED':'green','CLOSED':'gray','جدید':'blue','ثبت اولیه':'violet','تبدیل به کارت':'teal','تعلیق':'gray',
+'critical':'red','warning':'amber','info':'blue','good':'green','ماهانه':'blue','فصلی':'violet','سالانه':'teal','کل قرارداد':'gray'};
+function pill(s){return '<span class="pill p-'+(STC[s]||'gray')+'">'+esc(s||'—')+'</span>';}
+function av(n,u,cls,act,ex){return '<span class="av '+(cls||'')+'"'+(act?' data-act="'+act+'"'+(ex||''):'')+'>'+(u?'<img src="'+esc(u)+'" alt="">':esc(String(n||'؟').trim().charAt(0)))+'</span>';}
+var TOKEN=localStorage.getItem('zv_manager_token')||'';
+var USER=null,DB={},PS={page:'dashboard',pn:1,q:'',filters:{},sel:new Set(),sort:null,tab:'ledger',view:'table',nf:{}};
+var CH=[],PE={x:0,y:0,z:1,w:0,h:0,ready:false,drag:false,sx:0,sy:0,target:null},ASSET='logo';
+var RKEY='zv_rail_manager',HKEY='zv_manager_history';
+function api(fn){var a=Array.prototype.slice.call(arguments,1);return new Promise(function(res,rej){
+if(!window.google||!google.script||!google.script.run){rej(new Error('پل ارتباطی zv-api.js بارگذاری نشده است.'));return;}
+var r=google.script.run.withSuccessHandler(res).withFailureHandler(function(e){rej(new Error(e&&e.message?e.message:String(e)));});
+if(typeof r[fn]!=='function'){rej(new Error('تابع '+fn+' در بک‌اند نصب نیست.'));return;}
+r[fn].apply(r,a);});}
+function brName(id){var b=(DB.branches||[]).find(function(x){return x.branchId===id;});return b?b.name:(id||'ستاد');}
+function conTitle(id){var c=(DB.contracts||[]).find(function(x){return x.id===id;});return c?c.Title:(id||'—');}
+function prjName(id){var p=(DB.projects||[]).find(function(x){return x.id===id;});return p?p.Name:(id||'—');}
+function svcOpts(){return (DB.services||[]).map(function(s){return {v:s.id,l:s.nameFa||s.nameEn};});}
+function brOpts(){return (DB.branches||[]).map(function(b){return {v:b.branchId,l:b.name+' ('+b.branchId+')'};});}
+function conOpts(){return (DB.contracts||[]).map(function(c){return {v:c.id,l:c.Title+' ('+c.id+')'};});}
+function prjOpts(){return (DB.projects||[]).map(function(p){return {v:p.id,l:p.Name+' ('+p.id+')'};});}
+function capOpts(){return (DB.capacity||[]).map(function(c){return {v:c.id,l:c.Title+' — '+conTitle(c['Contract-ID'])};});}
+/* ═════════ 4) UI ═════════ */
+function toast(m,t,a){var d=document.createElement('div');d.className='toast '+(t||'');
+d.innerHTML=icon(t==='ok'?'check':t==='err'?'x':t==='warn'?'undo':'zap','width:16px;height:16px')+'<span>'+esc(m)+'</span>'+(a?'<button type="button">'+esc(a.label)+'</button>':'');
+if(a)d.querySelector('button').onclick=function(){a.fn();d.remove();};
+$('#toasts').appendChild(d);setTimeout(function(){d.remove();},a?8000:3800);}
+function openModal(h,w,d){var m=$('#modal');m.className='modal'+(w?' w':'')+(d?' dk':'');m.innerHTML=h;$('#mback').classList.add('show');document.body.style.overflow='hidden';$$('select',m).forEach(function(s){s._zv=false;});decorate(m);jdInit(m);}
+function closeModal(){$('#mback').classList.remove('show');document.body.style.overflow='';jdClose();}
+function openDrawer(h){$('#drawer').innerHTML=h;$('#drawer').classList.add('show');$('#scrim').classList.add('show');document.body.style.overflow='hidden';decorate($('#drawer'));jdInit($('#drawer'));}
+function closeDrawer(){$('#drawer').classList.remove('show');$('#scrim').classList.remove('show');document.body.style.overflow='';}
+function closeAll(){closeDrawer();$('#sidebar').classList.remove('open');$('#scrim').classList.remove('show');$('#notifPanel').classList.remove('show');}
+function confirmBox(t,b,fn,y,n,dg){openModal('<div class="mh"><h3>'+esc(t)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><div class="mb"><p style="font-size:13px;line-height:2">'+b+'</p></div><div class="mf"><button class="btn '+(dg===false?'btn-p':'btn-d')+'" id="cfY">'+esc(y||'بله')+'</button><button class="btn btn-s" data-act="mclose">'+esc(n||'انصراف')+'</button></div>');$('#cfY').onclick=function(){closeModal();fn();};}
+function kv(p){return '<div class="kv">'+p.map(function(x){return '<div class="kvi'+(x[2]?' full':'')+'"><small>'+esc(x[0])+'</small><b>'+(x[1]==null?'—':x[1])+'</b></div>';}).join('')+'</div>';}
+function head(t,s,a){return '<div class="ph"><div><h1>'+esc(t)+'</h1><div class="sub">'+esc(s)+'</div></div><div style="display:flex;gap:8px;flex-wrap:wrap">'+(a||'')+'</div></div>';}
+function btn(act,l,ic,cls,ex){return '<button class="btn '+(cls||'btn-s')+'" data-act="'+act+'"'+(ex||'')+'>'+(ic?icon(ic,'width:15px;height:15px'):'')+' '+esc(l)+'</button>';}
+function ibtn(act,ic,t,ex){return '<button class="btn btn-s btn-i" title="'+esc(t)+'" data-act="'+act+'"'+(ex||'')+'>'+icon(ic,'width:14px;height:14px')+'</button>';}
+function bar(p,c){return '<span class="bar"><i data-w="'+Math.max(0,Math.min(100,num(p)))+'"'+(c?' style="background:'+c+'"':'')+'></i></span>';}
+function kpi(l,v,ic,c,s,sp,delta){
+return '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,'+c+' 14%,transparent);color:'+c+'">'+icon(ic)+'</span>'+
+(delta!==undefined?'<span class="pill '+(delta>=0?'p-green':'p-red')+'">'+(delta>=0?'▲':'▼')+' '+fa(Math.abs(delta))+'٪</span>':'')+
+'</div><div class="l">'+esc(l)+'</div><div class="v">'+v+'</div><div class="s">'+esc(s||'')+'</div>'+(sp?spark(sp,c):'')+'</div>';}
+function spark(v,c){v=v&&v.length?v:[0,0];var w=120,h=34,n=Math.max(1,v.length-1);
+var mx=Math.max.apply(null,v.concat([1])),mn=Math.min.apply(null,v.concat([0]));
+var p=v.map(function(x,i){return [(i/n)*w,h-4-((x-mn)/((mx-mn)||1))*(h-8)];});
+var ln=p.map(function(q){return q[0].toFixed(1)+','+q[1].toFixed(1);}).join(' ');
+return '<svg class="spark" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none"><polygon points="0,'+h+' '+ln+' '+w+','+h+'" fill="'+c+'" opacity=".15"/><polyline points="'+ln+'" fill="none" stroke="'+c+'" stroke-width="2"/></svg>';}
+function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+function pal(){return ['--brand','--violet','--blue','--teal','--pink','--amber','--green','--slate'].map(cssVar);}
+function rc(c){return String(c).indexOf('var(')===0?cssVar(String(c).slice(4,-1)):c;}
+/* ═════════ 5) SELECT + DATE ═════════ */
+function zClose(ex){$$('.zsel.open').forEach(function(w){if(w!==ex)w.classList.remove('open');});}
+function zSync(s){if(s&&s._sync)s._sync();}
+function decorate(root){$$('select',root||document).forEach(function(sel){
+if(sel._zv)return;sel._zv=true;
+var w=document.createElement('div');w.className='zsel';sel.parentNode.insertBefore(w,sel);w.appendChild(sel);
+var b=document.createElement('button');b.type='button';b.className='zsel-btn';
+var p=document.createElement('div');p.className='zsel-pan';w.appendChild(b);w.appendChild(p);
+function lab(){var o=sel.options[sel.selectedIndex];b.innerHTML='<span>'+esc(o?o.text:'—')+'</span>'+icon('chevD');}
+function build(){p.innerHTML=Array.prototype.map.call(sel.options,function(o,i){return '<div class="zsel-opt'+(i===sel.selectedIndex?' on':'')+(o.value?'':' muted')+'" data-i="'+i+'">'+esc(o.text)+'</div>';}).join('');}
+b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();var op=w.classList.contains('open');zClose();if(!op){build();w.classList.add('open');var c=p.querySelector('.zsel-opt.on');if(c)p.scrollTop=Math.max(0,c.offsetTop-90);}});
+p.addEventListener('click',function(e){var o=e.target.closest('.zsel-opt');if(!o)return;e.stopPropagation();sel.selectedIndex=+o.dataset.i;sel.dispatchEvent(new Event('input',{bubbles:true}));sel.dispatchEvent(new Event('change',{bubbles:true}));lab();w.classList.remove('open');});
+sel._sync=lab;lab();});}
+var JD={inp:null,y:0,m:0};
+function jdInit(root){$$('input[data-jd]',root||document).forEach(function(inp){
+if(inp._jd)return;inp._jd=true;inp.autocomplete='off';if(!inp.placeholder)inp.placeholder='۱۴۰۵/۰۹/۰۱';
+var w=document.createElement('div');w.className='jdw';inp.parentNode.insertBefore(w,inp);w.appendChild(inp);
+var b=document.createElement('button');b.type='button';b.className='jdb';b.innerHTML=icon('cal','width:14px;height:14px');w.appendChild(b);
+b.addEventListener('click',function(e){e.stopPropagation();jdOpen(inp);});
+inp.addEventListener('input',function(){var v=en(inp.value).replace(/\D/g,'').slice(0,8);if(v.length>4)v=v.slice(0,4)+'/'+v.slice(4);if(v.length>7)v=v.slice(0,7)+'/'+v.slice(7);inp.value=v;});});}
+function jdOpen(inp){JD.inp=inp;var p=parseJ(inp.value),n=new Date(),j=g2j(n.getFullYear(),n.getMonth()+1,n.getDate());
+JD.y=p?p[0]:j[0];JD.m=p?p[1]:j[1];jdRender();
+var pop=$('#jpop');pop.classList.add('open');var r=inp.getBoundingClientRect(),pw=320,ph=pop.offsetHeight||330;
+pop.style.left=Math.min(Math.max(8,r.left),window.innerWidth-pw-8)+'px';
+var t=r.bottom+6;if(t+ph>window.innerHeight-8)t=Math.max(8,r.top-ph-6);pop.style.top=t+'px';}
+function jdClose(){$('#jpop').classList.remove('open');JD.inp=null;}
+function jdRender(){var n=new Date(),t=g2j(n.getFullYear(),n.getMonth()+1,n.getDate()),mx=jDays(JD.y,JD.m),f=j2g(JD.y,JD.m,1);
+var wd=(new Date(f[0],f[1]-1,f[2]).getDay()+1)%7;
+var h='<div class="jh"><button type="button" data-j="py">«</button><button type="button" data-j="pm">‹</button><span class="yr">'+JM[JD.m-1]+' '+fa(JD.y)+'</span><button type="button" data-j="nm">›</button><button type="button" data-j="ny">»</button></div><div class="jg">';
+['ش','ی','د','س','چ','پ','ج'].forEach(function(x){h+='<button type="button" class="dl" disabled>'+x+'</button>';});
+for(var i=0;i<wd;i++)h+='<span></span>';
+for(var d=1;d<=mx;d++)h+='<button type="button" data-day="'+d+'" class="'+(t[0]===JD.y&&t[1]===JD.m&&t[2]===d?'today':'')+'">'+fa(d)+'</button>';
+$('#jpop').innerHTML=h+'</div>';}
+$('#jpop').addEventListener('click',function(e){
+var n=e.target.closest('[data-j]');
+if(n){var k=n.dataset.j;if(k==='py')JD.y--;if(k==='ny')JD.y++;if(k==='pm'){JD.m--;if(JD.m<1){JD.m=12;JD.y--;}}if(k==='nm'){JD.m++;if(JD.m>12){JD.m=1;JD.y++;}}jdRender();return;}
+var d=e.target.closest('[data-day]');
+if(d&&JD.inp){JD.inp.value=JD.y+'/'+String(JD.m).padStart(2,'0')+'/'+String(d.dataset.day).padStart(2,'0');JD.inp.dispatchEvent(new Event('change',{bubbles:true}));jdClose();}});
+/* ═════════ 6) AUTH / DATA ═════════ */
+function setErr(m){var e=$('#loginError');e.textContent=m;e.style.display='block';}
+function doLogin(){
+var u=$('#loginUser').value.trim(),p=$('#loginPass').value;
+if(!u||!p){setErr('نام کاربری و رمز عبور را وارد کنید.');return;}
+$('#loginError').style.display='none';
+var b=$('#loginBtn');b.disabled=true;b.textContent='در حال ورود…';
+api('managerLogin',u,p).then(function(r){TOKEN=r.token;USER=r.user;localStorage.setItem('zv_manager_token',TOKEN);return loadData();})
+.then(showApp).catch(function(e){setErr(e.message);}).then(function(){b.disabled=false;b.textContent='ورود به مرکز فرمان';});}
+function doLogout(){confirmBox('خروج از مرکز فرمان','آیا برای خروج مطمئن هستید؟',function(){
+api('managerLogout',TOKEN).catch(function(){}).then(function(){localStorage.removeItem('zv_manager_token');TOKEN='';USER=null;location.reload();});},'بله، خروج','خیر',false);}
+function loadData(){return api('mgrCCBootstrap',TOKEN).then(function(r){USER=r.user;DB=r.data||{};applyAssets();});}
+function reload(){return loadData().then(render);}
+function showApp(){$('#loginView').style.display='none';$('#app').style.display='grid';paintUser();go('dashboard');}
+function paintUser(){if(!USER)return;$('#sideName').textContent=USER.name||'—';$('#sideRole').textContent=(USER.roleFa||'مدیر کل')+' · '+(USER.username||'');
+$('#sideAv').innerHTML=USER.avatar?'<img src="'+esc(USER.avatar)+'" alt="">':esc(String(USER.name||'؟').trim().charAt(0));}
+var MARK='<svg class="ic" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg>';
+var PUB=null;
+function applyAssets(){
+var s=DB.settings||{},url=s.LOGO_URL||(PUB&&PUB.LOGO_URL)||'LOGO.png';
+var im=new Image();
+im.onload=function(){$$('.brand .mark').forEach(function(m){m.classList.add('zv-logo');m.innerHTML='<img src="'+esc(url)+'" alt="ZingoVingo">';});
+var lb=$('.lbox');if(lb){var h=$('.zv-login-logo',lb);if(!h){h=document.createElement('div');h.className='zv-login-logo';lb.insertBefore(h,lb.firstChild);}h.innerHTML='<img src="'+esc(url)+'" alt="">';}
+var pv=$('#assetPvLogo');if(pv)pv.src=url;};
+im.onerror=function(){$$('.brand .mark').forEach(function(m){m.classList.remove('zv-logo');m.innerHTML=MARK;});};
+im.src=url;
+var f=$('#zvFavicon');if(f)f.setAttribute('href',s.FAVICON_URL||(PUB&&PUB.FAVICON_URL)||'favicon.png');}
+/* ═════════ 7) ENTITY CONFIG ═════════ */
+var E={};
+function buildCfg(){
+E.contracts={t:'قراردادها',s:'قرارداد',ic:'contract',id:'Contract-ID',
+search:['id','Code','Title','PartyName','Branch-ID','ServiceScope'],
+filters:[{k:'Status',l:'وضعیت'},{k:'Type',l:'نوع'},{k:'PartyType',l:'طرف'},{k:'Branch-ID',l:'شعبه',opts:brOpts}],
+bulk:'Status',
+cols:[{k:'id',l:'شناسه',r:function(r){return '<b class="ltr">'+esc(r.id)+'</b>';}},
+{k:'Title',l:'عنوان'},{k:'PartyName',l:'طرف قرارداد'},{k:'Type',l:'نوع',r:function(r){return pill(r.Type);}},
+{k:'Value',l:'مبلغ',cls:'num',r:function(r){return money(r.Value);}},
+{k:'EndDate',l:'پایان',r:function(r){var c=(DB.contractStats.list||[]).find(function(x){return x.id===r.id;})||{};return jDisp(r.EndDate)+(c.expiring?' <span class="pill p-amber">'+fa(c.daysLeft)+' روز</span>':'');}},
+{k:'capCount',l:'ظرفیت‌ها',cls:'num',sv:function(r){return (DB.capacity||[]).filter(function(c){return c['Contract-ID']===r.id;}).length;},r:function(r){return fa((DB.capacity||[]).filter(function(c){return c['Contract-ID']===r.id;}).length);}},
+{k:'Status',l:'وضعیت',r:function(r){return pill(r.Status);}}],
+fields:[{n:'Title',l:'عنوان قرارداد',req:1,full:1},{n:'Code',l:'شماره قرارداد'},{n:'Type',l:'نوع',req:1},
+{n:'PartyType',l:'نوع طرف'},{n:'PartyName',l:'نام طرف',req:1},{n:'PartyId',l:'شناسه/کد ملی طرف'},
+{n:'PartyPhone',l:'تماس طرف'},{n:'PartyEmail',l:'ایمیل طرف'},{n:'Branch-ID',l:'شعبه',opts:brOpts},
+{n:'ServiceScope',l:'دامنه خدمات',full:1},{n:'StartDate',l:'تاریخ شروع',jd:1,req:1},{n:'EndDate',l:'تاریخ پایان',jd:1,req:1},
+{n:'Value',l:'مبلغ کل',num:1,req:1},{n:'Currency',l:'واحد پول'},{n:'BillingCycle',l:'دوره صدور'},
+{n:'Status',l:'وضعیت'},{n:'AutoRenew',l:'تمدید خودکار'},{n:'NoticeDays',l:'مهلت اعلام (روز)',num:1},
+{n:'OwnerName',l:'مسئول پیگیری'},{n:'SignedAt',l:'تاریخ امضا',jd:1},{n:'DocumentUrl',l:'نشانی سند',full:1},
+{n:'Description',l:'شرح',ta:1,full:1},{n:'Notes',l:'یادداشت',ta:1,full:1}],
+acts:[{a:'con-caps',i:'capacity',l:'ظرفیت‌های قرارداد'},{a:'con-renew',i:'undo',l:'تمدید'}]};
+E.capacity={t:'ظرفیت قراردادها',s:'ظرفیت',ic:'capacity',id:'Capacity-ID',
+search:['id','Contract-ID','Title','ServiceName','Branch-ID'],
+filters:[{k:'Status',l:'وضعیت'},{k:'Contract-ID',l:'قرارداد',opts:conOpts},{k:'PeriodType',l:'دوره'}],
+bulk:'Status',
+cols:[{k:'id',l:'شناسه',r:function(r){return '<b class="ltr">'+esc(r.id)+'</b>';}},
+{k:'Title',l:'عنوان'},{k:'Contract-ID',l:'قرارداد',r:function(r){return esc(conTitle(r['Contract-ID']));}},
+{k:'TotalQty',l:'کل',cls:'num',r:function(r){return fa(r.TotalQty)+' '+esc(r.Unit);}},
+{k:'used',l:'مصرف',cls:'num',sv:function(r){var c=(DB.contractStats.caps||[]).find(function(x){return x.id===r.id;})||{};return c.used||0;},r:function(r){var c=(DB.contractStats.caps||[]).find(function(x){return x.id===r.id;})||{};return fa(c.used||0);}},
+{k:'utilPct',l:'بهره‌برداری',sv:function(r){var c=(DB.contractStats.caps||[]).find(function(x){return x.id===r.id;})||{};return c.utilPct||0;},r:function(r){var c=(DB.contractStats.caps||[]).find(function(x){return x.id===r.id;})||{};var p=c.utilPct||0;return '<div style="display:flex;gap:8px;align-items:center">'+bar(p,p>=85?'var(--red)':p<25?'var(--amber)':'var(--green)')+'<b class="num">'+pct(p)+'</b></div>';}},
+{k:'UnitPrice',l:'نرخ واحد',cls:'num',r:function(r){return money(r.UnitPrice);}},
+{k:'Status',l:'وضعیت',r:function(r){return pill(r.Status);}}],
+fields:[{n:'Contract-ID',l:'قرارداد',opts:conOpts,req:1,full:1},{n:'Title',l:'عنوان ظرفیت',req:1,full:1},
+{n:'Service-ID',l:'خدمت',opts:svcOpts},{n:'ServiceName',l:'نام خدمت'},
+{n:'Unit',l:'واحد',req:1,ph:'ساعت / نفر / سرویس'},{n:'TotalQty',l:'ظرفیت کل',num:1,req:1},
+{n:'ReservedQty',l:'رزرو شده',num:1},{n:'UnitPrice',l:'نرخ واحد',num:1,req:1},
+{n:'PeriodType',l:'نوع دوره'},{n:'PeriodKey',l:'کلید دوره',ph:'1405-09'},
+{n:'Branch-ID',l:'شعبه',opts:brOpts},{n:'Group-ID',l:'گروه'},
+{n:'StartDate',l:'شروع',jd:1},{n:'EndDate',l:'پایان',jd:1},{n:'Status',l:'وضعیت'},
+{n:'Notes',l:'یادداشت',ta:1,full:1}],
+acts:[{a:'cap-use',i:'plus',l:'ثبت مصرف'},{a:'cap-usage',i:'list',l:'تاریخچه مصرف'}]};
+E.projects={t:'پروژه‌ها',s:'پروژه',ic:'project',id:'Project-ID',
+search:['id','Code','Name','ManagerName','Branch-ID'],
+filters:[{k:'Status',l:'وضعیت'},{k:'Priority',l:'اولویت'},{k:'Health',l:'سلامت'},{k:'Branch-ID',l:'شعبه',opts:brOpts}],
+bulk:'Status',
+cols:[{k:'id',l:'شناسه',r:function(r){return '<b class="ltr">'+esc(r.id)+'</b>';}},
+{k:'Name',l:'نام پروژه'},{k:'ManagerName',l:'مدیر'},
+{k:'calcProgress',l:'پیشرفت',sv:function(r){var p=(DB.projectStats.list||[]).find(function(x){return x.id===r.id;})||{};return p.calcProgress||0;},r:function(r){var p=(DB.projectStats.list||[]).find(function(x){return x.id===r.id;})||{};var v=p.calcProgress||0;return '<div style="display:flex;gap:8px;align-items:center">'+bar(v)+'<b class="num">'+pct(v)+'</b></div>';}},
+{k:'DueDate',l:'مهلت',r:function(r){var p=(DB.projectStats.list||[]).find(function(x){return x.id===r.id;})||{};return jDisp(r.DueDate)+(p.late?' <span class="pill p-red">تأخیر</span>':'');}},
+{k:'Budget',l:'بودجه',cls:'num',r:function(r){return moneyC(r.Budget);}},
+{k:'burnPct',l:'مصرف بودجه',sv:function(r){var p=(DB.projectStats.list||[]).find(function(x){return x.id===r.id;})||{};return p.burnPct||0;},r:function(r){var p=(DB.projectStats.list||[]).find(function(x){return x.id===r.id;})||{};return pct(p.burnPct||0);}},
+{k:'Health',l:'سلامت',r:function(r){var p=(DB.projectStats.list||[]).find(function(x){return x.id===r.id;})||{};return pill(p.health||r.Health);}},
+{k:'Status',l:'وضعیت',r:function(r){return pill(r.Status);}}],
+fields:[{n:'Name',l:'نام پروژه',req:1,full:1},{n:'Code',l:'کد پروژه'},{n:'Type',l:'نوع'},
+{n:'Branch-ID',l:'شعبه',opts:brOpts},{n:'Contract-ID',l:'قرارداد مرتبط',opts:conOpts},
+{n:'ManagerName',l:'مدیر پروژه'},{n:'TeamIds',l:'اعضا (با کاما)'},
+{n:'StartDate',l:'شروع',jd:1,req:1},{n:'DueDate',l:'مهلت',jd:1,req:1},
+{n:'Budget',l:'بودجه',num:1,req:1},{n:'Spent',l:'هزینه شده',num:1},
+{n:'Priority',l:'اولویت'},{n:'Status',l:'وضعیت'},{n:'Health',l:'سلامت'},
+{n:'Description',l:'شرح',ta:1,full:1},{n:'Notes',l:'یادداشت',ta:1,full:1}],
+acts:[{a:'prj-tasks',i:'list',l:'مایلستون‌ها'},{a:'prj-task-new',i:'plus',l:'افزودن مایلستون'}]};
+E.ptasks={t:'مایلستون‌ها',s:'مایلستون',ic:'check',id:'Task-ID',
+search:['id','Project-ID','Title','Assignee'],
+filters:[{k:'Status',l:'وضعیت'},{k:'Project-ID',l:'پروژه',opts:prjOpts}],
+bulk:'Status',
+cols:[{k:'id',l:'شناسه',r:function(r){return '<b class="ltr">'+esc(r.id)+'</b>';}},
+{k:'Title',l:'عنوان'},{k:'Project-ID',l:'پروژه',r:function(r){return esc(prjName(r['Project-ID']));}},
+{k:'Assignee',l:'مسئول'},{k:'DueDate',l:'مهلت',r:function(r){return jDisp(r.DueDate);}},
+{k:'Weight',l:'وزن',cls:'num',r:function(r){return fa(r.Weight||1);}},
+{k:'Progress',l:'پیشرفت',cls:'num',r:function(r){return pct(r.Status==='تکمیل شده'?100:r.Progress);}},
+{k:'Status',l:'وضعیت',r:function(r){return pill(r.Status);}}],
+fields:[{n:'Project-ID',l:'پروژه',opts:prjOpts,req:1,full:1},{n:'Title',l:'عنوان',req:1,full:1},
+{n:'Assignee',l:'مسئول'},{n:'StartDate',l:'شروع',jd:1},{n:'DueDate',l:'مهلت',jd:1,req:1},
+{n:'Weight',l:'وزن',num:1},{n:'Progress',l:'درصد پیشرفت',num:1},{n:'Status',l:'وضعیت'},
+{n:'DependsOn',l:'وابسته به'},{n:'Notes',l:'یادداشت',ta:1,full:1}]};
+E.finance={t:'دفتر مالی',s:'تراکنش',ic:'finance',id:'Entry-ID',
+search:['id','Category','SubCategory','Payee','RefId','Branch-ID'],
+filters:[{k:'Type',l:'نوع'},{k:'Status',l:'وضعیت'},{k:'CostType',l:'ماهیت هزینه'},{k:'Branch-ID',l:'شعبه',opts:brOpts}],
+bulk:'Status',
+cols:[{k:'id',l:'شناسه',r:function(r){return '<b class="ltr">'+esc(r.id)+'</b>';}},
+{k:'Date',l:'تاریخ',r:function(r){return jDisp(r.Date);}},
+{k:'Type',l:'نوع',r:function(r){return pill(r.Type);}},
+{k:'Category',l:'سرفصل'},{k:'SubCategory',l:'زیرسرفصل'},
+{k:'Amount',l:'مبلغ',cls:'num',r:function(r){return '<b style="color:'+(r.Type==='درآمد'?'var(--green)':'var(--red)')+'">'+money(r.Amount)+'</b>';}},
+{k:'CostType',l:'ماهیت',r:function(r){return r.Type==='هزینه'?pill(r.CostType):'—';}},
+{k:'Branch-ID',l:'شعبه',r:function(r){return esc(brName(r['Branch-ID']));}},
+{k:'Status',l:'وضعیت',r:function(r){return pill(r.Status);}}],
+fields:[{n:'Date',l:'تاریخ',jd:1,req:1},{n:'Type',l:'نوع',req:1},
+{n:'Category',l:'سرفصل',req:1,ph:'خدمات / حقوق / اجاره / بازاریابی'},{n:'SubCategory',l:'زیرسرفصل'},
+{n:'Amount',l:'مبلغ',num:1,req:1},{n:'CostType',l:'ماهیت هزینه'},
+{n:'Branch-ID',l:'شعبه',opts:brOpts},{n:'Project-ID',l:'پروژه',opts:prjOpts},
+{n:'Contract-ID',l:'قرارداد',opts:conOpts},{n:'Payee',l:'طرف حساب'},
+{n:'Method',l:'روش پرداخت'},{n:'RefId',l:'شناسه مرجع'},
+{n:'Status',l:'وضعیت'},{n:'DueDate',l:'سررسید',jd:1},
+{n:'Note',l:'شرح',ta:1,full:1}]};
+E.investments={t:'سرمایه‌گذاری‌ها',s:'سرمایه‌گذاری',ic:'invest',id:'Investment-ID',
+search:['id','Title','Symbol','Issuer','Kind'],
+filters:[{k:'Kind',l:'نوع دارایی'},{k:'Status',l:'وضعیت'},{k:'Risk',l:'ریسک'}],
+bulk:'Status',
+cols:[{k:'id',l:'شناسه',r:function(r){return '<b class="ltr">'+esc(r.id)+'</b>';}},
+{k:'Title',l:'عنوان'},{k:'Kind',l:'نوع',r:function(r){return pill(r.Kind);}},
+{k:'Units',l:'واحد',cls:'num',r:function(r){return fa(r.Units);}},
+{k:'BuyPrice',l:'خرید',cls:'num',r:function(r){return moneyC(r.BuyPrice);}},
+{k:'CurrentPrice',l:'جاری',cls:'num',r:function(r){return moneyC(r.CurrentPrice||r.BuyPrice);}},
+{k:'value',l:'ارزش',cls:'num',sv:function(r){return r.Units*(r.CurrentPrice||r.BuyPrice);},r:function(r){return moneyC(r.Units*(r.CurrentPrice||r.BuyPrice));}},
+{k:'plPct',l:'بازده',sv:function(r){var c=r.Units*r.BuyPrice;return c?((r.Units*(r.CurrentPrice||r.BuyPrice))-c)/c*100:0;},r:function(r){var c=r.Units*r.BuyPrice,v=r.Units*(r.CurrentPrice||r.BuyPrice),p=c?Math.round((v-c)/c*1000)/10:0;return '<span class="pill '+(p>=0?'p-green':'p-red')+'">'+(p>=0?'▲':'▼')+' '+pct(Math.abs(p))+'</span>';}},
+{k:'Risk',l:'ریسک',r:function(r){return pill(r.Risk);}},{k:'Status',l:'وضعیت',r:function(r){return pill(r.Status);}}],
+fields:[{n:'Title',l:'عنوان',req:1,full:1},{n:'Kind',l:'نوع دارایی',req:1},{n:'Symbol',l:'نماد'},
+{n:'Issuer',l:'ناشر / شرکت'},{n:'Units',l:'تعداد واحد',num:1,req:1},
+{n:'BuyPrice',l:'قیمت خرید واحد',num:1,req:1},{n:'BuyDate',l:'تاریخ خرید',jd:1},
+{n:'CurrentPrice',l:'قیمت جاری',num:1},{n:'PriceUpdatedAt',l:'تاریخ قیمت',jd:1},
+{n:'TargetPrice',l:'قیمت هدف',num:1},{n:'StopLoss',l:'حد ضرر',num:1},
+{n:'OwnershipPct',l:'درصد مالکیت',num:1},{n:'TotalShares',l:'کل سهام شرکت مقصد',num:1},
+{n:'Branch-ID',l:'شعبه تأمین',opts:brOpts},{n:'Risk',l:'ریسک'},{n:'Status',l:'وضعیت'},
+{n:'Note',l:'یادداشت',ta:1,full:1}],
+acts:[{a:'inv-price',i:'edit',l:'به‌روزرسانی قیمت'}]};
+E.holders={t:'سهامداران شرکت',s:'سهامدار',ic:'equity',id:'Holder-ID',
+search:['id','Name','NationalId','Phone'],
+filters:[{k:'Type',l:'نوع'},{k:'Status',l:'وضعیت'}],bulk:'Status',
+cols:[{k:'id',l:'شناسه',r:function(r){return '<b class="ltr">'+esc(r.id)+'</b>';}},
+{k:'Name',l:'نام'},{k:'Type',l:'نوع',r:function(r){return pill(r.Type);}},
+{k:'Shares',l:'سهام',cls:'num',r:function(r){return fa(r.Shares);}},
+{k:'SharePct',l:'درصد',cls:'num',r:function(r){var e=(DB.equity.holders||[]).find(function(x){return x.id===r.id;})||{};return pct(e.calcPct||r.SharePct);}},
+{k:'PaidCapital',l:'سرمایه پرداختی',cls:'num',r:function(r){return moneyC(r.PaidCapital);}},
+{k:'JoinDate',l:'ورود',r:function(r){return jDisp(r.JoinDate);}},{k:'Status',l:'وضعیت',r:function(r){return pill(r.Status);}}],
+fields:[{n:'Name',l:'نام سهامدار',req:1,full:1},{n:'Type',l:'نوع'},{n:'NationalId',l:'کد ملی / شناسه ملی'},
+{n:'Phone',l:'تماس'},{n:'Shares',l:'تعداد سهام',num:1,req:1},
+{n:'PaidCapital',l:'سرمایه پرداختی',num:1},{n:'JoinDate',l:'تاریخ ورود',jd:1},{n:'Status',l:'وضعیت'},
+{n:'Note',l:'یادداشت',ta:1,full:1}]};
+E.decisions={t:'تصمیمات مدیریتی',s:'تصمیم',ic:'decision',id:'Decision-ID',
+search:['id','Title','Context','Choice','Owner'],
+filters:[{k:'Status',l:'وضعیت'},{k:'Risk',l:'ریسک'},{k:'RelatedType',l:'حوزه'}],bulk:'Status',
+cols:[{k:'id',l:'شناسه',r:function(r){return '<b class="ltr">'+esc(r.id)+'</b>';}},
+{k:'Title',l:'عنوان تصمیم'},{k:'Choice',l:'انتخاب'},
+{k:'Owner',l:'مسئول'},{k:'DueDate',l:'مهلت',r:function(r){return jDisp(r.DueDate);}},
+{k:'Risk',l:'ریسک',r:function(r){return pill(r.Risk);}},{k:'Status',l:'وضعیت',r:function(r){return pill(r.Status);}}],
+fields:[{n:'Title',l:'عنوان تصمیم',req:1,full:1},{n:'Context',l:'زمینه و مسئله',ta:1,req:1,full:1},
+{n:'Options',l:'گزینه‌های بررسی‌شده',ta:1,full:1},{n:'Choice',l:'گزینه انتخابی',ta:1,req:1,full:1},
+{n:'Rationale',l:'دلیل انتخاب',ta:1,full:1},{n:'Impact',l:'اثر مورد انتظار'},
+{n:'Risk',l:'ریسک'},{n:'Owner',l:'مسئول اجرا'},{n:'DueDate',l:'مهلت اجرا',jd:1},
+{n:'Status',l:'وضعیت'},{n:'ReviewAt',l:'بازبینی',jd:1},
+{n:'RelatedType',l:'حوزه مرتبط'},{n:'RelatedId',l:'شناسه مرتبط'}]};
+E.targets={t:'اهداف و شاخص‌ها',s:'هدف',ic:'target',id:'Target-ID',
+search:['id','Metric','Scope','ScopeId','Period'],
+filters:[{k:'Metric',l:'شاخص'},{k:'Scope',l:'دامنه'},{k:'Period',l:'دوره'}],
+cols:[{k:'id',l:'شناسه',r:function(r){return '<b class="ltr">'+esc(r.id)+'</b>';}},
+{k:'Metric',l:'شاخص',r:function(r){return pill(r.Metric);}},{k:'Scope',l:'دامنه'},
+{k:'ScopeId',l:'شناسه دامنه'},{k:'Period',l:'دوره',r:function(r){return pill(r.Period);}},
+{k:'TargetValue',l:'هدف',cls:'num',r:function(r){return fa(r.TargetValue);}},
+{k:'actual',l:'محقق',cls:'num',sv:function(r){return targetActual(r);},r:function(r){return fa(targetActual(r));}},
+{k:'achieve',l:'تحقق',sv:function(r){return r.TargetValue?targetActual(r)/r.TargetValue*100:0;},r:function(r){var p=r.TargetValue?Math.round(targetActual(r)/r.TargetValue*100):0;return '<div style="display:flex;gap:8px;align-items:center">'+bar(p,p>=100?'var(--green)':p<70?'var(--red)':'var(--amber)')+'<b class="num">'+pct(p)+'</b></div>';}}],
+fields:[{n:'Metric',l:'شاخص',req:1},{n:'Scope',l:'دامنه',req:1},
+{n:'ScopeId',l:'شناسه دامنه (شعبه/پروژه)'},{n:'Period',l:'دوره',req:1},
+{n:'TargetValue',l:'مقدار هدف',num:1,req:1},{n:'Note',l:'یادداشت',ta:1,full:1}]};
+}
+function targetActual(t){
+var F=DB.finance||{},os=DB.orders||[],sc=t.Scope,id=t.ScopeId;
+function ok(r){return sc==='کل سامانه'||!id||r.branchId===id||r['Branch-ID']===id||r['Project-ID']===id;}
+switch(t.Metric){
+case 'درآمد': return F.revenue||0;
+case 'سود خالص': return F.netProfit||0;
+case 'تعداد سفارش': return os.filter(ok).length;
+case 'نرخ تکمیل': {var f=os.filter(ok);return f.length?Math.round(f.filter(function(o){return /تکمیل/.test(o.status);}).length/f.length*100):0;}
+case 'حاشیه سود': return F.margin||0;
+case 'مشتری جدید': return (DB.customers||[]).length;
+case 'ارزش قرارداد': return (DB.contractStats&&DB.contractStats.totalValue)||0;
+case 'کاهش هزینه': return F.cost||0;
+default: return 0;}}
+/* ═════════ 8) NAV ═════════ */
+var SOON={
+erp:{t:'ERP یکپارچه',ic:'box',c:'var(--teal)',p:34,eta:'سه‌ماهه دوم ۱۴۰۶',d:'اتصال کامل قرارداد، انبار، خرید، حقوق و دفتر کل در یک مدل داده واحد با گردش کار تأیید.',
+items:[['box','زنجیره تأمین','خرید، انبار و مصرف مواد متصل به پروژه و قرارداد'],['finance','دفتر کل خودکار','ثبت سند دوطرفه از هر تراکنش عملیاتی'],['people','حقوق و دستمزد','محاسبه کارکرد، بیمه و مالیات حقوق'],['decision','گردش تأیید','تأیید چندسطحی هزینه و خرید']],
+},
+bi:{t:'هوش تجاری پیشرفته',ic:'chart',c:'var(--blue)',p:42,eta:'اسفند ۱۴۰۵',d:'گزارش‌ساز کشیدنی، پیش‌بینی سری زمانی درآمد و تحلیل cohort مشتریان با خروجی زمان‌بندی‌شده.',
+items:[['grid','گزارش‌ساز','ساخت گزارش با انتخاب سنجه و بُعد بدون کدنویسی'],['chart','پیش‌بینی','برآورد درآمد فصل آینده بر پایه روند تاریخی'],['people','تحلیل cohort','نرخ بازگشت و ارزش دوره‌ای مشتریان'],['cal','زمان‌بندی','ارسال خودکار گزارش به مدیران']],
+},
+mobile:{t:'اپلیکیشن مدیریتی',ic:'grid',c:'var(--amber)',p:20,eta:'سه‌ماهه سوم ۱۴۰۶',d:'داشبورد اجرایی موبایل با اعلان ریسک، تأیید تصمیم و مشاهده وضعیت شعب به‌صورت آفلاین.',
+items:[['bell','اعلان ریسک','هشدار فوری روی موبایل برای ریسک بحرانی'],['decision','تأیید تصمیم','تصویب یا رد تصمیم از هر مکان'],['branch','وضعیت شعب','نمای زنده عملکرد هر شعبه'],['dl','حالت آفلاین','مشاهده آخرین داده بدون اینترنت']],
+},
+ai:{t:'مشاور هوش مصنوعی',ic:'brain',c:'var(--violet)',p:28,eta:'سه‌ماهه اول ۱۴۰۶',d:'لایه تحلیل زبانی روی داده‌های واقعی سامانه: خلاصه اجرایی، سناریوسازی و پاسخ به پرسش مدیریتی.',
+items:[['brain','خلاصه اجرایی','روایت هفتگی وضعیت کسب‌وکار به زبان طبیعی'],['flask','سناریوسازی','مقایسه چند سناریوی تصمیم با اثر مالی'],['msg','پرسش و پاسخ','پرسش آزاد روی داده‌های قرارداد و مالی'],['decision','پیشنهاد تصمیم','تبدیل تحلیل به تصمیم قابل ثبت']],
+}};
+var SOON_ORDER=['bi','erp','ai','mobile'];
+var MENU=[
+{sec:'فرماندهی'},
+{id:'dashboard',l:'کابین مدیریتی',ic:'dash'},
+{id:'advisor',l:'مشاوره هوشمند',ic:'brain',bc:'r',badge:function(){var a=DB.advisor||{};return (a.counts&&(a.counts.critical+a.counts.warning))||0;}},
+{id:'analytics',l:'نمودارهای تحلیلی',ic:'chart'},
+{id:'reports',l:'گزارش‌ها',ic:'report'},
+{sec:'کسب‌وکار'},
+{id:'contracts',l:'قراردادها',ic:'contract',bc:'a',badge:function(){return ((DB.contractStats||{}).expiring||[]).length;}},
+{id:'capacity',l:'ظرفیت قراردادها',ic:'capacity'},
+{id:'projects',l:'پروژه‌ها',ic:'project',bc:'r',badge:function(){return ((DB.projectStats||{}).late||[]).length;}},
+{id:'ptasks',l:'مایلستون‌ها',ic:'check'},
+{id:'operations',l:'عملیات شعب',ic:'orders'},
+{sec:'مالی و سرمایه'},
+{id:'finance',l:'دفتر مالی',ic:'finance'},
+{id:'pnl',l:'سود و زیان',ic:'pnl'},
+{id:'investments',l:'سرمایه‌گذاری‌ها',ic:'invest'},
+{id:'equity',l:'سهام شرکت',ic:'equity'},
+{id:'targets',l:'اهداف و شاخص‌ها',ic:'target'},
+{sec:'دانش و تصمیم'},
+{id:'notes',l:'یادداشت‌ها',ic:'note',bc:'v',badge:function(){return (DB.notes||[]).filter(function(n){return n.Pinned==='بله'&&n.Done!=='بله';}).length;}},
+{id:'decisions',l:'تصمیمات',ic:'decision'},
+{id:'messages',l:'گفتگوهای سامانه',ic:'msg'},
+{id:'devRequests',l:'درخواست‌های توسعه',ic:'zap'},
+{sec:'ساختار'},
+{id:'branches',l:'شعبه‌ها',ic:'branch'},
+{id:'people',l:'سرمایه انسانی',ic:'people'},
+{sec:'در حال توسعه'},
+{id:'roadmap',l:'نقشه راه',ic:'target',soon:1},
+{id:'bi',l:'هوش تجاری پیشرفته',ic:'chart',soon:1},
+{id:'erp',l:'ERP یکپارچه',ic:'box',soon:1},
+{id:'ai',l:'مشاور هوش مصنوعی',ic:'brain',soon:1},
+{id:'mobile',l:'اپلیکیشن مدیریتی',ic:'grid',soon:1},
+{sec:'سیستم'},
+{id:'settings',l:'تنظیمات شرکت',ic:'settings'},
+{id:'profile',l:'پروفایل من',ic:'user'}
+];
+var TITLES={dashboard:['کابین مدیریتی','نمای زنده تصمیم‌گیری'],advisor:['مشاوره هوشمند','تحلیل ریسک و پیشنهاد اقدام'],
+analytics:['نمودارهای تحلیلی','تحلیل چندبعدی کسب‌وکار'],reports:['گزارش‌ها','خروجی مالی و عملیاتی'],
+contracts:['قراردادها','چرخه عمر قرارداد'],capacity:['ظرفیت قراردادها','تعهد، مصرف و درآمد تحقق'],
+projects:['پروژه‌ها','پیشرفت، بودجه و ریسک'],ptasks:['مایلستون‌ها','تفکیک کار پروژه'],
+operations:['عملیات شعب','سفارش‌ها و کارت‌های عملیاتی'],finance:['دفتر مالی','درآمد، هزینه و مطالبات'],
+pnl:['سود و زیان','تحلیل سودآوری و نقطه سربه‌سر'],investments:['سرمایه‌گذاری‌ها','پرتفوی و بازده'],
+equity:['سهام شرکت','جدول سهام و رقیق‌سازی'],targets:['اهداف و شاخص‌ها','هدف‌گذاری و پایش تحقق'],
+notes:['یادداشت‌ها','دانش و پیگیری مدیریتی'],decisions:['تصمیمات مدیریتی','ثبت، اجرا و بازبینی'],
+messages:['گفتگوهای سامانه','پشتیبانی و مکاتبات'],devRequests:['درخواست‌های توسعه','پیشنهادهای ساخت‌یافته'],
+branches:['شعبه‌ها','عملکرد شبکه شعب'],people:['سرمایه انسانی','کارمندان، نیروها و کارجویان'],
+roadmap:['نقشه راه','ماژول‌های در راه'],settings:['تنظیمات شرکت','هویت، سرمایه و برند'],profile:['پروفایل من','حساب کاربری']};
+SOON_ORDER.forEach(function(k){TITLES[k]=[SOON[k].t,'در حال توسعه · '+SOON[k].eta];});
+function renderNav(){
+$('#nav').innerHTML=MENU.map(function(m){
+if(m.sec)return '<div class="nav-sec">'+esc(m.sec)+'</div>';
+var b=m.badge?m.badge():0;
+return '<div class="nav-item'+(PS.page===m.id?' on':'')+(m.soon?' soon':'')+'" data-act="go" data-page="'+m.id+'">'+icon(m.ic,'width:17px;height:17px')+'<span>'+esc(m.l)+'</span>'+(m.soon?'<span class="bdg t">به‌زودی</span>':(b?'<span class="bdg '+(m.bc||'')+'">'+fa(b)+'</span>':''))+'</div>';
+}).join('');}
+function go(p){PS.page=p;PS.pn=1;PS.q='';PS.filters={};PS.sort=null;PS.sel=new Set();PS.tab=p==='finance'?'ledger':(p==='people'?'workers':'services');PS.view='table';
+$('#sidebar').classList.remove('open');$('#scrim').classList.remove('show');render();}
+function toggleTheme(){var t=document.documentElement.dataset.theme==='dark'?'light':'dark';
+document.documentElement.dataset.theme=t;localStorage.setItem('zv_manager_theme',t);
+$('#themeBtn').innerHTML=icon(t==='dark'?'sun':'moon');render();}
+function render(){
+CH.forEach(function(c){try{c.destroy();}catch(e){}});CH=[];
+var p=PS.page||'dashboard',t=TITLES[p]||TITLES.dashboard;
+$('#tbTitle').textContent=t[0];$('#tbCrumb').textContent=(DB.company&&DB.company.name||'ZingoVingo')+' · '+t[1];
+$('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
+var out;
+try{
+if(p==='dashboard')out=dashboard();
+else if(p==='advisor')out=advisorPage();
+else if(p==='analytics')out=analyticsPage();
+else if(p==='reports')out=reportsPage();
+else if(p==='pnl')out=pnlPage();
+else if(p==='equity')out=equityPage();
+else if(p==='capacity')out=capacityPage();
+else if(p==='projects')out=projectsPage();
+else if(p==='operations')out=operationsPage();
+else if(p==='notes')out=notesPage();
+else if(p==='messages')out=messagesPage();
+else if(p==='devRequests')out=devPage();
+else if(p==='branches')out=branchesPage();
+else if(p==='people')out=peoplePage();
+else if(p==='settings')out=settingsPage();
+else if(p==='profile')out=profilePage();
+else if(p==='roadmap')out=roadmapPage();
+else if(SOON[p])out=soonPage(p);
+else out=entityPage(p);
+}catch(e){out='<div class="card"><div class="empty"><div class="ei">'+icon('x')+'</div><h4>خطا در ساخت صفحه</h4><p class="sub">'+esc(e.message)+'</p></div></div>';}
+Promise.resolve(out).then(function(h){
+$('#page').innerHTML=h;decorate($('#page'));jdInit($('#page'));renderNav();paintUser();
+var ns=notifications();$('#bellDot').hidden=!ns.some(function(n){return !n.read;});
+$$('[data-w]').forEach(function(el){var w=el.getAttribute('data-w');el.removeAttribute('data-w');setTimeout(function(){el.style.width=w+'%';},50);});
+if(p==='dashboard')chartsDash();
+if(p==='analytics')chartsAnalytics();
+if(p==='pnl')chartsPnl();
+if(p==='equity')chartsEquity();
+if(p==='capacity')chartsCapacity();
+if(p==='projects'&&PS.view==='table')chartsProjects();
+}).catch(function(e){$('#page').innerHTML='<div class="card"><div class="empty"><div class="ei">'+icon('x')+'</div><h4>خطا</h4><p class="sub">'+esc(e.message)+'</p></div></div>';});}
+/* ═════════ 9) GENERIC TABLE ═════════ */
+function rowsFor(e){
+var cfg=E[e],rows=(DB[e]||[]).slice();
+var q=en(PS.q||'').trim().toLowerCase();
+if(q)rows=rows.filter(function(r){return cfg.search.some(function(k){return en(String(r[k]==null?'':r[k])).toLowerCase().indexOf(q)>=0;});});
+(cfg.filters||[]).forEach(function(f){var v=PS.filters[f.k];if(v)rows=rows.filter(function(r){return String(r[f.k]==null?'':r[k])===String(v);});});
+var F=DB.finance||{};
+if(PS.filters.from)rows=rows.filter(function(r){var d=r.Date||r.StartDate||r.BuyDate||r.CreatedAt;return d&&String(d).slice(0,10)>=PS.filters.from;});
+if(PS.filters.to)rows=rows.filter(function(r){var d=r.Date||r.StartDate||r.BuyDate||r.CreatedAt;return d&&String(d).slice(0,10)<=PS.filters.to;});
+if(PS.sort){var c=cfg.cols.find(function(x){return x.k===PS.sort.k;});
+var gv=function(r){return c&&c.sv?c.sv(r):r[PS.sort.k];};
+rows.sort(function(a,b){var x=gv(a),y=gv(b);var cmp=(typeof x==='number'||typeof y==='number')?num(x)-num(y):String(x==null?'':x).localeCompare(String(y==null?'':y),'fa');return cmp*PS.sort.d;});}
+return rows;}
+function views(e){return (DB.views&&DB.views[e])||[];}
+function entityPage(e){
+var cfg=E[e];if(!cfg)return '<div class="card">صفحه یافت نشد.</div>';
+var all=rowsFor(e),size=12,pages=Math.max(1,Math.ceil(all.length/size));
+PS.pn=Math.min(Math.max(1,PS.pn||1),pages);
+var rows=all.slice((PS.pn-1)*size,PS.pn*size);
+var def=DB.defs[e]||{},enums=def.enums||{};
+var acts=btn('export','CSV','dl','btn-s',' data-e="'+e+'"')+btn('save-view','ذخیره نما','star','btn-s',' data-e="'+e+'"')+btn('new',cfg.s+' جدید','plus','btn-p',' data-e="'+e+'"');
+var h=head(cfg.t,fa(all.length)+' مورد',acts);
+var vs=views(e);
+if(vs.length)h+='<div class="toolbar">'+vs.map(function(v){return '<span class="btn btn-s btn-sm" data-act="apply-view" data-e="'+e+'" data-id="'+esc(v.id)+'">'+esc(v.name)+' <span data-act="del-view" data-e="'+e+'" data-id="'+esc(v.id)+'">'+icon('x','width:11px;height:11px')+'</span></span>';}).join('')+'</div>';
+h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-search placeholder="جستجو…" value="'+esc(PS.q||'')+'"></div>';
+h+=(cfg.filters||[]).map(function(f){
+var o=f.opts?f.opts():(enums[f.k]||[]).map(function(x){return {v:x,l:x};});
+return '<select class="sel" data-filter="'+f.k+'"><option value="">'+esc(f.l)+': همه</option>'+o.map(function(x){return '<option value="'+esc(x.v)+'"'+(String(PS.filters[f.k])===String(x.v)?' selected':'')+'>'+esc(x.l)+'</option>';}).join('')+'</select>';}).join('');
+if(e==='finance'||e==='contracts'||e==='investments')h+='<input class="inp" data-fdate="from" data-jd placeholder="از تاریخ" value="'+esc(PS.filters.from?jInput(PS.filters.from):'')+'" style="width:145px"><input class="inp" data-fdate="to" data-jd placeholder="تا تاریخ" value="'+esc(PS.filters.to?jInput(PS.filters.to):'')+'" style="width:145px">';
+h+='</div>';
+h+='<div class="bulk'+(PS.sel.size?' show':'')+'"><b>'+fa(PS.sel.size)+'</b> مورد انتخاب شده';
+if(cfg.bulk&&enums[cfg.bulk])h+='<select class="sel" id="bulkVal"><option value="">تغییر '+esc(cfg.bulk)+'…</option>'+enums[cfg.bulk].map(function(s){return '<option>'+esc(s)+'</option>';}).join('')+'</select>'+btn('bulk-set','اعمال','','btn-s btn-sm',' data-e="'+e+'"');
+h+=btn('bulk-del','حذف گروهی','trash','btn-d btn-sm',' data-e="'+e+'"')+btn('sel-clear','انصراف','','btn-s btn-sm')+'</div>';
+if(!rows.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon(cfg.ic)+'</div><h4>موردی یافت نشد</h4><p class="sub">فیلترها را تغییر دهید یا رکورد جدید ثبت کنید.</p></div></div>';
+h+='<div class="tw"><table class="tb"><thead><tr><th style="width:36px"><input type="checkbox" data-selall></th>';
+h+=cfg.cols.map(function(c){return '<th data-act="sort" data-e="'+e+'" data-k="'+c.k+'">'+esc(c.l)+(PS.sort&&PS.sort.k===c.k?(PS.sort.d===1?' ↑':' ↓'):'')+'</th>';}).join('');
+h+='<th style="text-align:left">عملیات</th></tr></thead><tbody>';
+h+=rows.map(function(r){
+var out='<tr><td><input type="checkbox" data-sel="'+r.rowIndex+'"'+(PS.sel.has(r.rowIndex)?' checked':'')+'></td>';
+out+=cfg.cols.map(function(c){return '<td class="'+(c.cls||'')+'">'+(c.r?c.r(r):esc(r[c.k]==null?'—':r[c.k]))+'</td>';}).join('');
+out+='<td><div class="ra">'+ibtn('view','eye','مشاهده',' data-e="'+e+'" data-id="'+r.rowIndex+'"');
+(cfg.acts||[]).forEach(function(a){out+=ibtn(a.a,a.i,a.l,' data-e="'+e+'" data-id="'+r.rowIndex+'"');});
+out+=ibtn('edit','edit','ویرایش',' data-e="'+e+'" data-id="'+r.rowIndex+'"')+ibtn('del','trash','حذف',' data-e="'+e+'" data-id="'+r.rowIndex+'"')+'</div></td></tr>';
+return out;}).join('');
+h+='</tbody></table></div><div class="pager"><span>صفحه '+fa(PS.pn)+' از '+fa(pages)+' · '+fa(all.length)+' مورد</span><div style="display:flex;gap:6px"><button class="btn btn-s btn-sm" data-act="pager" data-d="-1"'+(PS.pn<=1?' disabled':'')+'>'+icon('chevR','width:13px;height:13px')+'</button><button class="btn btn-s btn-sm" data-act="pager" data-d="1"'+(PS.pn>=pages?' disabled':'')+'>'+icon('chevL','width:13px;height:13px')+'</button></div></div>';
+return h;}
+/* ═════════ 10) FORM ═════════ */
+function fld(f,v){
+var val=v==null?'':v,inp='';
+var enums=(DB.defs[PS.formEntity]||{}).enums||{};
+var list=f.opts?f.opts():(enums[f.n]||null);
+if(list){inp='<select name="'+f.n+'"><option value="">انتخاب کنید</option>'+list.map(function(x){return '<option value="'+esc(x.v)+'"'+(String(val)===String(x.v)?' selected':'')+'>'+esc(x.l)+'</option>';}).join('')+'</select>';}
+else if(f.ta)inp='<textarea name="'+f.n+'">'+esc(val)+'</textarea>';
+else if(f.jd)inp='<input name="'+f.n+'" data-jd value="'+esc(val?jInput(val):'')+'">';
+else if(f.num)inp='<input name="'+f.n+'" type="number" step="any" value="'+esc(val)+'">';
+else inp='<input name="'+f.n+'" value="'+esc(val)+'"'+(f.ph?' placeholder="'+esc(f.ph)+'"':'')+'>';
+return '<div class="field'+(f.full?' full':'')+'"><label>'+esc(f.l)+(f.req?' <span class="req">*</span>':'')+'</label>'+inp+'</div>';}
+function openForm(e,rowIndex,pre){
+var cfg=E[e];if(!cfg)return;
+PS.formEntity=e;
+var r=rowIndex?(DB[e]||[]).find(function(x){return x.rowIndex===Number(rowIndex);}):(pre||{});
+if(!r)r={};
+var auto=rowIndex?(r.id||''):((DB.nextIds||{})[e]||'');
+openModal('<div class="mh"><h3>'+(rowIndex?'ویرایش ':'افزودن ')+esc(cfg.s)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<form data-form="entity" data-e="'+e+'" data-id="'+(rowIndex||'')+'"><div class="mb"><div class="fgrid">'+
+'<div class="field"><label>شناسه (خودکار)</label><input value="'+esc(auto)+'" readonly></div>'+
+cfg.fields.map(function(f){return fld(f,r[f.n]);}).join('')+
+'</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('save','width:15px;height:15px')+' ذخیره</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',true,true);
+var f=$('#modal form');
+if(e==='capacity'){
+var cs=f.elements['Contract-ID'];
+if(cs)cs.addEventListener('change',function(){var c=(DB.contracts||[]).find(function(x){return x.id===cs.value;});
+if(c){if(!f.elements['Branch-ID'].value)f.elements['Branch-ID'].value=c['Branch-ID']||'';
+if(!f.elements.StartDate.value)f.elements.StartDate.value=jInput(c.StartDate);
+if(!f.elements.EndDate.value)f.elements.EndDate.value=jInput(c.EndDate);
+zSync(f.elements['Branch-ID']);}});}
+if(e==='ptasks'){var ps=f.elements['Project-ID'];if(ps)ps.addEventListener('change',function(){var p=(DB.projects||[]).find(function(x){return x.id===ps.value;});if(p&&!f.elements.Assignee.value)f.elements.Assignee.value=p.ManagerName||'';});}
+}
+function submitEntity(f){
+var e=f.dataset.e,id=f.dataset.id,cfg=E[e],def=DB.defs[e]||{},obj={};
+cfg.fields.forEach(function(fl){
+var el=f.elements[fl.n],v=el?String(el.value).trim():'';
+if(fl.jd&&v){if(!parseJ(v)){toast('تاریخ «'+fl.l+'» معتبر نیست.','err');throw new Error('date');}v=jStore(v);}
+if(fl.num)v=num(v);
+obj[fl.n]=v;});
+if(id)obj.rowIndex=Number(id);
+var sub=f.querySelector('[type="submit"]');sub.disabled=true;
+return api('mgrCCSave',e,obj,TOKEN).then(function(){closeModal();toast('ذخیره شد.','ok');return reload();})
+.catch(function(err){sub.disabled=false;toast(err.message,'err');});}
+function delRows(e,ids){
+if(!ids.length)return;
+confirmBox('حذف '+E[e].s,'آیا از حذف <b>'+fa(ids.length)+'</b> مورد مطمئن هستید؟<br><span class="sub">قابل بازگردانی است.</span>',function(){
+api('mgrCCDelete',[{entity:e,ids:ids}],TOKEN).then(function(r){PS.sel=new Set();return reload().then(function(){
+toast('حذف شد.','warn',{label:'بازگردانی',fn:function(){api('mgrCCRestore',r.trashToken,TOKEN).then(reload).then(function(){toast('بازگردانی شد.','ok');});}});});});});}
+function bulkSet(e){
+var el=$('#bulkVal');if(!el||!el.value){toast('یک مقدار انتخاب کنید.','err');return;}
+var ids=Array.from(PS.sel);if(!ids.length)return;
+api('mgrCCBulkStatus',e,ids,el.value,TOKEN).then(function(){PS.sel=new Set();toast('اعمال شد.','ok');return reload();});}
+/* ═════════ 11) DRAWERS ═════════ */
+function viewRow(e,id){
+var r=(DB[e]||[]).find(function(x){return x.rowIndex===Number(id);});if(!r)return;
+var cfg=E[e],body='',foot='';
+if(e==='contracts'){
+var c=(DB.contractStats.list||[]).find(function(x){return x.id===r.id;})||{};
+var caps=(DB.contractStats.caps||[]).filter(function(x){return x['Contract-ID']===r.id;});
+body=kv([['شناسه','<b class="ltr">'+esc(r.id)+'</b>'],['وضعیت',pill(r.Status)],['عنوان',esc(r.Title)],['شماره',esc(r.Code||'—')],
+['نوع',pill(r.Type)],['طرف',esc(r.PartyName)+' ('+esc(r.PartyType||'—')+')'],['تماس طرف',fa(r.PartyPhone||'—')],
+['مبلغ',money(r.Value)],['دوره صدور',esc(r.BillingCycle||'—')],['شروع',jDisp(r.StartDate)],['پایان',jDisp(r.EndDate)],
+['روز باقی‌مانده',fa(c.daysLeft||0)],['تمدید خودکار',pill(r.AutoRenew||'خیر')],['شعبه',esc(brName(r['Branch-ID']))],
+['ظرفیت‌ها',fa(c.capCount||0)],['درآمد تحقق',money(c.capRevenue||0)],['ظرفیت بالقوه',money(c.capPotential||0)],
+['دامنه خدمات',esc(r.ServiceScope||'—'),1],['شرح',esc(r.Description||'—'),1],['یادداشت',esc(r.Notes||'—'),1]]);
+if(caps.length)body+='<div class="sec-t">ظرفیت‌های این قرارداد</div>'+caps.map(function(x){
+return '<div class="rank"><div class="info"><b>'+esc(x.Title)+'</b><small>'+fa(x.used)+' از '+fa(x.TotalQty)+' '+esc(x.Unit)+' · '+money(x.UnitPrice)+'</small></div>'+bar(x.utilPct)+'<span class="v">'+pct(x.utilPct)+'</span></div>';}).join('');
+foot+=btn('con-caps','ظرفیت‌ها','capacity','btn-s',' data-e="contracts" data-id="'+id+'"')+btn('con-renew','تمدید','undo','btn-s',' data-e="contracts" data-id="'+id+'"');
+}else if(e==='capacity'){
+var c2=(DB.contractStats.caps||[]).find(function(x){return x.id===r.id;})||{};
+var us=(DB.usage||[]).filter(function(u){return u['Capacity-ID']===r.id;});
+body=kv([['شناسه','<b class="ltr">'+esc(r.id)+'</b>'],['قرارداد',esc(conTitle(r['Contract-ID']))],['عنوان',esc(r.Title)],
+['خدمت',esc(r.ServiceName||'—')],['واحد',esc(r.Unit)],['ظرفیت کل',fa(r.TotalQty)],['مصرف',fa(c2.used||0)],
+['رزرو',fa(r.ReservedQty)],['باقی‌مانده',fa(c2.remain||0)],['بهره‌برداری',pct(c2.utilPct||0)],
+['نرخ واحد',money(r.UnitPrice)],['درآمد تحقق',money(c2.revenue||0)],['دوره',esc(r.PeriodType||'—')+' '+esc(r.PeriodKey||'')],
+['شروع',jDisp(r.StartDate)],['پایان',jDisp(r.EndDate)],['وضعیت',pill(r.Status)],['یادداشت',esc(r.Notes||'—'),1]]);
+if(us.length)body+='<div class="sec-t">تاریخچه مصرف</div>'+us.slice(0,20).map(function(u){
+return '<div class="rank"><div class="info"><b>'+fa(u.Qty)+' '+esc(r.Unit)+'</b><small>'+jDisp(u.Date)+' · '+esc(u.RefType||'دستی')+' '+esc(u.RefId||'')+'</small></div><span class="v">'+esc(u.id)+'</span></div>';}).join('');
+foot+=btn('cap-use','ثبت مصرف','plus','btn-p',' data-e="capacity" data-id="'+id+'"');
+}else if(e==='projects'){
+var p=(DB.projectStats.list||[]).find(function(x){return x.id===r.id;})||{};
+var ts=(DB.ptasks||[]).filter(function(t){return t['Project-ID']===r.id;});
+body=kv([['شناسه','<b class="ltr">'+esc(r.id)+'</b>'],['نام',esc(r.Name)],['نوع',esc(r.Type||'—')],['مدیر',esc(r.ManagerName||'—')],
+['قرارداد',esc(conTitle(r['Contract-ID']))],['شعبه',esc(brName(r['Branch-ID']))],['شروع',jDisp(r.StartDate)],['مهلت',jDisp(r.DueDate)],
+['روز باقی‌مانده',fa(p.daysLeft||0)],['پیشرفت',pct(p.calcProgress||0)],['بودجه',money(r.Budget)],['هزینه',money(r.Spent)],
+['مصرف بودجه',pct(p.burnPct||0)],['اولویت',pill(r.Priority)],['سلامت',pill(p.health||r.Health)],['وضعیت',pill(r.Status)],
+['شرح',esc(r.Description||'—'),1],['یادداشت',esc(r.Notes||'—'),1]]);
+body+='<div class="sec-t">مایلستون‌ها ('+fa(ts.length)+')</div>'+(ts.length?ts.map(function(t){
+return '<div class="rank"><div class="info"><b>'+esc(t.Title)+'</b><small>'+esc(t.Assignee||'—')+' · '+jDisp(t.DueDate)+' · وزن '+fa(t.Weight||1)+'</small></div>'+bar(t.Status==='تکمیل شده'?100:t.Progress)+pill(t.Status)+'</div>';}).join(''):'<p class="sub">مایلستونی ثبت نشده است.</p>');
+foot+=btn('prj-task-new','افزودن مایلستون','plus','btn-p',' data-e="projects" data-id="'+id+'"')+btn('prj-tasks','همه مایلستون‌ها','list','btn-s',' data-e="projects" data-id="'+id+'"');
+}else if(e==='investments'){
+var iv=(DB.invest.items||[]).find(function(x){return x.id===r.id;})||{};
+body=kv([['شناسه','<b class="ltr">'+esc(r.id)+'</b>'],['عنوان',esc(r.Title)],['نوع',pill(r.Kind)],['نماد',esc(r.Symbol||'—')],
+['ناشر',esc(r.Issuer||'—')],['واحد',fa(r.Units)],['قیمت خرید',money(r.BuyPrice)],['قیمت جاری',money(r.CurrentPrice||r.BuyPrice)],
+['بهای تمام‌شده',money(iv.cost||0)],['ارزش جاری',money(iv.value||0)],['سود/زیان',money(iv.pl||0)],['بازده',pct(iv.plPct||0)],
+['هدف',money(r.TargetPrice||0)],['حد ضرر',money(r.StopLoss||0)],['درصد مالکیت',pct(r.OwnershipPct||0)],
+['ریسک',pill(r.Risk)],['وضعیت',pill(r.Status)],['یادداشت',esc(r.Note||'—'),1]]);
+foot+=btn('inv-price','به‌روزرسانی قیمت','edit','btn-p',' data-e="investments" data-id="'+id+'"');
+}else if(e==='finance'){
+body=kv([['شناسه','<b class="ltr">'+esc(r.id)+'</b>'],['تاریخ',jDisp(r.Date)],['نوع',pill(r.Type)],['سرفصل',esc(r.Category)],
+['زیرسرفصل',esc(r.SubCategory||'—')],['مبلغ',money(r.Amount)],['ماهیت',esc(r.CostType||'—')],['روش',esc(r.Method||'—')],
+['طرف حساب',esc(r.Payee||'—')],['شعبه',esc(brName(r['Branch-ID']))],['پروژه',esc(prjName(r['Project-ID']))],
+['قرارداد',esc(conTitle(r['Contract-ID']))],['سررسید',jDisp(r.DueDate)],['وضعیت',pill(r.Status)],['مرجع',esc(r.RefId||'—')],['شرح',esc(r.Note||'—'),1]]);
+}else{
+body=kv(cfg.cols.map(function(c){return [c.l,c.r?c.r(r):esc(r[c.k]==null?'—':r[c.k])];}));
+cfg.fields.filter(function(f){return f.ta;}).forEach(function(f){body+='<div class="sec-t">'+esc(f.l)+'</div><div class="kvi full"><b style="white-space:pre-wrap;font-weight:500">'+esc(r[f.n]||'—')+'</b></div>';});
+}
+foot+=btn('edit','ویرایش','edit','btn-p',' data-e="'+e+'" data-id="'+id+'"')+btn('del','حذف','trash','btn-d',' data-e="'+e+'" data-id="'+id+'"')+'<button class="btn btn-s" data-act="dclose">بستن</button>';
+openDrawer('<div class="dh"><h3>'+esc(cfg.s)+'</h3><button class="ibtn" data-act="dclose">'+icon('x')+'</button></div><div class="db">'+body+'</div><div class="df">'+foot+'</div>');}
+/* ═════════ 12) DASHBOARD ═════════ */
+function dashboard(){
+var F=DB.finance||{},CS=DB.contractStats||{},PST=DB.projectStats||{},IV=DB.invest||{},EQ=DB.equity||{},A=DB.advisor||{};
+var months=Object.keys(F.byMonth||{}).sort();
+var revS=months.map(function(m){return F.byMonth[m].rev;}),netS=months.map(function(m){return F.byMonth[m].rev-F.byMonth[m].cost;});
+var prev=months.length>1?F.byMonth[months[months.length-2]]:null,last=months.length?F.byMonth[months[months.length-1]]:null;
+var delta=prev&&prev.rev?Math.round(((last.rev-prev.rev)/prev.rev)*100):undefined;
+var os=DB.orders||[],n=new Date(),hr=n.getHours(),greet=hr<12?'صبح بخیر':hr<17?'ظهر بخیر':'عصر بخیر';
+var h='<div class="hero"><span class="dchip">'+icon('cal','width:14px;height:14px')+' '+jDisp(n)+'</span>'+
+'<h2>'+greet+'، '+esc(String(USER.name||'').split(' ')[0])+'</h2>'+
+'<p>'+esc((DB.company||{}).name||'ZingoVingo')+' — '+fa(CS.activeCount||0)+' قرارداد فعال، '+fa(PST.active||0)+' پروژه در جریان، '+fa(IV.count||0)+' موقعیت سرمایه‌گذاری.</p>'+
+'<div class="gauge"><div class="ring" style="background:conic-gradient('+((A.health||0)>=70?'#0E9F6E':(A.health||0)>=40?'#D97706':'#E02D3C')+' '+((A.health||0)*3.6)+'deg, rgba(255,255,255,.16) 0)"><span style="position:absolute;inset:9px;border-radius:50%;background:rgba(11,23,54,.72);display:grid;place-items:center"><b>'+fa(A.health||0)+'</b><small>سلامت</small></span></div>'+
+'<div class="txt"><b>'+esc(A.headline||'')+'</b><span>'+fa((A.counts||{}).critical||0)+' بحرانی · '+fa((A.counts||{}).warning||0)+' هشدار · '+fa((A.counts||{}).info||0)+' اطلاع · '+fa((A.counts||{}).good||0)+' نقطه قوت</span></div></div>'+
+'<div class="acts">'+btn('go','مشاوره هوشمند','brain','btn-p',' data-page="advisor"')+
+'<button class="btn btn-s" data-act="go" data-page="pnl">'+icon('pnl','width:15px;height:15px')+' سود و زیان</button>'+
+'<button class="btn btn-s" data-act="go" data-page="contracts">'+icon('contract','width:15px;height:15px')+' قراردادها</button>'+
+'<button class="btn btn-s" data-act="whatif">'+icon('flask','width:15px;height:15px')+' سناریوسازی</button>'+
+'<button class="btn btn-s" data-act="go" data-page="analytics">'+icon('chart','width:15px;height:15px')+' نمودارها</button></div></div>';
+h+='<div class="grid kpis" style="margin-bottom:18px">'+
+kpi('درآمد ثبت‌شده',moneyC(F.revenue||0),'finance','var(--green)','پرداخت‌شده',revS,delta)+
+kpi('سود خالص',moneyC(F.netProfit||0),'pnl',(F.netProfit||0)>=0?'var(--brand)':'var(--red)','حاشیه '+pct(F.margin||0),netS)+
+kpi('ارزش قراردادهای فعال',moneyC(CS.totalValue||0),'contract','var(--violet)',fa(CS.activeCount||0)+' قرارداد')+
+kpi('درآمد ظرفیت مصرف‌شده',moneyC(CS.capRevenue||0),'capacity','var(--teal)','از '+moneyC(CS.capPotential||0)+' بالقوه')+
+kpi('ارزش پرتفوی',moneyC(IV.value||0),'invest','var(--blue)','بازده '+pct(IV.plPct||0))+
+kpi('مطالبات وصول‌نشده',moneyC(F.receivable||0),'clock','var(--amber)',fa(F.overdueCount||0)+' قلم معوق')+
+kpi('بودجه پروژه‌ها',moneyC(PST.budget||0),'project','var(--pink)','مصرف '+moneyC(PST.spent||0))+
+kpi('سرمایه سهامداران',moneyC(EQ.paidCapital||0),'equity','var(--slate)',fa((EQ.holders||[]).length)+' سهامدار')+
+'</div>';
+h+='<div class="grid charts" style="margin-bottom:18px">'+
+'<div class="cbox"><h3>'+icon('chart','width:15px;height:15px;color:var(--brand)')+' روند درآمد، هزینه و سود</h3><div class="cwrap"><canvas id="dRev"></canvas></div></div>'+
+'<div class="cbox"><h3>'+icon('pnl','width:15px;height:15px;color:var(--violet)')+' ترکیب هزینه و درآمد</h3><div class="cwrap"><canvas id="dMix"></canvas></div></div></div>';
+var ins=(A.insights||[]).slice(0,4);
+h+='<div class="grid charts" style="margin-bottom:18px">'+
+'<div class="cbox"><h3>'+icon('brain','width:15px;height:15px;color:var(--red)')+' اولویت‌های تصمیم امروز</h3>'+
+(ins.length?ins.map(function(i){return insightCard(i,true);}).join(''):'<p class="sub">ریسک فعالی نیست.</p>')+
+'<div style="margin-top:10px">'+btn('go','مشاهده همه','brain','btn-s btn-sm',' data-page="advisor"')+'</div></div>'+
+'<div class="cbox"><h3>'+icon('contract','width:15px;height:15px;color:var(--amber)')+' قراردادهای نیازمند اقدام</h3>'+
+((CS.expiring||[]).length?(CS.expiring||[]).slice(0,6).map(function(c){
+return '<div class="rank" data-act="view" data-e="contracts" data-id="'+c.rowIndex+'" style="cursor:pointer"><div class="info"><b>'+esc(c.Title)+'</b><small>'+esc(c.PartyName)+' · پایان '+jDisp(c.EndDate)+'</small></div><span class="v">'+fa(c.daysLeft)+' روز</span>'+pill(c.Status)+'</div>';}).join(''):'<p class="sub">قراردادی در آستانه انقضا نیست.</p>')+
+'<h3 style="margin-top:18px">'+icon('project','width:15px;height:15px;color:var(--pink)')+' پروژه‌های در ریسک</h3>'+
+((PST.risky||[]).length?(PST.risky||[]).slice(0,5).map(function(p){
+return '<div class="rank" data-act="view" data-e="projects" data-id="'+p.rowIndex+'" style="cursor:pointer"><div class="info"><b>'+esc(p.Name)+'</b><small>'+esc(p.ManagerName||'—')+' · مهلت '+jDisp(p.DueDate)+'</small></div>'+bar(p.calcProgress)+'<span class="v">'+pct(p.calcProgress)+'</span></div>';}).join(''):'<p class="sub">پروژه‌ای در ریسک نیست.</p>')+'</div></div>';
+var tg=(DB.targets||[]).slice(0,6);
+h+='<div class="grid charts">'+
+'<div class="cbox"><h3>'+icon('target','width:15px;height:15px;color:var(--teal)')+' تحقق اهداف</h3>'+
+(tg.length?tg.map(function(t){var a=targetActual(t),p=t.TargetValue?Math.round(a/t.TargetValue*100):0;
+return '<div class="rank"><div class="info"><b>'+esc(t.Metric)+' · '+esc(t.Period)+'</b><small>'+esc(t.ScopeId||t.Scope)+' · هدف '+fa(t.TargetValue)+' · محقق '+fa(a)+'</small></div>'+bar(p,p>=100?'var(--green)':p<70?'var(--red)':'var(--amber)')+'<span class="v">'+pct(p)+'</span></div>';}).join(''):'<p class="sub">هدفی تعریف نشده است.</p>')+
+'<div style="margin-top:10px">'+btn('go','مدیریت اهداف','target','btn-s btn-sm',' data-page="targets"')+'</div></div>'+
+'<div class="cbox"><h3>'+icon('note','width:15px;height:15px;color:var(--violet)')+' یادداشت‌های سنجاق‌شده</h3>'+
+((DB.notes||[]).filter(function(x){return x.Pinned==='بله'&&x.Done!=='بله';}).slice(0,5).map(function(x){
+return '<div class="rank" data-act="note-open" data-id="'+esc(x.id)+'" style="cursor:pointer"><div class="info"><b>'+esc(x.Title)+'</b><small>'+esc(x.Category||'عمومی')+(x.ReminderAt?' · یادآوری '+jDisp(x.ReminderAt):'')+'</small></div>'+pill(x.Color||'زرد')+'</div>';}).join('')||'<p class="sub">یادداشت سنجاق‌شده‌ای نیست.</p>')+
+'<div style="margin-top:10px">'+btn('note-new','یادداشت جدید','plus','btn-s btn-sm')+'</div></div></div>';
+return h;}
+function chartsDash(){
+if(!window.Chart)return;
+var F=DB.finance||{},P=pal(),g=cssVar('--line');
+Chart.defaults.font.family='Vazirmatn';Chart.defaults.color=cssVar('--muted');
+var ms=Object.keys(F.byMonth||{}).sort();
+var mk=function(id,c){var el=$('#'+id);if(el)CH.push(new Chart(el,c));};
+mk('dRev',{type:'bar',data:{labels:ms.map(jMonthLabel),datasets:[
+{label:'درآمد',data:ms.map(function(m){return F.byMonth[m].rev;}),backgroundColor:P[6],borderRadius:7},
+{label:'هزینه',data:ms.map(function(m){return F.byMonth[m].cost;}),backgroundColor:P[5],borderRadius:7},
+{type:'line',label:'سود',data:ms.map(function(m){return F.byMonth[m].rev-F.byMonth[m].cost;}),borderColor:P[0],backgroundColor:'rgba(255,107,26,.14)',fill:true,tension:.4,pointRadius:4}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}},scales:{x:{grid:{display:false}},y:{grid:{color:g},ticks:{callback:function(v){return moneyC(v);}}}}}});
+var mix=F.byCat||{},k=Object.keys(mix);
+mk('dMix',{type:'doughnut',data:{labels:k.length?k:['بدون داده'],datasets:[{data:k.length?k.map(function(x){return mix[x];}):[1],backgroundColor:P,borderWidth:2,borderColor:cssVar('--surface')}]},
+options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:9}}},tooltip:{callbacks:{label:function(c){return c.label+': '+moneyC(c.parsed);}}}}}});}
+/* ═════════ 13) ADVISOR ═════════ */
+function insightCard(i,compact){
+var sev={critical:'بحرانی',warning:'هشدار',info:'اطلاع',good:'نقطه قوت'}[i.severity]||i.severity;
+var h='<div class="ins '+esc(i.severity)+'"><div class="ins-h">'+icon(i.severity==='good'?'check':i.severity==='info'?'zap':'alert','width:17px;height:17px;color:var(--'+(i.severity==='critical'?'red':i.severity==='warning'?'amber':i.severity==='good'?'green':'blue')+')')+
+'<b>'+esc(i.title)+'</b><span class="pill p-'+(i.severity==='critical'?'red':i.severity==='warning'?'amber':i.severity==='good'?'green':'blue')+'">'+esc(sev)+'</span><span class="zvd-tag" style="font-size:10px;background:var(--surface2);border:1px solid var(--line);border-radius:20px;padding:2px 9px;color:var(--muted)">'+esc(i.domainLabel||'')+'</span></div>';
+if(i.evidence&&i.evidence.length)h+='<div class="ins-ev">'+i.evidence.map(function(x){return '<span>'+esc(x)+'</span>';}).join('')+'</div>';
+if(!compact)h+='<div class="ins-rec">'+icon('brain','width:13px;height:13px;vertical-align:-2px;color:var(--brandDeep)')+' '+esc(i.recommendation||'')+'</div>';
+h+='<div class="ins-f">';
+(i.actions||[]).forEach(function(a){
+h+='<button class="btn btn-s btn-sm" data-act="ins-act" data-a="'+esc(a.act)+'" data-e="'+esc(a.entity||'')+'" data-id="'+esc(a.id||'')+'" data-page="'+esc(a.page||'')+'" data-title="'+esc(a.title||'')+'">'+esc(a.label)+'</button>';});
+h+=btn('ins-decision','ثبت تصمیم','decision','btn-v btn-sm',' data-ins="'+esc(i.id)+'"');
+if(i.impact)h+='<span class="ins-imp">اثر برآوردی: '+moneyC(i.impact)+'</span>';
+h+='</div></div>';
+return h;}
+function advisorPage(){
+var A=DB.advisor||{},c=A.counts||{};
+var acts=btn('whatif','سناریوسازی مالی','flask','btn-p')+btn('refresh','تحلیل مجدد','undo','btn-s');
+var h=head('مشاوره هوشمند','تحلیل قاعده‌محور روی داده‌های واقعی سامانه · '+jDT(A.generatedAt),acts);
+h+='<div class="grid kpis" style="margin-bottom:16px">'+
+kpi('شاخص سلامت کسب‌وکار',fa(A.health||0)+' از ۱۰۰','target',(A.health||0)>=70?'var(--green)':(A.health||0)>=40?'var(--amber)':'var(--red)',A.headline||'')+
+kpi('ریسک بحرانی',fa(c.critical||0),'alert','var(--red)','نیازمند تصمیم فوری')+
+kpi('هشدار',fa(c.warning||0),'clock','var(--amber)','قابل پیگیری این هفته')+
+kpi('نقطه قوت',fa(c.good||0),'check','var(--green)','فرصت بهره‌برداری')+
+'</div>';
+h+='<div class="toolbar"><select class="sel" data-advf="severity"><option value="">شدت: همه</option>'+
+[['critical','بحرانی'],['warning','هشدار'],['info','اطلاع'],['good','نقطه قوت']].map(function(x){return '<option value="'+x[0]+'"'+(PS.nf.severity===x[0]?' selected':'')+'>'+x[1]+'</option>';}).join('')+'</select>'+
+'<select class="sel" data-advf="domain"><option value="">حوزه: همه</option>'+
+['contracts','capacity','projects','finance','invest','equity','operations','people','support','targets','strategy'].map(function(d){
+var lbl={contracts:'قراردادها',capacity:'ظرفیت',projects:'پروژه‌ها',finance:'مالی',invest:'سرمایه‌گذاری',equity:'سهام',operations:'عملیات',people:'سرمایه انسانی',support:'پشتیبانی',targets:'اهداف',strategy:'راهبرد'}[d];
+return '<option value="'+d+'"'+(PS.nf.domain===d?' selected':'')+'>'+lbl+'</option>';}).join('')+'</select></div>';
+var list=(A.insights||[]).filter(function(i){return (!PS.nf.severity||i.severity===PS.nf.severity)&&(!PS.nf.domain||i.domain===PS.nf.domain);});
+h+=list.length?list.map(function(i){return insightCard(i);}).join(''):'<div class="card"><div class="empty"><div class="ei">'+icon('check')+'</div><h4>موردی با این فیلتر نیست</h4></div></div>';
+return h;}
+function whatIfModal(){
+var F=DB.finance||{};
+openModal('<div class="mh"><h3>سناریوسازی مالی — چه می‌شود اگر…</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<form data-form="whatif"><div class="mb">'+
+'<div class="sec-t" style="margin-top:0">وضعیت پایه</div>'+kv([['درآمد',money(F.revenue||0)],['هزینه متغیر',money(F.variable||0)],['هزینه ثابت',money(F.fixed||0)],['سود خالص',money(F.netProfit||0)]])+
+'<div class="sec-t">پارامترهای سناریو</div><div class="fgrid">'+
+'<div class="field"><label>تغییر نرخ فروش (٪)</label><input name="priceChange" type="number" step="any" value="0"></div>'+
+'<div class="field"><label>تغییر حجم فروش (٪)</label><input name="volumeChange" type="number" step="any" value="0"></div>'+
+'<div class="field"><label>تغییر هزینه متغیر (٪)</label><input name="varCostChange" type="number" step="any" value="0"></div>'+
+'<div class="field"><label>افزایش هزینه ثابت</label><input name="fixedAdd" type="number" step="any" value="0"></div>'+
+'<div class="field"><label>درآمد قرارداد جدید</label><input name="newContractRevenue" type="number" step="any" value="0"></div>'+
+'<div class="field"><label>تعداد استخدام جدید</label><input name="hireCount" type="number" step="1" value="0"></div>'+
+'<div class="field"><label>هزینه هر استخدام</label><input name="hireCost" type="number" step="any" value="0"></div>'+
+'<div class="field"><label>از تاریخ</label><input name="from" data-jd></div>'+
+'<div class="field"><label>تا تاریخ</label><input name="to" data-jd></div>'+
+'</div><div id="wifOut" style="margin-top:14px"></div></div>'+
+'<div class="mf"><button class="btn btn-p" type="submit">'+icon('flask','width:14px;height:14px')+' محاسبه سناریو</button>'+
+'<button type="button" class="btn btn-v" data-act="wif-decision">ثبت به‌عنوان تصمیم</button>'+
+'<button type="button" class="btn btn-s" data-act="mclose">بستن</button></div></form>',true,true);}
+function whatIfRun(f){
+var g=function(n){return num(f.elements[n]?f.elements[n].value:0);};
+var p={priceChange:g('priceChange'),volumeChange:g('volumeChange'),varCostChange:g('varCostChange'),
+fixedAdd:g('fixedAdd'),newContractRevenue:g('newContractRevenue'),hireCount:g('hireCount'),hireCost:g('hireCost'),
+from:f.elements.from.value?jStore(f.elements.from.value):'',to:f.elements.to.value?jStore(f.elements.to.value):''};
+return api('mgrWhatIf',p,TOKEN).then(function(r){
+PS.wif=r;
+var s=r.scenario,b=r.base;
+$('#wifOut').innerHTML='<div class="sec-t">نتیجه سناریو</div>'+
+kv([['درآمد جدید',money(s.revenue)],['سود خالص جدید',money(s.net)],['تغییر سود','<b style="color:'+(s.deltaNet>=0?'var(--green)':'var(--red)')+'">'+money(s.deltaNet)+'</b>'],
+['حاشیه جدید',pct(s.margin)],['تغییر حاشیه',pct(s.deltaMargin)],['نقطه سربه‌سر',money(s.breakEven)],
+['هزینه ثابت جدید',money(s.fixed)],['هزینه متغیر جدید',money(s.variable)]]);
+toast('سناریو محاسبه شد.','ok');});}
+/* ═════════ 14) PNL / FINANCE ═════════ */
+function pnlPage(){
+var F=DB.finance||{},C=DB.company||{},cash=DB.cash||{};
+var months=Object.keys(F.byMonth||{}).sort();
+var h=head('سود و زیان','تحلیل سودآوری، ساختار هزینه و نقطه سربه‌سر',btn('whatif','سناریوسازی','flask','btn-p')+btn('export','خروجی دفتر','dl','btn-s',' data-e="finance"'));
+h+='<div class="toolbar"><input class="inp" data-pnl="from" data-jd placeholder="از تاریخ" value="'+esc(PS.filters.from?jInput(PS.filters.from):'')+'" style="width:150px">'+
+'<input class="inp" data-pnl="to" data-jd placeholder="تا تاریخ" value="'+esc(PS.filters.to?jInput(PS.filters.to):'')+'" style="width:150px">'+
+'<select class="sel" data-pnl="branchId"><option value="">شعبه: همه</option>'+brOpts().map(function(b){return '<option value="'+esc(b.v)+'"'+(PS.filters.branchId===b.v?' selected':'')+'>'+esc(b.l)+'</option>';}).join('')+'</select></div>';
+h+='<div class="grid kpis" style="margin-bottom:18px">'+
+kpi('درآمد',moneyC(F.revenue||0),'finance','var(--green)','پرداخت‌شده')+
+kpi('سود ناخالص',moneyC(F.grossProfit||0),'pnl','var(--teal)','حاشیه ناخالص '+pct(F.grossMargin||0))+
+kpi('سود عملیاتی',moneyC(F.operatingProfit||0),'chart','var(--blue)','پس از هزینه ثابت')+
+kpi('سود خالص',moneyC(F.netProfit||0),'wallet','var(--brand)','حاشیه '+pct(F.margin||0)+' · هدف '+pct(C.targetMargin||0))+
+kpi('نقطه سربه‌سر',moneyC(F.breakEven||0),'target','var(--violet)','درآمد لازم برای پوشش ثابت')+
+kpi('جریان نقد ۳۰ روز',moneyC(cash.net||0),'clock',(cash.net||0)>=0?'var(--green)':'var(--red)','ورود '+moneyC(cash.inflow||0)+' · خروج '+moneyC(cash.outflow||0))+
+'</div>';
+h+='<div class="grid charts" style="margin-bottom:18px">'+
+'<div class="cbox"><h3>'+icon('chart','width:15px;height:15px;color:var(--brand)')+' روند ماهانه سود</h3><div class="cwrap"><canvas id="pTrend"></canvas></div></div>'+
+'<div class="cbox"><h3>'+icon('pnl','width:15px;height:15px;color:var(--violet)')+' آبشار سود و زیان</h3><div class="cwrap"><canvas id="pWater"></canvas></div></div></div>';
+var bb=F.byBranch||{},keys=Object.keys(bb);
+h+='<div class="card" style="margin-bottom:18px"><h3 style="margin-bottom:12px;display:flex;gap:8px;align-items:center">'+icon('branch','width:15px;height:15px;color:var(--teal)')+' سودآوری به تفکیک واحد</h3>'+
+(keys.length?'<div class="tw"><table class="tb"><thead><tr><th>واحد / شعبه</th><th>درآمد</th><th>هزینه</th><th>سود</th><th>حاشیه</th><th>وضعیت</th></tr></thead><tbody>'+
+keys.map(function(k){var v=bb[k],p=v.rev?(v.rev-v.cost)/v.rev*100:0;
+return '<tr><td><b>'+esc(brName(k))+'</b></td><td class="num">'+money(v.rev)+'</td><td class="num">'+money(v.cost)+'</td>'+
+'<td class="num" style="color:'+((v.rev-v.cost)>=0?'var(--green)':'var(--red)')+'">'+money(v.rev-v.cost)+'</td>'+
+'<td><div style="display:flex;gap:8px;align-items:center">'+bar(Math.max(0,p))+'<b class="num">'+pct(p)+'</b></div></td>'+
+'<td>'+pill(p<0?'قرمز':p<(C.targetMargin||25)?'زرد':'سبز')+'</td></tr>';}).join('')+'</tbody></table></div>':'<p class="sub">داده‌ای ثبت نشده است.</p>')+'</div>';
+var mix=F.byCat||{},mk=Object.keys(mix).sort(function(a,b){return mix[b]-mix[a];});
+h+='<div class="card"><h3 style="margin-bottom:12px;display:flex;gap:8px;align-items:center">'+icon('list','width:15px;height:15px;color:var(--brand)')+' سرفصل‌های مالی</h3>'+
+(mk.length?mk.map(function(k){var mx=mix[mk[0]]||1;return '<div class="rank"><div class="info"><b>'+esc(k)+'</b></div>'+bar(mix[k]/mx*100,k.indexOf('درآمد')===0?'var(--green)':'var(--red)')+'<span class="v">'+moneyC(mix[k])+'</span></div>';}).join(''):'<p class="sub">سرفصلی ثبت نشده است.</p>')+'</div>';
+return h;}
+function chartsPnl(){
+if(!window.Chart)return;
+var F=DB.finance||{},P=pal(),g=cssVar('--line');
+var ms=Object.keys(F.byMonth||{}).sort();
+var mk=function(id,c){var el=$('#'+id);if(el)CH.push(new Chart(el,c));};
+mk('pTrend',{type:'line',data:{labels:ms.map(jMonthLabel),datasets:[
+{label:'درآمد',data:ms.map(function(m){return F.byMonth[m].rev;}),borderColor:P[6],backgroundColor:'rgba(14,159,110,.12)',fill:true,tension:.4},
+{label:'هزینه',data:ms.map(function(m){return F.byMonth[m].cost;}),borderColor:P[5],backgroundColor:'rgba(217,119,6,.1)',fill:true,tension:.4},
+{label:'سود',data:ms.map(function(m){return F.byMonth[m].rev-F.byMonth[m].cost;}),borderColor:P[0],borderWidth:3,tension:.4,pointRadius:4}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}},scales:{x:{grid:{display:false}},y:{grid:{color:g},ticks:{callback:function(v){return moneyC(v);}}}}}});
+mk('pWater',{type:'bar',data:{labels:['درآمد','هزینه متغیر','سود ناخالص','هزینه ثابت','سود خالص'],datasets:[{
+data:[F.revenue||0,-(F.variable||0),F.grossProfit||0,-(F.fixed||0),F.netProfit||0],
+backgroundColor:[P[6],P[5],P[3],P[4],(F.netProfit||0)>=0?P[0]:P[7]],borderRadius:8}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return moneyC(c.parsed.y);}}}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:g},ticks:{callback:function(v){return moneyC(v);}}}}}});}
+/* ═════════ 15) CAPACITY ═════════ */
+function capacityPage(){
+var CS=DB.contractStats||{},caps=CS.caps||[];
+var h=head('ظرفیت قراردادها','تعهد قراردادی، مصرف واقعی و درآمد تحقق‌یافته',btn('new','ظرفیت جدید','plus','btn-p',' data-e="capacity"')+btn('export','CSV','dl','btn-s',' data-e="capacity"'));
+h+='<div class="grid kpis" style="margin-bottom:16px">'+
+kpi('ظرفیت‌های فعال',fa(caps.filter(function(c){return c.Status==='فعال';}).length),'capacity','var(--blue)','از '+fa(caps.length))+
+kpi('درآمد تحقق‌یافته',moneyC(CS.capRevenue||0),'finance','var(--green)','از مصرف ظرفیت')+
+kpi('ظرفیت بالقوه',moneyC(CS.capPotential||0),'contract','var(--violet)','کل تعهد قراردادی')+
+kpi('درآمد در معرض خطر',moneyC((CS.capPotential||0)-(CS.capRevenue||0)),'alert','var(--amber)','ظرفیت مصرف‌نشده')+
+kpi('نزدیک اتمام',fa((CS.highUtil||[]).length),'alert','var(--red)','بهره‌برداری ≥ ۸۵٪')+
+kpi('کم‌مصرف',fa((CS.lowUtil||[]).length),'clock','var(--amber)','بهره‌برداری < ۲۵٪')+
+'</div>';
+h+='<div class="grid charts" style="margin-bottom:16px"><div class="cbox"><h3>'+icon('capacity','width:15px;height:15px;color:var(--teal)')+' بهره‌برداری ظرفیت‌ها</h3><div class="cwrap"><canvas id="capChart"></canvas></div></div>'+
+'<div class="cbox"><h3>'+icon('alert','width:15px;height:15px;color:var(--amber)')+' ظرفیت‌های نیازمند اقدام</h3>'+
+((CS.highUtil||[]).concat(CS.lowUtil||[]).slice(0,7).map(function(c){
+return '<div class="rank" data-act="view" data-e="capacity" data-id="'+c.rowIndex+'" style="cursor:pointer"><div class="info"><b>'+esc(c.Title)+'</b><small>'+esc(conTitle(c['Contract-ID']))+' · '+fa(c.used)+'/'+fa(c.TotalQty)+' '+esc(c.Unit)+'</small></div>'+bar(c.utilPct,c.utilPct>=85?'var(--red)':'var(--amber)')+'<span class="v">'+pct(c.utilPct)+'</span></div>';}).join('')||'<p class="sub">موردی نیازمند اقدام نیست.</p>')+'</div></div>';
+return h+entityPage('capacity');}
+function chartsCapacity(){
+if(!window.Chart)return;
+var caps=(DB.contractStats||{}).caps||[],top=caps.slice(0,12);
+var el=$('#capChart');if(!el)return;
+CH.push(new Chart(el,{type:'bar',data:{labels:top.map(function(c){return c.Title;}),datasets:[
+{label:'مصرف‌شده',data:top.map(function(c){return c.used;}),backgroundColor:pal()[3],borderRadius:6,stack:'s'},
+{label:'باقی‌مانده',data:top.map(function(c){return c.remain;}),backgroundColor:pal()[7],borderRadius:6,stack:'s'}]},
+options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}},
+scales:{x:{stacked:true,grid:{color:cssVar('--line')}},y:{stacked:true,grid:{display:false},ticks:{font:{size:9}}}}}}));}
+/* ═════════ 16) PROJECTS ═════════ */
+var PCOL=[['ایده','var(--slate)'],['برنامه‌ریزی','var(--violet)'],['در حال اجرا','var(--amber)'],['متوقف','var(--red)'],['تکمیل شده','var(--green)'],['لغو شده','var(--slate)']];
+function projectsPage(){
+var PST=DB.projectStats||{};
+var h=head('پروژه‌ها','پیشرفت، بودجه و ریسک اجرا',
+'<button class="btn btn-sm '+(PS.view==='board'?'btn-p':'btn-s')+'" data-act="prj-view" data-mode="board">'+icon('grid','width:14px;height:14px')+' کانبان</button>'+
+'<button class="btn btn-sm '+(PS.view==='table'?'btn-p':'btn-s')+'" data-act="prj-view" data-mode="table">'+icon('list','width:14px;height:14px')+' جدول</button>'+
+btn('new','پروژه جدید','plus','btn-p',' data-e="projects"'));
+h+='<div class="grid kpis" style="margin-bottom:16px">'+
+kpi('پروژه‌های فعال',fa(PST.active||0),'project','var(--blue)','از '+fa((PST.list||[]).length))+
+kpi('بودجه کل',moneyC(PST.budget||0),'finance','var(--violet)','تخصیص‌یافته')+
+kpi('هزینه شده',moneyC(PST.spent||0),'wallet','var(--amber)',pct(PST.budget?PST.spent/PST.budget*100:0)+' از بودجه')+
+kpi('عقب‌افتاده',fa((PST.late||[]).length),'clock','var(--red)','گذشته از مهلت')+
+kpi('در ریسک',fa((PST.risky||[]).length),'alert','var(--pink)','سلامت قرمز')+
+'</div>';
+if(PS.view==='board'){
+var q=en(PS.q||'').toLowerCase();
+var list=(PST.list||[]).filter(function(p){return !q||[p.Name,p.ManagerName,p.id].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});
+h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-search placeholder="جستجو در پروژه‌ها…" value="'+esc(PS.q||'')+'"></div></div>';
+h+='<div class="kanban">'+PCOL.map(function(c){
+var l=list.filter(function(p){return p.Status===c[0];});
+return '<div class="kcol" data-col="'+esc(c[0])+'"><div class="kch"><i style="background:'+c[1]+'"></i>'+esc(c[0])+'<span>'+fa(l.length)+'</span></div>'+
+l.map(function(p){return '<div class="kcard" draggable="true" data-prj="'+esc(p.id)+'" data-row="'+p.rowIndex+'" data-act="view" data-e="projects" data-id="'+p.rowIndex+'"><b>'+esc(p.Name)+'</b><small>'+esc(p.ManagerName||'—')+' · '+esc(p.id)+'</small><small>مهلت '+jDisp(p.DueDate)+'</small><div style="margin-top:7px">'+bar(p.calcProgress)+'</div><div class="kfoot"><span style="font-size:11px;font-weight:900;color:var(--brandDeep)">'+pct(p.calcProgress)+'</span>'+pill(p.health)+'</div></div>';}).join('')+
+(l.length?'':'<div class="sub" style="text-align:center;padding:16px 0">—</div>')+'</div>';}).join('')+'</div>';
+return h;}
+h+='<div class="cbox" style="margin-bottom:16px"><h3>'+icon('project','width:15px;height:15px;color:var(--violet)')+' پیشرفت در برابر مصرف بودجه</h3><div class="cwrap"><canvas id="prjChart"></canvas></div></div>';
+return h+entityPage('projects');}
+function chartsProjects(){
+if(!window.Chart)return;
+var l=((DB.projectStats||{}).list||[]).slice(0,12),el=$('#prjChart');if(!el)return;
+CH.push(new Chart(el,{type:'bar',data:{labels:l.map(function(p){return p.Name;}),datasets:[
+{label:'پیشرفت ٪',data:l.map(function(p){return p.calcProgress;}),backgroundColor:pal()[2],borderRadius:6},
+{label:'مصرف بودجه ٪',data:l.map(function(p){return p.burnPct;}),backgroundColor:pal()[5],borderRadius:6}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}},
+scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{max:120,grid:{color:cssVar('--line')},ticks:{callback:function(v){return fa(v)+'٪';}}}}}}));}
+/* ═════════ 17) EQUITY ═════════ */
+function equityPage(){
+var EQ=DB.equity||{},C=EQ.company||DB.company||{};
+var h=head('سهام شرکت','جدول سهام (Cap Table)، سرمایه پرداختی و رقیق‌سازی',
+btn('dilution','شبیه‌سازی رقیق‌سازی','flask','btn-p')+btn('new','سهامدار جدید','plus','btn-s',' data-e="holders"')+btn('export','CSV','dl','btn-s',' data-e="holders"'));
+h+='<div class="grid kpis" style="margin-bottom:16px">'+
+kpi('کل سهام',fa(EQ.totalShares||0),'equity','var(--violet)','اعلامی: '+fa(EQ.declaredShares||0))+
+kpi('سرمایه پرداختی',moneyC(EQ.paidCapital||0),'finance','var(--green)','نقدی واردشده')+
+kpi('سهامداران',fa((EQ.holders||[]).length),'people','var(--blue)',EQ.topHolder?'بزرگ‌ترین: '+EQ.topHolder:'')+
+kpi('تمرکز مالکیت',pct(EQ.topPct||0),'target','var(--amber)','سهم بزرگ‌ترین سهامدار')+
+kpi('ارزش اسمی هر سهم',money(C.parValue||0),'wallet','var(--teal)','پایه محاسبه')+
+kpi('تطابق سهام',EQ.mismatch?'عدم تطابق':'منطبق',EQ.mismatch?'alert':'check',EQ.mismatch?'var(--red)':'var(--green)','کنترل حسابرسی')+
+'</div>';
+h+='<div class="grid charts" style="margin-bottom:16px">'+
+'<div class="cbox"><h3>'+icon('equity','width:15px;height:15px;color:var(--violet)')+' ترکیب سهامداری</h3><div class="cwrap"><canvas id="eqChart"></canvas></div></div>'+
+'<div class="cbox"><h3>'+icon('people','width:15px;height:15px;color:var(--blue)')+' جدول سهام</h3>'+
+((EQ.holders||[]).length?'<div class="tw" style="max-height:280px"><table class="tb" style="min-width:auto"><thead><tr><th>سهامدار</th><th>سهام</th><th>درصد</th><th>سرمایه</th></tr></thead><tbody>'+
+EQ.holders.map(function(x){return '<tr><td><b>'+esc(x.Name)+'</b><br><small class="sub">'+esc(x.Type||'')+'</small></td><td class="num">'+fa(x.Shares)+'</td><td class="num">'+pct(x.calcPct)+'</td><td class="num">'+moneyC(x.PaidCapital)+'</td></tr>';}).join('')+'</tbody></table></div>':'<p class="sub">سهامداری ثبت نشده است.</p>')+'</div></div>';
+return h+entityPage('holders');}
+function chartsEquity(){
+if(!window.Chart)return;
+var hs=(DB.equity||{}).holders||[],el=$('#eqChart');if(!el)return;
+CH.push(new Chart(el,{type:'doughnut',data:{labels:hs.length?hs.map(function(x){return x.Name;}):['بدون داده'],
+datasets:[{data:hs.length?hs.map(function(x){return x.Shares;}):[1],backgroundColor:pal(),borderWidth:2,borderColor:cssVar('--surface')}]},
+options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}},
+tooltip:{callbacks:{label:function(c){return c.label+': '+fa(c.parsed)+' سهم';}}}}}}));}
+function dilutionModal(){
+var EQ=DB.equity||{};
+openModal('<div class="mh"><h3>شبیه‌سازی رقیق‌سازی سهام</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<form data-form="dilution"><div class="mb">'+kv([['سهام فعلی',fa(EQ.totalShares||0)],['سرمایه پرداختی',money(EQ.paidCapital||0)]])+
+'<div class="sec-t">پارامترها</div><div class="fgrid">'+
+'<div class="field"><label>نوع رویداد</label><select name="mode"><option>افزایش سرمایه</option><option>سرمایه‌گذار جدید</option></select></div>'+
+'<div class="field"><label>ارزش‌گذاری پیش از رویداد</label><input name="valuation" type="number" step="any" value="0"></div>'+
+'<div class="field"><label>سهام جدید (افزایش سرمایه)</label><input name="newShares" type="number" step="1" value="0"></div>'+
+'<div class="field"><label>مبلغ سرمایه‌گذار</label><input name="amount" type="number" step="any" value="0"></div>'+
+'<div class="field full"><label>نام سرمایه‌گذار</label><input name="investorName" placeholder="مثلاً صندوق جسورانه X"></div>'+
+'</div><div id="dilOut" style="margin-top:14px"></div></div>'+
+'<div class="mf"><button class="btn btn-p" type="submit">'+icon('flask','width:14px;height:14px')+' محاسبه</button><button type="button" class="btn btn-s" data-act="mclose">بستن</button></div></form>',true,true);}
+function dilutionRun(f){
+var p={mode:f.elements.mode.value,valuation:num(f.elements.valuation.value),newShares:num(f.elements.newShares.value),
+amount:num(f.elements.amount.value),investorName:f.elements.investorName.value};
+return api('mgrEquitySimulate',p,TOKEN).then(function(r){
+$('#dilOut').innerHTML='<div class="sec-t">نتیجه</div>'+
+kv([['سهام پیش از رویداد',fa(r.totalBefore)],['سهام منتشرشده',fa(r.issued)],['سهام پس از رویداد',fa(r.totalAfter)],
+['قیمت هر سهم',money(r.pricePerShare)],['ارزش پس از رویداد',money(r.postValuation)]])+
+'<div class="tw" style="margin-top:12px"><table class="tb" style="min-width:auto"><thead><tr><th>سهامدار</th><th>قبل ٪</th><th>بعد ٪</th><th>رقیق‌سازی</th></tr></thead><tbody>'+
+r.rows.map(function(x){return '<tr><td><b>'+esc(x.name)+'</b></td><td class="num">'+pct(x.beforePct)+'</td><td class="num">'+pct(x.afterPct)+'</td><td class="num" style="color:'+(x.dilution>0?'var(--red)':'var(--green)')+'">'+pct(x.dilution)+'</td></tr>';}).join('')+'</tbody></table></div>';
+toast('محاسبه انجام شد.','ok');});}
+/* ═════════ 18) NOTES ═════════ */
+function notesPage(){
+var rows=(DB.notes||[]).slice();
+var q=en(PS.q||'').toLowerCase();
+if(q)rows=rows.filter(function(n){return [n.Title,n.Body,n.Tags,n.Category].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});
+if(PS.nf.cat)rows=rows.filter(function(n){return n.Category===PS.nf.cat;});
+if(PS.nf.done)rows=rows.filter(function(n){return (PS.nf.done==='open'?n.Done!=='بله':n.Done==='بله');});
+rows.sort(function(a,b){var pa=a.Pinned==='بله'?1:0,pb=b.Pinned==='بله'?1:0;if(pa!==pb)return pb-pa;return String(b.UpdatedAt||b.CreatedAt).localeCompare(String(a.UpdatedAt||a.CreatedAt));});
+var h=head('یادداشت‌ها',fa(rows.length)+' یادداشت · دانش و پیگیری مدیریتی',btn('note-new','یادداشت جدید','plus','btn-p'));
+h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-search placeholder="جستجو در عنوان، متن و برچسب…" value="'+esc(PS.q||'')+'"></div>'+
+'<select class="sel" data-nf="cat"><option value="">دسته: همه</option>'+((DB.defs.notes||{}).enums||{}).Category.map(function(c){return '<option'+(PS.nf.cat===c?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select>'+
+'<select class="sel" data-nf="done"><option value="">وضعیت: همه</option><option value="open"'+(PS.nf.done==='open'?' selected':'')+'>باز</option><option value="done"'+(PS.nf.done==='done'?' selected':'')+'>انجام‌شده</option></select></div>';
+if(!rows.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('note')+'</div><h4>یادداشتی نیست</h4><p class="sub">اولین یادداشت مدیریتی را ثبت کنید.</p></div></div>';
+h+='<div class="note-grid">'+rows.map(function(n){
+return '<div class="note '+esc(n.Color||'زرد')+(n.Done==='بله'?' done':'')+'"><h4>'+(n.Pinned==='بله'?icon('pin','width:14px;height:14px;color:var(--brand)'):'')+esc(n.Title)+'</h4>'+
+'<p>'+esc(n.Body||'')+'</p>'+
+'<div class="nf">'+pill(n.Category||'عمومی')+(n.ReminderAt?'<span class="pill p-amber">'+jDisp(n.ReminderAt)+'</span>':'')+
+(n.Tags?String(n.Tags).split(/[,،]/).filter(Boolean).slice(0,3).map(function(t){return '<span class="pill p-gray">'+esc(t.trim())+'</span>';}).join(''):'')+'</div>'+
+'<div class="nf" style="margin-top:8px">'+ibtn('note-open','eye','مشاهده',' data-id="'+esc(n.id)+'"')+ibtn('note-edit','edit','ویرایش',' data-id="'+esc(n.id)+'"')+
+ibtn('note-pin','pin',n.Pinned==='بله'?'برداشتن سنجاق':'سنجاق کردن',' data-id="'+esc(n.id)+'"')+
+ibtn('note-done','check',n.Done==='بله'?'باز کردن':'انجام شد',' data-id="'+esc(n.id)+'"')+
+ibtn('note-decision','decision','تبدیل به تصمیم',' data-id="'+esc(n.id)+'"')+
+ibtn('note-del','trash','حذف',' data-id="'+esc(n.id)+'"')+'</div></div>';}).join('')+'</div>';
+return h;}
+function noteModal(id){
+var n=id?(DB.notes||[]).find(function(x){return x.id===id;}):{};
+if(!n)n={Color:'زرد',Category:'عمومی',Pinned:'خیر',Done:'خیر'};
+var enm=(DB.defs.notes||{}).enums||{};
+function sel(nm,list,val){return '<select name="'+nm+'">'+list.map(function(x){return '<option'+(x===val?' selected':'')+'>'+esc(x)+'</option>';}).join('')+'</select>';}
+openModal('<div class="mh"><h3>'+(id?'ویرایش یادداشت':'یادداشت جدید')+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<form data-form="note" data-id="'+esc(id||'')+'"><div class="mb"><div class="fgrid">'+
+'<div class="field full"><label>عنوان <span class="req">*</span></label><input name="Title" value="'+esc(n.Title||'')+'" required></div>'+
+'<div class="field full"><label>متن</label><textarea name="Body" style="min-height:150px">'+esc(n.Body||'')+'</textarea></div>'+
+'<div class="field"><label>دسته</label>'+sel('Category',enm.Category||['عمومی'],n.Category)+'</div>'+
+'<div class="field"><label>رنگ</label>'+sel('Color',enm.Color||['زرد'],n.Color)+'</div>'+
+'<div class="field"><label>سنجاق</label>'+sel('Pinned',['خیر','بله'],n.Pinned)+'</div>'+
+'<div class="field"><label>انجام شد</label>'+sel('Done',['خیر','بله'],n.Done)+'</div>'+
+'<div class="field"><label>یادآوری</label><input name="ReminderAt" data-jd value="'+esc(n.ReminderAt?jInput(n.ReminderAt):'')+'"></div>'+
+'<div class="field"><label>برچسب‌ها (با کاما)</label><input name="Tags" value="'+esc(n.Tags||'')+'"></div>'+
+'<div class="field"><label>مرتبط با</label>'+sel('RelatedType',enm.RelatedType||['—'],n.RelatedType)+'</div>'+
+'<div class="field"><label>شناسه مرتبط</label><input name="RelatedId" value="'+esc(n.RelatedId||'')+'"></div>'+
+'</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ذخیره</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',true,true);}
+function noteRow(id){return (DB.notes||[]).find(function(x){return x.id===id;});}
+function noteSaveQuick(id,patch){
+var n=noteRow(id);if(!n)return Promise.resolve();
+var obj={rowIndex:n.rowIndex};
+Object.keys(patch).forEach(function(k){obj[k]=patch[k];});
+return api('mgrCCSave','notes',obj,TOKEN).then(function(){toast('به‌روزرسانی شد.','ok');return reload();});}
+/* ═════════ 19) OPERATIONS / BRANCHES / PEOPLE / MESSAGES ═════════ */
+function operationsPage(){
+var os=DB.orders||[],cs=DB.cards||[];
+var st={};os.forEach(function(o){st[o.status]=(st[o.status]||0)+1;});
+var rev=os.filter(function(o){return o.status!=='لغو شده';}).reduce(function(a,o){return a+o.finalPrice;},0);
+var h=head('عملیات شعب',fa(os.length)+' سفارش · '+fa(cs.length)+' کارت عملیاتی',btn('export-orders','خروجی سفارش‌ها','dl','btn-s'));
+h+='<div class="grid kpis" style="margin-bottom:16px">'+
+kpi('ارزش سفارش‌ها',moneyC(rev),'orders','var(--green)','بدون لغو')+
+kpi('در انتظار بررسی',fa(os.filter(function(o){return /^(جدید|ثبت اولیه)$/.test(o.status);}).length),'clock','var(--amber)','نیازمند اقدام')+
+kpi('کارت فعال',fa(cs.filter(function(c){return !/تکمیل|لغو/.test(c.status);}).length),'grid','var(--violet)','در جریان')+
+kpi('نرخ لغو',pct(os.length?os.filter(function(o){return /لغو/.test(o.status);}).length/os.length*100:0),'x','var(--red)','کیفیت پذیرش')+
+'</div>';
+var q=en(PS.q||'').toLowerCase();
+var list=os.filter(function(o){return !q||[o.requestId,o.customerName,o.service,o.branchId].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});
+if(PS.filters.status)list=list.filter(function(o){return o.status===PS.filters.status;});
+if(PS.filters.branchId)list=list.filter(function(o){return o.branchId===PS.filters.branchId;});
+h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-search placeholder="جستجو در سفارش‌ها…" value="'+esc(PS.q||'')+'"></div>'+
+'<select class="sel" data-filter="status"><option value="">وضعیت: همه</option>'+Object.keys(st).map(function(s){return '<option'+(PS.filters.status===s?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select>'+
+'<select class="sel" data-filter="branchId"><option value="">شعبه: همه</option>'+brOpts().map(function(b){return '<option value="'+esc(b.v)+'"'+(PS.filters.branchId===b.v?' selected':'')+'>'+esc(b.l)+'</option>';}).join('')+'</select></div>';
+h+='<div class="tw"><table class="tb"><thead><tr><th>شناسه</th><th>تاریخ</th><th>مشتری</th><th>خدمت</th><th>شعبه</th><th>اجرا</th><th>مبلغ</th><th>وضعیت</th></tr></thead><tbody>'+
+(list.length?list.slice(0,120).map(function(o){return '<tr><td><b style="color:var(--brandDeep)">'+esc(o.requestId)+'</b></td><td>'+jDT(o.createdAt)+'</td><td>'+esc(o.customerName)+'</td><td>'+esc(o.service)+'</td><td>'+esc(brName(o.branchId))+'</td><td>'+jDisp(o.execDate)+'</td><td class="num">'+money(o.finalPrice)+'</td><td>'+pill(o.status)+'</td></tr>';}).join(''):'<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted)">سفارشی یافت نشد.</td></tr>')+'</tbody></table></div>';
+return h;}
+function branchesPage(){
+var bs=DB.branches||[],F=DB.finance||{},os=DB.orders||[];
+var h=head('شعبه‌ها','عملکرد شبکه شعب',btn('export-branches','خروجی','dl','btn-s'));
+h+='<div class="tw"><table class="tb"><thead><tr><th>کد</th><th>نام</th><th>استان/شهر</th><th>مدیر</th><th>سفارش</th><th>درآمد عملیاتی</th><th>درآمد دفتری</th><th>هزینه دفتری</th><th>سود</th><th>نیرو</th><th>وضعیت</th></tr></thead><tbody>'+
+(bs.length?bs.map(function(b){
+var bo=os.filter(function(o){return o.branchId===b.branchId;});
+var fin=(F.byBranch||{})[b.branchId]||{rev:0,cost:0};
+var profit=fin.rev-fin.cost;
+return '<tr><td><b>'+esc(b.branchId)+'</b></td><td>'+esc(b.name)+'</td><td>'+esc(b.province||'—')+' / '+esc(b.city||'—')+'</td><td>'+esc(b.managerName||'—')+'</td>'+
+'<td class="num">'+fa(bo.length)+'</td><td class="num">'+moneyC(bo.reduce(function(a,o){return a+o.finalPrice;},0))+'</td>'+
+'<td class="num">'+moneyC(fin.rev)+'</td><td class="num">'+moneyC(fin.cost)+'</td>'+
+'<td class="num" style="color:'+(profit>=0?'var(--green)':'var(--red)')+'">'+moneyC(profit)+'</td>'+
+'<td class="num">'+fa((DB.workers||[]).filter(function(w){return w.branchId===b.branchId;}).length)+'</td><td>'+pill(b.status)+'</td></tr>';}).join(''):'<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--muted)">شعبه‌ای ثبت نشده است.</td></tr>')+'</tbody></table></div>';
+return h;}
+function peoplePage(){
+var tabs=[['workers','نیروها'],['employees','کارمندان'],['applicants','کارجویان']];
+var h=head('سرمایه انسانی','نیروها، کارمندان و پرونده‌های جذب',btn('export-people','خروجی','dl','btn-s'));
+h+='<div class="tabs">'+tabs.map(function(t){return '<div class="tab'+(PS.tab===t[0]?' on':'')+'" data-act="ptab" data-tab="'+t[0]+'">'+t[1]+' ('+fa((DB[t[0]]||[]).length)+')</div>';}).join('')+'</div>';
+var q=en(PS.q||'').toLowerCase();
+var rows=(DB[PS.tab]||[]).filter(function(r){return !q||[r.name,r.username,r.firstName,r.lastName,r.contact,r.phone,r.specialty].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});
+h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-search placeholder="جستجو…" value="'+esc(PS.q||'')+'"></div></div>';
+if(PS.tab==='applicants'){
+h+='<div class="tw"><table class="tb"><thead><tr><th>پرونده</th><th>نام</th><th>تماس</th><th>تخصص</th><th>موقعیت</th><th>شعبه</th><th>وضعیت</th></tr></thead><tbody>'+
+(rows.length?rows.map(function(a){return '<tr><td><b>'+esc(a.caseNumber)+'</b></td><td>'+esc((a.firstName||'')+' '+(a.lastName||''))+'</td><td class="ltr">'+fa(a.phone)+'</td><td>'+esc(a.specialty)+'</td><td>'+esc(a.requestedPosition)+'</td><td>'+esc(brName(a.branchId))+'</td><td>'+pill(a.status)+'</td></tr>';}).join(''):'<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted)">پرونده‌ای نیست.</td></tr>')+'</tbody></table></div>';
+}else{
+h+='<div class="tw"><table class="tb"><thead><tr><th>شناسه</th><th>نام</th><th>نقش</th><th>شعبه</th><th>تخصص/سمت</th><th>تماس</th><th>وضعیت</th></tr></thead><tbody>'+
+(rows.length?rows.map(function(r){return '<tr><td><b class="ltr">'+esc(r.workerId||r.empId)+'</b></td>'+
+'<td><span style="display:flex;align-items:center;gap:8px">'+av(r.name,r.photo)+esc(r.name)+'</span></td>'+
+'<td>'+pill(r.operations)+'</td><td>'+esc(brName(r.branchId))+'</td><td>'+esc(r.specialization||r.jobTitle||'—')+'</td>'+
+'<td class="ltr">'+fa(r.contact||'—')+'</td><td>'+pill(r.status)+'</td></tr>';}).join(''):'<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted)">رکوردی نیست.</td></tr>')+'</tbody></table></div>';}
+return h;}
+function messagesPage(){
+var ms=DB.messages||[];
+var q=en(PS.q||'').toLowerCase();
+if(q)ms=ms.filter(function(m){return [m.subject,m.ownerName,m.ticketNo,m.branchId].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});
+if(PS.filters.channel)ms=ms.filter(function(m){return m.channel===PS.filters.channel;});
+var h=head('گفتگوهای سامانه',fa(ms.length)+' گفتگو · نمای نظارتی مدیر کل',btn('refresh','بروزرسانی','undo','btn-s'));
+h+='<div class="grid kpis" style="margin-bottom:16px">'+
+['INTERNAL','CUSTOMER_SUPPORT','EMPLOYEE_SUPPORT'].map(function(c,i){
+var l=ms.filter(function(m){return m.channel===c;});
+var lbl={INTERNAL:'مکاتبات سازمانی',CUSTOMER_SUPPORT:'پشتیبانی مشتریان',EMPLOYEE_SUPPORT:'پشتیبانی کارکنان'}[c];
+return kpi(lbl,fa(l.length),'msg',['var(--blue)','var(--pink)','var(--violet)'][i],fa(l.filter(function(m){return m.unreadPeer>0;}).length)+' بی‌پاسخ');}).join('')+'</div>';
+h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-search placeholder="جستجو…" value="'+esc(PS.q||'')+'"></div>'+
+'<select class="sel" data-filter="channel"><option value="">کانال: همه</option>'+
+[['INTERNAL','سازمانی'],['CUSTOMER_SUPPORT','مشتریان'],['EMPLOYEE_SUPPORT','کارکنان']].map(function(x){return '<option value="'+x[0]+'"'+(PS.filters.channel===x[0]?' selected':'')+'>'+x[1]+'</option>';}).join('')+'</select></div>';
+h+=ms.length?ms.slice(0,60).map(function(m){
+return '<div class="card" style="margin-bottom:9px;padding:13px"><div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap">'+
+'<div style="flex:1;min-width:220px"><b>'+esc(m.subject||'بدون موضوع')+'</b>'+
+'<div style="font-size:10.5px;color:var(--muted);margin-top:3px">'+esc(m.ticketNo||m.threadId)+' · '+esc(m.ownerName||'—')+' · '+esc(brName(m.branchId))+' · '+fa(m.messageCount)+' پیام · '+jDT(m.lastMessageAt||m.createdAt)+'</div>'+
+'<div style="background:var(--surface2);border-radius:9px;padding:7px 10px;margin-top:7px;font-size:11.5px;color:var(--muted)">'+esc(m.preview||'—')+'</div></div>'+
+'<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">'+pill(m.status)+
+(m.unreadPeer>0?'<span class="bdg r">'+fa(m.unreadPeer)+' بی‌پاسخ</span>':'')+'</div></div></div>';}).join(''):'<div class="card"><div class="empty"><div class="ei">'+icon('msg')+'</div><h4>گفتگویی نیست</h4></div></div>';
+return h;}
+function devPage(){
+var rs=DB.devRequests||[];
+var h=head('درخواست‌های توسعه',fa(rs.length)+' درخواست ثبت‌شده در DevelopmentRequests',btn('refresh','بروزرسانی','undo','btn-s'));
+if(!rs.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('zap')+'</div><h4>درخواستی ثبت نشده است</h4><p class="sub">درخواست‌ها از پنل ادمین، مدیر شعبه و کارمند ثبت می‌شوند.</p></div></div>';
+h+='<div class="tw"><table class="tb"><thead><tr><th>شناسه</th><th>ماژول</th><th>نوع</th><th>شرح</th><th>اولویت</th><th>وضعیت</th><th>ثبت‌کننده</th><th>تاریخ</th></tr></thead><tbody>'+
+rs.map(function(r){return '<tr><td><b class="ltr">'+esc(r.id)+'</b></td><td>'+esc(r.moduleName)+'</td><td>'+esc(r.kind||'—')+'</td>'+
+'<td style="white-space:normal;max-width:340px">'+esc(String((r.fields&&r.fields.problem)||r.note||'').slice(0,160))+'</td>'+
+'<td>'+pill(r.priority)+'</td><td>'+pill(r.status)+'</td><td>'+esc(r.createdByName||r.createdBy)+'</td><td>'+jDT(r.createdAt)+'</td></tr>';}).join('')+'</tbody></table></div>';
+return h;}
+/* ═════════ 20) ANALYTICS ═════════ */
+function analyticsPage(){
+var h=head('نمودارهای تحلیلی','تحلیل چندبعدی کسب‌وکار',btn('refresh','بروزرسانی','undo','btn-s'));
+h+='<div class="toolbar"><input class="inp" data-an="from" data-jd placeholder="از تاریخ" value="'+esc(PS.filters.from?jInput(PS.filters.from):'')+'" style="width:150px">'+
+'<input class="inp" data-an="to" data-jd placeholder="تا تاریخ" value="'+esc(PS.filters.to?jInput(PS.filters.to):'')+'" style="width:150px"></div>';
+var boxes=[['aTrend','روند درآمد و هزینه','chart','var(--brand)'],['aStatus','وضعیت سفارش‌ها','orders','var(--blue)'],
+['aCards','وضعیت کارت‌ها','grid','var(--violet)'],['aService','سهم خدمات','capacity','var(--teal)'],
+['aBranch','درآمد شعب','branch','var(--green)'],['aCity','درآمد شهرها','branch','var(--pink)'],
+['aCust','مشتریان برتر','people','var(--amber)'],['aWorker','نیروهای برتر','star','var(--slate)'],
+['aInvest','ترکیب پرتفوی','invest','var(--blue)'],['aEquity','ترکیب سهامداری','equity','var(--violet)'],
+['aCap','بهره‌برداری ظرفیت','capacity','var(--teal)'],['aPrj','پیشرفت پروژه‌ها','project','var(--brand)']];
+h+='<div class="grid charts">'+boxes.map(function(b){
+return '<div class="cbox"><h3>'+icon(b[2],'width:15px;height:15px;color:'+b[3])+esc(b[1])+'</h3><div class="cwrap"><canvas id="'+b[0]+'"></canvas></div></div>';}).join('')+'</div>';
+return h;}
+function chartsAnalytics(){
+if(!window.Chart)return;
+var F=DB.finance||{},P=pal(),g=cssVar('--line'),S=cssVar('--surface');
+var ms=Object.keys(F.byMonth||{}).sort();
+var os=DB.orders||[],cs=DB.cards||[];
+function cnt(arr,k){var o={};arr.forEach(function(x){var v=x[k]||'—';o[v]=(o[v]||0)+1;});return o;}
+function sum(arr,k,v){var o={};arr.forEach(function(x){var a=x[k]||'نامشخص';o[a]=(o[a]||0)+num(x[v]);});return o;}
+function top(o,n,f){return Object.keys(o).sort(function(a,b){return o[b]-o[a];}).slice(0,n).map(function(k){return {name:f?f(k):k,value:o[k]};});}
+var mk=function(id,c){var el=$('#'+id);if(el)CH.push(new Chart(el,c));};
+var dough=function(id,o,fmt){var k=Object.keys(o);mk(id,{type:'doughnut',data:{labels:k.length?k:['بدون داده'],datasets:[{data:k.length?k.map(function(x){return o[x];}):[1],backgroundColor:P,borderWidth:2,borderColor:S}]},
+options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:9}}},tooltip:{callbacks:{label:function(c){return c.label+': '+(fmt?fmt(c.parsed):fa(c.parsed));}}}}}});};
+var barh=function(id,arr,fmt){mk(id,{type:'bar',data:{labels:arr.length?arr.map(function(x){return x.name;}):['بدون داده'],datasets:[{data:arr.length?arr.map(function(x){return x.value;}):[0],backgroundColor:P,borderRadius:7}]},
+options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fmt?fmt(c.parsed.x):fa(c.parsed.x);}}}},scales:{x:{grid:{color:g}},y:{grid:{display:false},ticks:{font:{size:9}}}}}});};
+mk('aTrend',{type:'line',data:{labels:ms.map(jMonthLabel),datasets:[
+{label:'درآمد',data:ms.map(function(m){return F.byMonth[m].rev;}),borderColor:P[6],backgroundColor:'rgba(14,159,110,.12)',fill:true,tension:.4},
+{label:'هزینه',data:ms.map(function(m){return F.byMonth[m].cost;}),borderColor:P[5],backgroundColor:'rgba(217,119,6,.1)',fill:true,tension:.4}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}},scales:{x:{grid:{display:false}},y:{grid:{color:g},ticks:{callback:function(v){return moneyC(v);}}}}}});
+dough('aStatus',cnt(os,'status'));dough('aCards',cnt(cs,'status'));
+barh('aService',top(sum(os,'service','finalPrice'),8),moneyC);
+barh('aBranch',top(sum(os,'branchId','finalPrice'),8,function(k){return brName(k);}),moneyC);
+var cityRev={};os.forEach(function(o){var c=(DB.customers||[]).find(function(x){return x.customerId===o.customerId;});var k=(c&&c.city)||'نامشخص';cityRev[k]=(cityRev[k]||0)+o.finalPrice;});
+barh('aCity',top(cityRev,8),moneyC);
+barh('aCust',top(sum(os,'customerName','finalPrice'),8),moneyC);
+var wp={};cs.filter(function(c){return c.status==='تکمیل شده';}).forEach(function(c){var w=(DB.workers||[]).find(function(x){return x.workerId===c.workerId;});var n=w?w.name:(c.workerId||'نامشخص');wp[n]=(wp[n]||0)+1;});
+barh('aWorker',top(wp,8));
+dough('aInvest',(DB.invest||{}).byKind||{},moneyC);
+var eq={};((DB.equity||{}).holders||[]).forEach(function(hh){eq[hh.Name]=hh.Shares;});
+dough('aEquity',eq);
+var caps=((DB.contractStats||{}).caps||[]).slice(0,10);
+mk('aCap',{type:'bar',data:{labels:caps.map(function(c){return c.Title;}),datasets:[{data:caps.map(function(c){return c.utilPct;}),backgroundColor:P,borderRadius:7}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{max:100,grid:{color:g},ticks:{callback:function(v){return fa(v)+'٪';}}}}}});
+var pl=((DB.projectStats||{}).list||[]).slice(0,10);
+mk('aPrj',{type:'bar',data:{labels:pl.map(function(p){return p.Name;}),datasets:[
+{label:'پیشرفت',data:pl.map(function(p){return p.calcProgress;}),backgroundColor:P[2],borderRadius:6},
+{label:'مصرف بودجه',data:pl.map(function(p){return p.burnPct;}),backgroundColor:P[5],borderRadius:6}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:g}}}}});}
+/* ═════════ 21) REPORTS ═════════ */
+function reportsPage(){
+var F=DB.finance||{};
+var h=head('گزارش‌ها','خروجی‌های قابل ارائه به هیئت‌مدیره',btn('print-report','چاپ گزارش جامع','print','btn-p'));
+h+='<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">'+
+[['finance','دفتر مالی (درآمد و هزینه)','finance'],['contracts','فهرست قراردادها','contract'],['capacity','ظرفیت و مصرف','capacity'],
+['projects','پروژه‌ها و پیشرفت','project'],['investments','پرتفوی سرمایه‌گذاری','invest'],['holders','جدول سهامداران','equity'],
+['decisions','تصمیمات مدیریتی','decision'],['targets','اهداف و تحقق','target']].map(function(x){
+return '<div class="card"><h3 style="margin-bottom:10px;display:flex;gap:8px;align-items:center">'+icon(x[2],'width:15px;height:15px;color:var(--brand)')+esc(x[1])+'</h3>'+
+'<p class="sub" style="margin-bottom:12px">'+fa((DB[x[0]]||[]).length)+' رکورد</p>'+
+btn('export','دانلود CSV','dl','btn-s btn-sm',' data-e="'+x[0]+'"')+'</div>';}).join('')+'</div>';
+h+='<div class="card" style="margin-top:16px"><h3 style="margin-bottom:12px">خلاصه اجرایی</h3>'+
+kv([['درآمد',money(F.revenue||0)],['هزینه',money(F.cost||0)],['سود خالص',money(F.netProfit||0)],['حاشیه سود',pct(F.margin||0)],
+['ارزش قرارداد فعال',money((DB.contractStats||{}).totalValue||0)],['ارزش پرتفوی',money((DB.invest||{}).value||0)],
+['مطالبات',money(F.receivable||0)],['سلامت کسب‌وکار',fa((DB.advisor||{}).health||0)+' از ۱۰۰']])+'</div>';
+return h;}
+function printReport(){
+var F=DB.finance||{},A=DB.advisor||{},C=DB.company||{};
+var h='<div style="padding:26px;color:#17213B"><div style="text-align:center;border-bottom:2px solid #0B1736;padding-bottom:12px;margin-bottom:16px">'+
+'<h2 style="color:#0B1736">Zingo<span style="color:#FF6B1A">Vingo</span></h2><div style="font-size:12px;color:#5C6784">گزارش جامع مدیریتی · '+esc(C.name||'')+' · '+jDisp(new Date())+'</div></div>';
+h+='<h3>خلاصه مالی</h3><table style="width:100%;border-collapse:collapse;font-size:12px">'+
+[['درآمد',money(F.revenue||0)],['هزینه متغیر',money(F.variable||0)],['هزینه ثابت',money(F.fixed||0)],['سود ناخالص',money(F.grossProfit||0)],['سود خالص',money(F.netProfit||0)],['حاشیه سود',pct(F.margin||0)],['نقطه سربه‌سر',money(F.breakEven||0)]]
+.map(function(x){return '<tr><td style="border-bottom:1px dashed #ddd;padding:6px">'+x[0]+'</td><td style="border-bottom:1px dashed #ddd;padding:6px;text-align:left"><b>'+x[1]+'</b></td></tr>';}).join('')+'</table>';
+h+='<h3 style="margin-top:18px">قراردادها و پروژه‌ها</h3><table style="width:100%;border-collapse:collapse;font-size:12px">'+
+[['قرارداد فعال',fa((DB.contractStats||{}).activeCount||0)],['ارزش قراردادها',money((DB.contractStats||{}).totalValue||0)],
+['پروژه فعال',fa((DB.projectStats||{}).active||0)],['پروژه عقب‌افتاده',fa(((DB.projectStats||{}).late||[]).length)],
+['ارزش پرتفوی',money((DB.invest||{}).value||0)]].map(function(x){return '<tr><td style="border-bottom:1px dashed #ddd;padding:6px">'+x[0]+'</td><td style="border-bottom:1px dashed #ddd;padding:6px;text-align:left"><b>'+x[1]+'</b></td></tr>';}).join('')+'</table>';
+h+='<h3 style="margin-top:18px">اولویت‌های تصمیم (سلامت '+fa(A.health||0)+' از ۱۰۰)</h3><ol style="font-size:12px;line-height:2">'+
+(A.insights||[]).slice(0,10).map(function(i){return '<li><b>'+esc(i.title)+'</b> — '+esc(i.recommendation||'')+'</li>';}).join('')+'</ol></div>';
+$('#printArea').innerHTML=h;window.print();}
+/* ═════════ 22) ROADMAP / SOON ═════════ */
+function roadmapPage(){
+var avg=Math.round(SOON_ORDER.reduce(function(a,k){return a+SOON[k].p;},0)/SOON_ORDER.length);
+var h='<div class="soon-hero"><span class="tag">'+icon('target','width:13px;height:13px')+' نقشه راه ۱۴۰۵ — ۱۴۰۶</span>'+
+'<h2>ماژول‌های در راه مرکز فرمان</h2><p>چهار ماژول زیر به‌ترتیب اولویت در حال ساخت‌اند و پس از انتشار، بدون تغییر در داده‌های فعلی به همین پنل اضافه می‌شوند. درخواست‌های توسعه از همه پنل‌ها در شیت DevelopmentRequests تجمیع می‌شود.</p>'+
+'<div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">'+btn('go','درخواست‌های توسعه','zap','btn-p',' data-page="devRequests"')+'</div></div>';
+h+='<div class="grid kpis" style="margin-bottom:18px">'+
+kpi('ماژول در راه',fa(SOON_ORDER.length),'box','var(--blue)','در صف توسعه')+
+kpi('میانگین پیشرفت',pct(avg),'chart','var(--brand)','وزنی ساده')+
+kpi('نزدیک‌ترین انتشار','اسفند ۱۴۰۵','cal','var(--teal)','هوش تجاری پیشرفته')+
+kpi('درخواست ثبت‌شده',fa((DB.devRequests||[]).length),'send','var(--violet)','از همه پنل‌ها')+'</div>';
+h+='<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">'+SOON_ORDER.map(function(k,i){
+var c=SOON[k];
+return '<div class="card" style="display:flex;flex-direction:column;gap:10px">'+
+'<div style="display:flex;gap:11px;align-items:center"><span style="width:42px;height:42px;flex:0 0 42px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,'+c.c+' 14%,transparent);color:'+c.c+'">'+icon(c.ic)+'</span>'+
+'<div style="flex:1;min-width:0"><b style="font-size:14px;display:block">'+esc(c.t)+'</b><small class="sub">اولویت '+fa(i+1)+' · '+esc(c.eta)+'</small></div>'+pill(c.p>=40?'در حال ساخت':'در طراحی')+'</div>'+
+'<p class="sub" style="font-size:11.5px">'+esc(c.d)+'</p>'+bar(c.p,c.c)+
+'<div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);font-weight:800"><span>پیشرفت</span><span>'+pct(c.p)+'</span></div>'+
+'<div style="display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--muted)">'+c.items.slice(0,3).map(function(x){return '<span style="display:flex;gap:6px;align-items:center">'+icon('check','width:12px;height:12px;color:var(--green)')+esc(x[1])+'</span>';}).join('')+'</div>'+
+'<div>'+btn('go','جزئیات','eye','btn-s btn-sm',' data-page="'+k+'"')+'</div></div>';}).join('')+'</div>';
+return h;}
+function soonPage(k){
+var c=SOON[k];if(!c)return '<div class="card">صفحه یافت نشد.</div>';
+var h='<div class="soon-hero"><span class="tag">'+icon('clock','width:13px;height:13px')+' در حال توسعه</span>'+
+'<h2>'+esc(c.t)+'</h2><p>'+esc(c.d)+'</p><div class="prog"><i data-w="'+c.p+'"></i></div>'+
+'<div class="prog-l"><span>پیشرفت پیاده‌سازی '+pct(c.p)+'</span><span>انتشار هدف: '+esc(c.eta)+'</span></div>'+
+'<div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">'+btn('go','نقشه راه کامل','target','btn-p',' data-page="roadmap"')+
+btn('go','درخواست‌های توسعه','zap','btn-s',' data-page="devRequests"')+'</div></div>';
+h+='<div class="soon-grid">'+c.items.map(function(x){
+return '<div class="soon-card"><div class="sic" style="background:color-mix(in srgb,'+c.c+' 14%,transparent);color:'+c.c+'">'+icon(x[0])+'</div><h4>'+esc(x[1])+'</h4><p>'+esc(x[2])+'</p></div>';}).join('')+'</div>';
+h+='<div class="card" style="margin-top:16px;display:flex;gap:12px;align-items:flex-start;border-right:4px solid '+c.c+'">'+icon('zap','width:20px;height:20px;color:'+c.c)+
+'<div><b style="font-size:13px">این بخش هنوز داده عملیاتی ذخیره نمی‌کند</b><p class="sub" style="margin-top:4px;line-height:1.9">تا انتشار رسمی، هیچ رکوردی در این ماژول ساخته نمی‌شود. ماژول‌های فعال فعلی: قرارداد، ظرفیت، پروژه، دفتر مالی، سرمایه‌گذاری، سهام، اهداف، یادداشت، تصمیم و مشاوره هوشمند.</p></div></div>';
+return h;}
+/* ═════════ 23) SETTINGS / PROFILE ═════════ */
+function settingsPage(){
+var s=DB.settings||{},C=DB.company||{};
+var h=head('تنظیمات شرکت','هویت حقوقی، ساختار سرمایه، اهداف و برند');
+h+='<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(340px,1fr))">';
+h+='<div class="card"><h3 style="margin-bottom:12px">'+icon('branch','width:15px;height:15px;color:var(--brand)')+' هویت و سرمایه شرکت</h3>'+
+'<form data-form="settings"><div class="fgrid">'+
+[['COMPANY_NAME','نام حقوقی شرکت',C.name],['COMPANY_REG_NO','شماره ثبت',C.regNo],
+['COMPANY_TOTAL_SHARES','کل سهام اعلامی',C.totalShares],['COMPANY_PAR_VALUE','ارزش اسمی هر سهم',C.parValue],
+['FISCAL_YEAR_START','شروع سال مالی (MM-DD)',C.fiscalStart],['TARGET_MARGIN','حاشیه سود هدف (٪)',C.targetMargin],
+['CURRENCY_LABEL','واحد پول',C.currency],['BRAND_NAME','نام برند',C.brand]].map(function(x){
+return '<div class="field"><label>'+esc(x[1])+'</label><input name="'+x[0]+'" value="'+esc(x[2]==null?'':x[2])+'"></div>';}).join('')+
+'</div><br><button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ذخیره</button></form></div>';
+h+='<div class="card"><h3 style="margin-bottom:12px">'+icon('image','width:15px;height:15px;color:var(--violet)')+' لوگوی سامانه</h3>'+
+'<div class="asset-pv"><span class="asset-stage"><img id="assetPvLogo" src="'+esc(s.LOGO_URL||'LOGO.png')+'" alt="logo" onerror="this.style.opacity=.25"></span>'+
+'<div style="min-width:0"><b style="font-size:12.5px">لوگوی فعال همه پنل‌ها</b><div class="sub" style="word-break:break-all">'+esc(s.LOGO_URL||'LOGO.png (مخزن)')+'</div></div></div>'+
+'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">'+btn('asset-pick','بارگذاری لوگو','up','btn-p btn-sm',' data-kind="logo"')+btn('asset-reset','بازگشت به LOGO.png','undo','btn-s btn-sm',' data-kind="logo"')+'</div>'+
+'<form data-form="asset-url" data-kind="logo"><div class="field"><label>یا نشانی مستقیم</label><input name="url" value="'+esc(s.LOGO_URL||'')+'" placeholder="https://…/LOGO.png"></div>'+
+'<div style="margin-top:10px"><button class="btn btn-s btn-sm" type="submit">ذخیره نشانی</button></div></form>'+
+'<p class="sub" style="margin-top:10px;line-height:1.9">خروجی مربع ۲۵۶×۲۵۶ با پس‌زمینه شفاف. در سایدبار و صفحه ورود همه پنل‌ها اعمال می‌شود.</p></div>';
+h+='<div class="card"><h3 style="margin-bottom:12px">'+icon('image','width:15px;height:15px;color:var(--teal)')+' نماد مرورگر (favicon)</h3>'+
+'<div class="asset-pv"><span class="asset-stage" style="background:#fff"><img src="'+esc(s.FAVICON_URL||'favicon.png')+'" alt="favicon" onerror="this.style.opacity=.25"></span>'+
+'<div style="min-width:0"><b style="font-size:12.5px">نماد فعلی</b><div class="sub" style="word-break:break-all">'+esc(s.FAVICON_URL||'favicon.png (مخزن)')+'</div></div></div>'+
+'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">'+btn('asset-pick','بارگذاری favicon','up','btn-p btn-sm',' data-kind="favicon"')+btn('asset-reset','بازگشت به پیش‌فرض','undo','btn-s btn-sm',' data-kind="favicon"')+'</div>'+
+'<form data-form="asset-url" data-kind="favicon"><div class="field"><label>یا نشانی مستقیم</label><input name="url" value="'+esc(s.FAVICON_URL||'')+'"></div>'+
+'<div style="margin-top:10px"><button class="btn btn-s btn-sm" type="submit">ذخیره نشانی</button></div></form></div>';
+h+='<div class="card" style="grid-column:1/-1"><h3 style="margin-bottom:12px">'+icon('settings','width:15px;height:15px;color:var(--blue)')+' سلامت و نگهداری</h3>'+
+'<div style="display:flex;gap:8px;flex-wrap:wrap">'+btn('ensure','ساخت/ترمیم شیت‌ها','check','btn-s')+btn('health','بررسی سلامت','chart','btn-s')+btn('backup','پشتیبان JSON','dl','btn-s')+'</div>'+
+'<div id="healthBox" style="margin-top:12px"></div></div>';
+return h+'</div>';}
+function profilePage(){
+return api('getManagerProfile',TOKEN).then(function(p){
+var h=head('پروفایل من','حساب کاربری مدیر کل',btn('my-photo','تغییر عکس','cam','btn-s'));
+h+='<div class="card" style="margin-bottom:16px"><div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">'+
+av(p.fullName,p.avatar,'lg','my-photo-view')+'<div><b style="font-size:18px">'+esc(p.fullName)+'</b>'+
+'<div class="sub">'+pill('Manager')+' · <span class="ltr">'+esc(p.employeeId)+'</span></div>'+
+'<div class="sub" style="margin-top:5px">'+esc(p.position||'—')+' · '+fa(p.phone||'—')+'</div></div></div></div>';
+h+='<div class="card"><form data-form="profile"><div class="fgrid">'+
+[['fullName','نام کامل',p.fullName],['phone','موبایل',p.phone],['email','ایمیل',p.email],['specialization','تخصص',p.specialty],['nationalId','کد ملی',p.nationalId]].map(function(x){
+return '<div class="field"><label>'+esc(x[1])+'</label><input name="'+x[0]+'" value="'+esc(x[2]||'')+'"></div>';}).join('')+
+'<div class="field"><label>رمز عبور جدید</label><input name="password" type="password" placeholder="خالی = بدون تغییر"></div>'+
+'<div class="field full"><label>آدرس</label><textarea name="address">'+esc(p.address||'')+'</textarea></div>'+
+'</div><br><button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ذخیره تغییرات</button></form></div>';
+return h;});}
+/* ═════════ 24) PHOTO / ASSET ═════════ */
+function photoModal(target){
+PE={x:0,y:0,z:1,w:0,h:0,ready:false,drag:false,sx:0,sy:0,target:target||null};
+openModal('<div class="mh"><h3>تغییر عکس پروفایل</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<div class="mb"><div class="pe-frame" id="peFrame"><img id="peImg" alt=""></div>'+
+'<div class="pe-row"><span>زوم</span><input type="range" id="peZoom" min="1" max="5" step="0.01" value="1"><span id="peZV">۱۰۰٪</span></div>'+
+'<div style="margin-top:12px">'+btn('pe-pick','انتخاب تصویر','up','btn-s')+'</div>'+
+'<p class="hint" style="margin-top:8px">تصویر را بکشید و زوم کنید؛ خروجی مربعی ۴۸۰×۴۸۰.</p></div>'+
+'<div class="mf"><button class="btn btn-p" id="peSave" data-act="pe-save">'+icon('check','width:14px;height:14px')+' ذخیره</button><button class="btn btn-s" data-act="mclose">انصراف</button></div>',false,true);
+var fr=$('#peFrame');
+fr.addEventListener('pointerdown',function(e){if(!PE.ready)return;PE.drag=true;PE.sx=e.clientX-PE.x;PE.sy=e.clientY-PE.y;fr.setPointerCapture(e.pointerId);});
+fr.addEventListener('pointermove',function(e){if(!PE.drag)return;PE.x=e.clientX-PE.sx;PE.y=e.clientY-PE.sy;peLayout();});
+['pointerup','pointercancel'].forEach(function(n){fr.addEventListener(n,function(){PE.drag=false;});});
+fr.addEventListener('wheel',function(e){if(!PE.ready)return;e.preventDefault();PE.z=Math.min(5,Math.max(1,PE.z*(e.deltaY<0?1.08:0.92)));$('#peZoom').value=PE.z;peLayout();},{passive:false});
+$('#peZoom').addEventListener('input',function(e){PE.z=num(e.target.value);peLayout();});}
+function peLayout(){var i=$('#peImg');if(!i||!PE.ready)return;var F=300,w=PE.w*PE.z,h=PE.h*PE.z;
+i.style.width=w+'px';i.style.height=h+'px';i.style.left=((F-w)/2+PE.x)+'px';i.style.top=((F-h)/2+PE.y)+'px';
+$('#peZV').textContent=fa(Math.round(PE.z*100))+'٪';}
+function peLoad(f){
+if(!f||!/^image\/(jpeg|png|webp)$/i.test(f.type)){toast('فرمت تصویر معتبر نیست.','err');return;}
+if(f.size>8*1024*1024){toast('حجم باید کمتر از ۸ مگابایت باشد.','err');return;}
+var rd=new FileReader();
+rd.onload=function(e){var im=new Image();im.onload=function(){var a=im.naturalWidth/im.naturalHeight;
+PE.w=a>=1?300*a:300;PE.h=PE.w/a;PE.x=0;PE.y=0;PE.z=1;PE.ready=true;$('#peImg').src=im.src;$('#peZoom').value=1;peLayout();};im.src=e.target.result;};
+rd.readAsDataURL(f);}
+function peSave(){
+if(!PE.ready){toast('ابتدا تصویر انتخاب کنید.','err');return;}
+var F=300,O=480,s=O/F,w=PE.w*PE.z,h=PE.h*PE.z;
+var c=document.createElement('canvas');c.width=c.height=O;var x=c.getContext('2d');
+x.fillStyle='#fff';x.fillRect(0,0,O,O);x.drawImage($('#peImg'),((F-w)/2+PE.x)*s,((F-h)/2+PE.y)*s,w*s,h*s);
+var b=$('#peSave');b.disabled=true;
+api('updateManagerProfile',{avatar:c.toDataURL('image/jpeg',0.9)},TOKEN)
+.then(function(){USER.avatar=null;closeModal();toast('عکس ذخیره شد.','ok');return reload();})
+.catch(function(e){b.disabled=false;toast(e.message,'err');});}
+function assetLoad(f,kind){
+if(!f||!/^image\//.test(f.type)){toast('فرمت فایل تصویر نیست.','err');return;}
+if(f.size>4*1024*1024){toast('حجم باید کمتر از ۴ مگابایت باشد.','err');return;}
+var rd=new FileReader();
+rd.onload=function(e){
+var raw=e.target.result;
+var send=function(out){toast('در حال بارگذاری…','');
+return api('mgrUploadAsset',out,kind,TOKEN).then(function(r){
+DB.settings=DB.settings||{};DB.settings[r.key]=r.url;applyAssets();toast('به‌روزرسانی شد.','ok');render();});};
+if(/svg/i.test(f.type)){send(raw);return;}
+var im=new Image();
+im.onload=function(){
+var O=kind==='favicon'?64:256,c=document.createElement('canvas');c.width=c.height=O;
+var x=c.getContext('2d');x.clearRect(0,0,O,O);
+var pad=kind==='favicon'?0:8,box=O-pad*2,sc=Math.min(box/im.naturalWidth,box/im.naturalHeight);
+var w=im.naturalWidth*sc,h=im.naturalHeight*sc;
+x.drawImage(im,(O-w)/2,(O-h)/2,w,h);send(c.toDataURL('image/png'));};
+im.onerror=function(){toast('خواندن تصویر ناموفق بود.','err');};im.src=raw;};
+rd.readAsDataURL(f);}
+/* ═════════ 25) NOTIF / SEARCH ═════════ */
+function notifications(){
+var read=[];try{read=JSON.parse(localStorage.getItem('zv_manager_notifs')||'[]');}catch(e){}
+return (DB.notifications||[]).map(function(n){return Object.assign({},n,{read:read.indexOf(n.id)>=0});});}
+function toggleNotif(){
+var p=$('#notifPanel');if(p.classList.contains('show')){p.classList.remove('show');return;}
+var it=notifications();
+p.innerHTML='<div class="nph"><span>'+icon('bell','width:15px;height:15px')+' اعلان‌ها</span><button class="btn btn-s btn-sm" data-act="notif-read">خواندن همه</button></div><div class="npl">'+
+(it.length?it.map(function(n){
+var ic=n.kind==='advisor'?'brain':n.kind==='contracts'?'contract':n.kind==='projects'?'project':'note';
+return '<div class="npi" data-act="notif-open" data-kind="'+esc(n.kind)+'"><span class="ni">'+icon(ic,'width:16px;height:16px')+'</span><div><b>'+esc(n.title)+'</b><small>'+esc(n.body)+'</small><small>'+jDT(n.at)+'</small></div></div>';}).join(''):'<div class="empty" style="padding:26px"><p class="sub">اعلانی نیست.</p></div>')+'</div>';
+p.classList.add('show');}
+function histGet(){try{return JSON.parse(localStorage.getItem(HKEY)||'[]');}catch(e){return [];}}
+function histPush(q){q=String(q||'').trim();if(q.length<2)return;var a=histGet().filter(function(x){return x.toLowerCase()!==q.toLowerCase();});a.unshift(q);try{localStorage.setItem(HKEY,JSON.stringify(a.slice(0,12)));}catch(e){}}
+function openCmdk(){$('#cmdk').classList.add('show');$('#ckInput').value='';ckSearch();setTimeout(function(){$('#ckInput').focus();},40);}
+function closeCmdk(){$('#cmdk').classList.remove('show');}
+function ckSearch(){
+var q=en($('#ckInput').value.trim()).toLowerCase(),out=[];
+if(!q){
+var hs=histGet();
+var h='<div class="ckg">سوابق جستجو</div>'+(hs.length?hs.map(function(x){return '<div class="cki" data-act="ck-hist" data-q="'+esc(x)+'">'+icon('search','width:15px;height:15px;color:var(--muted)')+'<span>'+esc(x)+'</span></div>';}).join(''):'<div class="empty" style="padding:18px"><p class="sub">جستجویی ثبت نشده است.</p></div>');
+h+='<div class="ckg">میان‌برها</div>'+
+[['advisor','مشاوره هوشمند','brain'],['pnl','سود و زیان','pnl'],['contracts','قراردادها','contract'],['equity','سهام شرکت','equity'],['notes','یادداشت‌ها','note']]
+.map(function(x){return '<div class="cki" data-act="ck-go" data-page="'+x[0]+'">'+icon(x[2],'width:16px;height:16px;color:var(--brand)')+'<span>'+x[1]+'</span><small>صفحه</small></div>';}).join('');
+$('#ckList').innerHTML=h;return;}
+function add(rows,e,fn){(rows||[]).filter(function(r){return Object.keys(r).some(function(k){return en(String(r[k]==null?'':r[k])).toLowerCase().indexOf(q)>=0;});}).slice(0,4).forEach(function(r){out.push(fn(r,e));});}
+add(DB.contracts,'contracts',function(r,e){return {t:r.Title,s:r.id,i:'contract',e:e,id:r.rowIndex};});
+add(DB.capacity,'capacity',function(r,e){return {t:r.Title,s:conTitle(r['Contract-ID']),i:'capacity',e:e,id:r.rowIndex};});
+add(DB.projects,'projects',function(r,e){return {t:r.Name,s:r.id,i:'project',e:e,id:r.rowIndex};});
+add(DB.finance,'finance',function(r,e){return {t:r.Category+' — '+money(r.Amount),s:r.id,i:'finance',e:e,id:r.rowIndex};});
+add(DB.investments,'investments',function(r,e){return {t:r.Title,s:r.Kind,i:'invest',e:e,id:r.rowIndex};});
+add(DB.holders,'holders',function(r,e){return {t:r.Name,s:fa(r.Shares)+' سهم',i:'equity',e:e,id:r.rowIndex};});
+add(DB.decisions,'decisions',function(r,e){return {t:r.Title,s:r.Status,i:'decision',e:e,id:r.rowIndex};});
+add(DB.targets,'targets',function(r,e){return {t:r.Metric+' · '+r.Period,s:r.id,i:'target',e:e,id:r.rowIndex};});
+(DB.notes||[]).filter(function(n){return [n.Title,n.Body,n.Tags].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});}).slice(0,4)
+.forEach(function(n){out.push({t:n.Title,s:'یادداشت',i:'note',note:n.id});});
+((DB.advisor||{}).insights||[]).filter(function(i){return en(i.title).toLowerCase().indexOf(q)>=0;}).slice(0,3)
+.forEach(function(i){out.push({t:i.title,s:'مشاوره',i:'brain',page:'advisor'});});
+$('#ckList').innerHTML=out.length?'<div class="ckg">نتایج ('+fa(out.length)+')</div>'+out.map(function(x){
+return '<div class="cki" data-act="ck-open" data-e="'+esc(x.e||'')+'" data-id="'+esc(x.id||'')+'" data-note="'+esc(x.note||'')+'" data-page="'+esc(x.page||'')+'">'+icon(x.i,'width:16px;height:16px;color:var(--brand)')+'<span>'+esc(x.t)+'</span><small>'+esc(x.s)+'</small></div>';}).join(''):'<div class="empty" style="padding:26px"><p class="sub">نتیجه‌ای یافت نشد.</p></div>';}
+/* ═════════ 26) RAIL / TIP ═════════ */
+var TIP=null,TIPT=null;
+function isMobile(){return window.matchMedia&&window.matchMedia('(max-width:1120px)').matches;}
+function applyRail(on,save){document.documentElement.classList.toggle('zv-rail',!!on);if(save!==false){try{localStorage.setItem(RKEY,on?'1':'0');}catch(e){}}if(!on)hideTip();syncRail();}
+function syncRail(){var b=$('#railBtn');if(!b)return;
+if(isMobile()){var o=$('#sidebar').classList.contains('open');b.title=o?'بستن منو':'باز کردن منو';}
+else b.title=document.documentElement.classList.contains('zv-rail')?'باز کردن کامل منو (Ctrl+B)':'جمع کردن منو (Ctrl+B)';}
+function toggleRail(){if(isMobile()){var s=$('#sidebar'),sc=$('#scrim');var o=!s.classList.contains('open');s.classList.toggle('open',o);sc.classList.toggle('show',o);syncRail();return;}
+applyRail(!document.documentElement.classList.contains('zv-rail'));}
+function showTip(el){
+if(!document.documentElement.classList.contains('zv-rail')||isMobile())return;
+var sp=el.querySelector('span'),l=sp?sp.textContent:(el.title||'');l=String(l||'').trim();if(!l)return;
+if(!TIP){TIP=document.createElement('div');TIP.id='zvTip';document.body.appendChild(TIP);}
+var b=el.querySelector('.bdg'),ex=b&&b.textContent.trim()?'<b>'+esc(b.textContent.trim())+'</b>':'';
+TIP.innerHTML=esc(l)+ex;TIP.classList.add('on');
+var r=el.getBoundingClientRect(),w=TIP.offsetWidth,h=TIP.offsetHeight;
+var left=r.left-w-12;if(left<8)left=r.right+12;
+TIP.style.left=left+'px';TIP.style.top=Math.max(8,Math.min(r.top+(r.height-h)/2,window.innerHeight-h-8))+'px';}
+function hideTip(){if(TIP)TIP.classList.remove('on');}
+/* ═════════ 27) ACTIONS ═════════ */
+var ACT={
+'login':doLogin,'logout':doLogout,'rail':toggleRail,'theme':toggleTheme,
+'scrim':function(){closeAll();syncRail();},'mclose':closeModal,'dclose':closeDrawer,'bell':toggleNotif,'cmdk':openCmdk,
+'go':function(d){go(d.page);},
+'refresh':function(){return reload().then(function(){toast('بروزرسانی شد.','ok');});},
+'new':function(d){openForm(d.e);},
+'edit':function(d){openForm(d.e,d.id);},
+'view':function(d){viewRow(d.e,d.id);},
+'del':function(d){delRows(d.e,[Number(d.id)]);},
+'bulk-del':function(d){delRows(d.e,Array.from(PS.sel));},
+'bulk-set':function(d){bulkSet(d.e);},
+'sel-clear':function(){PS.sel=new Set();render();},
+'sort':function(d){PS.sort=(PS.sort&&PS.sort.k===d.k)?{k:d.k,d:-PS.sort.d}:{k:d.k,d:1};render();},
+'pager':function(d){PS.pn=(PS.pn||1)+num(d.d);render();},
+'export':function(d){
+var cfg=E[d.e],rows=cfg?rowsFor(d.e):(DB[d.e]||[]);
+if(!rows.length){toast('داده‌ای برای خروجی نیست.','warn');return;}
+var cols=cfg?cfg.cols.map(function(c){return {k:c.k,l:c.l,sv:c.sv};}):Object.keys(rows[0]).filter(function(k){return k!=='rowIndex';}).map(function(k){return {k:k,l:k};});
+var q=function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';};
+var lines=[cols.map(function(c){return q(c.l);}).join(',')];
+rows.forEach(function(r){lines.push(cols.map(function(c){return q(c.sv?c.sv(r):r[c.k]);}).join(','));});
+var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'}));
+a.download='zingovingo-'+d.e+'.csv';a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1500);toast('CSV دانلود شد.','ok');},
+'export-orders':function(){
+var os=DB.orders||[],q=function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';};
+var lines=[['شناسه','تاریخ','مشتری','خدمت','شعبه','مبلغ','وضعیت'].map(q).join(',')];
+os.forEach(function(o){lines.push([o.requestId,o.createdAt,o.customerName,o.service,brName(o.branchId),o.finalPrice,o.status].map(q).join(','));});
+var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'}));a.download='orders.csv';a.click();toast('CSV دانلود شد.','ok');},
+'export-branches':function(){ACT['export']({e:'branches'});},
+'export-people':function(){ACT['export']({e:PS.tab});},
+'save-view':function(d){openModal('<div class="mh"><h3>ذخیره نمای فعلی</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><form data-form="view" data-e="'+d.e+'"><div class="mb"><div class="field"><label>نام نما <span class="req">*</span></label><input name="vname" required></div><p class="hint" style="margin-top:8px">جستجو، فیلترها و مرتب‌سازی ذخیره می‌شود.</p></div><div class="mf"><button class="btn btn-p" type="submit">ذخیره</button></div></form>',false,true);},
+'apply-view':function(d){var v=views(d.e).find(function(x){return x.id===d.id;});if(!v)return;PS.q=v.state.q||'';PS.filters=v.state.filters||{};PS.sort=v.state.sort||null;PS.pn=1;render();toast('نما اعمال شد.','ok');},
+'del-view':function(d){return api('mgrDeleteView',d.e,d.id,TOKEN).then(reload);},
+'quick-add':function(){
+openModal('<div class="mh"><h3>ثبت سریع</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><div class="mb"><div class="grid" style="grid-template-columns:1fr 1fr">'+
+[['contracts','قرارداد','contract'],['capacity','ظرفیت','capacity'],['projects','پروژه','project'],['finance','تراکنش مالی','finance'],
+['investments','سرمایه‌گذاری','invest'],['holders','سهامدار','equity'],['decisions','تصمیم','decision'],['targets','هدف','target']]
+.map(function(x){return '<button class="btn btn-s" data-act="quick-pick" data-e="'+x[0]+'" style="justify-content:flex-start">'+icon(x[2],'width:15px;height:15px')+esc(x[1])+'</button>';}).join('')+
+'<button class="btn btn-v" data-act="note-new" style="justify-content:flex-start">'+icon('note','width:15px;height:15px')+'یادداشت</button>'+
+'<button class="btn btn-p" data-act="whatif" style="justify-content:flex-start">'+icon('flask','width:15px;height:15px')+'سناریوسازی</button>'+
+'</div></div>',false,true);},
+'quick-pick':function(d){closeModal();openForm(d.e);},
+'con-caps':function(d){var c=(DB.contracts||[]).find(function(x){return x.rowIndex===Number(d.id);});if(!c)return;closeDrawer();go('capacity');PS.filters={'Contract-ID':c.id};render();},
+'con-renew':function(d){
+var c=(DB.contracts||[]).find(function(x){return x.rowIndex===Number(d.id);});if(!c)return;
+openModal('<div class="mh"><h3>تمدید قرارداد '+esc(c.id)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<form data-form="renew" data-id="'+esc(c.id)+'"><div class="mb">'+kv([['عنوان',esc(c.Title)],['پایان فعلی',jDisp(c.EndDate)],['مبلغ فعلی',money(c.Value)]])+
+'<div class="fgrid" style="margin-top:12px"><div class="field"><label>پایان جدید <span class="req">*</span></label><input name="newEnd" data-jd required></div>'+
+'<div class="field"><label>مبلغ جدید (خالی = بدون تغییر)</label><input name="newValue" type="number" step="any"></div></div></div>'+
+'<div class="mf"><button class="btn btn-p" type="submit">تمدید</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);},
+'cap-use':function(d){
+var c=(DB.capacity||[]).find(function(x){return x.rowIndex===Number(d.id);});if(!c)return;
+var st=(DB.contractStats.caps||[]).find(function(x){return x.id===c.id;})||{};
+openModal('<div class="mh"><h3>ثبت مصرف ظرفیت</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<form data-form="capuse" data-id="'+esc(c.id)+'"><div class="mb">'+
+kv([['ظرفیت',esc(c.Title)],['کل',fa(c.TotalQty)+' '+esc(c.Unit)],['مصرف',fa(st.used||0)],['باقی‌مانده',fa(st.remain||0)]])+
+'<div class="fgrid" style="margin-top:12px"><div class="field"><label>مقدار مصرف <span class="req">*</span></label><input name="qty" type="number" step="any" required></div>'+
+'<div class="field"><label>نوع مرجع</label><select name="refType"><option>دستی</option><option>سفارش</option><option>کارت عملیاتی</option><option>فاکتور</option><option>سایر</option></select></div>'+
+'<div class="field"><label>شناسه مرجع</label><input name="refId"></div>'+
+'<div class="field"><label>شرح</label><input name="note"></div></div></div>'+
+'<div class="mf"><button class="btn btn-p" type="submit">ثبت مصرف</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);},
+'cap-usage':function(d){closeDrawer();go('capacity');var c=(DB.capacity||[]).find(function(x){return x.rowIndex===Number(d.id);});if(c)viewRow('capacity',c.rowIndex);},
+'prj-tasks':function(d){var p=(DB.projects||[]).find(function(x){return x.rowIndex===Number(d.id);});if(!p)return;closeDrawer();go('ptasks');PS.filters={'Project-ID':p.id};render();},
+'prj-task-new':function(d){var p=(DB.projects||[]).find(function(x){return x.rowIndex===Number(d.id);});if(!p)return;closeModal();closeDrawer();openForm('ptasks',null,{'Project-ID':p.id,Weight:1,Status:'در انتظار'});},
+'prj-view':function(d){PS.view=d.mode;render();},
+'inv-price':function(d){
+var iv=(DB.investments||[]).find(function(x){return x.rowIndex===Number(d.id);});if(!iv)return;
+openModal('<div class="mh"><h3>قیمت جاری — '+esc(iv.Title)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<form data-form="invprice" data-id="'+esc(iv.id)+'"><div class="mb">'+kv([['واحد',fa(iv.Units)],['قیمت خرید',money(iv.BuyPrice)],['قیمت جاری',money(iv.CurrentPrice||iv.BuyPrice)]])+
+'<div class="field" style="margin-top:12px"><label>قیمت جدید <span class="req">*</span></label><input name="price" type="number" step="any" required></div></div>'+
+'<div class="mf"><button class="btn btn-p" type="submit">ثبت قیمت</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);},
+'ptab':function(d){PS.tab=d.tab;PS.q='';render();},
+'whatif':whatIfModal,
+'wif-decision':function(){
+if(!PS.wif){toast('ابتدا سناریو را محاسبه کنید.','warn');return;}
+var s=PS.wif.scenario;closeModal();
+openForm('decisions',null,{Title:'سناریوی مالی — تغییر سود '+money(s.deltaNet),
+Context:'درآمد پایه '+money(PS.wif.base.revenue)+' | سود پایه '+money(PS.wif.base.net),
+Options:'سناریوی شبیه‌سازی‌شده در مشاوره هوشمند',
+Choice:'اجرای سناریو با درآمد '+money(s.revenue)+' و سود '+money(s.net),
+Rationale:'حاشیه جدید '+pct(s.margin)+' · نقطه سربه‌سر '+money(s.breakEven),
+Impact:String(Math.round(s.deltaNet)),Risk:s.deltaNet<0?'زیاد':'متوسط',Status:'پیشنهادی'});},
+'dilution':dilutionModal,
+'ins-act':function(d){
+if(d.a==='go'){go(d.page);return;}
+if(d.a==='decision'){openForm('decisions',null,{Title:d.title,Status:'پیشنهادی',Risk:'متوسط'});return;}
+var row=(DB[d.e]||[]).find(function(x){return x.id===d.id;});
+if(!row){toast('رکورد مرتبط یافت نشد.','warn');return;}
+if(d.a==='edit')openForm(d.e,row.rowIndex);
+else if(d.a==='view')viewRow(d.e,row.rowIndex);
+else if(d.a==='renew')ACT['con-renew']({id:row.rowIndex});
+else if(d.a==='use')ACT['cap-use']({id:row.rowIndex});
+else if(d.a==='price')ACT['inv-price']({id:row.rowIndex});},
+'ins-decision':function(d){
+var i=((DB.advisor||{}).insights||[]).find(function(x){return x.id===d.ins;});
+if(!i)return;
+return api('mgrDecisionFromInsight',i,TOKEN).then(function(r){toast('تصمیم ثبت شد · '+r.id,'ok');return reload().then(function(){go('decisions');});});},
+'note-new':function(){closeModal();noteModal('');},
+'note-edit':function(d){noteModal(d.id);},
+'note-open':function(d){
+var n=noteRow(d.id);if(!n)return;
+openDrawer('<div class="dh"><h3>'+esc(n.Title)+'</h3><button class="ibtn" data-act="dclose">'+icon('x')+'</button></div><div class="db">'+
+kv([['دسته',pill(n.Category)],['رنگ',pill(n.Color)],['سنجاق',pill(n.Pinned)],['انجام',pill(n.Done)],
+['یادآوری',jDisp(n.ReminderAt)],['برچسب‌ها',esc(n.Tags||'—')],['مرتبط',esc(n.RelatedType||'—')+' '+esc(n.RelatedId||'')],['ثبت',jDT(n.CreatedAt)]])+
+'<div class="sec-t">متن</div><div class="kvi full"><b style="white-space:pre-wrap;font-weight:500;line-height:2">'+esc(n.Body||'—')+'</b></div></div>'+
+'<div class="df">'+btn('note-edit','ویرایش','edit','btn-p',' data-id="'+esc(n.id)+'"')+
+btn('note-decision','تبدیل به تصمیم','decision','btn-v',' data-id="'+esc(n.id)+'"')+
+btn('note-del','حذف','trash','btn-d',' data-id="'+esc(n.id)+'"')+'</div>');},
+'note-pin':function(d){var n=noteRow(d.id);if(n)return noteSaveQuick(d.id,{Pinned:n.Pinned==='بله'?'خیر':'بله'});},
+'note-done':function(d){var n=noteRow(d.id);if(n)return noteSaveQuick(d.id,{Done:n.Done==='بله'?'خیر':'بله'});},
+'note-del':function(d){var n=noteRow(d.id);if(!n)return;confirmBox('حذف یادداشت','«'+esc(n.Title)+'» حذف شود؟',function(){
+api('mgrCCDelete',[{entity:'notes',ids:[n.rowIndex]}],TOKEN).then(function(r){closeDrawer();return reload().then(function(){
+toast('حذف شد.','warn',{label:'بازگردانی',fn:function(){api('mgrCCRestore',r.trashToken,TOKEN).then(reload);}});});});});},
+'note-decision':function(d){var n=noteRow(d.id);if(!n)return;closeDrawer();
+openForm('decisions',null,{Title:n.Title,Context:n.Body||'',RelatedType:'—',RelatedId:n.id,Status:'پیشنهادی'});},
+'notif-read':function(){try{localStorage.setItem('zv_manager_notifs',JSON.stringify(notifications().map(function(n){return n.id;})));}catch(e){}$('#bellDot').hidden=true;$('#notifPanel').classList.remove('show');},
+'notif-open':function(d){$('#notifPanel').classList.remove('show');go(d.kind==='advisor'?'advisor':d.kind);},
+'ck-hist':function(d){$('#ckInput').value=d.q;ckSearch();$('#ckInput').focus();},
+'ck-go':function(d){histPush($('#ckInput').value);closeCmdk();go(d.page);},
+'ck-open':function(d){histPush($('#ckInput').value);closeCmdk();
+if(d.note){ACT['note-open']({id:d.note});return;}
+if(d.page){go(d.page);return;}
+if(d.e&&d.id)viewRow(d.e,d.id);},
+'my-photo':function(){photoModal(null);},
+'my-photo-view':function(){if(!USER.avatar){toast('عکسی ثبت نشده است.','warn');return;}
+openModal('<div class="mh"><h3>عکس پروفایل</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><div class="mb" style="text-align:center"><img src="'+esc(USER.avatar)+'" style="max-width:100%;max-height:60vh;border-radius:14px"></div><div class="mf"><button class="btn btn-s" data-act="mclose">بستن</button></div>');},
+'pe-pick':function(){$('#peFile').click();},'pe-save':peSave,
+'asset-pick':function(d){ASSET=d.kind||'logo';$('#assetFile').click();},
+'asset-reset':function(d){var k=d.kind==='favicon'?'FAVICON_URL':'LOGO_URL';var o={};o[k]='';
+return api('mgrSaveSettings',o,TOKEN).then(function(){DB.settings=DB.settings||{};DB.settings[k]='';applyAssets();toast('به پیش‌فرض مخزن بازگشت.','ok');render();});},
+'ensure':function(){return api('mgrEnsureSheets',TOKEN).then(function(r){toast('شیت‌ها آماده شد.','ok');
+$('#healthBox').innerHTML='<pre style="white-space:pre-wrap;font-size:11px;background:var(--surface2);padding:11px;border-radius:10px">'+esc(JSON.stringify(r,null,1))+'</pre>';return reload();});},
+'health':function(){return api('mgrCCPing').then(function(r){
+$('#healthBox').innerHTML='<pre style="white-space:pre-wrap;font-size:11px;background:var(--surface2);padding:11px;border-radius:10px;max-height:300px;overflow:auto">'+esc(JSON.stringify(r,null,1))+'</pre>';});},
+'backup':function(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB,null,1)],{type:'application/json'}));
+a.download='zingovingo-manager-backup.json';a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1500);toast('پشتیبان دانلود شد.','ok');},
+'print-report':printReport
+};
+document.addEventListener('click',function(e){
+if(!e.target.closest('.jdw')&&!e.target.closest('#jpop'))jdClose();
+var el=e.target.closest('[data-act]');
+if(el){var fn=ACT[el.dataset.act];
+if(fn){e.preventDefault();e.stopPropagation();
+try{var r=fn(el.dataset,el,e);if(r&&typeof r.catch==='function')r.catch(function(x){toast(x.message||String(x),'err');});}
+catch(x){toast(x.message||String(x),'err');}return;}}
+if(!e.target.closest('.zsel'))zClose();
+if(e.target.id==='mback')closeModal();
+if(e.target.id==='cmdk')closeCmdk();
+if(e.target.id==='scrim')syncRail();
+if(!e.target.closest('#notifPanel')&&!e.target.closest('#bellBtn'))$('#notifPanel').classList.remove('show');
+});
+var sDeb=debounce(function(){PS.pn=1;PS.sel=new Set();render();},280);
+document.addEventListener('input',function(e){var t=e.target;
+if(t.matches('[data-search]')){PS.q=t.value;sDeb();return;}
+if(t.id==='ckInput'){ckSearch();return;}});
+document.addEventListener('change',function(e){
+var t=e.target;
+if(t.matches('[data-filter]')){PS.filters[t.dataset.filter]=t.value;PS.pn=1;PS.sel=new Set();render();return;}
+if(t.matches('[data-fdate]')){PS.filters[t.dataset.fdate]=t.value?jStore(t.value):'';PS.pn=1;render();return;}
+if(t.matches('[data-pnl]')){var k=t.dataset.pnl;PS.filters[k]=k==='branchId'?t.value:(t.value?jStore(t.value):'');
+return api('mgrFinanceReport',{from:PS.filters.from,to:PS.filters.to,branchId:PS.filters.branchId},TOKEN).then(function(r){
+DB.finance={revenue:r.summary.revenue,cost:r.summary.cost,fixed:r.summary.fixed,variable:r.summary.variable,capex:r.summary.capex,
+grossProfit:r.summary.grossProfit,operatingProfit:r.summary.operatingProfit,netProfit:r.summary.netProfit,margin:r.summary.margin,
+grossMargin:r.summary.grossMargin,receivable:r.summary.receivable,payable:r.summary.payable,breakEven:r.summary.breakEven,
+byCat:r.byCat,byBranch:r.byBranch,byMonth:r.byMonth,overdueCount:0};render();});}
+if(t.matches('[data-an]')){PS.filters[t.dataset.an]=t.value?jStore(t.value):'';render();return;}
+if(t.matches('[data-nf]')){PS.nf[t.dataset.nf]=t.value;render();return;}
+if(t.matches('[data-advf]')){PS.nf[t.dataset.advf]=t.value;render();return;}
+if(t.matches('[data-sel]')){var id=+t.dataset.sel;if(t.checked)PS.sel.add(id);else PS.sel.delete(id);render();return;}
+if(t.matches('[data-selall]')){var rows=rowsFor(PS.page).slice((PS.pn-1)*12,PS.pn*12);
+rows.forEach(function(r){if(t.checked)PS.sel.add(r.rowIndex);else PS.sel.delete(r.rowIndex);});render();return;}
+if(t.id==='peFile'){var f=t.files[0];t.value='';peLoad(f);return;}
+if(t.id==='assetFile'){var f2=t.files[0];t.value='';assetLoad(f2,ASSET);return;}
+});
+document.addEventListener('submit',function(e){
+var f=e.target,k=f.dataset.form;if(!k)return;e.preventDefault();
+var run=function(){
+if(k==='entity')return submitEntity(f);
+if(k==='view'){var n=f.elements.vname.value.trim();if(!n)return;
+return api('mgrSaveView',f.dataset.e,n,{q:PS.q,filters:PS.filters,sort:PS.sort},TOKEN).then(function(){closeModal();toast('نما ذخیره شد.','ok');return reload();});}
+if(k==='settings'){var o={};Array.prototype.forEach.call(f.elements,function(x){if(x.name)o[x.name]=x.value;});
+return api('mgrSaveSettings',o,TOKEN).then(function(){toast('تنظیمات ذخیره شد.','ok');return reload();});}
+if(k==='asset-url'){var key=f.dataset.kind==='favicon'?'FAVICON_URL':'LOGO_URL';var ob={};ob[key]=f.elements.url.value.trim();
+return api('mgrSaveSettings',ob,TOKEN).then(function(){toast('نشانی ذخیره شد.','ok');return reload();});}
+if(k==='profile'){var p={};Array.prototype.forEach.call(f.elements,function(x){if(x.name&&x.value)p[x.name]=x.value;});
+return api('updateManagerProfile',p,TOKEN).then(function(){toast('پروفایل ذخیره شد.','ok');return reload();});}
+if(k==='note'){
+var o2={};['Title','Body','Category','Color','Pinned','Done','Tags','RelatedType','RelatedId'].forEach(function(n){o2[n]=f.elements[n]?f.elements[n].value:'';});
+o2.ReminderAt=f.elements.ReminderAt.value?jStore(f.elements.ReminderAt.value):'';
+if(f.dataset.id){var nn=noteRow(f.dataset.id);if(nn)o2.rowIndex=nn.rowIndex;}
+if(!o2.Title.trim()){toast('عنوان الزامی است.','err');return;}
+return api('mgrCCSave','notes',o2,TOKEN).then(function(){closeModal();toast('یادداشت ذخیره شد.','ok');return reload();});}
+if(k==='renew')return api('mgrContractRenew',f.dataset.id,jStore(f.elements.newEnd.value),num(f.elements.newValue.value),TOKEN)
+.then(function(){closeModal();closeDrawer();toast('قرارداد تمدید شد.','ok');return reload();});
+if(k==='capuse'){
+if(!num(f.elements.qty.value)){toast('مقدار مصرف الزامی است.','err');return;}
+return api('mgrContractUse',f.dataset.id,num(f.elements.qty.value),f.elements.refType.value,f.elements.refId.value,f.elements.note.value,TOKEN)
+.then(function(r){closeModal();toast('مصرف ثبت شد · باقی‌مانده '+fa(r.remaining),'ok');return reload();});}
+if(k==='invprice')return api('mgrInvestPrice',f.dataset.id,num(f.elements.price.value),TOKEN)
+.then(function(){closeModal();closeDrawer();toast('قیمت به‌روزرسانی شد.','ok');return reload();});
+if(k==='whatif')return whatIfRun(f);
+if(k==='dilution')return dilutionRun(f);
+};
+try{var r=run();if(r&&typeof r.catch==='function')r.catch(function(x){toast(x.message||String(x),'err');});}
+catch(x){toast(x.message||String(x),'err');}
+});
+document.addEventListener('keydown',function(e){
+if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==='k'){e.preventDefault();openCmdk();return;}
+if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==='b'){
+var tg=(e.target&&e.target.tagName||'').toLowerCase();
+if(tg==='input'||tg==='textarea'||e.target.isContentEditable)return;
+e.preventDefault();toggleRail();return;}
+if(e.key==='Escape'){if($('#jpop').classList.contains('open')){jdClose();return;}
+if($$('.zsel.open').length){zClose();return;}closeCmdk();closeModal();closeDrawer();$('#notifPanel').classList.remove('show');return;}
+if(e.key==='Enter'&&$('#cmdk').classList.contains('show')){var f=$('#ckList .cki');if(f){e.preventDefault();f.click();}return;}
+if(e.key==='Enter'&&$('#loginView').style.display!=='none'&&(e.target.id==='loginUser'||e.target.id==='loginPass'))doLogin();
+});
+document.addEventListener('mouseover',function(e){var el=e.target.closest?e.target.closest('.sidebar .nav-item,.sidebar .uchip .ibtn,.sidebar .uchip .av'):null;
+if(!el)return;clearTimeout(TIPT);TIPT=setTimeout(function(){showTip(el);},90);});
+document.addEventListener('mouseout',function(e){var el=e.target.closest?e.target.closest('.sidebar .nav-item,.sidebar .uchip .ibtn,.sidebar .uchip .av'):null;
+if(!el)return;clearTimeout(TIPT);hideTip();});
+window.addEventListener('scroll',function(){hideTip();if($('#jpop').classList.contains('open')&&JD.inp)jdOpen(JD.inp);},true);
+window.addEventListener('resize',function(){hideTip();syncRail();if($('#jpop').classList.contains('open')&&JD.inp)jdOpen(JD.inp);});
+var dragId=null,dragRow=null;
+document.addEventListener('dragstart',function(e){var c=e.target.closest('.kcard[data-prj]');if(!c)return;
+dragId=c.dataset.prj;dragRow=c.dataset.row;try{e.dataTransfer.setData('text/plain',dragId);}catch(x){}});
+document.addEventListener('dragover',function(e){var c=e.target.closest('.kcol');if(!c||!dragId)return;e.preventDefault();c.classList.add('over');});
+document.addEventListener('dragleave',function(e){var c=e.target.closest('.kcol');if(c)c.classList.remove('over');});
+document.addEventListener('drop',function(e){var c=e.target.closest('.kcol');if(!c||!dragId)return;e.preventDefault();c.classList.remove('over');
+var row=dragRow,st=c.dataset.col;dragId=null;dragRow=null;
+api('mgrCCSave','projects',{rowIndex:Number(row),Status:st},TOKEN).then(function(){toast('وضعیت پروژه تغییر کرد.','ok');return reload();})
+.catch(function(x){toast(x.message,'err');});});
+document.addEventListener('dragend',function(){dragId=null;dragRow=null;$$('.kcol.over').forEach(function(c){c.classList.remove('over');});});
+/* ═════════ 28) INIT ═════════ */
+(function init(){
+buildCfg();
+var th=localStorage.getItem('zv_manager_theme');if(th)document.documentElement.dataset.theme=th;
+$('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
+try{if(localStorage.getItem(RKEY)==='1')document.documentElement.classList.add('zv-rail');}catch(e){}
+syncRail();applyAssets();
+api('getPublicBranding').then(function(r){PUB=r||{};applyAssets();}).catch(function(){PUB={};});
+if(!TOKEN){$('#loginView').style.display='grid';return;}
+$('#loginView').style.display='none';$('#app').style.display='grid';
+$('#page').innerHTML='<div class="loading"><div class="spinner"></div></div>';
+api('mgrCCSession',TOKEN).then(function(r){USER=r.user;return loadData();}).then(showApp)
+.catch(function(){localStorage.removeItem('zv_manager_token');TOKEN='';USER=null;$('#app').style.display='none';$('#loginView').style.display='grid';});
+})();
+</script>
+</body>
+</html>
