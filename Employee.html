@@ -992,7 +992,7 @@ function confirmLogout(){
         });
     },'بله، خروج از پنل','خیر، ماندن در پنل');
 }
-function loadData(){return api('admCCBootstrap',TOKEN).then(function(r){USER=r.user;DB=r.data||{};applyFavicon();});}
+function loadData(){return api('employeeBootstrap',TOKEN).then(function(r){USER=r.user;DB=r.data||{};applyFavicon();});}
 function showApp(){
     $('#loginView').style.display='none';
     $('#app').style.display='grid';
