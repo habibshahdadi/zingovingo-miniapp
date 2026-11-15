@@ -8,10 +8,17 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="zv-api.js"></script>
 <style>
-:root{--navy:#0B1736;--navy-light:#1a2a4d;--orange:#FF6B1A;--orange-light:#ff8533;--bg:#f4f6fb;--text:#172033;--muted:#657086;--line:#dfe4ee;--white:#fff;--green:#067647;--danger:#b42318;--blue:#1849a9;--yellow:#f79009;--shadow:0 2px 10px #17203308;--radius:14px}
+:root{
+  --navy:#0B1736;--navy-light:#1a2a4d;--orange:#FF6B1A;--orange-light:#ff8533;
+  --bg:#f4f6fb;--text:#172033;--muted:#657086;--line:#dfe4ee;--white:#fff;
+  --green:#067647;--danger:#b42318;--blue:#1849a9;--yellow:#f79009;
+  --shadow:0 2px 10px #17203308;--radius:14px;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;line-height:1.7;font-size:14px}
+body{background:var(--bg);color:var(--text);font-family:'Vazirmatn',Tahoma,Arial,sans-serif;line-height:1.7;font-size:14px}
 button,input,select,textarea{font-family:inherit;font-size:13px}
+
+/* Layout */
 .login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy) 0%,#1a2a4d 100%)}
 .login-box{background:#fff;border-radius:20px;padding:40px;width:min(420px,92%);box-shadow:0 20px 60px #0003}
 .login-box h1{color:var(--navy);text-align:center;margin-bottom:8px;font-size:28px}
@@ -19,15 +26,15 @@ button,input,select,textarea{font-family:inherit;font-size:13px}
 .login-box .subtitle{text-align:center;color:var(--muted);margin-bottom:24px;font-size:13px}
 .login-box .field{margin-bottom:14px}
 .login-box label{display:block;margin-bottom:6px;font-weight:700;font-size:13px}
-.login-box input,.login-box select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;outline:none}
-.login-box input:focus,.login-box select:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
+.login-box input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;outline:none}
+.login-box input:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
 .login-box .btn{width:100%;padding:13px;margin-top:8px}
 .login-error{background:#fef3f2;color:var(--danger);padding:10px;border-radius:8px;margin-bottom:12px;font-size:13px;display:none}
+
 .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
 .sidebar{background:var(--navy);color:#fff;padding:0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
 .brand{padding:20px;border-bottom:1px solid var(--navy-light)}
-.brand h2{font-size:22px;font-weight:900}
-.brand h2 span{color:var(--orange)}
+.brand h2{font-size:22px;font-weight:900}.brand h2 span{color:var(--orange)}
 .brand small{color:#8896b3;font-size:11px}
 .nav-menu{flex:1;padding:12px 0}
 .nav-item{display:flex;align-items:center;gap:10px;padding:12px 20px;cursor:pointer;color:#c8d2e6;font-size:14px;border-right:3px solid transparent;transition:all .2s}
@@ -41,37 +48,47 @@ button,input,select,textarea{font-family:inherit;font-size:13px}
 .user-role{color:#8896b3;font-size:11px}
 .logout-btn{background:transparent;border:1px solid var(--navy-light);color:#c8d2e6;padding:8px;border-radius:8px;cursor:pointer;width:100%;font-size:12px}
 .logout-btn:hover{background:var(--navy-light);color:#fff}
+
 .main{padding:24px;overflow-x:hidden}
 .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
 .page-title{font-size:20px;color:var(--navy);font-weight:900}
+
+/* Components */
 .btn{border:0;border-radius:10px;padding:9px 16px;font:inherit;font-weight:700;cursor:pointer;transition:all .2s}
 .btn-primary{background:var(--orange);color:#fff}.btn-primary:hover{background:var(--orange-light)}
 .btn-secondary{background:#eef1f7;color:var(--navy)}.btn-secondary:hover{background:#dfe4ee}
 .btn-danger{background:#fef3f2;color:var(--danger)}.btn-danger:hover{background:#fee4e2}
 .btn-sm{padding:5px 10px;font-size:12px}
+
 .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
 .stat-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden}
 .stat-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;background:var(--orange)}
-.stat-card.green::before{background:var(--green)}.stat-card.blue::before{background:var(--blue)}.stat-card.yellow::before{background:var(--yellow)}.stat-card.red::before{background:var(--danger)}
+.stat-card.green::before{background:var(--green)}.stat-card.blue::before{background:var(--blue)}.stat-card.yellow::before{background:var(--yellow)}
 .stat-label{font-size:12px;color:var(--muted);margin-bottom:6px}
 .stat-value{font-size:24px;font-weight:900;color:var(--navy);font-variant-numeric:tabular-nums}
+
 .table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--line)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{background:#f8f9fc;padding:12px;text-align:right;font-weight:700;color:var(--navy);border-bottom:2px solid var(--line);white-space:nowrap}
 td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
 tr:hover{background:#fafbfd}
+
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
 .badge-new{background:#eff6ff;color:var(--blue)}.badge-progress{background:#fff7ed;color:#9a3412}
 .badge-done{background:#ecfdf3;color:var(--green)}.badge-cancel{background:#fef3f2;color:var(--danger)}
 .badge-active{background:#ecfdf3;color:var(--green)}.badge-inactive{background:#fef3f2;color:var(--danger)}
 .badge-role{background:var(--navy-light);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px}
-.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px}
+
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.form-grid .full{grid-column:1/-1}
+.form-grid .half{grid-column:span 2}
 .field{display:flex;flex-direction:column;gap:5px}
 .field label{font-size:12px;font-weight:700;color:var(--muted)}
 input,select,textarea{font:inherit;border:1px solid #cfd6e3;border-radius:8px;padding:9px 11px;background:#fff;outline:none;width:100%}
 input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff6b1a1c}
 textarea{min-height:80px;resize:vertical}
+
 .modal{display:none;position:fixed;inset:0;background:#071127a8;z-index:100;padding:18px;align-items:center;justify-content:center}
 .modal.open{display:flex}
 .modal-box{width:min(900px,100%);background:#fff;border-radius:var(--radius);padding:24px;max-height:90vh;overflow-y:auto}
@@ -79,56 +96,77 @@ textarea{min-height:80px;resize:vertical}
 .modal-header h2{font-size:18px;color:var(--navy)}
 .modal-close{background:transparent;border:0;font-size:22px;cursor:pointer;color:var(--muted);padding:4px 10px}
 .modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
-.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.form-grid .full{grid-column:1/-1}
-.form-grid .half{grid-column:span 2}
+
 .toast{position:fixed;bottom:20px;left:20px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;z-index:200;display:none;box-shadow:0 10px 30px #0003;font-size:13px}
 .toast.show{display:block;animation:slideIn .3s}
 .toast.success{background:var(--green)}.toast.error{background:var(--danger)}
 @keyframes slideIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-.employee-profile{display:grid;grid-template-columns:200px 1fr;gap:20px}
-.employee-avatar-large{width:200px;height:200px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:60px;color:#fff;font-weight:900;overflow:hidden;cursor:pointer}
-.employee-avatar-large img{width:100%;height:100%;object-fit:cover}
-.employee-details{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.detail-item{background:#f8f9fc;padding:12px;border-radius:10px}
-.detail-label{font-size:11px;color:var(--muted);margin-bottom:4px}
-.detail-value{font-weight:700;color:var(--navy)}
+
 .loading{text-align:center;padding:40px;color:var(--muted)}
 .spinner{display:inline-block;width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--orange);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+
 .menu-toggle{display:none;background:var(--navy);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
-@media(max-width:900px){body.employee-menu-open{overflow:hidden}body.employee-menu-open:after{content:"";position:fixed;inset:0;background:#07112780;z-index:40}.app{grid-template-columns:1fr}.sidebar{position:fixed;right:-280px;width:260px;z-index:50;transition:right .3s}.sidebar.open{right:0}.menu-toggle{display:block}.form-grid{grid-template-columns:1fr}.employee-profile{grid-template-columns:1fr}}
-.ja-date-wrap{position:relative;width:100%}.ja-date-input{padding-left:48px!important;direction:ltr;text-align:right;unicode-bidi:plaintext}
+@media(max-width:900px){
+  body.employee-menu-open{overflow:hidden}
+  body.employee-menu-open:after{content:"";position:fixed;inset:0;background:#07112780;z-index:40}
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;right:-280px;width:260px;z-index:50;transition:right .3s}
+  .sidebar.open{right:0}
+  .menu-toggle{display:block}
+  .form-grid{grid-template-columns:1fr}
+}
+
+/* Jalali Date Picker */
+.ja-date-wrap{position:relative;width:100%}
+.ja-date-input{padding-left:48px!important;direction:ltr;text-align:right;unicode-bidi:plaintext}
 .ja-date-btn{position:absolute;left:6px;top:50%;transform:translateY(-50%);border:0;border-radius:8px;background:#eef1f7;color:var(--navy);padding:6px 9px;cursor:pointer;z-index:2}
 .ja-date-pop{display:none;position:absolute;top:calc(100% + 7px);right:0;width:min(320px,calc(100vw - 48px));background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px;box-shadow:0 12px 32px #17203325;z-index:120}
-.ja-date-pop.open{display:block}.ja-cal-head{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:9px;color:var(--navy);font-weight:800;font-size:13px}.ja-cal-head button{border:0;background:#eef1f7;border-radius:8px;padding:5px 9px;cursor:pointer;font-size:14px}.ja-cal-head .year-display{cursor:pointer;padding:2px 8px;border-radius:6px;flex:1;text-align:center}.ja-cal-head .year-display:hover{background:#ffe4d6}.ja-cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}.ja-cal-grid button{border:0;border-radius:7px;padding:7px 0;background:#f4f6fb;cursor:pointer;color:var(--text);font:inherit;font-size:12px}.ja-cal-grid button:hover{background:#ffe4d6}.ja-cal-grid .day-label{background:#fff;color:var(--muted);font-weight:700}.ja-cal-grid .today{outline:1px solid var(--orange)}
+.ja-date-pop.open{display:block}
+.ja-cal-head{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:9px;color:var(--navy);font-weight:800;font-size:13px}
+.ja-cal-head button{border:0;background:#eef1f7;border-radius:8px;padding:5px 9px;cursor:pointer;font-size:14px}
+.ja-cal-head .year-display{cursor:pointer;padding:2px 8px;border-radius:6px;flex:1;text-align:center}
+.ja-cal-head .year-display:hover{background:#ffe4d6}
+.ja-cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}
+.ja-cal-grid button{border:0;border-radius:7px;padding:7px 0;background:#f4f6fb;cursor:pointer;color:var(--text);font:inherit;font-size:12px}
+.ja-cal-grid button:hover{background:#ffe4d6}
+.ja-cal-grid .day-label{background:#fff;color:var(--muted);font-weight:700}
+.ja-cal-grid .today{outline:1px solid var(--orange)}
 </style>
 </head>
 <body>
+
+<!-- Login Page -->
 <div id="loginPage" class="login-page">
-<div class="login-box">
-<h1>Zingo<span>Vingo</span></h1>
-<div class="subtitle">پنل کارمند شعبه</div>
-<div id="loginError" class="login-error"></div>
-<div class="field"><label>نام کاربری</label><input id="loginUser" autocomplete="username"></div>
-<div class="field"><label>رمز عبور</label><input id="loginPass" type="password" autocomplete="current-password"></div>
-<button class="btn btn-primary" onclick="doLogin()">ورود به پنل</button>
+  <div class="login-box">
+    <h1>Zingo<span>Vingo</span></h1>
+    <div class="subtitle">پنل کارمند شعبه</div>
+    <div id="loginError" class="login-error"></div>
+    <div class="field"><label>نام کاربری</label><input id="loginUser" autocomplete="username"></div>
+    <div class="field"><label>رمز عبور</label><input id="loginPass" type="password" autocomplete="current-password"></div>
+    <button class="btn btn-primary" onclick="doLogin()">ورود به پنل</button>
+  </div>
 </div>
-</div>
+
+<!-- App Container -->
 <div id="appContainer" class="app" style="display:none">
-<aside class="sidebar" id="sidebar">
-<div class="brand"><h2>Zingo<span>Vingo</span></h2><small>پنل کارمند</small></div>
-<nav class="nav-menu" id="navMenu"></nav>
-<div class="sidebar-footer">
-<div class="user-info"><div class="user-avatar" id="userAvatar">?</div><div><div class="user-name" id="userName">—</div><div class="user-role" id="userRole">کارمند</div></div></div>
-<button class="logout-btn" onclick="doLogout()">🚪 خروج</button>
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><h2>Zingo<span>Vingo</span></h2><small>پنل کارمند</small></div>
+    <nav class="nav-menu" id="navMenu"></nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">?</div>
+        <div><div class="user-name" id="userName">—</div><div class="user-role" id="userRole">کارمند</div></div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">🚪 خروج</button>
+    </div>
+  </aside>
+  <main class="main">
+    <button class="menu-toggle" id="mobileMenuToggle" type="button" onclick="toggleEmployeeMenu()">☰ منو</button>
+    <div id="pageContent"><div class="loading"><div class="spinner"></div></div></div>
+  </main>
 </div>
-</aside>
-<main class="main">
-<button class="menu-toggle" id="mobileMenuToggle" type="button" onclick="toggleEmployeeMenu()">☰ منو</button>
-<div id="pageContent"><div class="loading"><div class="spinner"></div></div></div>
-</main>
-</div>
+
 <div id="toast" class="toast"></div>
 <div id="modal" class="modal"><div class="modal-box" id="modalBox"></div></div>
 
@@ -137,6 +175,7 @@ const $ = id => document.getElementById(id);
 const money = n => new Intl.NumberFormat('en-US').format(Math.round(Number(n)||0)) + ' ریال';
 const toFa = n => new Intl.NumberFormat('fa-IR').format(n);
 const esc = v => String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
 let currentToken = localStorage.getItem('zv_emp_token') || null;
 let currentUser = null;
 
@@ -152,11 +191,16 @@ const MENU_ITEMS = [
   { id: 'profile', label: '👤 پروفایل من' }
 ];
 
-function toast(msg, type='info') { const t = $('toast'); t.textContent = msg; t.className = 'toast show ' + type; setTimeout(() => t.classList.remove('show'), 3500); }
+function toast(msg, type='info') { 
+  const t = $('toast'); t.textContent = msg; t.className = 'toast show ' + type; 
+  setTimeout(() => t.classList.remove('show'), 3500); 
+}
 function openModal(html) { $('modalBox').innerHTML = html; $('modal').classList.add('open'); }
 function closeModal() { $('modal').classList.remove('open'); }
 $('modal').addEventListener('click', e => { if (e.target === $('modal')) closeModal(); });
-function statusBadge(s) { return '<span class="badge badge-' + (/جدید|ثبت/.test(s)?'new':/تکمیل/.test(s)?'done':/لغو/.test(s)?'cancel':'progress') + '">' + s + '</span>'; }
+function statusBadge(s) { 
+  return '<span class="badge badge-' + (/جدید|ثبت/.test(s)?'new':/تکمیل/.test(s)?'done':/لغو/.test(s)?'cancel':'progress') + '">' + s + '</span>'; 
+}
 
 function doLogin() {
   const u = $('loginUser').value.trim(), p = $('loginPass').value;
@@ -365,7 +409,7 @@ function editWorker(w) {
   '<div class="field"><label>جنسیت</label><select id="wGender"><option ' + (w.gender==='مرد'?'selected':'') + '>مرد</option><option ' + (w.gender==='زن'?'selected':'') + '>زن</option></select></div>' +
   '<div class="field"><label>کد ملی</label><input id="wNat" value="' + (w.nationalId||'') + '"></div>' +
   '<div class="field"><label>شماره شناسنامه</label><input id="wBirthCert" value="' + (w.birthCert||'') + '"></div>' +
-  '<div class="field"><label>تاریخ تولد (شمسی)</label><input id="wBirthday" value="' + (w.birthday||'') + '"></div>' +
+  '<div class="field"><label>تاریخ تولد (شمسی)</label><input id="wBirthday" class="ja-jalali-date" value="' + (w.birthday||'') + '"></div>' +
   '<div class="field"><label>نام کاربری *</label><input id="wUser" value="' + (w.username||'') + '" ' + (w.rowIndex?'readonly':'') + '></div>' +
   '<div class="field"><label>رمز عبور ' + (w.rowIndex?'(خالی=بدون تغییر)':'*') + '</label><input id="wPass" type="password"></div>' +
   '<div class="field"><label>نوع فعالیت *</label><select id="wOps"><option value="worker" ' + (w.operations==='worker'?'selected':'') + '>worker</option><option value="Supervisor" ' + (w.operations==='Supervisor'?'selected':'') + '>Supervisor</option><option value="operator" ' + (w.operations==='operator'?'selected':'') + '>operator</option></select></div>' +
@@ -376,7 +420,7 @@ function editWorker(w) {
   '<div class="field"><label>عکس پروفایل (URL)</label><input id="wPhoto" value="' + (w.photo||'') + '"></div>' +
   '<div class="field"><label>استان</label><input id="wProv" value="' + (w.province||'') + '"></div>' +
   '<div class="field"><label>شهر</label><input id="wCity" value="' + (w.city||'') + '"></div>' +
-  '<div class="field"><label>تاریخ استخدام (شمسی)</label><input id="wHire" value="' + (w.hireDate||'') + '"></div>' +
+  '<div class="field"><label>تاریخ استخدام (شمسی)</label><input id="wHire" class="ja-jalali-date" value="' + (w.hireDate||'') + '"></div>' +
   '<div class="field"><label>وضعیت</label><select id="wStatus"><option ' + (w.status==='فعال'?'selected':'') + '>فعال</option><option ' + (w.status==='غیرفعال'?'selected':'') + '>غیرفعال</option></select></div>' +
   '<div class="field half"><label>نام تماس اضطراری</label><input id="wEmergName" value="' + (w.emergencyName||'') + '"></div>' +
   '<div class="field half"><label>شماره تماس اضطراری</label><input id="wEmerg" value="' + (w.emergency||'') + '"></div>' +
@@ -384,6 +428,7 @@ function editWorker(w) {
   '<div class="field full"><label>توضیحات</label><textarea id="wDesc">' + (w.description||'') + '</textarea></div>' +
   '<div class="field full"><label>یادداشت‌ها</label><textarea id="wNotes">' + (w.notes||'') + '</textarea></div>' +
   '</div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">انصراف</button><button class="btn btn-primary" onclick="saveWrk(' + (w.rowIndex||'null') + ')">ذخیره</button></div>');
+  setTimeout(() => initApplicantJalaliDates(), 100);
 }
 function saveWrk(rowIndex) {
   const data = { rowIndex: rowIndex, workerId: $('wId').value, firstName: $('wFirst').value, lastName: $('wLast').value, fatherName: $('wFather').value, gender: $('wGender').value, nationalId: $('wNat').value, birthCert: $('wBirthCert').value, birthday: $('wBirthday').value, username: $('wUser').value, password: $('wPass').value, operations: $('wOps').value, jobTitle: $('wJob').value, specialization: $('wSpec').value, email: $('wEmail').value, contact: $('wContact').value, photo: $('wPhoto').value, province: $('wProv').value, city: $('wCity').value, hireDate: $('wHire').value, status: $('wStatus').value, emergencyName: $('wEmergName').value, emergency: $('wEmerg').value, address: $('wAddr').value, description: $('wDesc').value, notes: $('wNotes').value };
@@ -418,14 +463,117 @@ function sendReplyToCustomer(convId) {
   google.script.run.withSuccessHandler(() => { closeModal(); toast('پاسخ ثبت شد', 'success'); loadCustomerSupport(); }).withFailureHandler(e => toast(e.message, 'error')).replyToCustomerConversation(convId, text, currentToken);
 }
 
-// ==================== ثبت کارجو (نسخه اصلاح‌شده بدون کد ملی) ====================
+// ==================== ثبت کارجو (نسخه به‌روز شده با استان/شهر/آدرس) ====================
+const provinceCities = {
+  'آذربایجان شرقی':['تبریز','مراغه','مرند','میانه','اهر','بناب','شبستر','اسکو','سراب','عجب‌شیر','ملکان','جلفا'],
+  'آذربایجان غربی':['ارومیه','خوی','بوکان','مهاباد','میاندوآب','سلماس','نقده','پیرانشهر','ماکو','تکاب'],
+  'اردبیل':['اردبیل','پارس‌آباد','مشگین‌شهر','خلخال','گرمی','نمین','بیله‌سوار'],
+  'اصفهان':['اصفهان','کاشان','خمینی‌شهر','نجف‌آباد','شاهین‌شهر','فلاورجان','گلپایگان','زرین‌شهر','نائین','آران و بیدگل'],
+  'البرز':['کرج','فردیس','نظرآباد','هشتگرد','محمدشهر','ماهدشت','طالقان'],
+  'ایلام':['ایلام','دهلران','آبدانان','ایوان','دره‌شهر','مهران'],
+  'بوشهر':['بوشهر','برازجان','گناوه','کنگان','جم','دیر','خورموج'],
+  'تهران':['تهران','ری','اسلامشهر','شهریار','قدس','ملارد','ورامین','پاکدشت','دماوند','پردیس','رباط‌کریم','قرچک'],
+  'چهارمحال و بختیاری':['شهرکرد','بروجن','فارسان','لردگان','اردل'],
+  'خراسان جنوبی':['بیرجند','قائن','فردوس','طبس','نهبندان'],
+  'خراسان رضوی':['مشهد','نیشابور','سبزوار','تربت حیدریه','کاشمر','قوچان','تربت جام','چناران','خواف'],
+  'خراسان شمالی':['بجنورد','شیروان','اسفراین','آشخانه','جاجرم'],
+  'خوزستان':['اهواز','دزفول','آبادان','خرمشهر','ماهشهر','بهبهان','ایذه','شوشتر','اندیمشک','شوش'],
+  'زنجان':['زنجان','ابهر','خرمدره','قیدار'],
+  'سمنان':['سمنان','شاهرود','دامغان','گرمسار'],
+  'سیستان و بلوچستان':['زاهدان','زابل','چابهار','ایرانشهر','سراوان','خاش','کنارک','نیک‌شهر'],
+  'فارس':['شیراز','مرودشت','کازرون','جهرم','فسا','لار','داراب','نی‌ریز','آباده'],
+  'قزوین':['قزوین','تاکستان','الوند','آبیک','بوئین‌زهرا'],
+  'قم':['قم','جعفریه','کهک'],
+  'کردستان':['سنندج','سقز','مریوان','بانه','قروه','کامیاران','بیجار'],
+  'کرمان':['کرمان','سیرجان','رفسنجان','جیرفت','بم','زرند','شهربابک'],
+  'کرمانشاه':['کرمانشاه','اسلام‌آباد غرب','هرسین','کنگاور','جوانرود','پاوه'],
+  'کهگیلویه و بویراحمد':['یاسوج','دوگنبدان','دهدشت','لیکک'],
+  'گلستان':['گرگان','گنبدکاووس','علی‌آباد کتول','بندر ترکمن','آق‌قلا','کردکوی'],
+  'گیلان':['رشت','بندر انزلی','لاهیجان','لنگرود','آستارا','تالش','رودسر','فومن'],
+  'لرستان':['خرم‌آباد','بروجرد','دورود','الیگودرز','کوهدشت','ازنا'],
+  'مازندران':['ساری','بابل','آمل','قائم‌شهر','بابلسر','نوشهر','چالوس','تنکابن','بهشهر'],
+  'مرکزی':['اراک','ساوه','خمین','محلات','دلیجان','شازند'],
+  'هرمزگان':['بندرعباس','میناب','قشم','کیش','بندر لنگه','حاجی‌آباد'],
+  'همدان':['همدان','ملایر','نهاوند','تویسرکان','کبودرآهنگ'],
+  'یزد':['یزد','میبد','اردکان','بافق','مهریز']
+};
+
 function loadJobApplicants() {
-  $('pageContent').innerHTML = '<div class="page-header"><div><h1 class="page-title">ثبت اطلاعات متقاضی همکاری</h1><div style="color:var(--muted);font-size:12px">تشکیل پرونده و ثبت مراحل جذب نیروی انسانی</div></div></div><div class="card" style="border-right:4px solid var(--orange)"><div class="stats-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));margin:0"><div class="stat-card"><div class="stat-label">تاریخ ثبت</div><div class="stat-value" id="jaToday" style="font-size:17px">—</div></div><div class="stat-card blue"><div class="stat-label">شماره پرونده</div><div class="stat-value" id="jaNextId" style="font-size:17px">پس از ثبت</div></div><div class="stat-card green"><div class="stat-label">شناسه ثبت‌کننده</div><div class="stat-value" id="jaCreator" style="font-size:17px">—</div></div></div></div><form id="jobApplicantForm" onsubmit="submitJobApplicant(event)"><div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۱. اطلاعات هویتی</h3><div class="form-grid"><div class="field"><label>نام *</label><input id="jaFirstName" required maxlength="80"></div><div class="field"><label>نام خانوادگی *</label><input id="jaLastName" required maxlength="100"></div><div class="field"><label>جنسیت *</label><select id="jaGender" required><option value="">انتخاب کنید</option><option>مرد</option><option>زن</option></select></div><div class="field"><label>تاریخ تولد *</label><input id="jaBirthDate" class="ja-jalali-date" autocomplete="off" placeholder="۱۳۷۵/۰۵/۲۲" required></div><div class="field"><label>سن</label><input id="jaAge" readonly placeholder="محاسبه خودکار"></div><div class="field"><label>وضعیت تأهل</label><select id="jaMarital"><option value="">انتخاب کنید</option><option>مجرد</option><option>متأهل</option><option>سایر</option></select></div></div></div><div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۲. تخصص و مهارت‌ها</h3><div class="form-grid"><div class="field"><label>تخصص اصلی *</label><input id="jaSpecialty" required maxlength="150" placeholder="عنوان تخصص را وارد کنید"></div><div class="field"><label>مدت فعالیت</label><input id="jaExperience" maxlength="80" placeholder="مثلاً ۳ سال"></div><div class="field full"><label>مهارت‌های دیگر</label><textarea id="jaSkills" placeholder="سایر توانایی‌ها و مهارت‌ها"></textarea></div><div class="field"><label>میزان تحصیلات</label><select id="jaEducation"><option value="">انتخاب کنید</option><option>زیر دیپلم</option><option>دیپلم</option><option>کاردانی</option><option>کارشناسی</option><option>کارشناسی ارشد</option><option>دکتری</option><option>سایر</option></select></div><div class="field"><label>رشته تحصیلی</label><input id="jaFieldOfStudy" maxlength="120"></div></div></div><div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۳. اطلاعات تماس و محل سکونت</h3><div class="form-grid"><div class="field full"><label>محل سکونت</label><input id="jaResidence" maxlength="250" placeholder="شهر، منطقه یا نشانی"></div><div class="field"><label>شماره تماس *</label><input id="jaPhone" inputmode="tel" maxlength="15" placeholder="09xxxxxxxxx" required></div><div class="field"><label>پیام‌رسان</label><select id="jaMessenger"><option value="">انتخاب کنید</option><option>بله</option><option>واتساپ</option><option>تلگرام</option><option>روبیکا</option><option>ایتا</option><option>سایر</option></select></div><div class="field"><label>آی‌دی پیام‌رسان</label><input id="jaMessengerId" maxlength="120"></div></div></div><div class="card"><h3 style="color:var(--navy);margin-bottom:14px">۴. نحوه آشنایی و معرفی</h3><div class="form-grid"><div class="field"><label>نحوه آشنایی</label><select id="jaSource"><option value="">انتخاب کنید</option><option>دیوار</option><option>شیپور</option><option>معرفی دوستان</option><option>شبکه‌های اجتماعی</option><option>مراجعه حضوری</option><option>سایر</option></select></div><div class="field"><label>معرف</label><input id="jaReferrer" maxlength="120"></div><div class="field"><label>موقعیت درخواستی</label><input id="jaRequestedPosition" maxlength="150" placeholder="مثلاً نیروی خدمات، اپراتور، سرپرست"></div></div></div><div class="card" style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap"><button type="reset" class="btn btn-secondary">پاک کردن فرم</button><button id="jaSubmitBtn" type="submit" class="btn btn-primary">ثبت پرونده متقاضی</button></div></form><div class="card" style="margin-top:18px"><h3 style="color:var(--navy);margin-bottom:14px">جستجو و مدیریت پرونده‌های کارجویان</h3><div class="filters" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))"><div class="field"><label>شناسه پرونده</label><input id="jaFilterCase" placeholder="JA.000001"></div><div class="field"><label>تاریخ ثبت از</label><input id="jaFilterFrom" class="ja-jalali-date" placeholder="۱۴۰۵/۰۱/۰۱"></div><div class="field"><label>تاریخ ثبت تا</label><input id="jaFilterTo" class="ja-jalali-date" placeholder="۱۴۰۵/۱۲/۲۹"></div><div class="field"><label>وضعیت پرونده</label><select id="jaFilterStatus"><option value="">همه وضعیت‌ها</option><option>جدید</option><option>در حال بررسی</option><option>در انتظار مصاحبه</option><option>تأیید شده</option><option>رد شده</option><option>استخدام شده</option><option>بایگانی</option></select></div><div class="field"><label>تخصص</label><input id="jaFilterSpecialty" placeholder="جستجوی تخصص"></div><div class="field"><label>موقعیت درخواستی</label><input id="jaFilterPosition" placeholder="جستجوی موقعیت"></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px"><button class="btn btn-primary" type="button" onclick="searchJobApplicants()">جستجو</button><button class="btn btn-secondary" type="button" onclick="resetJobApplicantFilters()">پاک کردن فیلترها</button></div><div id="jaRecent"><div class="loading">برای نمایش پرونده‌ها دکمه جستجو را بزنید.</div></div></div>';
+  $('pageContent').innerHTML = `
+    <div class="page-header"><div><h1 class="page-title">مدیریت کارجویان و استخدام</h1><div style="color:var(--muted);font-size:12px">تشکیل پرونده و ثبت مراحل جذب نیروی انسانی</div></div></div>
+    <div class="card" style="border-right:4px solid var(--orange)">
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin:0">
+        <div class="stat-card"><div class="stat-label">تاریخ امروز</div><div class="stat-value" id="jaToday" style="font-size:17px">—</div></div>
+        <div class="stat-card blue"><div class="stat-label">شناسه ثبت‌کننده</div><div class="stat-value" id="jaCreator" style="font-size:17px">—</div></div>
+        <div class="stat-card green"><div class="stat-label">آخرین پرونده ثبت شده</div><div class="stat-value" id="jaLastId" style="font-size:17px">—</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--navy);margin-bottom:14px">ثبت متقاضی جدید</h3>
+      <form id="jobApplicantForm" onsubmit="submitJobApplicant(event)">
+        <div class="form-grid">
+          <div class="field"><label>نام *</label><input id="jaFirstName" required maxlength="80"></div>
+          <div class="field"><label>نام خانوادگی *</label><input id="jaLastName" required maxlength="100"></div>
+          <div class="field"><label>جنسیت *</label><select id="jaGender" required><option value="">انتخاب کنید</option><option>مرد</option><option>زن</option></select></div>
+          <div class="field"><label>تاریخ تولد *</label><input id="jaBirthDate" class="ja-jalali-date" autocomplete="off" placeholder="۱۳۷۵/۰۵/۲۲" required></div>
+          <div class="field"><label>سن</label><input id="jaAge" readonly placeholder="محاسبه خودکار"></div>
+          <div class="field"><label>وضعیت تأهل</label><select id="jaMarital"><option value="">انتخاب کنید</option><option>مجرد</option><option>متأهل</option><option>سایر</option></select></div>
+          <div class="field"><label>تخصص اصلی *</label><input id="jaSpecialty" required maxlength="150"></div>
+          <div class="field"><label>موقعیت درخواستی *</label><input id="jaRequestedPosition" required maxlength="150"></div>
+          <div class="field"><label>شماره تماس *</label><input id="jaPhone" inputmode="tel" maxlength="15" placeholder="09xxxxxxxxx" required></div>
+          <div class="field"><label>استان</label><select id="jaProvince"><option value="">انتخاب استان</option>${Object.keys(provinceCities).map(p => `<option>${p}</option>`).join('')}</select></div>
+          <div class="field"><label>شهر</label><select id="jaCity" disabled><option value="">ابتدا استان را انتخاب کنید</option></select></div>
+          <div class="field full"><label>آدرس دقیق</label><textarea id="jaAddress" rows="2" placeholder="خیابان، کوچه، پلاک، واحد…"></textarea></div>
+          <div class="field"><label>میزان تحصیلات</label><select id="jaEducation"><option value="">انتخاب کنید</option><option>زیر دیپلم</option><option>دیپلم</option><option>کاردانی</option><option>کارشناسی</option><option>کارشناسی ارشد</option><option>دکتری</option><option>سایر</option></select></div>
+          <div class="field"><label>رشته تحصیلی</label><input id="jaFieldOfStudy" maxlength="120"></div>
+          <div class="field full"><label>مهارت‌های دیگر</label><textarea id="jaSkills" placeholder="سایر توانایی‌ها و مهارت‌ها"></textarea></div>
+          <div class="field"><label>نحوه آشنایی</label><select id="jaSource"><option value="">انتخاب کنید</option><option>دیوار</option><option>شیپور</option><option>معرفی دوستان</option><option>شبکه‌های اجتماعی</option><option>مراجعه حضوری</option><option>سایر</option></select></div>
+          <div class="field"><label>معرف</label><input id="jaReferrer" maxlength="120"></div>
+        </div>
+        <div class="modal-footer" style="margin-top:16px;border-top:1px solid var(--line);padding-top:16px">
+          <button type="reset" class="btn btn-secondary">پاک کردن فرم</button>
+          <button id="jaSubmitBtn" type="submit" class="btn btn-primary">ثبت پرونده متقاضی</button>
+        </div>
+      </form>
+    </div>
+    <div class="card" style="margin-top:18px">
+      <h3 style="color:var(--navy);margin-bottom:14px">جستجو و مدیریت پرونده‌های کارجویان</h3>
+      <div class="filters" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
+        <div class="field"><label>شناسه پرونده</label><input id="jaFilterCase" placeholder="JA.000001"></div>
+        <div class="field"><label>تاریخ ثبت از</label><input id="jaFilterFrom" class="ja-jalali-date" placeholder="۱۴۰۵/۰۱/۰۱"></div>
+        <div class="field"><label>تاریخ ثبت تا</label><input id="jaFilterTo" class="ja-jalali-date" placeholder="۱۴۰۵/۱۲/۲۹"></div>
+        <div class="field"><label>وضعیت پرونده</label><select id="jaFilterStatus"><option value="">همه وضعیت‌ها</option><option>جدید</option><option>در حال بررسی</option><option>در انتظار مصاحبه</option><option>تأیید شده</option><option>رد شده</option><option>استخدام شده</option><option>بایگانی</option></select></div>
+        <div class="field"><label>تخصص</label><input id="jaFilterSpecialty" placeholder="جستجوی تخصص"></div>
+        <div class="field"><label>موقعیت درخواستی</label><input id="jaFilterPosition" placeholder="جستجوی موقعیت"></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px">
+        <button class="btn btn-primary" type="button" onclick="searchJobApplicants()">جستجو</button>
+        <button class="btn btn-secondary" type="button" onclick="resetJobApplicantFilters()">پاک کردن فیلترها</button>
+      </div>
+      <div id="jaRecent"><div class="loading">برای نمایش پرونده‌ها دکمه جستجو را بزنید.</div></div>
+    </div>`;
+  
   $('jaToday').textContent = new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   $('jaCreator').textContent = currentUser && currentUser.empId ? currentUser.empId : '—';
+  
   $('jaBirthDate').addEventListener('input', calculateApplicantAge);
   $('jaBirthDate').addEventListener('change', calculateApplicantAge);
   $('jaPhone').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9۰-۹+]/g,'').slice(0,15); });
+  
+  $('jaProvince').addEventListener('change', function() {
+    const p = this.value;
+    const citySelect = $('jaCity');
+    citySelect.innerHTML = '<option value="">انتخاب شهر</option>';
+    if (p && provinceCities[p]) {
+      provinceCities[p].forEach(c => {
+        citySelect.innerHTML += `<option>${c}</option>`;
+      });
+      citySelect.disabled = false;
+    } else {
+      citySelect.disabled = true;
+    }
+  });
+
   initApplicantJalaliDates();
   searchJobApplicants();
 }
@@ -436,7 +584,6 @@ function applicantJ2G(jy,jm,jd){jy+=1595;let days=-355668+365*jy+Math.floor(jy/3
 function applicantIsJalaliLeap(y){const g=applicantJ2G(y,12,30);const j=applicantG2J(g[0],g[1],g[2]);return j[0]===y&&j[1]===12&&j[2]===30;}
 function applicantJalaliParts(value){const v=applicantNormalizeDigits(value).replace(/[.\-]/g,'/').trim();const m=v.match(/^(13\d{2}|14\d{2})\/(\d{1,2})\/(\d{1,2})$/);if(!m)return null;const y=+m[1],mo=+m[2],d=+m[3];if(mo<1||mo>12||d<1||d>(mo<=6?31:mo<=11?30:(applicantIsJalaliLeap(y)?30:29)))return null;return[y,mo,d]}
 function applicantFaDigits(v){return String(v).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[+d]);}
-function applicantFormatDateInput(el){let digits=applicantNormalizeDigits(el.value).replace(/\D/g,'').slice(0,8);if(digits.length>4)digits=digits.slice(0,4)+'/'+digits.slice(4);if(digits.length>7)digits=digits.slice(0,7)+'/'+digits.slice(7);el.value=digits;}
 function calculateApplicantAge(){const b=applicantJalaliParts($('jaBirthDate').value);if(!b){$('jaAge').value='';return;}const now=new Date(),t=applicantG2J(now.getFullYear(),now.getMonth()+1,now.getDate());let age=t[0]-b[0];if(t[1]<b[1]||(t[1]===b[1]&&t[2]<b[2]))age--; $('jaAge').value=age>=0&&age<120?applicantFaDigits(age):'';}
 
 function initApplicantJalaliDates(){
@@ -481,7 +628,13 @@ function initApplicantJalaliDates(){
       const parts=applicantJalaliParts(el.value); if(parts){jy=parts[0];jm=parts[1];} else {const d=new Date();[jy,jm]=applicantG2J(d.getFullYear(),d.getMonth()+1,d.getDate());}
       render(); pop.classList.toggle('open');
     });
-    el.addEventListener('input',()=>{ applicantFormatDateInput(el); if(el.id==='jaBirthDate')calculateApplicantAge(); });
+    el.addEventListener('input',()=>{ 
+      let digits=applicantNormalizeDigits(el.value).replace(/\D/g,'').slice(0,8);
+      if(digits.length>4)digits=digits.slice(0,4)+'/'+digits.slice(4);
+      if(digits.length>7)digits=digits.slice(0,7)+'/'+digits.slice(7);
+      el.value=digits;
+      if(el.id==='jaBirthDate')calculateApplicantAge(); 
+    });
     el.addEventListener('blur',()=>{
       if(!el.value.trim())return;
       const parts=applicantJalaliParts(el.value);
@@ -499,19 +652,22 @@ function submitJobApplicant(ev){
   if(!/^09\d{9}$/.test(phone)) return toast('شماره تماس باید با 09 و ۱۱ رقم وارد شود.','error');
   if(!applicantJalaliParts($('jaBirthDate').value)) return toast('تاریخ تولد را با تقویم شمسی انتخاب کنید.','error');
   calculateApplicantAge();
+  
   const data = {
     firstName: $('jaFirstName').value.trim(), lastName: $('jaLastName').value.trim(), gender: $('jaGender').value,
     birthDate: $('jaBirthDate').value.trim(), age: $('jaAge').value, maritalStatus: $('jaMarital').value,
     specialty: $('jaSpecialty').value.trim(), experience: $('jaExperience').value.trim(), otherSkills: $('jaSkills').value.trim(),
-    education: $('jaEducation').value, fieldOfStudy: $('jaFieldOfStudy').value.trim(), residence: $('jaResidence').value.trim(),
+    education: $('jaEducation').value, fieldOfStudy: $('jaFieldOfStudy').value.trim(), 
+    province: $('jaProvince').value, city: $('jaCity').value, address: $('jaAddress').value.trim(),
     phone: phone, messenger: $('jaMessenger').value, messengerId: $('jaMessengerId').value.trim(),
     source: $('jaSource').value, referrer: $('jaReferrer').value.trim(), requestedPosition: $('jaRequestedPosition').value.trim()
   };
+  
   const btn = $('jaSubmitBtn'); btn.disabled=true; btn.textContent='در حال ثبت…';
   google.script.run.withSuccessHandler(r => {
     btn.disabled=false; btn.textContent='ثبت پرونده متقاضی';
     toast('پرونده با شماره '+r.caseNumber+' ثبت شد.','success');
-    $('jobApplicantForm').reset(); $('jaAge').value=''; $('jaNextId').textContent='پس از ثبت';
+    $('jobApplicantForm').reset(); $('jaAge').value=''; 
     $('jaToday').textContent = new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
     searchJobApplicants();
   }).withFailureHandler(e => {
@@ -526,6 +682,8 @@ function searchJobApplicants(){
   google.script.run.withSuccessHandler(renderAllJobApplicants).withFailureHandler(e => $('jaRecent').innerHTML = '<div class="loading" style="color:var(--danger)">'+esc(e.message||'جستجو ناموفق بود')+'</div>').searchEmployeeJobApplicants(filters, currentToken);
 }
 function resetJobApplicantFilters(){ ['jaFilterCase','jaFilterFrom','jaFilterTo','jaFilterSpecialty','jaFilterPosition'].forEach(id => $(id).value=''); $('jaFilterStatus').value=''; searchJobApplicants(); }
+
+function jaOptions(options, selected){ return options.map(x => '<option value="'+esc(x)+'" '+(x===selected?'selected':'')+'>'+esc(x||'— انتخاب —')+'</option>').join(''); }
 
 function renderAllJobApplicants(rows){
   if(!rows || !rows.length){
@@ -570,7 +728,9 @@ function renderAllJobApplicants(rows){
             <div class="field full"><label>مهارت‌های دیگر</label><textarea id="ja-op-skills-${i}">${esc(r.otherSkills)}</textarea></div>
             <div class="field"><label>میزان تحصیلات</label><select id="ja-op-edu-${i}">${jaOptions(['','زیر دیپلم','دیپلم','کاردانی','کارشناسی','کارشناسی ارشد','دکتری','سایر'], r.education)}</select></div>
             <div class="field"><label>رشته تحصیلی</label><input id="ja-op-field-${i}" value="${esc(r.fieldOfStudy)}"></div>
-            <div class="field full"><label>محل سکونت</label><input id="ja-op-res-${i}" value="${esc(r.residence)}"></div>
+            <div class="field"><label>استان</label><select id="ja-op-prov-${i}">${jaOptions(['',...Object.keys(provinceCities)], r.province)}</select></div>
+            <div class="field"><label>شهر</label><select id="ja-op-city-${i}" ${!r.city?'disabled':''}>${r.province && provinceCities[r.province] ? jaOptions(['',...provinceCities[r.province]], r.city) : '<option value="">ابتدا استان را انتخاب کنید</option>'}</select></div>
+            <div class="field full"><label>آدرس دقیق</label><textarea id="ja-op-address-${i}" rows="2">${esc(r.address)}</textarea></div>
             <div class="field"><label>شماره تماس *</label><input id="ja-op-phone-${i}" value="${esc(r.phone)}"></div>
             <div class="field"><label>پیام‌رسان</label><select id="ja-op-mess-${i}">${jaOptions(['','بله','واتساپ','تلگرام','روبیکا','ایتا','سایر'], r.messenger)}</select></div>
             <div class="field"><label>آی‌دی پیام‌رسان</label><input id="ja-op-messid-${i}" value="${esc(r.messengerId)}"></div>
@@ -604,10 +764,28 @@ function renderAllJobApplicants(rows){
   $('jaRecent').innerHTML = html;
   window.jaRenderedApplicants = rows;
   
-  setTimeout(() => initApplicantJalaliDates(), 100);
+  // Re-initialize date pickers for the newly rendered edit rows
+  setTimeout(() => {
+    initApplicantJalaliDates();
+    // Re-attach province/city listener for edit rows
+    document.querySelectorAll('[id^="ja-op-prov-"]').forEach(select => {
+      select.addEventListener('change', function() {
+        const p = this.value;
+        const citySelect = this.parentElement.nextElementSibling.querySelector('select');
+        citySelect.innerHTML = '<option value="">انتخاب شهر</option>';
+        if (p && provinceCities[p]) {
+          provinceCities[p].forEach(c => {
+            citySelect.innerHTML += `<option>${c}</option>`;
+          });
+          citySelect.disabled = false;
+        } else {
+          citySelect.disabled = true;
+        }
+      });
+    });
+  }, 100);
 }
 
-function jaOptions(options, selected){ return options.map(x => '<option value="'+esc(x)+'" '+(x===selected?'selected':'')+'>'+esc(x||'— انتخاب —')+'</option>').join(''); }
 function toggleApplicantOperation(caseNo){
   const rows = window.jaRenderedApplicants || [];
   const i = rows.findIndex(x => x.caseNumber === caseNo);
@@ -615,7 +793,6 @@ function toggleApplicantOperation(caseNo){
   const tr = $('ja-op-'+i);
   const opening = tr.style.display === 'none';
   tr.style.display = opening ? 'table-row' : 'none';
-  if(opening) setTimeout(() => initApplicantJalaliDates(), 100);
 }
 function cancelApplicantOperation(i){ const tr = $('ja-op-'+i); if(tr) tr.style.display = 'none'; }
 
@@ -631,7 +808,9 @@ function saveApplicantOperationFull(i, caseNo){
     otherSkills: $('ja-op-skills-'+i).value.trim(),
     education: $('ja-op-edu-'+i).value,
     fieldOfStudy: $('ja-op-field-'+i).value.trim(),
-    residence: $('ja-op-res-'+i).value.trim(),
+    province: $('ja-op-prov-'+i).value,
+    city: $('ja-op-city-'+i).value,
+    address: $('ja-op-address-'+i).value.trim(),
     phone: $('ja-op-phone-'+i).value.trim(),
     messenger: $('ja-op-mess-'+i).value,
     messengerId: $('ja-op-messid-'+i).value.trim(),
@@ -647,7 +826,6 @@ function saveApplicantOperationFull(i, caseNo){
     notes: $('ja-op-notes-'+i).value.trim()
   };
   
-  // اعتبارسنجی سمت کلاینت
   if(!changes.firstName) return toast('نام الزامی است','error');
   if(!changes.lastName) return toast('نام خانوادگی الزامی است','error');
   if(!changes.specialty) return toast('تخصص اصلی الزامی است','error');
