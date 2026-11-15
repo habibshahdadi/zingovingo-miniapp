@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     Guide.html — دفترچه راهنمای سامانه ZingoVingo
+     فایل مستقل؛ در ریشه مخزن کنار LOGO.png قرار دهید.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<html lang="fa" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>دفترچه راهنمای سامانه | ZingoVingo</title>
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&family=Nunito:wght@900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#070D1F;--bg:#070D1F;--surface:#0E1830;--surface2:#121F3D;--surface3:#16264C;
+  --ink:#E9EEFC;--ink2:#C3CDE8;--muted:#93A0C2;--line:#1D2B4F;--line2:#2A3B66;
+  --brand:#FF6B1A;--brand2:#FF8A3D;--brandDeep:#E4570B;
+  --violet:#7C4DFF;--blue:#2E63E7;--teal:#0FA3A3;--green:#0E9F6E;--amber:#D97706;--red:#E02D3C;--pink:#E0447C;--slate:#64748B;
+  --scrim:rgba(3,7,20,.76);--sh:0 8px 26px rgba(0,0,0,.42);--sh2:0 22px 60px rgba(0,0,0,.6);
+  --grad:linear-gradient(135deg,#FF6B1A,#FF8A3D 52%,#FFB25E);
+  --hue:var(--brand);
+  --fs:15px;--lh:2;--cw:860px;--nav:64px;
+  --r:16px;--tr:190ms cubic-bezier(.3,.9,.3,1);
+}
+[data-theme=light]{
+  --bg:#F2F4FB;--surface:#fff;--surface2:#F6F8FD;--surface3:#EDF1F9;
+  --ink:#0F1A33;--ink2:#25314F;--muted:#5C6784;--line:#E2E7F3;--line2:#CFD7E8;
+  --scrim:rgba(9,16,36,.5);--sh:0 6px 22px rgba(11,23,54,.08);--sh2:0 20px 54px rgba(11,23,54,.18);
+}
+[data-theme=paper]{
+  --bg:#F3EADA;--surface:#FBF6EA;--surface2:#F6EFE0;--surface3:#EFE5D2;
+  --ink:#2C2317;--ink2:#463A28;--muted:#6E5F48;--line:#E2D5BC;--line2:#D2C2A4;
+  --scrim:rgba(44,35,23,.5);--sh:0 6px 20px rgba(80,62,36,.1);--sh2:0 20px 50px rgba(80,62,36,.2);
+  --brand:#C2500C;--brand2:#D9691F;--brandDeep:#A64208;--violet:#6A3FE0;--blue:#2450C8;--teal:#0B8A8A;--green:#0B8459;--amber:#B45F05;--red:#C22230;--pink:#C13A6B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Vazirmatn,Tahoma,sans-serif;background:var(--bg);color:var(--ink);font-size:var(--fs);line-height:var(--lh);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--brand) 60%,transparent);outline-offset:2px;border-radius:8px}
+::selection{background:color-mix(in srgb,var(--brand) 38%,transparent);color:#fff}
+svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── اسکرول‌بار اختصاصی ── */
+*{scrollbar-width:thin;scrollbar-color:var(--brandDeep) transparent}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:color-mix(in srgb,var(--surface2) 70%,transparent);border-radius:10px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--brand2),var(--brandDeep));border-radius:10px;border:3px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#FFB25E,var(--brand))}
+::-webkit-scrollbar-corner{background:transparent}
+
+/* ── پس‌زمینهٔ لایه‌ای ── */
+.bg{position:fixed;inset:0;z-index:-3;pointer-events:none;
+  background:
+   radial-gradient(900px 560px at 88% -8%,color-mix(in srgb,var(--brand) 20%,transparent),transparent 62%),
+   radial-gradient(760px 520px at 6% 104%,color-mix(in srgb,var(--violet) 20%,transparent),transparent 62%),
+   radial-gradient(620px 460px at 52% 46%,color-mix(in srgb,var(--teal) 11%,transparent),transparent 66%),
+   radial-gradient(520px 380px at 20% 18%,color-mix(in srgb,var(--blue) 10%,transparent),transparent 68%);}
+[data-theme=light] .bg,[data-theme=paper] .bg{opacity:.5}
+.aurora{position:fixed;inset:-20%;z-index:-2;pointer-events:none;filter:blur(70px);opacity:.4}
+.aurora i{position:absolute;display:block;border-radius:50%;mix-blend-mode:screen}
+[data-theme=light] .aurora,[data-theme=paper] .aurora{opacity:.24;filter:blur(80px)}
+[data-theme=paper] .aurora i{mix-blend-mode:multiply}
+.a1{width:44vw;height:44vw;background:var(--brand);top:-8%;right:-6%;animation:dr1 34s ease-in-out infinite}
+.a2{width:38vw;height:38vw;background:var(--violet);bottom:-12%;left:-8%;animation:dr2 41s ease-in-out infinite}
+.a3{width:28vw;height:28vw;background:var(--teal);top:38%;left:34%;animation:dr3 47s ease-in-out infinite}
+@keyframes dr1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-7vw,6vh) scale(1.14)}}
+@keyframes dr2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(8vw,-7vh) scale(1.2)}}
+@keyframes dr3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-5vw,-6vh) scale(.86)}}
+.grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.16;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+[data-theme=light] .grain{opacity:.09}
+.gridlines{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.35;
+  background-image:linear-gradient(color-mix(in srgb,var(--line) 60%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--line) 60%,transparent) 1px,transparent 1px);
+  background-size:64px 64px;mask-image:radial-gradient(circle at 50% 30%,#000,transparent 78%)}
+
+/* ── نوار بالا ── */
+.top{position:fixed;top:0;left:0;right:0;height:var(--nav);z-index:80;display:flex;align-items:center;gap:12px;padding:0 20px;
+  background:color-mix(in srgb,var(--surface) 84%,transparent);backdrop-filter:blur(18px) saturate(160%);border-bottom:1px solid var(--line)}
+.tbrand{display:flex;align-items:center;gap:10px;min-width:0}
+.mark{width:36px;height:36px;border-radius:11px;background:var(--grad);display:grid;place-items:center;color:#fff;overflow:hidden;flex:0 0 auto;box-shadow:0 6px 16px rgba(255,107,26,.4)}
+.mark img{width:100%;height:100%;object-fit:contain}
+.mark.hasimg{background:transparent;box-shadow:none}
+.tbrand b{font-family:Nunito,Vazirmatn,sans-serif;font-weight:900;font-size:16.5px;letter-spacing:-.4px;white-space:nowrap}
+.tbrand b span{color:var(--brand2)}
+.tbrand small{display:block;font-size:10px;color:var(--muted);font-weight:700;line-height:1.2}
+.tsp{flex:1}
+.sbtn{display:flex;align-items:center;gap:9px;padding:8px 13px;border:1px solid var(--line);border-radius:11px;background:var(--surface2);color:var(--muted);cursor:pointer;font-size:12px;font-weight:700;min-width:210px;transition:all var(--tr)}
+.sbtn:hover{border-color:var(--brand);color:var(--brand2)}
+.sbtn kbd{margin-right:auto;background:var(--surface);border:1px solid var(--line2);border-radius:6px;padding:1px 7px;font-size:10px;font-family:inherit}
+.ib{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--muted);transition:all var(--tr);position:relative}
+.ib:hover{color:var(--brand);border-color:var(--brand);transform:translateY(-1px)}
+.ib.on{color:var(--brand);border-color:var(--brand);background:color-mix(in srgb,var(--brand) 12%,transparent)}
+.navprog{position:absolute;bottom:-1px;left:0;height:2px;background:var(--grad);width:0;box-shadow:0 0 12px var(--brand);transition:width .12s linear}
+.menu-btn{display:none}
+
+/* ── چیدمان ── */
+.shell{display:grid;grid-template-columns:308px minmax(0,1fr);gap:0;padding-top:var(--nav)}
+.side{position:sticky;top:var(--nav);height:calc(100vh - var(--nav));display:flex;flex-direction:column;border-left:1px solid var(--line);background:color-mix(in srgb,var(--surface) 62%,transparent);backdrop-filter:blur(10px);z-index:60}
+.side-scroll{flex:1;overflow-y:auto;padding:16px 14px 10px}
+.side-fixed{flex:0 0 auto;border-top:1px solid var(--line);background:color-mix(in srgb,var(--surface2) 88%,transparent);padding:12px 14px 14px;max-height:47vh;overflow-y:auto}
+.main{min-width:0;padding:0 30px 90px}
+.wrap{max-width:var(--cw);margin:0 auto}
+
+/* ── هیرو ── */
+.hero{position:relative;padding:56px 0 40px;overflow:hidden}
+.hero-in{position:relative;z-index:2}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 15px;border-radius:30px;font-size:11.5px;font-weight:800;
+  background:color-mix(in srgb,var(--brand) 14%,transparent);color:var(--brand2);border:1px solid color-mix(in srgb,var(--brand) 34%,transparent)}
+.chip i{width:7px;height:7px;border-radius:50%;background:var(--brand);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.hero h1{font-size:clamp(28px,4.4vw,46px);font-weight:900;line-height:1.5;margin:18px 0 12px;letter-spacing:-.6px}
+.hero h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--ink2);font-size:14.5px;max-width:660px;line-height:2.1}
+.hero-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:10px 18px;border-radius:12px;border:1px solid transparent;font-size:13px;font-weight:800;cursor:pointer;transition:all var(--tr);white-space:nowrap}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+.btn-p{background:var(--grad);color:#fff;box-shadow:0 8px 22px rgba(255,107,26,.36)}
+.btn-s{background:var(--surface2);border-color:var(--line);color:var(--ink)}
+.btn-s:hover{border-color:var(--brand);color:var(--brand2)}
+.btn-g{background:color-mix(in srgb,var(--violet) 16%,transparent);border-color:color-mix(in srgb,var(--violet) 40%,transparent);color:var(--violet)}
+.btn-sm{min-height:32px;padding:6px 12px;font-size:11.5px;border-radius:9px}
+.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:12px;margin-top:34px}
+.hstat{background:color-mix(in srgb,var(--surface) 78%,transparent);border:1px solid var(--line);border-radius:14px;padding:14px 15px;position:relative;overflow:hidden;backdrop-filter:blur(6px)}
+.hstat:before{content:"";position:absolute;top:0;right:0;left:0;height:3px;background:var(--c)}
+.hstat b{display:block;font-size:24px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--c)}
+.hstat span{font-size:11px;color:var(--muted);font-weight:700}
+.hero-orb{position:absolute;left:-60px;top:20px;width:340px;height:340px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,var(--brand),var(--violet),var(--teal),var(--blue),var(--brand));filter:blur(56px);opacity:.3;animation:spin 40s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── فهرست ── */
+.side-h{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:900;color:var(--muted);letter-spacing:.4px;margin:14px 4px 8px}
+.side-h:first-child{margin-top:0}
+.ring{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:var(--surface2);border:1px solid var(--line);margin-bottom:14px}
+.ring-c{width:52px;height:52px;flex:0 0 52px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(var(--brand) calc(var(--p)*1%),color-mix(in srgb,var(--line2) 80%,transparent) 0)}
+.ring-c:after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--surface2)}
+.ring-c b{position:relative;z-index:1;font-size:13px;font-weight:900}
+.ring div small{display:block;font-size:10.5px;color:var(--muted);font-weight:700}
+.ring div b{font-size:12.5px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.fchip{padding:4px 11px;border-radius:20px;font-size:10.5px;font-weight:800;cursor:pointer;border:1px solid var(--line);background:var(--surface2);color:var(--muted);transition:all var(--tr)}
+.fchip:hover{border-color:var(--brand);color:var(--brand2)}
+.fchip.on{background:color-mix(in srgb,var(--brand) 18%,transparent);border-color:var(--brand);color:var(--brand2)}
+.toc-ch{margin-bottom:4px}
+.toc-a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;font-size:12.5px;font-weight:800;cursor:pointer;color:var(--ink2);transition:all var(--tr);border-right:2.5px solid transparent}
+.toc-a:hover{background:var(--surface2);color:var(--ink)}
+.toc-a.on{background:color-mix(in srgb,var(--k) 15%,transparent);color:var(--k);border-right-color:var(--k)}
+.toc-a .n{width:20px;height:20px;flex:0 0 20px;border-radius:6px;display:grid;place-items:center;font-size:10px;font-weight:900;background:color-mix(in srgb,var(--k) 20%,transparent);color:var(--k)}
+.toc-a .tick{margin-right:auto;color:var(--green);opacity:0;transition:opacity var(--tr)}
+.toc-a.done .tick{opacity:1}
+.toc-sub{padding:2px 0 6px 0;margin-right:30px;display:none}
+.toc-ch.open .toc-sub{display:block}
+.toc-s{display:block;padding:5px 10px;border-radius:8px;font-size:11.5px;color:var(--muted);cursor:pointer;transition:all var(--tr);border-right:2px solid transparent;line-height:1.7}
+.toc-s:hover{color:var(--ink);background:var(--surface2)}
+.toc-s.on{color:var(--k);border-right-color:var(--k);font-weight:800;background:color-mix(in srgb,var(--k) 10%,transparent)}
+.bm-empty{font-size:11px;color:var(--muted);padding:6px 10px;line-height:1.9}
+.bm-i{display:flex;gap:7px;align-items:center;padding:6px 10px;border-radius:8px;font-size:11.5px;cursor:pointer;color:var(--ink2)}
+.bm-i:hover{background:var(--surface2)}
+.bm-i span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bm-i button{border:0;background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center}
+.bm-i button:hover{color:var(--red)}
+
+/* ── کنترل‌های مطالعه ── */
+.ctl-h{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:900;color:var(--brand2);margin-bottom:10px}
+.ctl{display:flex;flex-direction:column;gap:4px;margin-bottom:9px}
+.ctl label{font-size:10.5px;font-weight:800;color:var(--muted);display:flex;justify-content:space-between}
+.ctl label b{color:var(--ink);font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:5px;background:var(--line2);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--grad);cursor:pointer;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 22%,transparent)}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border:0;border-radius:50%;background:var(--brand);cursor:pointer}
+.sel{width:100%;min-height:34px;padding:6px 10px;border:1px solid var(--line2);border-radius:9px;background:var(--surface);font-size:11.5px;font-weight:700;cursor:pointer}
+.sel:focus{border-color:var(--brand);outline:none}
+.tgs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0}
+.tg{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:9px;border:1px solid var(--line);background:var(--surface);font-size:10.5px;font-weight:800;cursor:pointer;color:var(--muted);transition:all var(--tr)}
+.tg:hover{border-color:var(--line2)}
+.tg.on{border-color:var(--brand);color:var(--brand2);background:color-mix(in srgb,var(--brand) 10%,transparent)}
+.tg i{width:22px;height:13px;border-radius:8px;background:var(--line2);position:relative;flex:0 0 22px;transition:background var(--tr)}
+.tg i:after{content:"";position:absolute;top:2px;right:2px;width:9px;height:9px;border-radius:50%;background:var(--muted);transition:all var(--tr)}
+.tg.on i{background:color-mix(in srgb,var(--brand) 45%,transparent)}
+.tg.on i:after{right:11px;background:var(--brand)}
+.ctl-acts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ctl-acts .btn{min-height:32px;padding:6px 8px;font-size:10.5px;border-radius:9px}
+.ctl-acts .full{grid-column:1/-1}
+
+/* ── فصل و بخش ── */
+.chapter{padding:34px 0 8px;scroll-margin-top:92px}
+.ch-head{display:flex;align-items:flex-start;gap:14px;padding:20px 22px;border-radius:20px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--k) 20%,var(--surface)),var(--surface) 62%);border:1px solid color-mix(in srgb,var(--k) 28%,var(--line))}
+.ch-head:before{content:"";position:absolute;inset:0;background:radial-gradient(420px 200px at 92% 8%,color-mix(in srgb,var(--k) 26%,transparent),transparent 62%)}
+.ch-head>*{position:relative;z-index:1}
+.ch-n{width:52px;height:52px;flex:0 0 52px;border-radius:16px;display:grid;place-items:center;font-size:20px;font-weight:900;color:#fff;background:linear-gradient(140deg,var(--k),color-mix(in srgb,var(--k) 55%,#000));box-shadow:0 10px 26px color-mix(in srgb,var(--k) 34%,transparent)}
+.ch-head h2{font-size:22px;font-weight:900;line-height:1.6}
+.ch-head p{font-size:12.5px;color:var(--ink2);margin-top:3px;line-height:1.95}
+.ch-tag{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:3px 11px;border-radius:20px;font-size:10.5px;font-weight:800;background:color-mix(in srgb,var(--k) 18%,transparent);color:var(--k);border:1px solid color-mix(in srgb,var(--k) 34%,transparent)}
+.section{padding:26px 0 6px;scroll-margin-top:92px}
+.sec-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sec-h h3{font-size:16.5px;font-weight:900;flex:1;line-height:1.7}
+.sec-h .dot{width:9px;height:9px;border-radius:3px;background:var(--k);flex:0 0 9px;box-shadow:0 0 12px var(--k)}
+.sec-act{display:flex;gap:5px;opacity:.35;transition:opacity var(--tr)}
+.section:hover .sec-act{opacity:1}
+.sib{width:29px;height:29px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);display:grid;place-items:center;cursor:pointer;color:var(--muted);transition:all var(--tr)}
+.sib:hover{color:var(--k);border-color:var(--k)}
+.sib.on{color:var(--amber);border-color:var(--amber);background:color-mix(in srgb,var(--amber) 14%,transparent)}
+.sib.read{color:var(--green);border-color:var(--green)}
+.body>*{margin-bottom:13px}
+.body p{color:var(--ink2);line-height:var(--lh)}
+.body strong{color:var(--ink);font-weight:800}
+.body ul,.body ol{padding-right:20px;color:var(--ink2)}
+.body li{margin-bottom:6px;line-height:1.95}
+.body li::marker{color:var(--k)}
+.term{background:color-mix(in srgb,var(--k) 16%,transparent);color:var(--ink);border-bottom:1.5px dotted var(--k);padding:0 3px;border-radius:4px;font-weight:700}
+html:not(.hl) .term{background:transparent;border:0;color:inherit;font-weight:inherit;padding:0}
+code.inl{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;background:var(--surface3);border:1px solid var(--line);border-radius:6px;padding:1px 6px;direction:ltr;display:inline-block;color:var(--brand2)}
+
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table.tb{width:100%;border-collapse:collapse;font-size:12.5px;min-width:520px}
+.tb th{background:var(--surface2);color:var(--muted);font-size:11px;font-weight:900;text-align:right;padding:11px 13px;border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0}
+.tb td{padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.9;color:var(--ink2)}
+.tb tr:last-child td{border-bottom:0}
+.tb tbody tr:hover{background:color-mix(in srgb,var(--k) 6%,transparent)}
+.tb td b{color:var(--ink)}
+.ltr{direction:ltr;text-align:left;font-family:ui-monospace,Menlo,monospace;font-size:11.5px}
+.num{font-variant-numeric:tabular-nums}
+
+.fx{position:relative;border:1px solid color-mix(in srgb,var(--k) 30%,var(--line));border-radius:14px;background:linear-gradient(180deg,var(--surface3),var(--surface2));overflow:hidden}
+.fx-h{display:flex;align-items:center;gap:8px;padding:8px 13px;border-bottom:1px solid var(--line);font-size:10.5px;font-weight:900;color:var(--k)}
+.fx-h .cp{margin-right:auto}
+.fx pre{padding:14px 16px;direction:ltr;text-align:left;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:2.1;color:var(--ink);overflow-x:auto;white-space:pre}
+html.wrapcode .fx pre{white-space:pre-wrap;word-break:break-word}
+.fx .note{padding:0 16px 13px;font-size:11.5px;color:var(--muted);direction:rtl;text-align:right;line-height:1.95}
+.cp{border:1px solid var(--line2);background:var(--surface);color:var(--muted);border-radius:8px;padding:3px 9px;font-size:10px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all var(--tr)}
+.cp:hover{color:var(--brand);border-color:var(--brand)}
+.cp.ok{color:var(--green);border-color:var(--green)}
+
+.co{display:flex;gap:12px;padding:13px 15px;border-radius:14px;border:1px solid var(--c);background:color-mix(in srgb,var(--c) 10%,transparent);align-items:flex-start}
+.co .ci{width:30px;height:30px;flex:0 0 30px;border-radius:9px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 20%,transparent);color:var(--c)}
+.co b{display:block;font-size:12.5px;color:var(--c);margin-bottom:2px}
+.co p{font-size:12.5px;color:var(--ink2);line-height:1.95;margin:0}
+.co.tip{--c:var(--teal)}.co.warn{--c:var(--amber)}.co.imp{--c:var(--red)}.co.key{--c:var(--violet)}.co.good{--c:var(--green)}
+
+.steps{counter-reset:s;display:flex;flex-direction:column;gap:9px}
+.step{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:13px;background:var(--surface);border:1px solid var(--line);transition:all var(--tr)}
+.step:hover{border-color:color-mix(in srgb,var(--k) 45%,var(--line));transform:translateX(-3px)}
+.step:before{counter-increment:s;content:counter(s);width:26px;height:26px;flex:0 0 26px;border-radius:9px;display:grid;place-items:center;font-size:12px;font-weight:900;background:color-mix(in srgb,var(--k) 18%,transparent);color:var(--k)}
+.step div b{display:block;font-size:12.5px;margin-bottom:2px}
+.step div p{font-size:12px;color:var(--muted);margin:0;line-height:1.9}
+
+.kvs{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.kvi{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+.kvi small{display:block;font-size:10.5px;color:var(--muted);font-weight:700}
+.kvi b{font-size:13px;font-weight:800;word-break:break-word}
+
+.pills{display:flex;gap:7px;flex-wrap:wrap}
+.pl{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;background:color-mix(in srgb,var(--c,var(--slate)) 15%,transparent);color:var(--c,var(--slate));border:1px solid color-mix(in srgb,var(--c,var(--slate)) 32%,transparent)}
+.pl:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+
+.faq{border:1px solid var(--line);border-radius:13px;background:var(--surface);overflow:hidden;margin-bottom:9px}
+.faq q{display:flex;align-items:center;gap:10px;padding:13px 15px;cursor:pointer;font-size:13px;font-weight:800;quotes:none}
+.faq q:hover{background:var(--surface2)}
+.faq q .ar{margin-right:auto;transition:transform var(--tr);color:var(--muted)}
+.faq.open q .ar{transform:rotate(180deg);color:var(--k)}
+.faq .ans{max-height:0;overflow:hidden;transition:max-height .32s cubic-bezier(.3,.9,.3,1)}
+.faq.open .ans{max-height:900px}
+.faq .ans div{padding:0 15px 14px;font-size:12.5px;color:var(--ink2);line-height:2.05;border-top:1px solid var(--line);padding-top:12px}
+
+.diagram{border:1px solid var(--line);border-radius:16px;background:linear-gradient(160deg,var(--surface3),var(--surface));padding:12px;overflow-x:auto}
+.diagram svg{display:block;min-width:660px;width:100%;height:auto}
+.dg-node{cursor:pointer}
+.dg-node rect{transition:all var(--tr)}
+.dg-node:hover rect{filter:brightness(1.25)}
+.dg-node:hover text{font-weight:900}
+
+.reveal{opacity:0;transform:translateY(22px)}
+.reveal.in{opacity:1;transform:none;transition:opacity .6s cubic-bezier(.2,.8,.3,1),transform .6s cubic-bezier(.2,.8,.3,1)}
+html.nomotion .reveal{opacity:1!important;transform:none!important}
+html.nomotion *,html.nomotion *:before,html.nomotion *:after{animation:none!important;transition:none!important}
+html.nomotion{scroll-behavior:auto}
+html.compact .section{padding:16px 0 4px}
+html.compact .chapter{padding:22px 0 4px}
+html.compact .body>*{margin-bottom:9px}
+html.compact .ch-head{padding:14px 16px}
+
+/* ── جستجو ── */
+.cmd{position:fixed;inset:0;z-index:150;background:var(--scrim);backdrop-filter:blur(7px);display:none;justify-content:center;padding:9vh 16px}
+.cmd.show{display:flex}
+.cmdbox{width:min(720px,100%);background:var(--surface);border:1px solid var(--line2);border-radius:18px;box-shadow:var(--sh2);overflow:hidden;height:fit-content;max-height:78vh;display:flex;flex-direction:column}
+.cmdtop{display:flex;align-items:center;gap:10px;padding:6px 14px;border-bottom:1px solid var(--line)}
+.cmdtop input{flex:1;border:0;background:transparent;padding:15px 4px;font-size:15px;outline:none}
+.cmdtop .esc{border:1px solid var(--line2);border-radius:7px;padding:2px 8px;font-size:10px;color:var(--muted)}
+.cmdres{overflow-y:auto;padding:8px}
+.cmdg{font-size:10px;font-weight:900;color:var(--muted);padding:9px 12px 5px;display:flex;gap:7px;align-items:center}
+.cmdi{display:flex;gap:11px;align-items:flex-start;padding:9px 12px;border-radius:11px;cursor:pointer}
+.cmdi:hover,.cmdi.sel{background:color-mix(in srgb,var(--brand) 12%,transparent)}
+.cmdi .ci{width:26px;height:26px;flex:0 0 26px;border-radius:8px;display:grid;place-items:center;background:color-mix(in srgb,var(--k) 18%,transparent);color:var(--k)}
+.cmdi b{font-size:12.5px;display:block}
+.cmdi small{font-size:11px;color:var(--muted);line-height:1.85;display:block}
+.cmdi mark{background:color-mix(in srgb,var(--brand) 34%,transparent);color:var(--ink);border-radius:3px;padding:0 2px}
+.cmdfoot{border-top:1px solid var(--line);padding:8px 14px;font-size:10.5px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap}
+
+/* ── توست ── */
+#toasts{position:fixed;bottom:18px;left:18px;z-index:200;display:flex;flex-direction:column-reverse;gap:9px;max-width:min(360px,90vw)}
+.toast{display:flex;align-items:center;gap:10px;background:var(--surface3);color:var(--ink);padding:11px 15px;border-radius:12px;font-size:12.5px;box-shadow:var(--sh2);border-right:4px solid var(--green);border-top:1px solid var(--line);border-left:1px solid var(--line);border-bottom:1px solid var(--line)}
+.toast.warn{border-right-color:var(--amber)}
+.toast.err{border-right-color:var(--red)}
+
+.scrim{position:fixed;inset:0;background:var(--scrim);backdrop-filter:blur(3px);z-index:55;opacity:0;pointer-events:none;transition:opacity .22s}
+.scrim.show{opacity:1;pointer-events:auto}
+.foot{border-top:1px solid var(--line);margin-top:40px;padding:26px 0;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:11.5px;color:var(--muted)}
+.foot .btn{margin-right:auto}
+.top-link{position:fixed;bottom:18px;right:18px;z-index:70;width:44px;height:44px;border-radius:14px;background:var(--grad);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 10px 26px rgba(255,107,26,.42);opacity:0;pointer-events:none;transition:all var(--tr);border:0}
+.top-link.show{opacity:1;pointer-events:auto}
+.top-link:hover{transform:translateY(-3px)}
+
+@media(max-width:1080px){
+  .shell{grid-template-columns:1fr}
+  .side{position:fixed;top:var(--nav);right:0;width:308px;transform:translateX(105%);transition:transform .28s cubic-bezier(.3,.9,.3,1);box-shadow:var(--sh2);background:var(--surface)}
+  .side.open{transform:none}
+  .menu-btn{display:grid}
+  .main{padding:0 18px 80px}
+  .sbtn{min-width:0}.sbtn span,.sbtn kbd{display:none}
+}
+@media(max-width:640px){
+  :root{--fs:14px}
+  .hero{padding:34px 0 26px}
+  .tbrand small{display:none}
+  .ch-head{padding:15px 16px;gap:11px}
+  .ch-n{width:42px;height:42px;flex:0 0 42px;font-size:16px;border-radius:13px}
+  .ch-head h2{font-size:18px}
+  .side{width:min(320px,92vw)}
+  .hero-orb{display:none}
+}
+@media print{
+  .top,.side,.scrim,.cmd,#toasts,.top-link,.hero-acts,.sec-act,.bg,.aurora,.grain,.gridlines,.hero-orb{display:none!important}
+  body{background:#fff;color:#000;font-size:11pt;line-height:1.85}
+  .shell{display:block;padding:0}
+  .main{padding:0}
+  .wrap{max-width:100%}
+  .chapter{page-break-before:always;padding:0 0 10px}
+  .chapter:first-of-type{page-break-before:avoid}
+  .ch-head{background:#f4f4f4!important;border:1px solid #ccc!important;color:#000}
+  .ch-head:before{display:none}
+  .ch-n{background:#333!important;color:#fff!important;box-shadow:none}
+  .body p,.body li,.tb td{color:#222}
+  .fx{border:1px solid #bbb;background:#f7f7f7}
+  .fx pre{color:#000}
+  .reveal{opacity:1!important;transform:none!important}
+  .faq .ans{max-height:none!important}
+  .tw{overflow:visible}
+  table.tb{min-width:0;font-size:9.5pt}
+}
+</style>
+</head>
+<body>
+<div class="bg"></div><div class="aurora"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div><div class="gridlines"></div><div class="grain"></div>
+
+<header class="top">
+  <button class="ib menu-btn" id="menuBtn" aria-label="فهرست"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <div class="tbrand">
+    <span class="mark" id="mark"><svg class="ic" viewBox="0 0 24 24" style="width:20px;height:20px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg></span>
+    <div><b>Zingo<span>Vingo</span></b><small>دفترچه راهنمای سامانه</small></div>
+  </div>
+  <div class="tsp"></div>
+  <button class="sbtn" id="searchBtn"><svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>جستجو در راهنما…</span><kbd>Ctrl K</kbd></button>
+  <button class="ib" id="bmBtn" title="نشان‌شده‌ها"><svg class="ic" viewBox="0 0 24 24"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg></button>
+  <button class="ib" id="themeBtn" title="پوسته"></button>
+  <button class="ib" id="printBtn" title="چاپ / PDF"><svg class="ic" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
+  <div class="navprog" id="navprog"></div>
+</header>
+
+<div class="scrim" id="scrim"></div>
+
+<div class="shell">
+  <aside class="side" id="side">
+    <div class="side-scroll">
+      <div class="ring"><div class="ring-c" id="ring" style="--p:0"><b id="ringN">۰٪</b></div><div><b>پیشرفت مطالعه</b><small id="ringS">۰ از ۰ بخش</small></div></div>
+      <div class="side-h"><svg class="ic" viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M3 6h18M3 12h12M3 18h6"/></svg> فیلتر بر اساس نقش</div>
+      <div class="filters" id="filters"></div>
+      <div class="side-h"><svg class="ic" viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> فهرست فصل‌ها</div>
+      <nav id="toc"></nav>
+      <div class="side-h" id="bmHead"><svg class="ic" viewBox="0 0 24 24" style="width:13px;height:13px"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg> نشان‌شده‌ها</div>
+      <div id="bmList"></div>
+    </div>
+    <div class="side-fixed">
+      <div class="ctl-h"><svg class="ic" viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"/><path d="M1 14h6M9 8h6M17 16h6"/></svg> تنظیمات مطالعه</div>
+      <div class="ctl"><label>اندازه قلم <b id="fsV">۱۵</b></label><input type="range" id="fs" min="12" max="21" step="1" value="15"></div>
+      <div class="ctl"><label>ارتفاع خط <b id="lhV">۲٫۰</b></label><input type="range" id="lh" min="1.6" max="2.6" step="0.1" value="2"></div>
+      <div class="ctl"><label>عرض متن <b id="cwV">۸۶۰</b></label><input type="range" id="cw" min="620" max="1180" step="20" value="860"></div>
+      <div class="ctl"><label>پوسته</label><select class="sel" id="theme"><option value="dark">شب — فرماندهی</option><option value="light">روز — اداری</option><option value="paper">کاغذ — مطالعه طولانی</option></select></div>
+      <div class="tgs">
+        <button class="tg on" id="tgMotion"><i></i> جنبش</button>
+        <button class="tg" id="tgCompact"><i></i> فشرده</button>
+        <button class="tg" id="tgWrap"><i></i> پیچش کد</button>
+        <button class="tg on" id="tgHl"><i></i> اصطلاحات</button>
+      </div>
+      <div class="ctl-acts">
+        <button class="btn btn-s" id="resetBtn">بازنشانی</button>
+        <button class="btn btn-s" id="expandBtn">باز کردن همه</button>
+        <button class="btn btn-p full" id="mdBtn"><svg class="ic" viewBox="0 0 24 24" style="width:13px;height:13px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> خروجی Markdown</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="wrap">
+      <section class="hero">
+        <div class="hero-orb" id="orb"></div>
+        <div class="hero-in">
+          <span class="chip reveal"><i></i> نسخه ۳ · هماهنگ با پنل‌های V9 / V3</span>
+          <h1 class="reveal">دفترچهٔ راهنمای<br><em>مرکز فرمان ZingoVingo</em></h1>
+          <p class="reveal">هر چیزی که برای ادارهٔ سامانه لازم دارید: از چرخهٔ عمر یک سفارش تا فرمول پیشرفت مایلستون، موتور سود و زیان، سناریوسازی مالی، جدول سهام، مشاورهٔ هوشمند و عیب‌یابی استقرار. همه‌چیز با مثال عددی واقعی و قابل جستجو.</p>
+          <div class="hero-acts reveal">
+            <button class="btn btn-p" data-jump="start"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/></svg> شروع سریع</button>
+            <button class="btn btn-g" data-jump="manager"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg> پنل مدیر کل</button>
+            <button class="btn btn-s" data-jump="ops"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z"/></svg> استقرار و عیب‌یابی</button>
+          </div>
+          <div class="hero-stats reveal" id="heroStats"></div>
+        </div>
+      </section>
+      <div id="content"></div>
+      <footer class="foot">
+        <div>دفترچه راهنمای ZingoVingo · نسخه ۳ · هماهنگ با Administrator V9، Manager V3، BranchManager V2، Employee V3</div>
+        <button class="btn btn-s btn-sm" id="mdBtn2">دانلود نسخهٔ متنی</button>
+      </footer>
+    </div>
+  </main>
+</div>
+
+<button class="top-link" id="topLink" aria-label="بازگشت به بالا"><svg class="ic" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+
+<div class="cmd" id="cmd">
+  <div class="cmdbox">
+    <div class="cmdtop">
+      <svg class="ic" viewBox="0 0 24 24" style="width:17px;height:17px;color:var(--muted)"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="cmdInput" placeholder="جستجو در عنوان‌ها، متن‌ها، فرمول‌ها و جدول‌ها…" autocomplete="off">
+      <span class="esc">Esc</span>
+    </div>
+    <div class="cmdres" id="cmdRes"></div>
+    <div class="cmdfoot"><span>↑ ↓ جابجایی</span><span>Enter باز کردن</span><span>Esc بستن</span><span id="cmdCount"></span></div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+'use strict';
+/* ═══════════════ ابزار ═══════════════ */
+var $=function(s,r){return (r||document).querySelector(s);};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function esc(v){var m={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};return String(v==null?'':v).replace(/[&<>"']/g,function(c){return m[c];});}
+function fa(v){return String(v==null?'':v).replace(/\d/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'[+d];});}
+function en(v){return String(v==null?'':v).replace(/[۰-۹]/g,function(d){return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d));});}
+function toast(m,t){var d=document.createElement('div');d.className='toast '+(t||'');d.textContent=m;$('#toasts').appendChild(d);setTimeout(function(){d.style.opacity='0';d.style.transform='translateY(8px)';setTimeout(function(){d.remove();},260);},2600);}
+var IC={zap:'<path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/>',book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+crown:'<path d="m2 18 3-11 5 6 2-8 2 8 5-6 3 11z"/><path d="M2 21h20"/>',shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+branch:'<path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/>',user:'<circle cx="12" cy="8" r="4.5"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
+helmet:'<path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z"/>',msg:'<path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.86L3 21l1.9-5.2A8.4 8.4 0 1 1 21 11.5z"/>',
+spark:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/>',db:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/>',
+tool:'<path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z"/>',help:'<circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/>',
+star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',check:'<path d="m4.5 12.5 5 5 10-11"/>',chev:'<path d="m6 9 6 6 6-6"/>',
+copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+bulb:'<path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/>',lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+sun:'<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22"/>',
+moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',paper:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>'};
+function icon(n,s){return '<svg class="ic" viewBox="0 0 24 24"'+(s?' style="'+s+'"':'')+'>'+(IC[n]||IC.book)+'</svg>';}
+
+/* ═══════════════ محتوای راهنما ═══════════════ */
+var G=[
+{id:'start',n:'۰',t:'شروع سریع',ic:'zap',k:'var(--brand)',role:['همه'],lead:'سامانه چیست، چه نقش‌هایی دارد و یک سفارش چگونه از ثبت به درآمد تبدیل می‌شود.',s:[
+ {id:'what',t:'سامانه در یک نگاه',b:[
+  {t:'p',x:'ZingoVingo یک سامانهٔ مدیریت خدمات چندشعبه‌ای است که روی Google Apps Script اجرا می‌شود و Google Sheets پایگاه دادهٔ آن است. پنج پنل مستقل، هرکدام با دامنهٔ دید و اجازهٔ متفاوت، روی همان داده کار می‌کنند. موتور قیمت‌گذاری، موتور گفتگو و مشاورهٔ هوشمند لایه‌های مشترک بالای این داده‌اند.'},
+  {t:'ul',x:['<strong>داده:</strong> Google Sheets — هر شیت یک موجودیت، هر ردیف یک رکورد با شناسهٔ یکتا.','<strong>منطق:</strong> Google Apps Script — توابع احراز هویت، CRUD، محاسبات مالی و قواعد مشاور.','<strong>نمایش:</strong> فایل‌های HTML مستقل روی GitHub Pages که با پل <code class="inl">zv-api.js</code> به بک‌اند وصل می‌شوند.','<strong>زبان و تقویم:</strong> فارسی، راست‌به‌چپ، تاریخ شمسی در ورودی و میلادی در ذخیره‌سازی.']},
+  {t:'co',k:'tip',h:'اصل طلایی دامنهٔ دید',x:'هر نقش فقط دادهٔ حوزهٔ خودش را می‌بیند: مدیر کل و ادمین ارشد همهٔ سامانه، مدیر شعبه و کارمند فقط شعبهٔ خود، نیرو فقط کارت‌های خودش، مشتری فقط سفارش‌های خودش.'}]},
+ {id:'map',t:'نقشهٔ سامانه',b:[
+  {t:'p',x:'روی هر گره کلیک کنید تا به فصل مربوطه بروید. مسیر داده همیشه از پنل به شیت و برعکس است؛ هیچ پنلی مستقیماً به شیت دسترسی ندارد.'},
+  {t:'diagram'}]},
+ {id:'roles',t:'نقش‌ها، فایل پنل و مسیر ورود',b:[
+  {t:'table',h:['نقش','فایل پنل','تابع ورود','کلید توکن','دامنهٔ داده'],r:[
+   ['<b>Administrator</b>','Administrator.html','adminLogin','zv_admin_token','کل سامانه'],
+   ['<b>Manager</b> (مدیر کل)','Manager.html','managerLogin','zv_manager_token','کل سامانه + مالی و سرمایه'],
+   ['<b>Branch Manager</b>','BranchManager.html','branchManagerLogin','zv_bnm_token','فقط شعبهٔ خود'],
+   ['<b>Employee</b>','Employee.html','employeeLogin','zv_emp_token','فقط شعبهٔ خود'],
+   ['<b>Supervisor / worker</b>','Supervisor.html / Worker.html','ورود نیرو','توکن نیرو','کارت‌های تخصیص‌یافته'],
+   ['<b>Customer</b>','Customer.html','ورود مشتری / OTP','zv_cst_token','سفارش‌های خود']]},
+  {t:'co',k:'warn',h:'نقش از ستون Operations خوانده می‌شود',x:'مقدار این ستون در شیت Employees باید دقیقاً انگلیسی باشد: Administrator، Manager، Branch Manager، Employee. مقدار فارسی «کارمند» فقط در پنل کارمند پذیرفته می‌شود. حساب باید Status = فعال داشته باشد.'},
+  {t:'p',x:'مدیر کل و ادمین ارشد هر دو از شیت Employees می‌آیند؛ مدیر شعبه از شیت BranchManagers و نیروها از شیت Workers. اگر کاربری در شیت اشتباهی ثبت شود، ورود رد می‌شود.'}]},
+ {id:'flow',t:'چرخهٔ عمر یک سفارش',b:[
+  {t:'steps',x:[
+   ['ثبت درخواست','مشتری از فرم عمومی یا کارمند از پنل، خدمت را انتخاب می‌کند. موتور قیمت‌گذاری پیش‌فاکتور زنده می‌سازد.'],
+   ['ثبت اولیه و بررسی','سفارش در شیت Orders با وضعیت «جدید» یا «ثبت اولیه» می‌نشیند و در صف بررسی شعبه قرار می‌گیرد.'],
+   ['تبدیل به کارت عملیاتی','کارمند یا مدیر شعبه سفارش را به گروه و در صورت تمایل به نیرو تخصیص می‌دهد؛ رکورد در Cards ساخته می‌شود.'],
+   ['اجرا و تکمیل','نیرو کارت را می‌بیند، اجرا می‌کند و وضعیت به «تکمیل شده» می‌رود؛ وضعیت سفارش هم همگام می‌شود.'],
+   ['ثبت مالی','درآمد در FinanceEntries با Type = درآمد و Status = پرداخت شده ثبت می‌شود.'],
+   ['تحلیل و تصمیم','سود و زیان، حاشیه، مشاورهٔ هوشمند و اهداف از این داده تغذیه می‌شوند.']]}]},
+ {id:'keys',t:'میان‌برهای صفحه‌کلید',b:[
+  {t:'table',h:['کلید','کارکرد','کجا'],r:[
+   ['<b>Ctrl / ⌘ + K</b>','جستجوی سراسری','همهٔ پنل‌ها و همین راهنما'],
+   ['<b>Ctrl / ⌘ + B</b>','جمع یا باز کردن سایدبار','همهٔ پنل‌ها و همین راهنما'],
+   ['<b>Esc</b>','بستن مودال، کشو، جستجو و تقویم','همه‌جا'],
+   ['<b>Enter</b>','ارسال فرم ورود / انتخاب نتیجهٔ جستجو','ورود و جستجو'],
+   ['<b>↑ ↓</b>','جابجایی بین نتایج جستجو','جستجوی سراسری']]},
+  {t:'co',k:'key',h:'تقویم شمسی',x:'هر فیلد تاریخ یک دکمهٔ تقویم دارد. می‌توانید دستی هم تایپ کنید؛ ارقام فارسی و انگلیسی هر دو پذیرفته می‌شوند و در ذخیره‌سازی به میلادی تبدیل می‌گردند.'}]}
+]},
+
+{id:'glossary',n:'۱',t:'واژه‌نامه',ic:'book',k:'var(--violet)',role:['همه'],lead:'تفاوت دقیق اصطلاحاتی که شبیه هم‌اند اما کارکرد کاملاً متفاوت دارند.',s:[
+ {id:'terms',t:'اصطلاحات کلیدی',b:[
+  {t:'table',h:['اصطلاح','یعنی چه','کجا زندگی می‌کند'],r:[
+   ['<b>سفارش</b>','درخواست خدمت مشتری با قیمت و زمان اجرا','Orders'],
+   ['<b>کارت عملیاتی</b>','نسخهٔ اجرایی سفارش پس از تخصیص به گروه/نیرو','Cards'],
+   ['<b>تسک (لیست کارها)</b>','سرویس دوره‌ای مشتری با تکرار هفتگی/ماهانه','Tasks'],
+   ['<b>مایلستون</b>','نقطهٔ تحویل یک پروژه با مسئول، مهلت و وزن','ProjectTasks'],
+   ['<b>پروژه</b>','کار داخلی چندمرحله‌ای با بودجه و مهلت','Projects'],
+   ['<b>قرارداد</b>','تعهد رسمی با یک طرف بیرونی یا شعبه','Contracts'],
+   ['<b>ظرفیت قرارداد</b>','سقف مقداری تعهدشده در قرارداد با نرخ واحد','ContractCapacity'],
+   ['<b>مصرف ظرفیت</b>','هر بار استفاده از ظرفیت با مرجع قابل ردیابی','ContractUsage'],
+   ['<b>تیکت / گفتگو</b>','رشته‌پیام چندگانه بین دو طرف','ConversationThreads + Messages'],
+   ['<b>یادداشت داخلی</b>','پیامی با Visibility = STAFF که طرف مقابل نمی‌بیند','ConversationMessages'],
+   ['<b>Cap Table</b>','جدول سهامداران و درصد مالکیت شرکت','EquityHolders'],
+   ['<b>رقیق‌سازی</b>','کاهش درصد سهامداران فعلی پس از انتشار سهام جدید','شبیه‌سازی در پنل مدیر کل'],
+   ['<b>نقطهٔ سربه‌سر</b>','درآمدی که هزینهٔ ثابت را دقیقاً پوشش می‌دهد','محاسبه در سود و زیان'],
+   ['<b>شاخص سلامت</b>','عدد ۰ تا ۱۰۰ حاصل کسر جریمهٔ ریسک‌ها از ۱۰۰','مشاورهٔ هوشمند']]},
+  {t:'co',k:'imp',h:'تسک ≠ مایلستون',x:'تسک به مشتری و تکرار خدمت مربوط است و در برنامهٔ هفتگی کنار کارت‌ها دیده می‌شود. مایلستون به پروژهٔ داخلی مربوط است و پیشرفت پروژه از آن محاسبه می‌شود. این دو هرگز جای هم را نمی‌گیرند.'}]}
+]},
+
+{id:'manager',n:'۲',t:'پنل مدیر کل',ic:'crown',k:'var(--brand)',role:['مدیر کل'],lead:'کابین تصمیم‌گیری: قرارداد، ظرفیت، پروژه، مالی، سرمایه، سهام، هدف، یادداشت، تصمیم و مشاور.',s:[
+ {id:'m-dash',t:'کابین مدیریتی',b:[
+  {t:'p',x:'صفحهٔ خانگی، هشت شاخص اصلی را با نمودار کوچک شش‌ماهه نشان می‌دهد: درآمد، سود خالص، ارزش قراردادهای فعال، درآمد ظرفیت مصرف‌شده، ارزش پرتفوی، مطالبات، بودجهٔ پروژه‌ها و سرمایهٔ سهامداران.'},
+  {t:'ul',x:['<strong>حلقهٔ سلامت:</strong> عدد ۰ تا ۱۰۰ از مشاورهٔ هوشمند؛ سبز بالای ۷۰، زرد ۴۰ تا ۷۰، قرمز زیر ۴۰.','<strong>اولویت‌های تصمیم امروز:</strong> چهار ریسک برتر با دکمهٔ اقدام مستقیم.','<strong>قراردادهای نیازمند اقدام:</strong> آنچه در آستانهٔ انقضا است.','<strong>پروژه‌های در ریسک:</strong> سلامت قرمز با نوار پیشرفت.','<strong>تحقق اهداف</strong> و <strong>یادداشت‌های سنجاق‌شده</strong> در ستون کناری.']}]},
+ {id:'m-contracts',t:'قراردادها',b:[
+  {t:'p',x:'هر قرارداد یک تعهد رسمی است با طرف، مبلغ، بازه و وضعیت. شناسه به شکل <code class="inl">CON-000001</code> تولید می‌شود.'},
+  {t:'kv',x:[['انواع','خدماتی · پیمانکاری · تأمین نیرو · فروش · اجاره · مشارکت · سایر'],['وضعیت‌ها','پیش‌نویس · در مذاکره · فعال · در حال انقضا · منقضی · فسخ شده · تسویه شده'],['دورهٔ صدور','یکجا · ماهانه · فصلی · سالانه · بر اساس مصرف'],['تمدید خودکار','بله / خیر + مهلت اعلام (روز)']]},
+  {t:'p',x:'ستون «روز باقی‌مانده» از تاریخ پایان محاسبه می‌شود. اگر قرارداد فعال باشد و روزهای باقی‌مانده کمتر از max(۱۵، مهلت اعلام) شود، برچسب «در آستانهٔ انقضا» می‌گیرد و مشاور آن را ریسک بحرانی اعلام می‌کند.'},
+  {t:'co',k:'tip',h:'تمدید',x:'دکمهٔ تمدید در کشوی قرارداد، تاریخ پایان جدید و مبلغ جدید می‌گیرد. تاریخ جدید باید بعد از تاریخ فعلی باشد و وضعیت خودکار به «فعال» برمی‌گردد.'}]},
+ {id:'m-capacity',t:'ظرفیت قراردادها و مصرف',b:[
+  {t:'p',x:'ظرفیت، قرارداد را به عدد قابل سنجش تبدیل می‌کند: مثلاً «۲۰۰ سرویس نظافت در ماه، هر سرویس ۳٬۵۰۰٬۰۰۰ ریال». هر ظرفیت به یک قرارداد وصل است و شناسهٔ <code class="inl">CAP-000001</code> می‌گیرد.'},
+  {t:'fx',h:'فرمول‌های ظرفیت',c:'used      = Σ ContractUsage.Qty  (یا UsedQty اگر مصرفی ثبت نشده)\nremaining = max(0, TotalQty − used − ReservedQty)\nutil%     = used ÷ TotalQty × 100\nrevenue   = used × UnitPrice\npotential = TotalQty × UnitPrice',n:'درآمد تحقق‌یافته جمع revenue همهٔ ظرفیت‌هاست؛ درآمد در معرض خطر، potential منهای revenue.'},
+  {t:'ul',x:['<strong>بهره‌برداری ≥ ۸۵٪</strong> → هشدار «نزدیک اتمام» و پیشنهاد الحاقیهٔ افزایش ظرفیت.','<strong>بهره‌برداری &lt; ۲۵٪</strong> و گذشت بیش از نیمی از دوره → هشدار «کم‌مصرف» با برآورد درآمد از دست رفته.','با رسیدن مصرف به سقف، وضعیت ظرفیت خودکار «تکمیل شده» می‌شود.']},
+  {t:'co',k:'warn',h:'سقف مصرف کنترل می‌شود',x:'ثبت مصرف بیش از باقی‌مانده رد می‌شود و پیام «باقی‌مانده: …» نمایش داده می‌شود. هر مصرف با نوع مرجع (سفارش، کارت، فاکتور، دستی) و شناسهٔ مرجع ذخیره می‌شود تا قابل حسابرسی باشد.'}]},
+ {id:'m-projects',t:'پروژه‌ها',b:[
+  {t:'p',x:'پروژه کار داخلی شماست: راه‌اندازی شعبه، کمپین، زیرساخت. دو نما دارد: کانبان با کشیدن و رها کردن بین وضعیت‌ها، و جدول با نمودار «پیشرفت در برابر مصرف بودجه».'},
+  {t:'kv',x:[['وضعیت‌ها','ایده · برنامه‌ریزی · در حال اجرا · متوقف · تکمیل شده · لغو شده'],['اولویت','عادی · مهم · فوری · بحرانی'],['سلامت','سبز · زرد · قرمز (محاسبه خودکار)'],['شناسه','PRJ-000001']]},
+  {t:'table',h:['شرط','سلامت'],r:[['مصرف بودجه &gt; ۹۰٪ و پیشرفت &lt; ۷۰٪','🔴 قرمز'],['مهلت گذشته و پیشرفت &lt; ۱۰۰٪','🔴 قرمز'],['≤ ۷ روز به مهلت و پیشرفت &lt; ۸۰٪','🔴 قرمز'],['≤ ۱۴ روز به مهلت و پیشرفت &lt; ۹۰٪','🟡 زرد'],['غیر این موارد','🟢 سبز']]}]},
+ {id:'m-milestones',t:'مایلستون‌ها — موتور پیشرفت پروژه',b:[
+  {t:'p',x:'مایلستون یک نقطهٔ تحویل قابل‌سنجش است: کاری مشخص با یک مسئول، یک مهلت و یک وزن اهمیت. تا وقتی مایلستونی ثبت نکرده‌اید، عدد Progress دستی پروژه ملاک است؛ به‌محض افزودن اولین مایلستون، آن عدد کنار گذاشته می‌شود.'},
+  {t:'fx',h:'فرمول پیشرفت وزنی',c:'project.progress = Σ(weight × percent) ÷ Σ(weight)\n\npercent = 100                اگر Status = «تکمیل شده»\npercent = Progress           در غیر این صورت\nweight  = Weight || 1        (وزن خالی یا صفر → ۱)',n:'با رسیدن مجموع به ۱۰۰٪، وضعیت پروژه خودکار «تکمیل شده» می‌شود مگر اینکه لغو شده باشد.'},
+  {t:'p',x:'<strong>مثال عددی — پروژهٔ راه‌اندازی شعبه مشهد</strong>'},
+  {t:'table',h:['مایلستون','وزن','وضعیت','درصد','وزن × درصد'],r:[
+   ['اجاره و آماده‌سازی ملک','۳','تکمیل شده','۱۰۰','۳۰۰'],
+   ['استخدام و آموزش نیروها','۲','در حال انجام','۶۰','۱۲۰'],
+   ['تجهیز و انبار','۲','در انتظار','۰','۰'],
+   ['مجوزها و بیمه','۱','تکمیل شده','۱۰۰','۱۰۰'],
+   ['افتتاح و کمپین محلی','۲','در انتظار','۰','۰'],
+   ['<b>جمع</b>','<b>۱۰</b>','','','<b>۵۲۰</b>']]},
+  {t:'p',x:'پیشرفت پروژه = ۵۲۰ ÷ ۱۰ = <strong>۵۲٪</strong>. اگر ۹۵٪ بودجه خرج شده باشد، پروژه قرمز می‌شود و مشاور هشدار «انحراف بودجه» با اثر ریالی می‌سازد.'},
+  {t:'co',k:'imp',h:'سه نکتهٔ رفتاری مهم',x:'۱) وزن صفر بی‌اثر است و به ۱ تبدیل می‌شود؛ برای کم‌اهمیت‌کردن، به بقیه وزن بالاتر بدهید. ۲) مایلستون «لغو شده» هنوز در مخرج می‌ماند و درصد را پایین می‌کشد؛ برای حذف اثرش آن را حذف کنید. ۳) فیلد DependsOn فعلاً اطلاعاتی است و مسدودسازی خودکار ندارد.'},
+  {t:'steps',x:[['پروژه را با بودجه و مهلت بسازید','از منوی پروژه‌ها → پروژهٔ جدید.'],['کشوی پروژه → افزودن مایلستون','پروژه از قبل پر شده، وزن ۱، وضعیت «در انتظار».'],['۴ تا ۸ نقطهٔ تحویل تعریف کنید','عنوان خروجی‌محور بنویسید نه فعالیت مبهم؛ وزن بدهید.'],['هفتگی فقط درصد و وضعیت را به‌روز کنید','پیشرفت، سلامت، هشدار و نمودار خودکار به‌روز می‌شوند.']]}]},
+ {id:'m-finance',t:'دفتر مالی',b:[
+  {t:'p',x:'هر تراکنش یک ردیف در FinanceEntries است با نوع درآمد یا هزینه، سرفصل، مبلغ، ماهیت هزینه و وضعیت پرداخت. شناسه <code class="inl">FIN-000001</code>.'},
+  {t:'kv',x:[['نوع','درآمد · هزینه'],['ماهیت هزینه','ثابت · متغیر · سرمایه‌ای'],['وضعیت','پرداخت شده · در انتظار · معوق · لغو شده'],['روش','نقد · کارت · حواله · چک · تهاتر · سایر']]},
+  {t:'co',k:'imp',h:'فقط «پرداخت شده» در سود و زیان می‌آید',x:'ردیف‌های در انتظار و معوق در مطالبات/بدهی‌ها دیده می‌شوند اما وارد محاسبهٔ سود نمی‌شوند. هزینهٔ «سرمایه‌ای» هم عمداً از سود و زیان کنار گذاشته می‌شود. اگر هزینه‌ها ماهیت نخورند، تحلیل حاشیه و نقطهٔ سربه‌سر بی‌معنا می‌شود.'}]},
+ {id:'m-pnl',t:'سود و زیان',b:[
+  {t:'fx',h:'موتور سود و زیان',c:'revenue   = Σ paid income\nvariable  = Σ paid expense (CostType = متغیر)\nfixed     = Σ paid expense (CostType = ثابت)\ngross     = revenue − variable\noperating = gross − fixed\nnet       = revenue − variable − fixed\nmargin%   = net ÷ revenue × 100\nbreakeven = fixed ÷ (gross ÷ revenue)'},
+  {t:'p',x:'صفحه شش شاخص می‌دهد: درآمد، سود ناخالص، سود عملیاتی، سود خالص، نقطهٔ سربه‌سر و جریان نقد ۳۰ روز آینده. نمودار آبشار، مسیر درآمد تا سود خالص را مرحله‌به‌مرحله نشان می‌دهد.'},
+  {t:'p',x:'جدول «سودآوری به تفکیک واحد» هر شعبه را با حاشیهٔ خودش رنگ می‌کند: منفی قرمز، زیر هدف زرد، بالای هدف سبز. هدف از تنظیمات شرکت (<code class="inl">TARGET_MARGIN</code>) خوانده می‌شود.'}]},
+ {id:'m-whatif',t:'سناریوسازی مالی — چه می‌شود اگر…',b:[
+  {t:'p',x:'یک شبیه‌ساز خشک است: پارامترها را عوض می‌کنید و سود جدید را می‌بینید، بدون اینکه چیزی در دفتر مالی نوشته شود. دکمه‌اش در هدر سود و زیان، هیروی کابین و ثبت سریع است.'},
+  {t:'table',h:['پارامتر','نوع','اثر'],r:[
+   ['تغییر نرخ فروش','درصد ±','درآمد — ضریب'],['تغییر حجم فروش','درصد ±','درآمد و هزینهٔ متغیر — هر دو ضریب'],
+   ['تغییر هزینهٔ متغیر','درصد ±','فقط نرخ واحد متغیر'],['افزایش هزینهٔ ثابت','مبلغ','ثابت کل دوره'],
+   ['درآمد قرارداد جدید','مبلغ','مستقیم به درآمد'],['تعداد استخدام','عدد','× هزینهٔ هر استخدام → ثابت'],
+   ['هزینهٔ هر استخدام','مبلغ','حقوق کل دورهٔ انتخابی']]},
+  {t:'fx',h:'فرمول سناریو',c:'revenue′  = revenue × (1+price) × (1+volume) + newContract\nvariable′ = variable × (1+volume) × (1+varCost)\nfixed′    = fixed + fixedAdd + hireCount × hireCost\nnet′      = revenue′ − variable′ − fixed′\nmargin′   = net′ ÷ revenue′ × 100\nbreakeven′= fixed′ ÷ ((revenue′ − variable′) ÷ revenue′)',n:'نرخ و حجم جمع نمی‌شوند، ضرب می‌شوند: ۱۰٪ نرخ + ۱۵٪ حجم = ۲۶٫۵٪ رشد درآمد.'},
+  {t:'p',x:'<strong>مثال عددی</strong> — پایه: درآمد ۱٬۰۰۰ میلیون، متغیر ۴۰۰، ثابت ۳۵۰ → سود ۲۵۰ و حاشیه ۲۵٪. سناریو: نرخ +۱۰٪، حجم +۱۵٪، متغیر +۵٪، ثابت جدید ۵۰، دو استخدام هرکدام ۴۰، قرارداد جدید ۲۰۰.'},
+  {t:'table',h:['قلم','محاسبه','نتیجه (میلیون)'],r:[
+   ['درآمد','۱۰۰۰ × ۱٫۱۰ × ۱٫۱۵ + ۲۰۰','<b>۱٬۴۶۵</b>'],['متغیر','۴۰۰ × ۱٫۱۵ × ۱٫۰۵','<b>۴۸۳</b>'],
+   ['ثابت','۳۵۰ + ۵۰ + (۲×۴۰)','<b>۴۸۰</b>'],['سود خالص','۱۴۶۵ − ۴۸۳ − ۴۸۰','<b>۵۰۲</b>'],
+   ['حاشیه','۵۰۲ ÷ ۱۴۶۵','<b>۳۴٫۳٪</b>'],['سربه‌سر','۴۸۰ ÷ ۰٫۶۷۰۳','<b>۷۱۶</b>']]},
+  {t:'co',k:'warn',h:'پنج محدودیت که باید بدانید',x:'۱) قرارداد جدید هزینهٔ متغیر ندارد و سود را بیش‌برآورد می‌کند؛ همزمان متغیر یا ثابت را بالا ببرید. ۲) همهٔ مبالغ برای کل دورهٔ انتخابی‌اند نه ماهانه. ۳) استخدام به هزینهٔ ثابت می‌رود. ۴) نتیجه ذخیره نمی‌شود؛ برای نگه‌داشتن «ثبت به‌عنوان تصمیم» را بزنید. ۵) روی نمودارها و شاخص سلامت اثری ندارد.'},
+  {t:'co',k:'good',h:'روش پیشنهادی',x:'سه سناریو بسازید: بدبینانه (نرخ −۵، حجم −۱۰)، پایه (همه صفر)، خوش‌بینانه. نقطهٔ سربه‌سر هر سه را با درآمد واقعی مقایسه کنید تا بفهمید چقدر افت فروش را تحمل می‌کنید.'}]},
+ {id:'m-invest',t:'سرمایه‌گذاری‌ها',b:[
+  {t:'p',x:'پرتفوی شرکت: سهام شرکت خودتان، سهام سایر شرکت‌ها، صندوق، ملک، طلا، ارز، کسب‌وکار و اوراق. هر موقعیت با تعداد واحد، قیمت خرید، قیمت جاری، هدف و حد ضرر ثبت می‌شود.'},
+  {t:'fx',h:'محاسبات پرتفوی',c:'cost   = Units × BuyPrice\nvalue  = Units × (CurrentPrice || BuyPrice)\npl     = value − cost\npl%    = pl ÷ cost × 100\nconcentration% = بزرگ‌ترین موقعیت ÷ ارزش کل × 100'},
+  {t:'ul',x:['قیمت جاری ≤ حد ضرر → <strong>ریسک بحرانی</strong> با پیشنهاد خروج یا کاهش موقعیت.','افت بیش از ۲۰٪ → هشدار بازبینی فرضیات.','رسیدن به قیمت هدف → نقطهٔ قوت با پیشنهاد سیب‌سود.','تمرکز بالای ۵۰٪ در یک نماد → هشدار تنوع‌بخشی.']},
+  {t:'co',k:'tip',h:'به‌روزرسانی قیمت',x:'دکمهٔ «به‌روزرسانی قیمت» در کشوی هر موقعیت، قیمت جدید را با تاریخ امروز ثبت می‌کند. بدون به‌روزرسانی، قیمت خرید مبنا می‌ماند و بازده صفر نشان داده می‌شود.'}]},
+ {id:'m-equity',t:'سهام شرکت و رقیق‌سازی',b:[
+  {t:'p',x:'جدول سهام (Cap Table) نام سهامدار، نوع حقیقی/حقوقی، تعداد سهام، درصد و سرمایهٔ پرداختی را نگه می‌دارد. درصدها پس از هر ذخیره خودکار بازمحاسبه می‌شوند.'},
+  {t:'fx',h:'محاسبات سهام',c:'calcPct   = Shares ÷ Σ Shares × 100\nbookValue = PaidCapital × Shares ÷ Σ Shares\nmismatch  = |Σ Shares − COMPANY_TOTAL_SHARES| > 0.5'},
+  {t:'co',k:'imp',h:'عدم تطابق سهام',x:'اگر جمع سهام سهامداران با «کل سهام اعلامی» در تنظیمات نخواند، مشاور ریسک بحرانی می‌سازد. این اختلاف در حسابرسی و جذب سرمایه‌گذار مشکل‌ساز است؛ اول آن را اصلاح کنید.'},
+  {t:'p',x:'<strong>شبیه‌سازی رقیق‌سازی</strong> دو حالت دارد: افزایش سرمایه با تعداد سهام جدید، یا ورود سرمایه‌گذار جدید با مبلغ و ارزش‌گذاری پیش از رویداد.'},
+  {t:'fx',h:'فرمول رقیق‌سازی',c:'pricePerShare = preValuation ÷ totalShares\nissued        = amount ÷ pricePerShare      (حالت سرمایه‌گذار)\ntotalAfter    = totalShares + issued\nafterPct      = Shares ÷ totalAfter × 100\ndilution      = beforePct − afterPct'}]},
+ {id:'m-targets',t:'اهداف و شاخص‌ها',b:[
+  {t:'p',x:'هدف‌گذاری روی هشت شاخص: درآمد، سود خالص، تعداد سفارش، نرخ تکمیل، حاشیه سود، مشتری جدید، ارزش قرارداد و کاهش هزینه — در سه دامنهٔ کل سامانه، شعبه و پروژه، با دورهٔ ماهانه/فصلی/سالانه.'},
+  {t:'ul',x:['تحقق زیر ۷۰٪ → هشدار؛ زیر ۴۰٪ → ریسک بحرانی با پیشنهاد برنامهٔ اصلاحی.','تحقق ۱۰۰٪ و بالاتر → نقطهٔ قوت با پیشنهاد ارتقای هدف.','مقدار محقق‌شده خودکار از دادهٔ واقعی خوانده می‌شود، نه دستی.']}]},
+ {id:'m-notes',t:'یادداشت‌ها',b:[
+  {t:'p',x:'نمای کارت رنگی با شش رنگ، شش دسته (عمومی، ایده، پیگیری، ریسک، جلسه، تصمیم)، سنجاق، برچسب، یادآوری شمسی و وضعیت انجام. یادداشت‌های سنجاق‌شده در کابین مدیریتی هم دیده می‌شوند.'},
+  {t:'ul',x:['سنجاق و انجام‌شدن با یک کلیک از روی کارت عوض می‌شود.','دکمهٔ «تبدیل به تصمیم» یادداشت را به فرم تصمیم با عنوان و زمینهٔ پرشده می‌برد.','یادآوری‌های سررسیدشده و انجام‌نشده در زنگ اعلان ظاهر می‌شوند.']}]},
+ {id:'m-decisions',t:'تصمیمات مدیریتی',b:[
+  {t:'p',x:'هر تصمیم مهم یک رکورد قابل حسابرسی است: زمینه، گزینه‌های بررسی‌شده، گزینهٔ انتخابی، دلیل، اثر مورد انتظار، ریسک، مسئول، مهلت و تاریخ بازبینی.'},
+  {t:'kv',x:[['وضعیت‌ها','پیشنهادی · در بررسی · تصویب شده · در حال اجرا · اجرا شده · رد شده'],['ریسک','کم · متوسط · زیاد'],['حوزهٔ مرتبط','قرارداد · پروژه · سرمایه‌گذاری · شعبه · مالی'],['شناسه','DEC-000001']]},
+  {t:'co',k:'key',h:'سه مسیر ورود به تصمیم',x:'از دکمهٔ «ثبت تصمیم» روی هر هشدار مشاور، از «ثبت به‌عنوان تصمیم» در سناریوسازی، و از «تبدیل به تصمیم» روی یادداشت. هر سه فرم را از قبل پر می‌کنند.'}]},
+ {id:'m-advisor',t:'مشاورهٔ هوشمند',b:[
+  {t:'p',x:'یک موتور قاعده‌محور که روی دادهٔ واقعی سامانه اجرا می‌شود — نه حدس و نه متن آماده. هر هشدار شامل شدت، حوزه، شواهد عددی، اثر ریالی برآوردی، پیشنهاد اقدام و دکمه‌های اقدام مستقیم است.'},
+  {t:'table',h:['شدت','وزن جریمه','نمونه'],r:[
+   ['<b>بحرانی</b>','۴۰','قرارداد منقضی، پروژهٔ عقب‌افتاده، کسری نقد، حد ضرر، واحد زیان‌ده'],
+   ['<b>هشدار</b>','۱۸','ظرفیت نزدیک اتمام، انحراف بودجه، تمرکز درآمد، مطالبات معوق'],
+   ['<b>اطلاع</b>','۶','تمرکز مالکیت، کارجوی تأییدشدهٔ منتظر'],
+   ['<b>نقطهٔ قوت</b>','۰','سودآوری بالای هدف، رسیدن به قیمت هدف، تحقق هدف']]},
+  {t:'fx',h:'شاخص سلامت',c:'penalty = Σ وزن هر هشدار\nhealth  = clamp(0, 100, 100 − round(penalty ÷ 2))',n:'مرتب‌سازی: اول شدت (بحرانی → هشدار → اطلاع → قوت)، بعد امتیاز داخلی هر هشدار.'},
+  {t:'p',x:'حوزه‌های تحت پایش: قراردادها، ظرفیت، پروژه‌ها، مالی، جریان نقد، سرمایه‌گذاری، سهام، عملیات، سرمایهٔ انسانی، پشتیبانی، اهداف و راهبرد.'},
+  {t:'co',k:'tip',h:'دقت مشاور به کیفیت داده وابسته است',x:'اگر دفتر مالی خالی باشد یا هزینه‌ها ماهیت نخورده باشند، بخش مالی مشاور چیزی نمی‌بیند. برای فعال‌شدن تحلیل قرارداد هم باید ظرفیت‌ها ثبت شده باشند.'}]},
+ {id:'m-analytics',t:'نمودارهای تحلیلی',b:[
+  {t:'p',x:'دوازده نمودار در یک صفحه با فیلتر بازهٔ تاریخ: روند درآمد و هزینه، وضعیت سفارش‌ها، وضعیت کارت‌ها، سهم خدمات، درآمد شعب، درآمد شهرها، مشتریان برتر، نیروهای برتر، ترکیب پرتفوی، ترکیب سهامداری، بهره‌برداری ظرفیت و پیشرفت پروژه‌ها.'},
+  {t:'co',k:'key',h:'خواندن نمودارها بدون اتکا به رنگ',x:'همهٔ نمودارها برچسب مستقیم و راهنمای عددی دارند؛ در حالت چاپ هم قابل خواندن‌اند. هشت رنگ پالت با اختلاف روشنایی انتخاب شده‌اند.'}]},
+ {id:'m-roadmap',t:'نقشه راه و ماژول‌های در راه',b:[
+  {t:'p',x:'چهار ماژول در صف توسعه‌اند و تا انتشار رسمی هیچ دادهٔ عملیاتی نمی‌سازند: هوش تجاری پیشرفته، ERP یکپارچه، مشاور هوش مصنوعی و اپلیکیشن مدیریتی. هرکدام درصد پیشرفت و زمان انتشار هدف دارند.'},
+  {t:'co',k:'warn',h:'این بخش‌ها هنوز رکورد ذخیره نمی‌کنند',x:'ماژول‌های فعال فعلی: قرارداد، ظرفیت، پروژه، مایلستون، دفتر مالی، سرمایه‌گذاری، سهام، اهداف، یادداشت، تصمیم و مشاورهٔ هوشمند.'}]}
+]},
+
+{id:'admin',n:'۳',t:'پنل ادمین ارشد',ic:'shield',k:'var(--blue)',role:['ادمین'],lead:'مرکز مدیریت سامانه: ساختار، خدمات، قیمت‌گذاری، تخفیف، گفتگوها و تنظیمات برند.',s:[
+ {id:'a-scope',t:'دامنه و موجودیت‌ها',b:[
+  {t:'p',x:'ادمین ارشد تنها نقشی است که ساختار سامانه را تغییر می‌دهد: شعبه، گروه، عضو گروه، کارمند، نیرو، مدیر شعبه، مشتری، خدمت، خدمت جانبی، پرسش خدمت، کد تخفیف و تسک.'},
+  {t:'ul',x:['شناسه‌ها خودکار تولید می‌شوند: EMP-333…، W-444…، BNM-222…، BR-001، GRP-001.','حذف‌ها به شیت سطل زباله می‌روند و تا ۷ روز با دکمهٔ «بازگردانی» برمی‌گردند.','تغییر وضعیت گروهی روی سفارش، کارت، کارجو، تسک، عضو و نیرو فعال است.','نماهای ذخیره‌شده (جستجو + فیلتر + مرتب‌سازی) per کاربر نگه داشته می‌شوند.']}]},
+ {id:'a-pricing',t:'موتور قیمت‌گذاری',b:[
+  {t:'p',x:'سه شیت با هم کار می‌کنند: Services (خدمت اصلی و نرخ پایه)، Sides (خدمت جانبی و خدمت مرتبط) و Questions (پرسش‌های پویا با ستون پاسخ در Orders).'},
+  {t:'fx',h:'ترکیب قیمت',c:'base      = نرخ پایه × مقدار\nsides     = Σ (نرخ جانبی × مقدار)\nurgent    = ضریب اقدام فوری\ndiscount  = تخفیف سطح + تخفیف کد\ntax       = مالیات بر ارزش افزوده\nfinal     = base + sides + urgent − discount + tax',n:'نرخ‌ها از شیت PricingRules خوانده می‌شوند و در فرم ورودی نمایش داده نمی‌شوند؛ مبلغ هنگام ثبت دوباره در سرور محاسبه می‌شود.'},
+  {t:'co',k:'imp',h:'نام انگلیسی خدمت الگوی موتور است',x:'فیلد nameEn باید دقیقاً همان کلیدی باشد که موتور قیمت می‌شناسد. تغییر آن بدون هماهنگی، محاسبه را می‌شکند.'}]},
+ {id:'a-offers',t:'کدهای تخفیف',b:[
+  {t:'p',x:'هر کد درصد تخفیف، بازهٔ اعتبار، سقف فردی و ظرفیت کل دارد. مصرف واقعی از شیت Redemptions شمرده می‌شود و در ستون «استفاده» نمایش داده می‌شود.'},
+  {t:'co',k:'tip',h:'گزارش استفاده',x:'کشوی هر کد، فهرست سفارش‌هایی که از آن استفاده کرده‌اند را با مبلغ تخفیف و زمان نشان می‌دهد.'}]},
+ {id:'a-settings',t:'تنظیمات، لوگو و نماد',b:[
+  {t:'p',x:'کارت لوگو در تنظیمات، تصویر را به‌صورت مربع ۲۵۶×۲۵۶ با پس‌زمینهٔ شفاف در Drive ذخیره می‌کند و نشانی آن را در کلید <code class="inl">LOGO_URL</code> می‌گذارد. این لوگو در سایدبار و صفحهٔ ورود همهٔ پنل‌ها اعمال می‌شود.'},
+  {t:'ul',x:['اگر LOGO_URL خالی باشد، فایل <code class="inl">LOGO.png</code> ریشهٔ مخزن استفاده می‌شود.','اگر آن فایل هم نباشد، نشان داخلی جایگزین می‌شود.','نماد مرورگر جداست: مربع ۶۴×۶۴ در کلید <code class="inl">FAVICON_URL</code>.','تابع <code class="inl">getPublicBranding()</code> بدون لاگین، لوگو و نماد را به صفحهٔ ورود می‌رساند.']},
+  {t:'co',k:'key',h:'کلیدهای یکپارچه‌سازی',x:'BALE_API_ACCESS_KEY و شناسهٔ ربات‌های بله برای شعبه/نیرو/سرپرست، به‌همراه TRELLO_API_KEY، TRELLO_TOKEN و TRELLO_LIST_ID. بدون این‌ها اعلان بله ارسال نمی‌شود اما بقیهٔ سامانه کار می‌کند.'}]}
+]},
+
+{id:'bnm',n:'۴',t:'پنل مدیر شعبه',ic:'branch',k:'var(--teal)',role:['مدیر شعبه'],lead:'مرکز فرمان شعبه: همه‌چیز مثل مدیر کل اما فقط در محدودهٔ شعبهٔ خود.',s:[
+ {id:'b-scope',t:'چه می‌بیند و چه نمی‌بیند',b:[
+  {t:'p',x:'مدیر شعبه با شناسهٔ BNM از شیت BranchManagers وارد می‌شود. همهٔ پرس‌وجوها با branchId جلسه فیلتر می‌شوند — نه در نمایش، بلکه در بک‌اند.'},
+  {t:'ul',x:['سفارش‌ها، کارت‌ها، گروه‌ها، اعضا، نیروها، کارمندان، تسک‌ها و کارجویان <strong>فقط شعبهٔ خود</strong>.','گفتگوهای مشتریان، مکاتبات سازمانی و تیکت‌های پشتیبانی <strong>فقط شعبهٔ خود</strong>.','هیچ دسترسی به مالی کل سامانه، سهام، سرمایه‌گذاری یا تنظیمات برند ندارد.']}]},
+ {id:'b-ops',t:'عملیات روزانه',b:[
+  {t:'steps',x:[['سفارش‌های جدید را بررسی کنید','بج قرمز منوی سفارش‌ها تعداد «جدید + ثبت اولیه» را نشان می‌دهد.'],['تبدیل به کارت','گروه را انتخاب کنید؛ با انتخاب نیرو، کارت مستقیم «تخصیص به کارگر» می‌شود و اعلان بله می‌رود.'],['کانبان را جلو ببرید','کارت را بکشید و در ستون وضعیت بعدی رها کنید.'],['برنامهٔ هفتگی را چک کنید','کارت‌ها و تسک‌ها روی شبکهٔ ساعت ۶ تا ۲۲ و هفت روز شمسی.'],['کارجوی تأییدشده را استخدام کنید','دکمهٔ استخدام، نیرو می‌سازد و نام کاربری و رمز اولیه را نشان می‌دهد.']]}]},
+ {id:'b-hire',t:'استخدام کارجو',b:[
+  {t:'p',x:'پروندهٔ کارجو در شیت Job_Application_Form با ۳۱ ستون ذخیره می‌شود. مدیر شعبه فقط پرونده‌های شعبهٔ خودش را می‌بیند و می‌تواند وضعیت را عوض کند.'},
+  {t:'co',k:'warn',h:'شرط استخدام',x:'پرونده باید وضعیت «تأیید شده» داشته باشد و قبلاً استخدام نشده باشد. نوع نیرو از موقعیت درخواستی حدس زده می‌شود: سرپرست → Supervisor، اپراتور/اداری → operator، بقیه → worker.'}]},
+ {id:'b-soon',t:'بخش در حال توسعه',b:[
+  {t:'p',x:'پنج ماژول در راه: امور مالی شعبه، خدمات و نرخ شعبه، بازاریابی محلی، شیفت و حضور و غیاب، انبار و تجهیزات. دکمهٔ «ثبت نیازمندی» یک درخواست ساخت‌یافته در شیت DevelopmentRequests می‌سازد.'}]}
+]},
+
+{id:'employee',n:'۵',t:'پنل کارمند شعبه',ic:'user',k:'var(--pink)',role:['کارمند'],lead:'بازوی اجرایی شعبه: سفارش، کارت، جذب، پشتیبانی و تسک.',s:[
+ {id:'e-scope',t:'دامنهٔ دید',b:[
+  {t:'p',x:'کارمند از شیت Employees با نقش Employee وارد می‌شود و باید branchId داشته باشد؛ بدون شعبه، ورود رد می‌شود. تمام داده‌ها در بک‌اند به همان شعبه محدود می‌شوند.'},
+  {t:'co',k:'imp',h:'شعبه اجباری است',x:'اگر پیام «شعبه‌ای برای حساب شما تعریف نشده است» دیدید، ستون branchId آن کاربر در شیت Employees خالی است. مدیر سامانه باید آن را پر کند.'}]},
+ {id:'e-applicants',t:'جذب و استخدام — فرم ۳۱ ستونی',b:[
+  {t:'p',x:'فرم در پنج بخش سازمان یافته است: اطلاعات هویتی، تخصص و مهارت، تماس و محل سکونت، آشنایی و موقعیت، گردش کار جذب.'},
+  {t:'ul',x:['<strong>سن خودکار</strong> از تاریخ تولد شمسی محاسبه می‌شود.','<strong>استان و شهر</strong> لیست آبشاری دارند و شهر به استان وابسته است.','<strong>مسیریابی شعبه</strong> از روی استان/شهر انجام می‌شود؛ اگر خارج از شعبهٔ شما باشد، پرونده در فهرست شما دیده نمی‌شود.','<strong>شماره تماس</strong> باید ۱۱ رقم و با ۰۹ شروع شود.','مصاحبهٔ تلفنی و حضوری هرکدام تاریخ و نتیجهٔ جدا دارند.']},
+  {t:'co',k:'tip',h:'ویرایش کامل',x:'دکمهٔ ویرایش، هر ۳۱ فیلد را در یک مودال باز می‌کند؛ تغییر وضعیت جداگانه هم از دکمهٔ «تغییر وضعیت» ممکن است.'}]},
+ {id:'e-support',t:'پشتیبانی مشتریان شعبه',b:[
+  {t:'p',x:'فقط گفتگوهای مشتریانی که در شعبهٔ شما سابقهٔ سفارش دارند نمایش داده می‌شود. پاسخ‌ها به رشته‌پیام اضافه می‌شوند و پاسخ قبلی پاک نمی‌شود.'},
+  {t:'co',k:'key',h:'یادداشت داخلی',x:'تیک «یادداشت داخلی» پیام را با Visibility = STAFF ذخیره می‌کند؛ مشتری آن را نمی‌بیند اما همکاران شعبه و ادمین می‌بینند.'}]}
+]},
+
+{id:'field',n:'۶',t:'پنل نیرو، سرپرست و مشتری',ic:'helmet',k:'var(--amber)',role:['نیرو','مشتری'],lead:'سه نمای سبک برای اجرای خدمت و پیگیری سفارش.',s:[
+ {id:'f-worker',t:'نیرو و سرپرست',b:[
+  {t:'ul',x:['نیرو کارت‌های تخصیص‌یافتهٔ خودش را می‌بیند و وضعیت را جلو می‌برد.','سرپرست کارت‌های گروه را می‌بیند و می‌تواند به نیرو تخصیص دهد یا ارجاع بدهد.','مکاتبهٔ سازمانی نیرو ↔ سرپرست روی همان کارت انجام می‌شود.','تخصیص جدید از طریق بله به نیرو اطلاع داده می‌شود (در صورت تنظیم کلیدها).']}]},
+ {id:'f-customer',t:'مشتری',b:[
+  {t:'ul',x:['ثبت سفارش با پیش‌فاکتور زنده و انتخاب خدمت جانبی.','پیگیری وضعیت سفارش‌ها و مشاهدهٔ فاکتور.','گفتگوی پشتیبانی با شعبه؛ هر پیام جدید به رشته اضافه می‌شود.','کد اشتراک و سطح مشتری روی تخفیف اثر می‌گذارد.']}]}
+]},
+
+{id:'messaging',n:'۷',t:'موتور گفتگوی یکپارچه',ic:'msg',k:'var(--violet)',role:['همه'],lead:'یک موتور، سه کانال، پاسخ نامحدود و تاریخچهٔ محفوظ.',s:[
+ {id:'msg-channels',t:'سه کانال و دو طرف گفتگو',b:[
+  {t:'table',h:['کانال','طرف اول (Owner)','طرف دوم (Peer)','دامنه'],r:[
+   ['<b>INTERNAL</b>','نیرو','سرپرست','گروه + شعبه'],
+   ['<b>CUSTOMER_SUPPORT</b>','مشتری','کارمند / مدیر شعبه / ادمین','شعبهٔ مشتری'],
+   ['<b>EMPLOYEE_SUPPORT</b>','کارمند یا مدیر شعبه','ادمین سامانه','شعبهٔ درخواست‌کننده']]},
+  {t:'p',x:'هر گفتگو یک ردیف در ConversationThreads و هر پیام یک ردیف در ConversationMessages است. شناسهٔ تیکت انسانی هم دارد: TI برای سازمانی، TC برای مشتری، TE برای کارکنان.'}]},
+ {id:'msg-state',t:'وضعیت، خوانده‌نشده و یادداشت داخلی',b:[
+  {t:'fx',h:'قواعد وضعیت و شمارنده',c:'پیام Owner  → Status = OPEN      و UnreadPeer  + 1\nپیام Peer   → Status = ANSWERED  و UnreadOwner + 1\nبستن دستی   → Status = CLOSED    و ClosedAt / ClosedBy ثبت می‌شود\n\nVisibility = STAFF  →  فقط کارکنان می‌بینند؛ شمارندهٔ طرف مقابل زیاد نمی‌شود',n:'ادمین همیشه طرف Peer حساب می‌شود، پس UnreadPeer را می‌خواند. مدیر شعبه در کانال کارکنان Owner است و UnreadOwner را می‌خواند.'},
+  {t:'ul',x:['باز کردن گفتگو، پیام‌های طرف مقابل را «دیده‌شده» می‌کند و شمارندهٔ شما را صفر می‌کند.','پیام سیستمی (باز/بسته شدن) با MessageType = SYSTEM ثبت می‌شود و در چت جدا نمایش داده می‌شود.','ویرایش پیام خود تا ۱۵ دقیقه ممکن است؛ حذف، نرم است و ردیف باقی می‌ماند.']},
+  {t:'co',k:'good',h:'دیگر پاسخ قبلی پاک نمی‌شود',x:'در نسخهٔ قدیم یک ستون Reply وجود داشت که با هر پاسخ بازنویسی می‌شد. اکنون هر پاسخ یک ردیف مستقل است و کل تاریخچه محفوظ می‌ماند.'}]}
+]},
+
+{id:'dev',n:'۸',t:'درخواست‌های توسعه',ic:'spark',k:'var(--green)',role:['همه'],lead:'چارچوب یکسان برای پیشنهاد قابلیت جدید از هر پنل.',s:[
+ {id:'d-frame',t:'چرا چارچوب لازم است',b:[
+  {t:'p',x:'پیشنهاد آزاد قابل مقایسه نیست. فرم ساخت‌یافته هفت فیلد اجباری و پنج فهرست ثابت دارد تا هر پیشنهاد مسئله، راهکار و معیار پذیرش روشن داشته باشد و بتوان آن‌ها را اولویت‌بندی کرد.'},
+  {t:'table',h:['ستون شیت','محتوا'],r:[
+   ['Request-ID','DEV-&lt;کدشعبه&gt;-&lt;هشت‌رقمی&gt; — شعبه بدون ستون اضافه از شناسه قابل تفکیک است'],
+   ['CreatedAt','زمان ثبت'],['Module','کد ماژول از فهرست ثابت'],['ModuleName','نام ماژول، خودکار'],
+   ['Note','متن ساخت‌یافته با برچسب'],['Priority','عادی · مهم · فوری · بحرانی'],
+   ['Status','جدید · در بررسی · پذیرفته شده · در حال ساخت · منتشر شد · رد شده'],
+   ['CreatedBy','شناسهٔ ثبت‌کننده'],['CreatedByName','نام ثبت‌کننده'],
+   ['UpdatedAt','آخرین تغییر'],['UpdatedBy','چه کسی تغییر داد'],['ReleasedAt','زمان انتشار']]},
+  {t:'fx',h:'برچسب‌های داخل Note',c:'[نوع] …\n[مسئله] …\n[راهکار] …\n[معیار پذیرش] …\n[اثر] …\n[دفعات] …\n[ذی‌نفعان] …\n[زمان مورد نیاز] …\n[نمونه] …\n[شعبه] …\n[درخواست‌کننده] …',n:'پارسر همین برچسب‌ها را می‌خواند و در کشوی جزئیات به‌صورت بخش‌های جدا نمایش می‌دهد.'},
+  {t:'co',k:'warn',h:'اعتبارسنجی سمت سرور',x:'مسئله و راهکار حداقل ۲۰ نویسه، معیار پذیرش حداقل ۱۰ نویسه. اولویت «بحرانی» بدون نمونهٔ واقعی رد می‌شود. درخواست یکسانِ باز از همان کاربر تکراری پذیرفته نمی‌شود.'},
+  {t:'co',k:'tip',h:'اجازه‌ها',x:'تغییر وضعیت فقط ادمین. ثبت‌کننده می‌تواند درخواست خودش را تا وقتی وضعیت «جدید» است پس بگیرد. هر نقش فقط درخواست‌های شعبهٔ خودش را می‌بیند.'}]}
+]},
+
+{id:'data',n:'۹',t:'داده و شیت‌ها',ic:'db',k:'var(--blue)',role:['ادمین','مدیر کل'],lead:'فهرست کامل شیت‌ها، قواعد شناسه و تاریخ، و سطل زباله.',s:[
+ {id:'d-sheets',t:'فهرست شیت‌ها',b:[
+  {t:'table',h:['شیت','نقش'],r:[
+   ['Orders','سفارش‌ها'],['Cards','کارت‌های عملیاتی'],['CardHistory','تاریخچهٔ وضعیت کارت'],
+   ['Customers','مشتریان'],['Employees','کارمندان، مدیران کل و ادمین'],['Workers','نیروها و سرپرستان'],
+   ['BranchManagers','مدیران شعب'],['Branches','شعبه‌ها'],['Groups','گروه‌ها'],['GroupMembers','اعضای گروه'],
+   ['Services','خدمات اصلی'],['Sides','خدمات جانبی'],['Questions','پرسش‌های پویای خدمت'],
+   ['Offers','کدهای تخفیف'],['Redemptions','مصرف کد تخفیف'],['Tasks','سرویس‌های دوره‌ای'],
+   ['Logs','لاگ ممیزی'],['Settings','تنظیمات و برند'],['PricingRules','نرخ‌های موتور قیمت'],['Levels','سطوح مشتری'],
+   ['Job_Application_Form','پروندهٔ کارجو (۳۱ ستون)'],['ConversationThreads','سررشتهٔ گفتگو (۳۱ ستون)'],
+   ['ConversationMessages','پیام‌ها (۱۸ ستون)'],['DevelopmentRequests','درخواست توسعه (۱۲ ستون)'],
+   ['Contracts','قراردادها'],['ContractCapacity','ظرفیت قرارداد'],['ContractUsage','مصرف ظرفیت'],
+   ['Projects','پروژه‌ها'],['ProjectTasks','مایلستون‌ها'],['FinanceEntries','دفتر مالی'],
+   ['Investments','سرمایه‌گذاری'],['EquityHolders','سهامداران'],['Notes','یادداشت‌ها'],
+   ['Decisions','تصمیمات'],['KpiTargets','اهداف']]}]},
+ {id:'d-rules',t:'قواعد شناسه، تاریخ و حذف',b:[
+  {t:'ul',x:['<strong>شناسه:</strong> پیشوند + شمارهٔ ترتیبی با صفر پرکننده. شماره از بیشینهٔ موجود + ۱ ساخته می‌شود، پس حذف ردیف آخر می‌تواند شناسه را تکرار کند؛ به‌جای حذف، وضعیت را غیرفعال کنید.','<strong>تاریخ:</strong> ورودی شمسی، ذخیرهٔ میلادی <code class="inl">YYYY-MM-DD</code>. نمایش دوباره شمسی است.','<strong>عدد:</strong> ارقام فارسی و جداکنندهٔ هزارگان هنگام ذخیره پاک‌سازی می‌شوند.','<strong>حذف:</strong> ردیف‌ها به شیت سطل زباله با توکن می‌روند و تا ۷ روز قابل بازگردانی‌اند.']},
+  {t:'co',k:'imp',h:'هدر شیت را دستی جابه‌جا نکنید',x:'خواندن و نوشتن بر اساس نام هدر است، پس ترتیب ستون مهم نیست؛ اما تغییر نام هدر، آن ستون را از دید سامانه خارج می‌کند. ستون جدید اضافه‌کردن بی‌خطر است.'}]}
+]},
+
+{id:'ops',n:'۱۰',t:'استقرار و عیب‌یابی',ic:'tool',k:'var(--red)',role:['ادمین','مدیر کل'],lead:'چرا پاسخ نمی‌رسد، چطور رله بسازیم و هر خطا یعنی چه.',s:[
+ {id:'o-deploy',t:'چرخهٔ درست استقرار',b:[
+  {t:'steps',x:[['کد بک‌اند را در ادیتور Apps Script جایگزین کنید','فایل‌های .gs هم‌نام تابع تکراری نداشته باشند.'],['تابع Ping همان پنل را اجرا کنید','admCCPing / mgrCCPing / bnmCCPing باید ok:true بدهند.'],['شیت‌های جدید را بسازید','mgrEnsureSheets() برای پنل مدیر کل؛ بقیه هنگام اولین نوشتن می‌سازند.'],['Deploy → Manage deployments → New version','بدون این مرحله لینک /exec کد قدیم را اجرا می‌کند.'],['فایل HTML را در مخزن جایگزین کنید','ترتیب اسکریپت‌ها: zv-relay.js → zv-compat.js → zv-api.js.'],['Ctrl + Shift + R','کش GitHub Pages تا چند دقیقه نسخهٔ قدیم را نگه می‌دارد.']]}]},
+ {id:'o-timeout',t:'علت واقعی Timeout در ایران',b:[
+  {t:'fx',h:'زنجیرهٔ خطا',c:'POST script.google.com/macros/s/…/exec        → 302\nGET  script.googleusercontent.com/macros/echo → ERR_TIMED_OUT\nنتیجه در مرورگر: POST …/exec  net::ERR_CONNECTION_CLOSED',n:'خود script.google.com کار می‌کند؛ دامنهٔ دوم از مسیر پروکسی عبور نمی‌کند.'},
+  {t:'ul',x:['<strong>راه فوری:</strong> در کلاینت پروکسی، <code class="inl">script.googleusercontent.com</code> و <code class="inl">*.googleusercontent.com</code> را هم به لیست عبور اضافه کنید.','<strong>راه دائمی:</strong> یک Cloudflare Worker بسازید که سمت سرور ریدایرکت را دنبال کند؛ مرورگر دیگر هرگز به آن دامنه نمی‌رسد.','<strong>کاهش بار:</strong> بارگذاری دومرحله‌ای (داده جدا از محاسبات) و نساختن شیت هنگام خواندن.']},
+  {t:'co',k:'key',h:'ترتیب اسکریپت‌ها حیاتی است',x:'zv-relay.js باید قبل از zv-compat.js و zv-api.js لود شود تا هم fetch و هم XHR بازنویسی شوند. بعد از فعال‌سازی، در تب Network هیچ ردیفی به googleusercontent نخواهید دید.'}]},
+ {id:'o-errors',t:'جدول خطاهای رایج',b:[
+  {t:'table',h:['پیام','علت','راه‌حل'],r:[
+   ['فقط ادمین ارشد دسترسی دارد','ورود با نقش غیر Administrator به پنل ادمین','از پنل متناسب با نقش وارد شوید'],
+   ['شعبه‌ای برای حساب شما تعریف نشده','branchId خالی در شیت','ستون شعبه را پر کنید'],
+   ['نشست منقضی شده است','توکن پاک یا منقضی شده','خروج و ورود دوباره'],
+   ['پاسخ سرور در زمان مقرر نرسید','مسیر googleusercontent یا اجرای سنگین','رله + بارگذاری دومرحله‌ای'],
+   ['No such function','بک‌اند جدید Deploy نشده','New version بگیرید'],
+   ['این نام کاربری قبلاً ثبت شده','یوزرنیم تکراری در همان شیت','یوزرنیم یکتا انتخاب کنید'],
+   ['مصرف از ظرفیت کل بیشتر است','عبور از سقف ظرفیت','الحاقیهٔ افزایش ظرفیت'],
+   ['Password field is not contained in a form','فیلد رمز خارج از تگ form','فیلدها را داخل form بگذارید'],
+   ['CSP blocks eval / content-all.js','افزونهٔ مرورگر','در پنجرهٔ ناشناس تست کنید']]}]}
+]},
+
+{id:'faq',n:'۱۱',t:'پرسش‌های پرتکرار',ic:'help',k:'var(--teal)',role:['همه'],lead:'پاسخ کوتاه به پرسش‌هایی که بیشتر پرسیده می‌شوند.',s:[
+ {id:'q',t:'پاسخ‌ها',b:[
+  {t:'faq',x:[
+   ['چرا پیشرفت پروژه با درصدی که دستی وارد کرده‌ام فرق دارد؟','به‌محض ثبت اولین مایلستون، پیشرفت از میانگین وزنی مایلستون‌ها محاسبه می‌شود و عدد دستی کنار گذاشته می‌شود. اگر می‌خواهید عدد دستی ملاک باشد، همهٔ مایلستون‌های آن پروژه را حذف کنید.'],
+   ['مایلستون لغوشده چرا درصد پروژه را پایین می‌آورد؟','در فرمول، همهٔ مایلستون‌ها در مخرج می‌مانند. لغوشده با درصد صفر، وزنش را اشغال می‌کند اما پیشرفتی نمی‌آورد. آن را حذف کنید یا اگر واقعاً بسته شده، «تکمیل شده» بزنید.'],
+   ['وزن صفر گذاشتم ولی اثری نداشت؟','وزن خالی یا صفر در فرمول به ۱ تبدیل می‌شود. برای کم‌اهمیت‌کردن یک کار، به بقیه وزن بالاتر (۳ یا ۵) بدهید.'],
+   ['چرا سود و زیان صفر است در حالی که سفارش دارم؟','سود و زیان فقط از شیت FinanceEntries و فقط ردیف‌های «پرداخت شده» تغذیه می‌شود. درآمد سفارش‌ها خودکار به دفتر مالی نمی‌رود؛ باید تراکنش درآمد را ثبت کنید.'],
+   ['هزینهٔ سرمایه‌ای کجا می‌رود؟','در دفتر مالی ثبت و نگه‌داری می‌شود اما عمداً از سود و زیان کنار گذاشته می‌شود تا حاشیهٔ عملیاتی تحریف نشود.'],
+   ['سناریوسازی چیزی را ذخیره می‌کند؟','خیر. کاملاً شبیه‌سازی است. تنها با دکمهٔ «ثبت به‌عنوان تصمیم» یک رکورد در Decisions ساخته می‌شود.'],
+   ['قرارداد جدید در سناریو چرا سود را زیاد نشان می‌دهد؟','درآمدش مستقیم اضافه می‌شود بدون هزینهٔ متغیر همراه. همزمان «تغییر هزینهٔ متغیر» یا «افزایش هزینهٔ ثابت» را پر کنید تا واقع‌بینانه شود.'],
+   ['مشاور هوشمند از هوش مصنوعی استفاده می‌کند؟','نسخهٔ فعلی قاعده‌محور است و روی دادهٔ واقعی شما اجرا می‌شود؛ هیچ متنی از پیش نوشته نشده. لایهٔ زبانی هوش مصنوعی در نقشه راه است.'],
+   ['شاخص سلامت چطور محاسبه می‌شود؟','از ۱۰۰ شروع می‌شود؛ هر ریسک بحرانی ۴۰، هشدار ۱۸ و اطلاع ۶ امتیاز جریمه دارد. مجموع جریمه تقسیم بر ۲ از ۱۰۰ کم و بین ۰ تا ۱۰۰ محدود می‌شود.'],
+   ['کارمند چرا پروندهٔ کارجوی ثبت‌شده را نمی‌بیند؟','مسیریابی شعبه از استان/شهر انجام می‌شود. اگر شهر انتخابی به شعبهٔ دیگری نگاشت شود، پرونده در فهرست آن شعبه می‌نشیند نه شعبهٔ ثبت‌کننده.'],
+   ['پاسخ پشتیبانی مشتری پاک شد؟','در نسخهٔ جدید پاک نمی‌شود؛ هر پاسخ یک ردیف مستقل در ConversationMessages است. اگر هنوز رفتار قدیم را می‌بینید، بک‌اند جدید Deploy نشده است.'],
+   ['یادداشت داخلی را مشتری می‌بیند؟','خیر. Visibility = STAFF فقط برای کارکنان، مدیر شعبه و ادمین قابل مشاهده است و شمارندهٔ خوانده‌نشدهٔ مشتری را هم زیاد نمی‌کند.'],
+   ['چرا بعد از تغییر کد چیزی عوض نمی‌شود؟','دو کش وجود دارد: نسخهٔ Deploy در Apps Script و کش GitHub Pages. هم New version بگیرید و هم Ctrl+Shift+R بزنید.'],
+   ['ورود کار می‌کند ولی پنل باز نمی‌شود؟','یعنی احراز هویت موفق بوده اما بارگذاری داده شکست خورده. تب Network را ببینید؛ معمولاً دامنهٔ googleusercontent در مسیر پروکسی نیست.'],
+   ['چطور همهٔ داده را پشتیبان بگیرم؟','در تنظیمات پنل مدیر کل یا ادمین، دکمهٔ «پشتیبان JSON» کل دادهٔ بارگذاری‌شده را دانلود می‌کند. برای پشتیبان کامل، از خود Google Sheets خروجی بگیرید.']]}]}
+]}
+];
+
+/* ═══════════════ رندر ═══════════════ */
+var TERMS=['مایلستون','ظرفیت قرارداد','کارت عملیاتی','نقطهٔ سربه‌سر','رقیق‌سازی','Cap Table','یادداشت داخلی','شاخص سلامت','پیش‌فاکتور','موتور قیمت‌گذاری'];
+function hlTerms(html){
+  TERMS.forEach(function(t){
+    var i=html.indexOf(t);
+    if(i>=0 && html.indexOf('class="term"')<0){ html=html.slice(0,i)+'<span class="term">'+t+'</span>'+html.slice(i+t.length); }
+  });
+  return html;
+}
+function blockHtml(b){
+  switch(b.t){
+    case 'p': return '<p>'+hlTerms(b.x)+'</p>';
+    case 'ul': return '<ul>'+b.x.map(function(x){return '<li>'+hlTerms(x)+'</li>';}).join('')+'</ul>';
+    case 'table': return '<div class="tw"><table class="tb"><thead><tr>'+b.h.map(function(h){return '<th>'+h+'</th>';}).join('')+'</tr></thead><tbody>'+
+      b.r.map(function(r){return '<tr>'+r.map(function(c){return '<td>'+c+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div>';
+    case 'fx': return '<div class="fx"><div class="fx-h">'+icon('zap','width:12px;height:12px')+esc(b.h)+
+      '<button class="cp" data-copy="'+esc(b.c)+'">'+icon('copy','width:11px;height:11px')+' کپی</button></div><pre>'+esc(b.c)+'</pre>'+
+      (b.n?'<div class="note">'+esc(b.n)+'</div>':'')+'</div>';
+    case 'co': return '<div class="co '+b.k+'"><span class="ci">'+icon(b.k==='imp'?'alert':b.k==='warn'?'alert':b.k==='key'?'lock':b.k==='good'?'check':'bulb','width:15px;height:15px')+'</span><div><b>'+esc(b.h)+'</b><p>'+b.x+'</p></div></div>';
+    case 'steps': return '<div class="steps">'+b.x.map(function(s){return '<div class="step"><div><b>'+esc(s[0])+'</b><p>'+s[1]+'</p></div></div>';}).join('')+'</div>';
+    case 'kv': return '<div class="kvs">'+b.x.map(function(k){return '<div class="kvi"><small>'+esc(k[0])+'</small><b>'+k[1]+'</b></div>';}).join('')+'</div>';
+    case 'diagram': return diagramHtml();
+    case 'faq': return b.x.map(function(f,i){return '<div class="faq"><q data-faq>'+icon('help','width:15px;height:15px;color:var(--k)')+esc(f[0])+'<span class="ar">'+icon('chev','width:15px;height:15px')+'</span></q><div class="ans"><div>'+f[1]+'</div></div></div>';}).join('');
+  }
+  return '';
+}
+function diagramHtml(){
+  var nodes=[
+    {x:20,y:20,w:150,h:52,t:'مدیر کل',s:'Manager',c:'#FF6B1A',go:'manager'},
+    {x:20,y:88,w:150,h:52,t:'ادمین ارشد',s:'Administrator',c:'#2E63E7',go:'admin'},
+    {x:20,y:156,w:150,h:52,t:'مدیر شعبه',s:'Branch Manager',c:'#0FA3A3',go:'bnm'},
+    {x:20,y:224,w:150,h:52,t:'کارمند',s:'Employee',c:'#E0447C',go:'employee'},
+    {x:20,y:292,w:150,h:52,t:'نیرو / مشتری',s:'Worker · Customer',c:'#D97706',go:'field'},
+    {x:250,y:120,w:170,h:64,t:'پل ارتباطی',s:'zv-api · zv-relay',c:'#7C4DFF',go:'ops'},
+    {x:250,y:212,w:170,h:64,t:'موتور گفتگو',s:'۳ کانال · رشته‌پیام',c:'#7C4DFF',go:'messaging'},
+    {x:500,y:40,w:180,h:58,t:'عملیات',s:'Orders · Cards · Tasks',c:'#0E9F6E',go:'start'},
+    {x:500,y:112,w:180,h:58,t:'ساختار',s:'Branches · Groups · Staff',c:'#0E9F6E',go:'admin'},
+    {x:500,y:184,w:180,h:58,t:'مالی و سرمایه',s:'Finance · Invest · Equity',c:'#0E9F6E',go:'manager'},
+    {x:500,y:256,w:180,h:58,t:'قرارداد و پروژه',s:'Contracts · Projects',c:'#0E9F6E',go:'manager'},
+    {x:500,y:328,w:180,h:58,t:'دانش',s:'Notes · Decisions · Dev',c:'#0E9F6E',go:'dev'}
+  ];
+  var svg='<svg viewBox="0 0 700 400" role="img" aria-label="نقشه سامانه">';
+  svg+='<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0 0l6 3-6 3z" fill="currentColor"/></marker></defs>';
+  nodes.slice(0,5).forEach(function(n){
+    svg+='<path d="M'+(n.x+n.w)+' '+(n.y+n.h/2)+' C 210 '+(n.y+n.h/2)+', 210 152, 250 152" stroke="'+n.c+'" stroke-width="1.6" fill="none" opacity=".55" marker-end="url(#ar)" color="'+n.c+'"/>';
+  });
+  svg+='<path d="M420 152 C 460 152, 460 70, 500 70" stroke="#7C4DFF" stroke-width="1.6" fill="none" opacity=".5" marker-end="url(#ar)" color="#7C4DFF"/>';
+  svg+='<path d="M420 152 C 460 152, 460 141, 500 141" stroke="#7C4DFF" stroke-width="1.6" fill="none" opacity=".5" marker-end="url(#ar)" color="#7C4DFF"/>';
+  svg+='<path d="M420 244 C 460 244, 460 213, 500 213" stroke="#7C4DFF" stroke-width="1.6" fill="none" opacity=".5" marker-end="url(#ar)" color="#7C4DFF"/>';
+  svg+='<path d="M420 244 C 460 244, 460 285, 500 285" stroke="#7C4DFF" stroke-width="1.6" fill="none" opacity=".5" marker-end="url(#ar)" color="#7C4DFF"/>';
+  svg+='<path d="M420 244 C 460 244, 460 357, 500 357" stroke="#7C4DFF" stroke-width="1.6" fill="none" opacity=".5" marker-end="url(#ar)" color="#7C4DFF"/>';
+  nodes.forEach(function(n){
+    svg+='<g class="dg-node" data-go="'+n.go+'" tabindex="0" role="button" aria-label="'+esc(n.t)+'">'+
+      '<rect x="'+n.x+'" y="'+n.y+'" width="'+n.w+'" height="'+n.h+'" rx="12" fill="'+n.c+'22" stroke="'+n.c+'" stroke-width="1.4"/>'+
+      '<text x="'+(n.x+n.w-14)+'" y="'+(n.y+24)+'" text-anchor="end" fill="currentColor" font-family="Vazirmatn" font-size="14" font-weight="800">'+esc(n.t)+'</text>'+
+      '<text x="'+(n.x+n.w-14)+'" y="'+(n.y+42)+'" text-anchor="end" fill="'+n.c+'" font-family="Vazirmatn" font-size="10.5">'+esc(n.s)+'</text></g>';
+  });
+  svg+='</svg>';
+  return '<div class="diagram">'+svg+'</div>';
+}
+function renderContent(){
+  var h='';
+  G.forEach(function(ch){
+    h+='<section class="chapter reveal" id="'+ch.id+'" data-role="'+esc(ch.role.join(','))+'" style="--k:'+ch.k+'">'+
+      '<div class="ch-head"><span class="ch-n">'+ch.n+'</span><div><h2>'+esc(ch.t)+'</h2><p>'+esc(ch.lead)+'</p>'+
+      '<span class="ch-tag">'+icon('user','width:11px;height:11px')+' '+esc(ch.role.join(' · '))+'</span></div></div>';
+    ch.s.forEach(function(s){
+      h+='<article class="section reveal" id="'+s.id+'" data-ch="'+ch.id+'"><div class="sec-h"><span class="dot"></span><h3>'+esc(s.t)+'</h3>'+
+        '<span class="sec-act"><button class="sib" data-bm="'+s.id+'" title="نشان کردن">'+icon('star','width:13px;height:13px')+'</button>'+
+        '<button class="sib" data-read="'+s.id+'" title="خواندم">'+icon('check','width:13px;height:13px')+'</button>'+
+        '<button class="sib" data-link="'+s.id+'" title="کپی پیوند">'+icon('copy','width:13px;height:13px')+'</button></span></div>'+
+        '<div class="body">'+s.b.map(blockHtml).join('')+'</div></article>';
+    });
+    h+='</section>';
+  });
+  $('#content').innerHTML=h;
+}
+function renderToc(){
+  $('#toc').innerHTML=G.map(function(ch){
+    return '<div class="toc-ch" data-ch="'+ch.id+'" style="--k:'+ch.k+'">'+
+      '<div class="toc-a" data-toc="'+ch.id+'"><span class="n">'+ch.n+'</span><span>'+esc(ch.t)+'</span><span class="tick">'+icon('check','width:13px;height:13px')+'</span></div>'+
+      '<div class="toc-sub">'+ch.s.map(function(s){return '<a class="toc-s" data-tocs="'+s.id+'">'+esc(s.t)+'</a>';}).join('')+'</div></div>';
+  }).join('');
+}
+function renderFilters(){
+  var roles=['همه','مدیر کل','ادمین','مدیر شعبه','کارمند','نیرو','مشتری'];
+  $('#filters').innerHTML=roles.map(function(r,i){return '<button class="fchip'+(i===0?' on':'')+'" data-role="'+esc(r)+'">'+esc(r)+'</button>';}).join('');
+}
+function renderStats(){
+  var secs=G.reduce(function(a,c){return a+c.s.length;},0);
+  var st=[['۵','پنل مستقل','var(--brand)'],['۱۲','فصل راهنما','var(--violet)'],[fa(secs),'بخش قابل جستجو','var(--teal)'],['۳۵','شیت داده','var(--blue)'],['۳','کانال گفتگو','var(--pink)']];
+  $('#heroStats').innerHTML=st.map(function(s){return '<div class="hstat" style="--c:'+s[2]+'"><b>'+s[0]+'</b><span>'+s[1]+'</span></div>';}).join('');
+}
+
+/* ═══════════════ وضعیت ═══════════════ */
+var LS='zv_guide_v3';
+var ST={bm:[],read:[],fs:15,lh:2,cw:860,theme:'dark',motion:true,compact:false,wrap:false,hl:true,role:'همه'};
+function load(){try{var r=JSON.parse(localStorage.getItem(LS)||'{}');Object.keys(r).forEach(function(k){ST[k]=r[k];});}catch(e){}}
+function save(){try{localStorage.setItem(LS,JSON.stringify(ST));}catch(e){}}
+function applyPrefs(){
+  var r=document.documentElement;
+  r.style.setProperty('--fs',ST.fs+'px');r.style.setProperty('--lh',ST.lh);r.style.setProperty('--cw',ST.cw+'px');
+  r.dataset.theme=ST.theme;
+  r.classList.toggle('nomotion',!ST.motion);
+  r.classList.toggle('compact',ST.compact);
+  r.classList.toggle('wrapcode',ST.wrap);
+  r.classList.toggle('hl',ST.hl);
+  $('#fs').value=ST.fs;$('#lh').value=ST.lh;$('#cw').value=ST.cw;$('#theme').value=ST.theme;
+  $('#fsV').textContent=fa(ST.fs);$('#lhV').textContent=fa(ST.lh.toFixed(1)).replace('.','٫');$('#cwV').textContent=fa(ST.cw);
+  $('#tgMotion').classList.toggle('on',ST.motion);
+  $('#tgCompact').classList.toggle('on',ST.compact);
+  $('#tgWrap').classList.toggle('on',ST.wrap);
+  $('#tgHl').classList.toggle('on',ST.hl);
+  $('#themeBtn').innerHTML=icon(ST.theme==='dark'?'moon':ST.theme==='light'?'sun':'paper');
+  $('#themeBtn').classList.toggle('on',ST.theme!=='dark');
+}
+function paintMarks(){
+  $$('[data-bm]').forEach(function(b){b.classList.toggle('on',ST.bm.indexOf(b.dataset.bm)>=0);});
+  $$('[data-read]').forEach(function(b){b.classList.toggle('read',ST.read.indexOf(b.dataset.read)>=0);});
+  var total=G.reduce(function(a,c){return a+c.s.length;},0);
+  var done=ST.read.length,p=total?Math.round(done/total*100):0;
+  $('#ring').style.setProperty('--p',p);$('#ringN').textContent=fa(p)+'٪';
+  $('#ringS').textContent=fa(done)+' از '+fa(total)+' بخش';
+  G.forEach(function(ch){
+    var all=ch.s.every(function(s){return ST.read.indexOf(s.id)>=0;});
+    var el=$('[data-toc="'+ch.id+'"]');if(el)el.classList.toggle('done',all);
+  });
+  var bl=$('#bmList');
+  if(!ST.bm.length){bl.innerHTML='<div class="bm-empty">هنوز بخشی نشان نشده. روی آیکن ستاره کنار هر عنوان بزنید.</div>';}
+  else{bl.innerHTML=ST.bm.map(function(id){
+    var t=findSec(id);return '<div class="bm-i" data-jump="'+id+'">'+icon('star','width:12px;height:12px;color:var(--amber)')+'<span>'+esc(t?t.s.t:id)+'</span><button data-unbm="'+id+'" aria-label="حذف">'+icon('chev','width:12px;height:12px')+'</button></div>';
+  }).join('');}
+}
+function findSec(id){for(var i=0;i<G.length;i++){for(var j=0;j<G[i].s.length;j++){if(G[i].s[j].id===id)return {ch:G[i],s:G[i].s[j]};}}return null;}
+
+/* ═══════════════ ناوبری ═══════════════ */
+function jump(id){
+  var el=document.getElementById(id);if(!el)return;
+  var ch=el.classList.contains('chapter')?el.id:(el.dataset.ch||id);
+  var box=$('.toc-ch[data-ch="'+ch+'"]');if(box)box.classList.add('open');
+  el.scrollIntoView({behavior:ST.motion?'smooth':'auto',block:'start'});
+  history.replaceState(null,'','#'+id);
+  closeSide();
+}
+function closeSide(){$('#side').classList.remove('open');$('#scrim').classList.remove('show');}
+
+/* ═══════════════ جستجو ═══════════════ */
+var IDX=[],cmdSel=0,cmdHits=[];
+function buildIndex(){
+  IDX=[];
+  G.forEach(function(ch){
+    ch.s.forEach(function(s){
+      var txt=s.b.map(function(b){
+        if(b.t==='p')return b.x;
+        if(b.t==='ul')return b.x.join(' ');
+        if(b.t==='table')return b.h.join(' ')+' '+b.r.map(function(r){return r.join(' ');}).join(' ');
+        if(b.t==='fx')return b.h+' '+(b.n||'');
+        if(b.t==='co')return b.h+' '+b.x;
+        if(b.t==='steps')return b.x.map(function(x){return x[0]+' '+x[1];}).join(' ');
+        if(b.t==='kv')return b.x.map(function(x){return x[0]+' '+x[1];}).join(' ');
+        if(b.t==='faq')return b.x.map(function(x){return x[0]+' '+x[1];}).join(' ');
+        return '';
+      }).join(' ').replace(/<[^>]+>/g,'');
+      IDX.push({id:s.id,t:s.t,ch:ch.t,k:ch.k,ic:ch.ic,txt:txt});
+    });
+  });
+}
+function mark(text,q){
+  var s=esc(text);if(!q)return s;
+  var i=s.toLowerCase().indexOf(q.toLowerCase());
+  if(i<0)return s;
+  return s.slice(0,i)+'<mark>'+s.slice(i,i+q.length)+'</mark>'+s.slice(i+q.length);
+}
+function cmdRender(){
+  var raw=$('#cmdInput').value.trim(),q=en(raw).toLowerCase();
+  if(!q){
+    cmdHits=G.map(function(ch){return {id:ch.id,t:ch.t,ch:'فصل',k:ch.k,ic:ch.ic,txt:ch.lead};});
+  }else{
+    cmdHits=IDX.filter(function(x){return en(x.t).toLowerCase().indexOf(q)>=0||en(x.txt).toLowerCase().indexOf(q)>=0;});
+    cmdHits.sort(function(a,b){return (en(b.t).toLowerCase().indexOf(q)>=0?1:0)-(en(a.t).toLowerCase().indexOf(q)>=0?1:0);});
+    cmdHits=cmdHits.slice(0,40);
+  }
+  cmdSel=0;
+  $('#cmdCount').textContent=fa(cmdHits.length)+' نتیجه';
+  if(!cmdHits.length){$('#cmdRes').innerHTML='<div style="padding:32px;text-align:center;color:var(--muted);font-size:13px">نتیجه‌ای یافت نشد.</div>';return;}
+  $('#cmdRes').innerHTML='<div class="cmdg">'+icon('book','width:12px;height:12px')+(q?'نتایج جستجو':'فصل‌های راهنما')+'</div>'+
+    cmdHits.map(function(h,i){
+      var snip=h.txt;
+      if(q){var p=en(h.txt).toLowerCase().indexOf(q);if(p>60)snip='…'+h.txt.slice(p-50);snip=snip.slice(0,150)+'…';}
+      else snip=h.txt.slice(0,110)+'…';
+      return '<div class="cmdi'+(i===0?' sel':'')+'" data-hit="'+i+'" style="--k:'+h.k+'"><span class="ci">'+icon(h.ic,'width:14px;height:14px')+'</span><div><b>'+mark(h.t,raw)+'</b><small>'+mark(snip,raw)+'</small></div></div>';
+    }).join('');
+}
+function cmdOpen(){$('#cmd').classList.add('show');$('#cmdInput').value='';cmdRender();setTimeout(function(){$('#cmdInput').focus();},40);}
+function cmdClose(){$('#cmd').classList.remove('show');}
+function cmdGo(i){var h=cmdHits[i];if(!h)return;cmdClose();jump(h.id);}
+function cmdMove(d){
+  if(!cmdHits.length)return;
+  cmdSel=(cmdSel+d+cmdHits.length)%cmdHits.length;
+  $$('.cmdi').forEach(function(e,i){e.classList.toggle('sel',i===cmdSel);});
+  var el=$$('.cmdi')[cmdSel];if(el)el.scrollIntoView({block:'nearest'});
+}
+
+/* ═══════════════ خروجی ═══════════════ */
+function toMd(){
+  var L=['# دفترچه راهنمای سامانه ZingoVingo','','نسخه ۳ · هماهنگ با Administrator V9، Manager V3، BranchManager V2، Employee V3',''];
+  function plain(s){return String(s).replace(/<[^>]+>/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');}
+  G.forEach(function(ch){
+    L.push('','## '+plain(ch.n)+'. '+ch.t,'',ch.lead,'');
+    ch.s.forEach(function(s){
+      L.push('### '+s.t,'');
+      s.b.forEach(function(b){
+        if(b.t==='p')L.push(plain(b.x),'');
+        else if(b.t==='ul'){b.x.forEach(function(x){L.push('- '+plain(x));});L.push('');}
+        else if(b.t==='table'){L.push('| '+b.h.map(plain).join(' | ')+' |');L.push('|'+b.h.map(function(){return '---';}).join('|')+'|');
+          b.r.forEach(function(r){L.push('| '+r.map(plain).join(' | ')+' |');});L.push('');}
+        else if(b.t==='fx'){L.push('**'+b.h+'**','','```',b.c,'```','');if(b.n)L.push('> '+b.n,'');}
+        else if(b.t==='co'){L.push('> **'+b.h+'** — '+plain(b.x),'');}
+        else if(b.t==='steps'){b.x.forEach(function(x,i){L.push((i+1)+'. **'+x[0]+'** — '+plain(x[1]));});L.push('');}
+        else if(b.t==='kv'){b.x.forEach(function(x){L.push('- **'+x[0]+':** '+plain(x[1]));});L.push('');}
+        else if(b.t==='faq'){b.x.forEach(function(x){L.push('**پرسش: '+x[0]+'**','','پاسخ: '+plain(x[1]),'');});}
+      });
+    });
+  });
+  return L.join('\n');
+}
+function download(name,text,mime){
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+text],{type:mime||'text/markdown;charset=utf-8'}));
+  a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1500);
+}
+function copyText(t,btn){
+  var done=function(){if(btn){btn.classList.add('ok');btn.innerHTML=icon('check','width:11px;height:11px')+' کپی شد';setTimeout(function(){btn.classList.remove('ok');btn.innerHTML=icon('copy','width:11px;height:11px')+' کپی';},1600);}toast('کپی شد.');};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done).catch(function(){fallback();});}
+  else fallback();
+  function fallback(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){toast('کپی ناموفق بود.','err');}ta.remove();}
+}
+
+/* ═══════════════ راه‌اندازی ═══════════════ */
+load();renderContent();renderToc();renderFilters();renderStats();buildIndex();applyPrefs();paintMarks();
+
+var logo=new Image();
+logo.onload=function(){var m=$('#mark');m.classList.add('hasimg');m.innerHTML='<img src="LOGO.png" alt="ZingoVingo">';};
+logo.src='LOGO.png';
+
+/* کنترل‌ها */
+$('#fs').addEventListener('input',function(e){ST.fs=+e.target.value;applyPrefs();save();});
+$('#lh').addEventListener('input',function(e){ST.lh=+e.target.value;applyPrefs();save();});
+$('#cw').addEventListener('input',function(e){ST.cw=+e.target.value;applyPrefs();save();});
+$('#theme').addEventListener('change',function(e){ST.theme=e.target.value;applyPrefs();save();});
+$('#themeBtn').addEventListener('click',function(){ST.theme=ST.theme==='dark'?'light':ST.theme==='light'?'paper':'dark';applyPrefs();save();toast('پوسته: '+$('#theme').selectedOptions[0].text);});
+$('#tgMotion').addEventListener('click',function(){ST.motion=!ST.motion;applyPrefs();save();});
+$('#tgCompact').addEventListener('click',function(){ST.compact=!ST.compact;applyPrefs();save();});
+$('#tgWrap').addEventListener('click',function(){ST.wrap=!ST.wrap;applyPrefs();save();});
+$('#tgHl').addEventListener('click',function(){ST.hl=!ST.hl;applyPrefs();save();});
+$('#resetBtn').addEventListener('click',function(){
+  ST.fs=15;ST.lh=2;ST.cw=860;ST.theme='dark';ST.motion=true;ST.compact=false;ST.wrap=false;ST.hl=true;
+  applyPrefs();save();toast('تنظیمات مطالعه بازنشانی شد.');
+});
+$('#expandBtn').addEventListener('click',function(){
+  var all=$$('.toc-ch').every(function(c){return c.classList.contains('open');});
+  $$('.toc-ch').forEach(function(c){c.classList.toggle('open',!all);});
+  this.textContent=all?'باز کردن همه':'بستن همه';
+});
+$('#printBtn').addEventListener('click',function(){window.print();});
+$('#mdBtn').addEventListener('click',function(){download('ZingoVingo-Guide.md',toMd());toast('نسخهٔ متنی دانلود شد.');});
+$('#mdBtn2').addEventListener('click',function(){download('ZingoVingo-Guide.md',toMd());toast('نسخهٔ متنی دانلود شد.');});
+$('#searchBtn').addEventListener('click',cmdOpen);
+$('#bmBtn').addEventListener('click',function(){
+  $('#side').classList.add('open');$('#scrim').classList.add('show');
+  $('#bmHead').scrollIntoView({block:'nearest',behavior:ST.motion?'smooth':'auto'});
+});
+$('#menuBtn').addEventListener('click',function(){$('#side').classList.toggle('open');$('#scrim').classList.toggle('show',$('#side').classList.contains('open'));});
+$('#scrim').addEventListener('click',closeSide);
+$('#topLink').addEventListener('click',function(){window.scrollTo({top:0,behavior:ST.motion?'smooth':'auto'});});
+$('#cmdInput').addEventListener('input',cmdRender);
+$('#cmd').addEventListener('click',function(e){if(e.target.id==='cmd')cmdClose();});
+
+document.addEventListener('click',function(e){
+  var t=e.target;
+  var j=t.closest('[data-jump]');if(j){jump(j.dataset.jump);return;}
+  var tc=t.closest('[data-toc]');if(tc){var box=tc.closest('.toc-ch');box.classList.toggle('open');jump(tc.dataset.toc);return;}
+  var ts=t.closest('[data-tocs]');if(ts){jump(ts.dataset.tocs);return;}
+  var g=t.closest('[data-go]');if(g){jump(g.dataset.go);return;}
+  var cp=t.closest('[data-copy]');if(cp){copyText(cp.dataset.copy,cp);return;}
+  var bm=t.closest('[data-bm]');if(bm){
+    var id=bm.dataset.bm,i=ST.bm.indexOf(id);
+    if(i>=0){ST.bm.splice(i,1);toast('نشان برداشته شد.','warn');}else{ST.bm.push(id);toast('نشان شد.');}
+    save();paintMarks();return;}
+  var ub=t.closest('[data-unbm]');if(ub){var k=ST.bm.indexOf(ub.dataset.unbm);if(k>=0)ST.bm.splice(k,1);save();paintMarks();return;}
+  var rd=t.closest('[data-read]');if(rd){
+    var rid=rd.dataset.read,ri=ST.read.indexOf(rid);
+    if(ri>=0)ST.read.splice(ri,1);else ST.read.push(rid);
+    save();paintMarks();return;}
+  var lk=t.closest('[data-link]');if(lk){copyText(location.origin+location.pathname+'#'+lk.dataset.link,null);return;}
+  var fq=t.closest('[data-faq]');if(fq){fq.parentElement.classList.toggle('open');return;}
+  var fc=t.closest('[data-role]');if(fc&&fc.classList.contains('fchip')){
+    $$('.fchip').forEach(function(x){x.classList.remove('on');});fc.classList.add('on');
+    var r=fc.dataset.role;ST.role=r;save();
+    $$('.chapter').forEach(function(ch){
+      var ok=r==='همه'||ch.dataset.role.indexOf(r)>=0||ch.dataset.role.indexOf('همه')>=0;
+      ch.style.display=ok?'':'none';
+    });
+    $$('.toc-ch').forEach(function(b){
+      var ch=G.filter(function(x){return x.id===b.dataset.ch;})[0];
+      var ok=r==='همه'||ch.role.indexOf(r)>=0||ch.role.indexOf('همه')>=0;
+      b.style.display=ok?'':'none';
+    });
+    toast(r==='همه'?'همهٔ فصل‌ها':'فیلتر: '+r);return;}
+  var hit=t.closest('[data-hit]');if(hit){cmdGo(+hit.dataset.hit);return;}
+});
+document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==='k'){e.preventDefault();cmdOpen();return;}
+  if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==='b'){
+    var tg=(e.target.tagName||'').toLowerCase();if(tg==='input'||tg==='textarea'||tg==='select')return;
+    e.preventDefault();$('#side').classList.toggle('open');$('#scrim').classList.toggle('show',$('#side').classList.contains('open'));return;}
+  if($('#cmd').classList.contains('show')){
+    if(e.key==='Escape'){cmdClose();}
+    else if(e.key==='ArrowDown'){e.preventDefault();cmdMove(1);}
+    else if(e.key==='ArrowUp'){e.preventDefault();cmdMove(-1);}
+    else if(e.key==='Enter'){e.preventDefault();cmdGo(cmdSel);}
+    return;}
+  if(e.key==='Escape'){closeSide();}
+  if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('dg-node')){jump(e.target.dataset.go);}
+});
+
+/* reveals + active TOC + progress */
+var io=new IntersectionObserver(function(es){
+  es.forEach(function(en2){if(en2.isIntersecting){en2.target.classList.add('in');io.unobserve(en2.target);}});
+},{rootMargin:'0px 0px -8% 0px',threshold:.06});
+$$('.reveal').forEach(function(el,i){el.style.transitionDelay=Math.min(i,6)*45+'ms';io.observe(el);});
+
+var activeIo=new IntersectionObserver(function(es){
+  es.forEach(function(en2){
+    if(!en2.isIntersecting)return;
+    var id=en2.target.id;
+    $$('.toc-s').forEach(function(a){a.classList.toggle('on',a.dataset.tocs===id);});
+    var chId=en2.target.dataset.ch||id;
+    $$('.toc-a').forEach(function(a){a.classList.toggle('on',a.dataset.toc===chId);});
+    var box=$('.toc-ch[data-ch="'+chId+'"]');if(box)box.classList.add('open');
+  });
+},{rootMargin:'-96px 0px -66% 0px',threshold:0});
+$$('.section,.chapter').forEach(function(el){activeIo.observe(el);});
+
+var readIo=new IntersectionObserver(function(es){
+  es.forEach(function(en2){
+    if(en2.intersectionRatio>.55&&en2.target.classList.contains('section')){
+      var id=en2.target.id;
+      if(ST.read.indexOf(id)<0){ST.read.push(id);save();paintMarks();}
+    }
+  });
+},{threshold:[.55]});
+$$('.section').forEach(function(el){readIo.observe(el);});
+
+var ticking=false;
+function onScroll(){
+  if(ticking)return;ticking=true;
+  requestAnimationFrame(function(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    var p=h>0?Math.min(100,window.scrollY/h*100):0;
+    $('#navprog').style.width=p+'%';
+    $('#topLink').classList.toggle('show',window.scrollY>600);
+    if(ST.motion&&window.innerWidth>640){
+      var o=$('#orb');if(o)o.style.transform='translateY('+(window.scrollY*.18)+'px) rotate('+(window.scrollY*.05)+'deg)';
+      var a=$('.aurora');if(a)a.style.transform='translateY('+(window.scrollY*-.05)+'px)';
+    }
+    ticking=false;
+  });
+}
+window.addEventListener('scroll',onScroll,{passive:true});
+onScroll();
+
+if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches&&ST.motion){ST.motion=false;applyPrefs();save();}
+if(location.hash){setTimeout(function(){jump(location.hash.slice(1));},260);}
+else{var first=$('.toc-ch');if(first)first.classList.add('open');}
+</script>
+</body>
+</html>
