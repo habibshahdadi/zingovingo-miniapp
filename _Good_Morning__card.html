@@ -1,333 +1,310 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { Plus, BarChart3, CreditCard, Headphones, CalendarDays } from "lucide-react";
-import styled, { keyframes } from "styled-components";
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>کارت صبح بخیر — تست جلوهٔ رنگ‌ها</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dur: 2.2s;   /* سرعت جابجایی گوی‌ها */
+    --durC: 2.6s;  /* سرعت جابجایی رنگ‌ها */
+  }
 
-/* ═══════════ تنظیمات گوی‌های رنگی ═══════════ */
+  * { box-sizing: border-box; }
 
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    padding: 2rem 1rem;
+    background: #14101f;
+    font-family: "Vazirmatn", system-ui, sans-serif;
+  }
+
+  .wrap { width: min(1000px, 100%); }
+
+  /* ═══════════ کارت ═══════════ */
+  .card {
+    position: relative;
+    min-height: 230px;
+    border-radius: 24px;
+    overflow: hidden;
+    cursor: pointer;
+    background: linear-gradient(140deg, #241b3f 0%, #1a1230 55%, #201436 100%);
+    box-shadow: 0 18px 50px rgba(0,0,0,.45),
+                inset 0 1px 0 rgba(255,255,255,.08),
+                inset 0 0 80px rgba(0,0,0,.25);
+    transition: box-shadow .8s ease;
+  }
+  .card.active {
+    box-shadow: 0 18px 50px rgba(0,0,0,.45),
+                0 0 90px rgba(236,72,153,.28),
+                inset 0 1px 0 rgba(255,255,255,.12),
+                inset 0 0 80px rgba(0,0,0,.25);
+  }
+
+  /* ═══════════ گوی‌های رنگی ═══════════ */
+  .blobs { position: absolute; inset: 0; z-index: 1; }
+
+  .blob {
+    position: absolute;
+    will-change: left, top, transform;
+    transition: left var(--dur) cubic-bezier(.22,1,.36,1),
+                top  var(--dur) cubic-bezier(.22,1,.36,1),
+                transform var(--dur) cubic-bezier(.22,1,.36,1);
+  }
+  .blob .inner {
+    border-radius: 50%;
+    filter: blur(46px);
+    mix-blend-mode: screen;
+    opacity: .9;
+    transition: background-color var(--durC) ease-in-out;
+    animation: breathe 7s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1) translate(0,0); }
+    50%      { transform: scale(1.14) translate(2%,-3%); }
+  }
+  body.no-breathe .blob .inner { animation: none; }
+
+  /* ═══════════ شیشهٔ مات ═══════════ */
+  .glass {
+    position: absolute; inset: 0; z-index: 2;
+    pointer-events: none;
+    backdrop-filter: blur(26px) saturate(150%) brightness(1.06);
+    -webkit-backdrop-filter: blur(26px) saturate(150%) brightness(1.06);
+    background:
+      radial-gradient(rgba(255,255,255,.10) 1px, transparent 1.4px),
+      linear-gradient(120deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 45%, rgba(255,255,255,.07));
+    background-size: 22px 22px, cover;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
+    transition: backdrop-filter .5s, opacity .5s;
+  }
+  body.no-glass .glass { backdrop-filter: none; -webkit-backdrop-filter: none; background: radial-gradient(rgba(255,255,255,.10) 1px, transparent 1.4px); background-size: 22px 22px; }
+
+  /* برق عبوری روی شیشه */
+  .sheen {
+    position: absolute; top: -30%; bottom: -30%; width: 34%;
+    z-index: 3; pointer-events: none;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.16), transparent);
+    transform: skewX(-14deg);
+    opacity: 0; transition: opacity .6s;
+    left: -40%;
+  }
+  .card.active .sheen { opacity: 1; animation: sheenMove 2.4s ease-in-out infinite; }
+  @keyframes sheenMove { from { left: -40%; } to { left: 110%; } }
+
+  /* ═══════════ محتوا ═══════════ */
+  .content {
+    position: relative; z-index: 4;
+    padding: 1.8rem 2rem;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 1.5rem; flex-wrap: wrap;
+  }
+  .text { max-width: 620px; }
+  h1 {
+    margin: 0 0 .6rem; color: #fff;
+    font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 900;
+    text-shadow: 0 2px 14px rgba(0,0,0,.35);
+  }
+  .sub {
+    margin: 0 0 1.2rem; color: rgba(255,255,255,.82);
+    font-size: clamp(.75rem, 1.4vw, .92rem); line-height: 1.9;
+  }
+  .actions { display: flex; gap: .7rem; flex-wrap: wrap; }
+  button {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .7rem 1.2rem; border-radius: 14px; cursor: pointer;
+    font-family: inherit; font-size: .82rem; font-weight: 700;
+    color: rgba(255,255,255,.92);
+    background: rgba(255,255,255,.13);
+    border: 1px solid rgba(255,255,255,.22);
+    transition: transform .2s, background .2s;
+  }
+  button:hover { transform: scale(1.04); background: rgba(255,255,255,.2); }
+  button:active { transform: scale(.96); }
+  button.primary {
+    color: #fff; border: none; font-weight: 800;
+    background: linear-gradient(135deg, #fb923c, #f97316);
+    box-shadow: 0 10px 26px rgba(249,115,22,.45);
+  }
+  .chip {
+    display: flex; align-items: center; gap: .5rem;
+    padding: .6rem 1rem; border-radius: 14px; white-space: nowrap;
+    color: rgba(255,255,255,.9); font-size: .82rem; font-weight: 700;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    backdrop-filter: blur(8px);
+  }
+
+  .hint {
+    position: absolute; bottom: .8rem; left: 1.4rem; z-index: 4;
+    margin: 0; font-size: .68rem; color: rgba(255,255,255,.75);
+    pointer-events: none; opacity: 0; transition: opacity .5s, transform .5s;
+    transform: translateY(6px);
+  }
+  .card.active .hint { opacity: 1; transform: translateY(0); }
+
+  /* ═══════════ پنل تست ═══════════ */
+  .testbar {
+    display: flex; gap: 1.4rem; flex-wrap: wrap;
+    color: rgba(255,255,255,.65); font-size: .78rem;
+  }
+  .testbar label { display: flex; align-items: center; gap: .45rem; cursor: pointer; }
+  .testbar input { accent-color: #ec4899; width: 16px; height: 16px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="card" id="card">
+    <div class="blobs" id="blobs"></div>
+    <div class="glass"></div>
+    <div class="sheen"></div>
+
+    <div class="content">
+      <div class="text">
+        <h1>صبح بخیر، حبیب</h1>
+        <p class="sub">نمای زندهٔ مرکز مدیریت سامانه — ۲۳ سفارش در انتظار، ۱۸ کارت فعال و ۴ گفتگوی خوانده‌نشده.</p>
+        <div class="actions">
+          <button class="primary">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            سفارش جدید
+          </button>
+          <button>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3"/></svg>
+            گزارش‌ها
+          </button>
+          <button>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h22"/></svg>
+            کارت‌ها
+          </button>
+          <button>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg>
+            پشتیبانی کارکنان
+          </button>
+        </div>
+      </div>
+
+      <div class="chip">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+        ۱۴۰۴/۰۸/۲۵
+      </div>
+    </div>
+
+    <p class="hint">🍃 رنگ‌ها پشت شیشه در حال رقص‌اند…</p>
+  </div>
+</div>
+
+<div class="testbar">
+  <label><input type="checkbox" id="t-glass" checked> شیشهٔ مات روشن</label>
+  <label><input type="checkbox" id="t-slow"> حالت آهسته (برای دیدن دقیق حرکت)</label>
+  <label><input type="checkbox" id="t-breathe" checked> تنفس idle</label>
+</div>
+
+<script>
+/* ═══════════ تنظیمات گوی‌ها ═══════════ */
 const BLOBS = [
-  { id: 0, color: "#7c3aed", home: { left: "2%",  top: "-30%" }, size: 340 },
-  { id: 1, color: "#ec4899", home: { left: "48%", top: "-45%" }, size: 300 },
-  { id: 2, color: "#f97316", home: { left: "66%", top: "30%"  }, size: 320 },
-  { id: 3, color: "#14b8a6", home: { left: "-14%", top: "45%" }, size: 280 },
-  { id: 4, color: "#6366f1", home: { left: "30%", top: "10%"  }, size: 260 },
+  { color: "#7c3aed", home: { left: "2%",   top: "-30%" }, size: 340 },
+  { color: "#ec4899", home: { left: "48%",  top: "-45%" }, size: 300 },
+  { color: "#f97316", home: { left: "66%",  top: "30%"  }, size: 320 },
+  { color: "#14b8a6", home: { left: "-14%", top: "45%"  }, size: 280 },
+  { color: "#6366f1", home: { left: "30%",  top: "10%"  }, size: 260 },
 ];
 
-const shuffle = (arr) => {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-};
+const card  = document.getElementById("card");
+const layer = document.getElementById("blobs");
 
+/* ساخت گوی‌ها */
+const els = BLOBS.map((b, i) => {
+  const outer = document.createElement("div");
+  outer.className = "blob";
+  outer.style.left = b.home.left;
+  outer.style.top  = b.home.top;
+
+  const inner = document.createElement("div");
+  inner.className = "inner";
+  inner.style.width  = b.size + "px";
+  inner.style.height = b.size + "px";
+  inner.style.backgroundColor = b.color;
+  inner.style.animationDelay  = (i * 1.3) + "s";
+
+  outer.appendChild(inner);
+  layer.appendChild(outer);
+  return { outer, inner };
+});
+
+/* ابزارها */
+const shuffle = (a) => {
+  const arr = [...a];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
 const rand = (min, max) => Math.random() * (max - min) + min;
 
-/* حالت خانه: رنگ‌ها و جای اصلی — حالت رقص: جای تصادفی + رنگ‌های جابجا شده */
 const makeTargets = (mode) => {
-  if (mode === "home")
-    return BLOBS.map((b) => ({ ...b.home, scale: 1, color: b.color }));
-  const colors = shuffle(BLOBS.map((b) => b.color));
+  if (mode === "home") return BLOBS.map(b => ({ ...b.home, scale: 1, color: b.color }));
+  const colors = shuffle(BLOBS.map(b => b.color));   /* جابجایی تصادفی رنگ‌ها */
   return BLOBS.map((b, i) => ({
-    left: `${rand(-18, 72)}%`,
-    top: `${rand(-45, 55)}%`,
+    left:  rand(-18, 72) + "%",
+    top:   rand(-45, 55) + "%",
     scale: rand(0.85, 1.4),
     color: colors[i],
   }));
 };
 
-/* ═══════════ استایل‌ها ═══════════ */
+const applyTargets = (targets) => targets.forEach((t, i) => {
+  els[i].outer.style.left = t.left;
+  els[i].outer.style.top  = t.top;
+  els[i].outer.style.transform = `scale(${t.scale})`;
+  els[i].inner.style.backgroundColor = t.color;
+});
 
-const breathe = keyframes`
-  0%, 100% { transform: scale(1) translate(0, 0); }
-  50%      { transform: scale(1.14) translate(2%, -3%); }
-`;
+/* ═══════════ مدیریت حالت‌ها ═══════════ */
+let active = false, loop = null, touchTimer = null;
 
-const Card = styled.div`
-  position: relative;
-  direction: rtl;
-  width: 100%;
-  min-height: 230px;
-  border-radius: 24px;
-  overflow: hidden;
-  cursor: pointer;
-  font-family: "Vazirmatn", system-ui, sans-serif;
-  background: linear-gradient(140deg, #241b3f 0%, #1a1230 55%, #201436 100%);
-  box-shadow:
-    0 18px 50px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    ${({ $active }) => ($active ? "0 0 90px rgba(236, 72, 153, 0.28)," : "")}
-    inset 0 0 80px rgba(0, 0, 0, 0.25);
-  transition: box-shadow 0.8s ease;
-`;
-
-const BlobsLayer = styled.div`
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-`;
-
-const BlobOuter = styled(motion.div)`
-  position: absolute;
-  will-change: left, top, transform;
-`;
-
-const BlobInner = styled(motion.div)`
-  width: ${({ $size }) => $size}px;
-  height: ${({ $size }) => $size}px;
-  border-radius: 50%;
-  filter: blur(46px);
-  mix-blend-mode: screen;
-  opacity: 0.9;
-  animation: ${breathe} 7s ease-in-out infinite;
-  animation-delay: ${({ $delay }) => $delay}s;
-`;
-
-/* ── شیشهٔ مات روی رنگ‌ها ── */
-const GlassOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  backdrop-filter: blur(26px) saturate(150%) brightness(1.06);
-  -webkit-backdrop-filter: blur(26px) saturate(150%) brightness(1.06);
-  background:
-    radial-gradient(rgba(255, 255, 255, 0.10) 1px, transparent 1.4px),
-    linear-gradient(120deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.02) 45%, rgba(255, 255, 255, 0.07));
-  background-size: 22px 22px, cover;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
-`;
-
-/* برقِ عبوری روی شیشه */
-const Sheen = styled(motion.div)`
-  position: absolute;
-  top: -30%;
-  bottom: -30%;
-  width: 34%;
-  z-index: 3;
-  pointer-events: none;
-  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.16), transparent);
-  transform: skewX(-14deg);
-`;
-
-const Content = styled.div`
-  position: relative;
-  z-index: 4;
-  padding: 1.8rem 2rem;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-`;
-
-const TextBlock = styled.div` max-width: 620px; `;
-
-const Title = styled.h1`
-  margin: 0 0 0.6rem 0;
-  color: #fff;
-  font-size: clamp(1.4rem, 3vw, 2rem);
-  font-weight: 900;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
-`;
-
-const Subtitle = styled.p`
-  margin: 0 0 1.2rem 0;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: clamp(0.75rem, 1.4vw, 0.92rem);
-  line-height: 1.9;
-`;
-
-const Actions = styled.div`
-  display: flex;
-  gap: 0.7rem;
-  flex-wrap: wrap;
-`;
-
-const PrimaryBtn = styled(motion.button)`
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.7rem 1.4rem;
-  border: none; border-radius: 14px;
-  cursor: pointer;
-  font-family: inherit; font-size: 0.85rem; font-weight: 800; color: #fff;
-  background: linear-gradient(135deg, #fb923c, #f97316);
-  box-shadow: 0 10px 26px rgba(249, 115, 22, 0.45);
-`;
-
-const GlassBtn = styled(motion.button)`
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.7rem 1.2rem;
-  border-radius: 14px;
-  cursor: pointer;
-  font-family: inherit; font-size: 0.82rem; font-weight: 700;
-  color: rgba(255, 255, 255, 0.92);
-  background: rgba(255, 255, 255, 0.13);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(6px);
-`;
-
-const DateChip = styled.div`
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.6rem 1rem;
-  border-radius: 14px;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.82rem; font-weight: 700;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(8px);
-  white-space: nowrap;
-`;
-
-const Hint = styled(motion.p)`
-  position: absolute;
-  bottom: 0.8rem;
-  left: 1.4rem;
-  z-index: 4;
-  margin: 0;
-  font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.75);
-  pointer-events: none;
-`;
-
-/* ═══════════ کامپوننت ═══════════ */
-
-export default function GreetingHeroCard({
-  title = "صبح بخیر، حبیب",
-  subtitle = "نمای زندهٔ مرکز مدیریت سامانه — ۲۳ سفارش در انتظار، ۱۸ کارت فعال و ۴ گفتگوی خوانده‌نشده.",
-  date = "۱۴۰۴/۰۸/۲۵",
-}) {
-  const [active, setActive] = useState(false);
-  const [targets, setTargets] = useState(() => makeTargets("home"));
-  const touchTimer = useRef(null);
-
-  const wakeUp = useCallback(() => {
-    clearTimeout(touchTimer.current);
-    setActive(true);
-    setTargets(makeTargets("dance"));
-  }, []);
-
-  const calmDown = useCallback(() => {
-    setActive(false);
-    setTargets(makeTargets("home")); // برگشت آرام به خانه
-  }, []);
-
-  /* تا وقتی دست روی کارت است، هر ~۲ ثانیه یک جابجایی تصادفی جدید */
-  useEffect(() => {
-    if (!active) return;
-    const t = setInterval(() => setTargets(makeTargets("dance")), 2100);
-    return () => clearInterval(t);
-  }, [active]);
-
-  /* رویدادهای ماوس و لمس */
-  const onPointerEnter = (e) => { if (e.pointerType !== "touch") wakeUp(); };
-  const onPointerLeave = (e) => { if (e.pointerType !== "touch") calmDown(); };
-  const onPointerDown = (e) => {
-    if (e.pointerType === "touch") wakeUp();          /* انگشت گذاشتن */
-  };
-  const onPointerUp = (e) => {
-    if (e.pointerType === "touch")                     /* برداشتن انگشت → کمی مکث و بعد برگشت */
-      touchTimer.current = setTimeout(calmDown, 900);
-  };
-
-  return (
-    <Card
-      $active={active}
-      onPointerEnter={onPointerEnter}
-      onPointerLeave={onPointerLeave}
-      onPointerDown={onPointerDown}
-      onPointerUp={onPointerUp}
-    >
-      {/* گوی‌های رنگی */}
-      <BlobsLayer>
-        {BLOBS.map((b, i) => {
-          const t = targets[i];
-          return (
-            <BlobOuter
-              key={b.id}
-              animate={{ left: t.left, top: t.top, scale: t.scale }}
-              transition={{ duration: 2.2, ease: [0.22, 1, 0.36, 1] }} /* نرم و ضد استرس */
-            >
-              <BlobInner
-                $size={b.size}
-                $delay={i * 1.3}
-                animate={{ backgroundColor: t.color }}
-                transition={{ duration: 2.6, ease: "easeInOut" }}
-              />
-            </BlobOuter>
-          );
-        })}
-      </BlobsLayer>
-
-      {/* شیشهٔ مات + برق عبوری */}
-      <GlassOverlay />
-      <AnimatePresence>
-        {active && (
-          <Sheen
-            initial={{ x: "-80%", opacity: 0 }}
-            animate={{ x: "340%", opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* محتوا */}
-      <Content>
-        <TextBlock>
-          <Title>{title}</Title>
-          <Subtitle>{subtitle}</Subtitle>
-          <Actions>
-            <PrimaryBtn whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-              <Plus size={17} /> سفارش جدید
-            </PrimaryBtn>
-            <GlassBtn whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-              <BarChart3 size={16} /> گزارش‌ها
-            </GlassBtn>
-            <GlassBtn whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-              <CreditCard size={16} /> کارت‌ها
-            </GlassBtn>
-            <GlassBtn whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-              <Headphones size={16} /> پشتیبانی کارکنان
-            </GlassBtn>
-          </Actions>
-        </TextBlock>
-
-        <DateChip>
-          <CalendarDays size={16} /> {date}
-        </DateChip>
-      </Content>
-
-      <AnimatePresence>
-        {active && (
-          <Hint initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-            🍃 رنگ‌ها پشت شیشه در حال رقص‌اند…
-          </Hint>
-        )}
-      </AnimatePresence>
-    </Card>
-  );
+function wake() {
+  clearTimeout(touchTimer);
+  if (active) return;
+  active = true;
+  card.classList.add("active");
+  applyTargets(makeTargets("dance"));
+  loop = setInterval(() => applyTargets(makeTargets("dance")), 2100);
 }
 
-/* ═══════════ دمو ═══════════ */
-
-const DemoPage = styled.div`
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  background: #14101f;
-`;
-
-const DemoWrap = styled.div` width: min(1000px, 100%); `;
-
-export function App() {
-  return (
-    <DemoPage>
-      <DemoWrap>
-        <GreetingHeroCard />
-      </DemoWrap>
-    </DemoPage>
-  );
+function calm() {
+  active = false;
+  card.classList.remove("active");
+  clearInterval(loop);
+  applyTargets(makeTargets("home"));   /* برگشت آرام به خانه */
 }
+
+/* ماوس */
+card.addEventListener("pointerenter", (e) => { if (e.pointerType !== "touch") wake(); });
+card.addEventListener("pointerleave", (e) => { if (e.pointerType !== "touch") calm(); });
+/* لمس */
+card.addEventListener("pointerdown", (e) => { if (e.pointerType === "touch") wake(); });
+card.addEventListener("pointerup",   (e) => {
+  if (e.pointerType === "touch") touchTimer = setTimeout(calm, 900);
+});
+
+/* ═══════════ کلیدهای تست ═══════════ */
+document.getElementById("t-glass").addEventListener("change", (e) =>
+  document.body.classList.toggle("no-glass", !e.target.checked));
+document.getElementById("t-slow").addEventListener("change", (e) => {
+  document.documentElement.style.setProperty("--dur",  e.target.checked ? "6.5s" : "2.2s");
+  document.documentElement.style.setProperty("--durC", e.target.checked ? "7.5s" : "2.6s");
+});
+document.getElementById("t-breathe").addEventListener("change", (e) =>
+  document.body.classList.toggle("no-breathe", !e.target.checked));
+</script>
+</body>
+</html>
