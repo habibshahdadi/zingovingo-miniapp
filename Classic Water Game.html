@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>کارت صبح بخیر + واتر گیم</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1.4rem; padding: 2.5rem 1rem;
+    background: #14101f; font-family: "Vazirmatn", system-ui, sans-serif;
+  }
+  .wrap { width: min(1000px, 100%); }
+  .stage { perspective: 900px; }
+
+  /* ═══════════ کارت (همان نسخهٔ کنجکاوی‌ساز) ═══════════ */
+  .card {
+    position: relative; min-height: 340px;
+    border-radius: 24px; overflow: hidden; cursor: pointer;
+    transform-style: preserve-3d; will-change: transform;
+    background: linear-gradient(140deg, #241b3f 0%, #1a1230 55%, #201436 100%);
+    box-shadow: 0 18px 50px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08), inset 0 0 80px rgba(0,0,0,.25);
+    transition: box-shadow .7s ease;
+  }
+  .card.pulse { box-shadow: 0 18px 50px rgba(0,0,0,.45), 0 0 110px rgba(236,72,153,.45), inset 0 1px 0 rgba(255,255,255,.14); }
+  .blobs { position: absolute; inset: 0; z-index: 1; }
+  .blob { position: absolute; will-change: transform; }
+  .blob .inner { border-radius: 50%; filter: blur(46px); mix-blend-mode: screen; opacity: .9; transition: background-color 1.4s ease-in-out; }
+  .glow { position: absolute; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.2), transparent 62%); mix-blend-mode: screen; pointer-events: none; z-index: 3; opacity: 0; transition: opacity .6s; transform: translate(-50%,-50%); }
+  .glass { position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    backdrop-filter: blur(26px) saturate(150%) brightness(1.06); -webkit-backdrop-filter: blur(26px) saturate(150%) brightness(1.06);
+    background: radial-gradient(rgba(255,255,255,.10) 1px, transparent 1.4px), linear-gradient(120deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 45%, rgba(255,255,255,.07));
+    background-size: 22px 22px, cover; box-shadow: inset 0 1px 0 rgba(255,255,255,.16); }
+  .sheen { position: absolute; top: -30%; bottom: -30%; left: -45%; width: 45%; z-index: 3; pointer-events: none;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent); filter: blur(8px); mix-blend-mode: screen; opacity: 0;
+    animation: idleSheen 8s cubic-bezier(.45,0,.55,1) infinite; }
+  @keyframes idleSheen { 0%{transform:translateX(-20%) skewX(-14deg);opacity:0} 10%{opacity:.16} 40%{transform:translateX(340%) skewX(-14deg);opacity:0} 100%{transform:translateX(340%) skewX(-14deg);opacity:0} }
+
+  .content { position: relative; z-index: 4; padding: 1.8rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1.6rem; flex-wrap: wrap; }
+  .text { max-width: 520px; }
+  h1 { margin: 0 0 .6rem; color: #fff; font-size: clamp(1.4rem,3vw,2rem); font-weight: 900; text-shadow: 0 2px 14px rgba(0,0,0,.35); }
+  .sub { margin: 0 0 1.2rem; color: rgba(255,255,255,.82); font-size: clamp(.75rem,1.4vw,.92rem); line-height: 1.9; }
+  .actions { display: flex; gap: .7rem; flex-wrap: wrap; }
+  button.act { display: inline-flex; align-items: center; gap: .5rem; padding: .7rem 1.2rem; border-radius: 14px; cursor: pointer; font-family: inherit; font-size: .82rem; font-weight: 700; color: rgba(255,255,255,.92); background: rgba(255,255,255,.13); border: 1px solid rgba(255,255,255,.22); transition: transform .2s; }
+  button.act:hover { transform: scale(1.04); }
+  button.act.primary { color:#fff; border:none; font-weight:800; background: linear-gradient(135deg,#fb923c,#f97316); box-shadow: 0 10px 26px rgba(249,115,22,.45); }
+  .whisper { position: absolute; bottom: .8rem; right: 1.4rem; z-index: 4; margin: 0; font-size: .7rem; color: rgba(255,255,255,.62); pointer-events: none; opacity: 0; transition: opacity 1.4s; }
+  .whisper.show { opacity: 1; }
+
+  /* ═══════════ مخزن واتر گیم ═══════════ */
+  .tank {
+    position: relative; width: 200px; height: 310px; flex-shrink: 0;
+    border-radius: 22px; overflow: hidden; cursor: default;
+    background: linear-gradient(180deg, rgba(125,211,252,.16), rgba(8,145,178,.30));
+    border: 2px solid rgba(255,255,255,.35);
+    box-shadow: inset 0 0 30px rgba(255,255,255,.15), 0 14px 40px rgba(0,0,0,.4);
+  }
+  .tank canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .tank .reflect { position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(115deg, rgba(255,255,255,.22) 0%, transparent 30%, transparent 70%, rgba(255,255,255,.10) 100%); }
+  .hud { position: absolute; top: 8px; right: 8px; z-index: 5; padding: .25rem .7rem; border-radius: 999px;
+    font-size: .7rem; font-weight: 800; color: #083344; background: rgba(255,255,255,.75); backdrop-filter: blur(4px); }
+  .pump {
+    position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+    width: 66px; height: 66px; border-radius: 50%; border: none; cursor: pointer; z-index: 6;
+    background: radial-gradient(circle at 35% 30%, #7dd3fc, #0284c7 60%, #075985);
+    box-shadow: 0 6px 0 #0c4a6e, 0 12px 26px rgba(2,132,199,.5), inset 0 4px 8px rgba(255,255,255,.4);
+    transition: transform .12s, box-shadow .12s; touch-action: manipulation;
+  }
+  .pump.press { transform: translateX(-50%) scale(.88); box-shadow: 0 2px 0 #0c4a6e, 0 6px 16px rgba(2,132,199,.5), inset 0 4px 8px rgba(255,255,255,.3); }
+  .win {
+    position: absolute; inset: 0; z-index: 7; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem;
+    background: rgba(8,51,68,.55); backdrop-filter: blur(4px);
+    opacity: 0; pointer-events: none; transition: opacity .4s;
+    color: #fff; font-weight: 900; font-size: 1rem; text-align: center;
+  }
+  .win.show { opacity: 1; pointer-events: auto; }
+  .win button { font-family: inherit; font-weight: 800; border: none; border-radius: 999px; padding: .5rem 1.4rem; cursor: pointer; color: #083344; background: #fde047; }
+
+  .testbar { display:flex; gap:1.2rem; flex-wrap:wrap; align-items:center; color: rgba(255,255,255,.65); font-size:.78rem; }
+  .testbar label { display:flex; align-items:center; gap:.45rem; cursor:pointer; }
+  .testbar input { accent-color:#ec4899; width:16px; height:16px; cursor:pointer; }
+  .testbar button { padding:.5rem 1rem; border-radius:12px; cursor:pointer; font-family:inherit; font-size:.78rem; font-weight:700; color:#fff; background: rgba(236,72,153,.25); border:1px solid rgba(236,72,153,.5); }
+</style>
+</head>
+<body>
+
+<div class="wrap"><div class="stage">
+  <div class="card" id="card">
+    <div class="blobs" id="blobs"></div>
+    <div class="glow" id="glow"></div>
+    <div class="glass"></div>
+    <div class="sheen"></div>
+
+    <div class="content">
+      <div class="text">
+        <h1>صبح بخیر، حبیب</h1>
+        <p class="sub">نمای زندهٔ مرکز مدیریت سامانه — ۲۳ سفارش در انتظار، ۱۸ کارت فعال.<br>و یک واتر گیم برای زنگ تفریح! 🫧</p>
+        <div class="actions">
+          <button class="act primary">سفارش جدید</button>
+          <button class="act">گزارش‌ها</button>
+          <button class="act">کارت‌ها</button>
+        </div>
+      </div>
+
+      <!-- ══ مخزن بازی ══ -->
+      <div class="tank" id="tank">
+        <canvas id="cv"></canvas>
+        <div class="reflect"></div>
+        <div class="hud" id="hud">🫧 ۰/۸</div>
+        <button class="pump" id="pump" title="کلیک: پمپ باد — نگه‌دار: صفر کردن"></button>
+        <div class="win" id="win">
+          <div>🎉 آفرین!<br>همهٔ حلقه‌ها سوار شدن</div>
+          <button id="again">دوباره بازی</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="whisper" id="whisper">🫧 دکمه آبی رو چند بار بزن…</p>
+  </div>
+</div></div>
+
+<div class="testbar">
+  <button id="btn-sensor">📳 فعال‌سازی سنسور</button>
+  <label><input type="checkbox" id="t-glass" checked> شیشهٔ مات</label>
+</div>
+
+<script>
+/* ═══════════════ بخش ۱: رنگ‌های زندهٔ کارت (خلاصه) ═══════════════ */
+const BLOBS = [
+  { color:"#7c3aed", home:{left:"2%",top:"-30%"}, size:340, depth:1.15, z:46 },
+  { color:"#ec4899", home:{left:"48%",top:"-45%"}, size:300, depth:.85, z:30 },
+  { color:"#f97316", home:{left:"66%",top:"30%"}, size:320, depth:1, z:38 },
+  { color:"#14b8a6", home:{left:"-14%",top:"45%"}, size:280, depth:.7, z:22 },
+];
+const card = document.getElementById("card"), layer = document.getElementById("blobs"),
+      glow = document.getElementById("glow"), whisper = document.getElementById("whisper");
+const clamp = (v,a,b)=>Math.max(a,Math.min(b,v)), rand=(a,b)=>Math.random()*(b-a)+a;
+const els = BLOBS.map(b=>{ const o=document.createElement("div"); o.className="blob"; o.style.left=b.home.left; o.style.top=b.home.top;
+  const i=document.createElement("div"); i.className="inner"; i.style.width=i.style.height=b.size+"px"; i.style.backgroundColor=b.color;
+  o.appendChild(i); layer.appendChild(o); return {o, cx:0, cy:0}; });
+let mouse={nx:0,ny:0,inside:false,px:0,py:0}, tilt={x:0,active:false,baseG:null}, lastInput=0, idle=true, curT={x:0,y:0};
+
+card.addEventListener("mousemove", e=>{ const r=card.getBoundingClientRect();
+  mouse.nx=clamp(((e.clientX-r.left)-r.width/2)/(r.width/2),-1,1);
+  mouse.ny=clamp(((e.clientY-r.top)-r.height/2)/(r.height/2),-1,1);
+  mouse.inside=true; mouse.px=e.clientX-r.left; mouse.py=e.clientY-r.top;
+  glow.style.left=mouse.px+"px"; glow.style.top=mouse.py+"px"; glow.style.opacity=1;
+  lastInput=performance.now(); idle=false; });
+card.addEventListener("mouseleave", ()=>{ mouse.inside=false; glow.style.opacity=0; });
+function onOrient(e){ if(e.gamma==null) return; if(tilt.baseG==null) tilt.baseG=e.gamma;
+  tilt.x=clamp((e.gamma-tilt.baseG)/26,-1,1); tilt.active=true;
+  if(Math.abs(tilt.x)>.12){ lastInput=performance.now(); idle=false; } }
+window.addEventListener("deviceorientation", onOrient);
+document.getElementById("btn-sensor").addEventListener("click", async ev=>{
+  if (DeviceMotionEvent?.requestPermission){ const s=await DeviceMotionEvent.requestPermission();
+    if(s==="granted") window.addEventListener("deviceorientation", onOrient);
+    ev.target.textContent = s==="granted"?"سنسور فعال ✓":"مجوز رد شد ✗"; }
+  else ev.target.textContent="سنسور فعال ✓"; });
+document.getElementById("t-glass").addEventListener("change", e=>{
+  document.querySelector(".glass").style.backdropFilter = e.target.checked ? "" : "none"; });
+
+/* ═══════════════ بخش ۲: واتر گیم ═══════════════ */
+const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+const tank = document.getElementById("tank"), hud = document.getElementById("hud"),
+      pumpBtn = document.getElementById("pump"), winBox = document.getElementById("win");
+const faNum = n => Number(n).toLocaleString("fa-IR");
+
+let W=200, H=310, dpr=1;
+function resize(){ dpr = window.devicePixelRatio||1; W = tank.clientWidth; H = tank.clientHeight;
+  cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); }
+resize(); window.addEventListener("resize", resize);
+
+const RING_R = 11, COLORS = ["#ef4444","#fde047","#22c55e","#ec4899","#22d3ee","#fb923c","#a3e635","#f472b6"];
+const posts = () => [{x:W*.37},{x:W*.63}];
+const POST_TOP = ()=>H*.40, POST_BASE = ()=>H-72, POST_W = 9, MAX_STACK = 6;
+
+let rings = [], bubbles = [], won = false;
+function reset(){ won=false; winBox.classList.remove("show");
+  rings = COLORS.map((c,i)=>({ c, x:rand(RING_R+6,W-RING_R-6), y:rand(H*.18,H*.6),
+    vx:rand(-.4,.4), vy:rand(-.2,.2), ph:rand(0,6.28), state:"free", post:0, k:0 }));
+  updateHud(); }
+function updateHud(){ const on = rings.filter(r=>r.state!=="free").length;
+  hud.textContent = `🫧 ${faNum(on)}/${faNum(rings.length)}`; }
+
+/* ── صدا ── */
+let AC=null; const ac=()=>{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended")AC.resume(); return AC; };
+function blub(){ const c=ac(),t=c.currentTime,o=c.createOscillator(),g=c.createGain();
+  o.type="sine"; o.frequency.setValueAtTime(320,t); o.frequency.exponentialRampToValueAtTime(90,t+.16);
+  g.gain.setValueAtTime(.18,t); g.gain.exponentialRampToValueAtTime(.001,t+.18);
+  o.connect(g).connect(c.destination); o.start(t); o.stop(t+.2); }
+function plink(){ const c=ac(),t=c.currentTime,o=c.createOscillator(),g=c.createGain();
+  o.type="triangle"; o.frequency.setValueAtTime(620,t); o.frequency.exponentialRampToValueAtTime(980,t+.08);
+  g.gain.setValueAtTime(.12,t); g.gain.exponentialRampToValueAtTime(.001,t+.1);
+  o.connect(g).connect(c.destination); o.start(t); o.stop(t+.12); }
+function chime(){ const c=ac(); [523,659,784,1046].forEach((f,i)=>{ const t=c.currentTime+i*.12,o=c.createOscillator(),g=c.createGain();
+  o.type="sine"; o.frequency.value=f; g.gain.setValueAtTime(.14,t); g.gain.exponentialRampToValueAtTime(.001,t+.35);
+  o.connect(g).connect(c.destination); o.start(t); o.stop(t+.4); }); }
+
+/* ── پمپ / صفر ── */
+function pump(){ blub();
+  for(let i=0;i<12;i++) bubbles.push({x:rand(W*.3,W*.7), y:H-60, r:rand(1.5,4), vy:rand(-1.4,-.6), life:1});
+  rings.forEach(r=>{ if(r.state!=="free") return;
+    const power = .7 + (r.y/H)*.7;                       /* فشار از پایین بیشتر */
+    r.vy -= rand(1.9,3.1)*power;
+    r.vx += rand(-1.3,1.3); }); }
+let pressT=null, consumed=false;
+pumpBtn.addEventListener("pointerdown", e=>{ e.preventDefault(); ac(); consumed=false;
+  pumpBtn.classList.add("press");
+  pressT = setTimeout(()=>{ consumed=true; reset(); navigator.vibrate?.(40); }, 650); });
+pumpBtn.addEventListener("pointerup", ()=>{ clearTimeout(pressT); pumpBtn.classList.remove("press");
+  if(!consumed) pump(); });
+pumpBtn.addEventListener("pointerleave", ()=>{ clearTimeout(pressT); pumpBtn.classList.remove("press"); });
+document.getElementById("again").addEventListener("click", reset);
+
+/* ── فیزیک ── */
+function step(t){
+  const tiltX = tilt.active ? tilt.x : (mouse.inside ? mouse.nx*.6 : 0);
+  const P = posts(), pTop = POST_TOP(), pBase = POST_BASE(), floor = H-64;
+
+  rings.forEach(r=>{
+    if(r.state!=="free"){
+      /* لیز خوردن از میله وقتی گوشی کج/وارونه شود */
+      if(Math.abs(tiltX)>.5 && Math.random()<.06){
+        const top = rings.filter(q=>q.state==="on"&&q.post===r.post).sort((a,b)=>b.k-a.k)[0];
+        if(top===r){ r.state="free"; r.vx=tiltX*2.6; r.vy=-.8; updateHud(); }
+      }
+      return;
+    }
+    r.vx += tiltX*.05;                 /* شیب آب */
+    r.vy += .016;                      /* غرق آرام */
+    r.vx *= .985; r.vy *= .985;
+    r.vx = clamp(r.vx,-4,4); r.vy = clamp(r.vy,-4.5,4);
+    r.x += r.vx; r.y += r.vy;
+    if(r.x<RING_R+4){ r.x=RING_R+4; r.vx*=-.6; }
+    if(r.x>W-RING_R-4){ r.x=W-RING_R-4; r.vx*=-.6; }
+    if(r.y<RING_R+8){ r.y=RING_R+8; r.vy*=-.5; }
+    if(r.y>floor){ r.y=floor; r.vy*=-.25; r.vx*=.9; }
+    /* گرفتن حلقه روی میله */
+    P.forEach((p,pi)=>{
+      const count = rings.filter(q=>q.state==="on"&&q.post===pi).length;
+      if(count>=MAX_STACK) return;
+      if(Math.abs(r.x-p.x)<9 && r.y>pTop+6 && r.y<pBase && r.vy>-.3){
+        r.state="on"; r.post=pi; r.k=count; plink(); updateHud();
+        if(rings.every(q=>q.state==="on")){ won=true; winBox.classList.add("show"); card.classList.add("pulse"); chime();
+          setTimeout(()=>card.classList.remove("pulse"),800); }
+      }
+    });
+  });
+
+  bubbles.forEach(b=>{ b.y+=b.vy; b.x+=Math.sin(t/300+b.y*.08)*.3; b.life-=.006; });
+  bubbles = bubbles.filter(b=>b.life>0 && b.y>10);
+  if(Math.random()<.02) bubbles.push({x:rand(10,W-10), y:H-20, r:rand(1,2.6), vy:rand(-.7,-.3), life:1});
+}
+
+/* ── رسم ── */
+function draw(t){
+  ctx.clearRect(0,0,W,H);
+  /* آب + کائوستیک */
+  const g = ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,"rgba(125,211,252,.20)"); g.addColorStop(1,"rgba(8,145,178,.42)");
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  ctx.save(); ctx.globalAlpha=.09; ctx.strokeStyle="#fff"; ctx.lineWidth=10;
+  for(let i=0;i<2;i++){ ctx.beginPath();
+    for(let x=0;x<=W;x+=8) ctx.lineTo(x, 40+i*70 + Math.sin(x*.05 + t/700 + i*2)*8);
+    ctx.stroke(); }
+  ctx.restore();
+  /* سطح آب */
+  ctx.strokeStyle="rgba(255,255,255,.5)"; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(6,12); ctx.lineTo(W-6,12); ctx.stroke();
+
+  const P = posts(), pTop = POST_TOP(), pBase = POST_BASE();
+  /* میله‌ها */
+  P.forEach(p=>{
+    const pg = ctx.createLinearGradient(p.x-5,0,p.x+5,0);
+    pg.addColorStop(0,"#e2e8f0"); pg.addColorStop(.5,"#94a3b8"); pg.addColorStop(1,"#64748b");
+    ctx.fillStyle=pg; ctx.beginPath(); ctx.roundRect(p.x-4.5,pTop,9,pBase-pTop,4); ctx.fill();
+    ctx.fillStyle="#f8fafc"; ctx.beginPath(); ctx.arc(p.x,pTop,6,0,7); ctx.fill();
+  });
+  /* حلقه‌ها */
+  rings.forEach(r=>{
+    let x=r.x, y=r.y, sq=1;
+    if(r.state==="on"){ const p=P[r.post]; x=p.x; y=pBase-6-r.k*6.5; sq=.45; }
+    else y += Math.sin(t/500+r.ph)*1.6;              /* شناوری در آب */
+    ctx.save(); ctx.translate(x,y); ctx.scale(1,sq);
+    ctx.strokeStyle=r.c; ctx.lineWidth=5; ctx.beginPath(); ctx.arc(0,0,RING_R,0,7); ctx.stroke();
+    ctx.strokeStyle="rgba(255,255,255,.55)"; ctx.lineWidth=1.6;
+    ctx.beginPath(); ctx.arc(0,0,RING_R-1.6,-2.4,-1.1); ctx.stroke();
+    ctx.restore();
+  });
+  /* حباب‌ها */
+  bubbles.forEach(b=>{ ctx.strokeStyle=`rgba(255,255,255,${.5*b.life})`; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,7); ctx.stroke(); });
+}
+
+/* ── حلقهٔ اصلی (رنگ‌ها + بازی) ── */
+function frame(t){
+  if(t-lastInput>2200) idle=true;
+  let ix=0, iy=0;
+  if(!idle){ if(mouse.inside){ix=mouse.nx; iy=mouse.ny;} else if(tilt.active){ix=tilt.x; iy=0;} }
+  els.forEach((el,i)=>{ const b=BLOBS[i];
+    el.cx += (ix*80*b.depth - el.cx)*.085; el.cy += (iy*55*b.depth - el.cy)*.085;
+    el.o.style.transform = `translate3d(${el.cx}px,${el.cy}px,${b.z}px)`; });
+  curT.x += (ix*7-curT.x)*.085; curT.y += (-iy*7-curT.y)*.085;
+  card.style.transform = `rotateY(${curT.x}deg) rotateX(${curT.y}deg)`;
+  whisper.classList.toggle("show", idle && t-lastInput>3200);
+
+  step(t); draw(t);
+  requestAnimationFrame(frame);
+}
+reset();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
