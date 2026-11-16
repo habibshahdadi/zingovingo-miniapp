@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>کارت صبح بخیر — نسخهٔ کنجکاوی‌ساز</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1.4rem; padding: 2.5rem 1rem;
+    background: #14101f;
+    font-family: "Vazirmatn", system-ui, sans-serif;
+  }
+
+  .wrap { width: min(1000px, 100%); }
+
+  /* پرسپکتیو برای کج‌شدن سه‌بعدی کارت */
+  .stage { perspective: 900px; }
+
+  /* ═══════════ کارت ═══════════ */
+  .card {
+    position: relative; min-height: 230px;
+    border-radius: 24px; overflow: hidden; cursor: pointer;
+    transform-style: preserve-3d; will-change: transform;
+    background: linear-gradient(140deg, #241b3f 0%, #1a1230 55%, #201436 100%);
+    box-shadow: 0 18px 50px rgba(0,0,0,.45),
+                inset 0 1px 0 rgba(255,255,255,.08),
+                inset 0 0 80px rgba(0,0,0,.25);
+    transition: box-shadow .7s ease;
+  }
+  .card.pulse {
+    box-shadow: 0 18px 50px rgba(0,0,0,.45),
+                0 0 110px rgba(236,72,153,.45),
+                inset 0 1px 0 rgba(255,255,255,.14),
+                inset 0 0 80px rgba(0,0,0,.25);
+  }
+
+  /* ═══════════ گوی‌های رنگی (بدون تنفس idle — کاملاً ساکت) ═══════════ */
+  .blobs { position: absolute; inset: 0; z-index: 1; }
+  .blob { position: absolute; will-change: transform; }
+  .blob .inner {
+    border-radius: 50%;
+    filter: blur(46px);
+    mix-blend-mode: screen;
+    opacity: .9;
+    transition: background-color 1.4s ease-in-out;
+  }
+
+  /* هالهٔ نور زیر نشانگر */
+  .glow {
+    position: absolute; width: 340px; height: 340px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,.20), transparent 62%);
+    mix-blend-mode: screen; pointer-events: none; z-index: 3;
+    opacity: 0; transition: opacity .6s;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ═══════════ شیشهٔ مات ═══════════ */
+  .glass {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    backdrop-filter: blur(26px) saturate(150%) brightness(1.06);
+    -webkit-backdrop-filter: blur(26px) saturate(150%) brightness(1.06);
+    background:
+      radial-gradient(rgba(255,255,255,.10) 1px, transparent 1.4px),
+      linear-gradient(120deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 45%, rgba(255,255,255,.07));
+    background-size: 22px 22px, cover;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
+  }
+  body.no-glass .glass { backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+  /* ═══════════ برق کمرنگ idle — هر ~۸ ثانیه خیلی نرم ═══════════ */
+  .sheen {
+    position: absolute; top: -30%; bottom: -30%; left: -45%; width: 45%;
+    z-index: 3; pointer-events: none;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+    filter: blur(8px);
+    mix-blend-mode: screen;
+    opacity: 0;
+    animation: idleSheen 8s cubic-bezier(.45,0,.55,1) infinite;
+  }
+  @keyframes idleSheen {
+    0%   { transform: translateX(-20%) skewX(-14deg); opacity: 0; }
+    10%  { opacity: .16; }
+    40%  { transform: translateX(340%) skewX(-14deg); opacity: 0; }
+    100% { transform: translateX(340%) skewX(-14deg); opacity: 0; }
+  }
+
+  /* ═══════════ محتوا ═══════════ */
+  .content {
+    position: relative; z-index: 4; padding: 1.8rem 2rem;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 1.5rem; flex-wrap: wrap;
+  }
+  .text { max-width: 620px; }
+  h1 { margin: 0 0 .6rem; color: #fff; font-size: clamp(1.4rem,3vw,2rem); font-weight: 900; text-shadow: 0 2px 14px rgba(0,0,0,.35); }
+  .sub { margin: 0 0 1.2rem; color: rgba(255,255,255,.82); font-size: clamp(.75rem,1.4vw,.92rem); line-height: 1.9; }
+  .actions { display: flex; gap: .7rem; flex-wrap: wrap; }
+  button.act {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .7rem 1.2rem; border-radius: 14px; cursor: pointer;
+    font-family: inherit; font-size: .82rem; font-weight: 700;
+    color: rgba(255,255,255,.92); background: rgba(255,255,255,.13);
+    border: 1px solid rgba(255,255,255,.22); transition: transform .2s, background .2s;
+  }
+  button.act:hover { transform: scale(1.04); background: rgba(255,255,255,.2); }
+  button.act.primary { color:#fff; border:none; font-weight:800; background: linear-gradient(135deg,#fb923c,#f97316); box-shadow: 0 10px 26px rgba(249,115,22,.45); }
+  .chip {
+    display:flex; align-items:center; gap:.5rem; padding:.6rem 1rem; border-radius:14px; white-space:nowrap;
+    color: rgba(255,255,255,.9); font-size:.82rem; font-weight:700;
+    background: rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); backdrop-filter: blur(8px);
+  }
+
+  /* نجوای کنجکاوی بعد از بی‌کاری */
+  .whisper {
+    position: absolute; bottom: .8rem; left: 1.4rem; z-index: 4; margin: 0;
+    font-size: .7rem; color: rgba(255,255,255,.62); pointer-events: none;
+    opacity: 0; transition: opacity 1.4s ease; 
+  }
+  .whisper.show { opacity: 1; }
+
+  /* ═══════════ پنل تست ═══════════ */
+  .testbar { display:flex; gap:1.2rem; flex-wrap:wrap; align-items:center; color: rgba(255,255,255,.65); font-size:.78rem; }
+  .testbar label { display:flex; align-items:center; gap:.45rem; cursor:pointer; }
+  .testbar input { accent-color:#ec4899; width:16px; height:16px; cursor:pointer; }
+  .testbar button {
+    padding:.5rem 1rem; border-radius:12px; cursor:pointer; font-family:inherit; font-size:.78rem; font-weight:700;
+    color:#fff; background: rgba(236,72,153,.25); border:1px solid rgba(236,72,153,.5);
+  }
+  .testbar .dbg { min-width: 90px; color: rgba(255,255,255,.5); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="stage">
+    <div class="card" id="card">
+      <div class="blobs" id="blobs"></div>
+      <div class="glow" id="glow"></div>
+      <div class="glass"></div>
+      <div class="sheen"></div>
+
+      <div class="content">
+        <div class="text">
+          <h1>صبح بخیر، حبیب</h1>
+          <p class="sub">نمای زندهٔ مرکز مدیریت سامانه — ۲۳ سفارش در انتظار، ۱۸ کارت فعال و ۴ گفتگوی خوانده‌نشده.</p>
+          <div class="actions">
+            <button class="act primary"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> سفارش جدید</button>
+            <button class="act"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18M18 17V9M13 17V5M8 17v-3"/></svg> گزارش‌ها</button>
+            <button class="act"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h22"/></svg> کارت‌ها</button>
+            <button class="act"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg> پشتیبانی کارکنان</button>
+          </div>
+        </div>
+        <div class="chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg> ۱۴۰۴/۰۸/۲۵</div>
+      </div>
+
+      <p class="whisper" id="whisper">🖱️ یه تکون بهش بده…</p>
+    </div>
+  </div>
+</div>
+
+<div class="testbar">
+  <button id="btn-sensor">📳 فعال‌سازی سنسور حرکت</button>
+  <label><input type="checkbox" id="t-glass" checked> شیشهٔ مات</label>
+  <label><input type="checkbox" id="t-slow"> حالت آهسته</label>
+  <span class="dbg" id="dbg">idle</span>
+</div>
+
+<script>
+/* ═══════════ گوی‌ها: home درصدی + عمق پارالاکس + لایهٔ Z سه‌بعدی ═══════════ */
+const BLOBS = [
+  { color:"#7c3ed", home:{left:"2%",  top:"-30%"}, size:340, depth:1.15, z:46 },
+  { color:"#ec4899", home:{left:"48%", top:"-45%"}, size:300, depth:0.85, z:30 },
+  { color:"#f97316", home:{left:"66%", top:"30%" }, size:320, depth:1.0,  z:38 },
+  { color:"#14b8a6", home:{left:"-14%",top:"45%" }, size:280, depth:0.7,  z:22 },
+  { color:"#6366f1", home:{left:"30%", top:"10%" }, size:260, depth:0.55, z:16 },
+];
+BLOBS[0].color = "#7c3aed";
+
+const card = document.getElementById("card");
+const layer = document.getElementById("blobs");
+const glow = document.getElementById("glow");
+const whisper = document.getElementById("whisper");
+const dbg = document.getElementById("dbg");
+
+const els = BLOBS.map((b) => {
+  const outer = document.createElement("div");
+  outer.className = "blob";
+  outer.style.left = b.home.left; outer.style.top = b.home.top;
+  const inner = document.createElement("div");
+  inner.className = "inner";
+  inner.style.width = inner.style.height = b.size + "px";
+  inner.style.backgroundColor = b.color;
+  outer.appendChild(inner); layer.appendChild(outer);
+  return { outer, inner, cx:0, cy:0, cs:1 };
+});
+
+/* ═══════════ وضعیت ورودی‌ها ═══════════ */
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const rand = (a,b) => Math.random()*(b-a)+a;
+
+let mouse = { nx:0, ny:0, inside:false, px:0, py:0 };
+let tilt  = { x:0, y:0, active:false, baseB:null, baseG:null };
+let scatter = null, scatterUntil = 0, lastShake = 0;
+let lastInput = 0, idle = true, slow = false;
+let curTilt = { x:0, y:0 };
+
+/* ═══════════ حلقهٔ نرم rAF (lerp) ═══════════ */
+function frame(t) {
+  const now = t;
+  if (now - lastInput > 2200) idle = true;
+
+  let ix = 0, iy = 0, src = "idle";
+  if (!idle) {
+    if (mouse.inside) { ix = mouse.nx; iy = mouse.ny; src = "mouse"; }
+    else if (tilt.active) { ix = tilt.x; iy = tilt.y; src = "tilt"; }
+  }
+  if (scatter && now < scatterUntil) src = "scatter";
+
+  const k = slow ? 0.03 : 0.085;   /* نرمی دنبال‌کردن */
+
+  els.forEach((el, i) => {
+    const b = BLOBS[i];
+    let dx = ix * 80 * b.depth;
+    let dy = iy * 55 * b.depth;
+    let s = 1;
+    if (scatter && now < scatterUntil) { dx += scatter[i].dx; dy += scatter[i].dy; s = scatter[i].s; }
+    el.cx += (dx - el.cx) * k;
+    el.cy += (dy - el.cy) * k;
+    el.cs += (s - el.cs) * (slow ? 0.04 : 0.12);
+    el.outer.style.transform = `translate3d(${el.cx}px, ${el.cy}px, ${b.z}px) scale(${el.cs})`;
+  });
+
+  /* کج‌شدن سه‌بعدی کارت */
+  const tdx = ix * 7, tdy = -iy * 7;
+  curTilt.x += (tdx - curTilt.x) * k;
+  curTilt.y += (tdy - curTilt.y) * k;
+  card.style.transform = `rotateY(${curTilt.x}deg) rotateX(${curTilt.y}deg)`;
+
+  /* نجوا: بعد از بی‌کاری ظاهر، با اولین تعامل غیب */
+  whisper.classList.toggle("show", idle && now - lastInput > 3200);
+
+  dbg.textContent = src;
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* ═══════════ موس: پارالاکس + هاله ═══════════ */
+card.addEventListener("mousemove", (e) => {
+  const r = card.getBoundingClientRect();
+  mouse.nx = clamp(((e.clientX - r.left) - r.width/2) / (r.width/2), -1, 1);
+  mouse.ny = clamp(((e.clientY - r.top) - r.height/2) / (r.height/2), -1, 1);
+  mouse.inside = true;
+  mouse.px = e.clientX - r.left; mouse.py = e.clientY - r.top;
+  glow.style.left = mouse.px + "px"; glow.style.top = mouse.py + "px";
+  glow.style.opacity = 1;
+  lastInput = performance.now(); idle = false;
+});
+card.addEventListener("mouseleave", () => { mouse.inside = false; glow.style.opacity = 0; });
+
+/* ═══════════ سنسور: شیب + تکان ═══════════ */
+function onOrient(e) {
+  if (e.gamma == null) return;
+  if (tilt.baseG == null) { tilt.baseG = e.gamma; tilt.baseB = e.beta; }
+  tilt.x = clamp((e.gamma - tilt.baseG) / 26, -1, 1);
+  tilt.y = clamp((e.beta - tilt.baseB) / 26, -1, 1);
+  tilt.active = true;
+  if (Math.abs(tilt.x) + Math.abs(tilt.y) > 0.12) { lastInput = performance.now(); idle = false; }
+}
+function onMotion(e) {
+  const a = e.acceleration;
+  if (a) {
+    const m = Math.hypot(a.x||0, a.y||0, a.z||0);
+    const now = performance.now();
+    if (m > 16 && now - lastShake > 1100) {
+      lastShake = now;
+      scatter = BLOBS.map(() => ({ dx: rand(-150,150), dy: rand(-115,115), s: rand(1.12,1.5) }));
+      scatterUntil = now + 1700;
+      card.classList.add("pulse");
+      setTimeout(() => card.classList.remove("pulse"), 700);
+      lastInput = now; idle = false;
+    }
+  }
+}
+window.addEventListener("deviceorientation", onOrient);
+window.addEventListener("devicemotion", onMotion);
+
+/* دکمهٔ مجوز iOS */
+document.getElementById("btn-sensor").addEventListener("click", async (ev) => {
+  if (typeof DeviceMotionEvent !== "undefined" && DeviceMotionEvent.requestPermission) {
+    const st = await DeviceMotionEvent.requestPermission();
+    if (st === "granted") { window.addEventListener("devicemotion", onMotion); window.addEventListener("deviceorientation", onOrient); }
+    ev.target.textContent = st === "granted" ? "سنسور فعال ✓" : "مجوز رد شد ✗";
+  } else {
+    ev.target.textContent = "سنسور فعال ✓";
+  }
+});
+
+/* ═══════════ کلیدهای تست ═══════════ */
+document.getElementById("t-glass").addEventListener("change", (e) =>
+  document.body.classList.toggle("no-glass", !e.target.checked));
+document.getElementById("t-slow").addEventListener("change", (e) => slow = e.target.checked);
+</script>
+</body>
+</html>
