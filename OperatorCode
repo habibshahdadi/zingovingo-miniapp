@@ -1,0 +1,153 @@
+/**
+ * ZingoVingo — Operator Panel Backend V2 (Schema-driven)
+ * اپراتورها در شیت Workers ثبت شده‌اند (Operations = operator).
+ * همه خواندن/نوشتن از طریق فیلدهای منطقی SchemaCore انجام می‌شود.
+ */
+
+// ==================== احراز هویت ====================
+function operatorLogin(username, password) {
+  try {
+    const u = String(username).trim().toLowerCase();
+    const p = String(password);
+    let found = null;
+    let source = 'workers';
+
+    // ۱) منبع اصلی: شیت Workers
+    found = scRead_('workers').find(r =>
+      (text_(r.username).toLowerCase() === u || text_(r.email).toLowerCase() === u || text_(r.contact) === u) &&
+      text_(r.password) === p &&
+      /^(فعال|active)$/i.test(text_(r.status)) &&
+      /operator|اپراتور/i.test(text_(r.operations))
+    );
+
+    // ۲)fallback: شیت Employees (اگر اپراتوری آنجا ثبت شده باشد)
+    if (!found) {
+      source = 'employees';
+      found = scRead_('employees').find(r =>
+        (text_(r.username).toLowerCase() === u || text_(r.email).toLowerCase() === u) &&
+        text_(r.password) === p &&
+        /^(فعال|active)$/i.test(text_(r.status)) &&
+        /operator|اپراتور/i.test(text_(r.operations))
+      );
+    }
+
+    if (!found) throw new Error('نام کاربری یا رمز عبور اشتباه است، یا حساب غیرفعال است.');
+
+    const avatar = text_(found.photo) || text_(found._raw && found._raw['Profile']) || text_(found._raw && found._raw['Profile-hoto']) || '';
+    const token = Utilities.getUuid();
+    const session = {
+      token: token,
+      role: 'operator',
+      panel: 'operator',
+      source: source,
+      username: text_(found.username),
+      name: [text_(found.firstName), text_(found.lastName)].filter(Boolean).join(' ') || text_(found.username),
+      employeeId: source === 'workers' ? text_(found.workerId) : text_(found.empId),
+      branch: text_(found.branchId),
+      group: text_(found.groupId),
+      avatar: avatar,
+      email: text_(found.email),
+      phone: text_(found.contact),
+      createdAt: new Date().toISOString()
+    };
+    PropertiesService.getScriptProperties().setProperty('operator_session_' + token, JSON.stringify(session));
+    scLog_(session, 'ورود به پنل اپراتور', 'منبع: ' + source, 'success');
+    return {
+      success: true, token: token,
+      user: {
+        name: session.name, role: 'اپراتور', username: session.username,
+        employeeId: session.employeeId, avatar: session.avatar,
+        email: session.email, phone: session.phone
+      }
+    };
+  } catch (err) { throw new Error('خطای ورود: ' + err.message); }
+}
+
+function operatorLogout(token) {
+  try { if (token) PropertiesService.getScriptProperties().deleteProperty('operator_session_' + token); } catch (e) {}
+  return { success: true };
+}
+
+function checkOperatorAuth(token) {
+  if (!token) throw new Error('لطفاً ابتدا وارد شوید');
+  const raw = PropertiesService.getScriptProperties().getProperty('operator_session_' + token);
+  if (!raw) throw new Error('لطفاً ابتدا وارد شوید (نشست منقضی شده)');
+  let s;
+  try { s = JSON.parse(raw); } catch (e) { throw new Error('لطفاً ابتدا وارد شوید'); }
+  if (s.role !== 'operator') throw new Error('فقط اپراتورها به این پنل دسترسی دارند.');
+  return s;
+}
+
+// ==================== پروفایل ====================
+function getOperatorProfile(token) {
+  const session = checkOperatorAuth(token);
+  const ent = session.source === 'employees' ? 'employees' : 'workers';
+  const rows = scRead_(ent);
+  const row = rows.find(r =>
+    text_(r.username) === session.username ||
+    text_(ent === 'workers' ? r.workerId : r.empId) === session.employeeId
+  );
+  const avatar = row ? (text_(row.photo) || text_(row._raw && row._raw['Profile']) || text_(row._raw && row._raw['Profile-hoto']) || '') : session.avatar;
+  return {
+    employeeId: session.employeeId,
+    fullName: row ? ([text_(row.firstName), text_(row.lastName)].filter(Boolean).join(' ') || session.name) : session.name,
+    username: row ? text_(row.username) : session.username,
+    email: row ? text_(row.email) : session.email,
+    phone: row ? text_(row.contact) : session.phone,
+    avatar: avatar,
+    role: 'اپراتور',
+    branch: row ? text_(row.branchId) : session.branch,
+    group: row ? text_(row.groupId) : session.group
+  };
+}
+
+function updateOperatorProfile(updates, token) {
+  const session = checkOperatorAuth(token);
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const ent = session.source === 'employees' ? 'employees' : 'workers';
+    const rows = scRead_(ent);
+    const row = rows.find(r =>
+      text_(r.username) === session.username ||
+      text_(ent === 'workers' ? r.workerId : r.empId) === session.employeeId
+    );
+    if (!row) throw new Error('کاربر یافت نشد');
+
+    const payload = {};
+    if (updates.username) payload.username = updates.username;
+    if (updates.password) payload.password = updates.password;
+    if (updates.email) payload.email = updates.email;
+    if (updates.phone) payload.contact = updates.phone;
+    if (Object.keys(payload).length) scUpdate_(ent, row._rowIndex, payload);
+
+    // عکس پروفایل: نوشتن مستقیم روی هدر زنده (Profile / Profile-hoto / عکس پروفایل)
+    if (updates.avatar !== undefined) {
+      const sh = schemaSheetObj_(ent);
+      const headers = liveHeaders_(sh);
+      const idx = headers.findIndex(h => /^profile(-hoto)?$/i.test(h) || h === 'عکس پروفایل');
+      if (idx >= 0) sh.getRange(row._rowIndex, idx + 1).setValue(updates.avatar);
+      session.avatar = updates.avatar;
+    }
+    if (updates.username) session.username = updates.username;
+    PropertiesService.getScriptProperties().setProperty('operator_session_' + token, JSON.stringify(session));
+    scLog_(session, 'ویرایش پروفایل اپراتور', Object.keys(updates).join(', '), 'success');
+    return { success: true, message: 'پروفایل بروزرسانی شد' };
+  } finally { lock.releaseLock(); }
+}
+
+// ==================== آمار اپراتور (بر اساس ستون operator در Orders) ====================
+function getOperatorStats(token) {
+  const session = checkOperatorAuth(token);
+  const rows = scRead_('orders');
+  const mine = rows.filter(r => {
+    const op = text_(r.operator);
+    return op === session.username || op === session.employeeId;
+  });
+  return {
+    total: mine.length,
+    cancelled: mine.filter(r => /لغو/.test(text_(r.status))).length,
+    completed: mine.filter(r => /تکمیل/.test(text_(r.status))).length,
+    pending: mine.filter(r => /^(جدید|ثبت اولیه|در حال انجام)$/.test(text_(r.status))).length
+  };
+}
