@@ -1978,5 +1978,6 @@ api('mgrCCSession',TOKEN).then(function(r){USER=r.user;return loadData();}).then
 .catch(function(){localStorage.removeItem('zv_manager_token');TOKEN='';USER=null;$('#app').style.display='none';$('#loginView').style.display='grid';});
 })();
 </script>
+  <script src="zv-manager-finance.js?v=1.1"></script>
 </body>
 </html>
