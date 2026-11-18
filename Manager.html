@@ -680,6 +680,7 @@ for(var i=0;i<wd;i++)h+='<span></span>';
 for(var d=1;d<=mx;d++)h+='<button type="button" data-day="'+d+'" class="'+(t[0]===JD.y&&t[1]===JD.m&&t[2]===d?'today':'')+'">'+fa(d)+'</button>';
 $('#jpop').innerHTML=h+'</div>';}
 $('#jpop').addEventListener('click',function(e){
+  e.stopPropagation();
 var n=e.target.closest('[data-j]');
 if(n){var k=n.dataset.j;if(k==='py')JD.y--;if(k==='ny')JD.y++;if(k==='pm'){JD.m--;if(JD.m<1){JD.m=12;JD.y--;}}if(k==='nm'){JD.m++;if(JD.m>12){JD.m=1;JD.y++;}}jdRender();return;}
 var d=e.target.closest('[data-day]');
@@ -1043,7 +1044,8 @@ function fld(f,v){
 var val=v==null?'':v,inp='';
 var enums=(DB.defs[PS.formEntity]||{}).enums||{};
 var list=f.opts?f.opts():(enums[f.n]||null);
-if(list){inp='<select name="'+f.n+'"><option value="">انتخاب کنید</option>'+list.map(function(x){return '<option value="'+esc(x.v)+'"'+(String(val)===String(x.v)?' selected':'')+'>'+esc(x.l)+'</option>';}).join('')+'</select>';}
+if(list){var opts=list.map(function(x){return typeof x==='string'?{v:x,l:x}:x;}).filter(function(x){return x&&String(x.v==null?'':x.v).trim()!=='';});
+inp='<select name="'+f.n+'"><option value="">انتخاب کنید</option>'+opts.map(function(x){var lb=String(x.l==null||x.l===''?x.v:x.l);return '<option value="'+esc(x.v)+'"'+(String(val)===String(x.v)?' selected':'')+'>'+esc(lb)+'</option>';}).join('')+'</select>';}
 else if(f.ta)inp='<textarea name="'+f.n+'">'+esc(val)+'</textarea>';
 else if(f.jd)inp='<input name="'+f.n+'" data-jd value="'+esc(val?jInput(val):'')+'">';
 else if(f.num)inp='<input name="'+f.n+'" type="number" step="any" value="'+esc(val)+'">';
