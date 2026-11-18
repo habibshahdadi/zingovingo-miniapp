@@ -24,7 +24,92 @@ window.addEventListener('unhandledrejection',function(ev){console.warn('[ZV] rej
 </script>
 <script src="zv-compat.js"></script>
 <script src="zv-api.js"></script>
-
+<script>
+/* ═══ ZingoVingo · پایداری نشست و دادهٔ پنل مدیر — داخلی، بدون فایل خارجی ═══ */
+(function(){
+'use strict';
+if(window.__zvMgrStable) return; window.__zvMgrStable=true;
+var TK='zv_manager_token', BK='zv_manager_token_bak', explicit=false;
+try{
+  var t=localStorage.getItem(TK);
+  if(t) localStorage.setItem(BK,t);
+  else{ var b=localStorage.getItem(BK); if(b) localStorage.setItem(TK,b); }
+}catch(e){}
+var _rm=Storage.prototype.removeItem;
+Storage.prototype.removeItem=function(k){
+  if((k===TK||k===BK)&&!explicit) return; /* تایم‌اوت هرگز نشست را پاک نکند */
+  return _rm.apply(this,arguments);
+};
+document.addEventListener('click',function(e){
+  if(e.target.closest&&e.target.closest('[data-act="logout"]')){
+    explicit=true; try{_rm.call(localStorage,BK);}catch(x){}
+  }
+},true);
+setInterval(function(){
+  try{
+    var v=localStorage.getItem(TK);
+    if(v) localStorage.setItem(BK,v);
+    else if(!explicit){ var bb=localStorage.getItem(BK); if(bb) localStorage.setItem(TK,bb); }
+  }catch(e){}
+},1200);
+function netErr(m){ return /زمان|نرسید|timeout|network|ارتباط|failed|fetch|load|deadline/i.test(String(m||'')); }
+function ensureApi(){
+  var o=window.api;
+  if(typeof o!=='function'||o.__zv) return;
+  var w=function(fn){
+    var args=[].slice.call(arguments,1);
+    var read=/^(mgrCC(Bootstrap|Session|Ping|Export)|mgr(Advisor|Charts|FinanceReport)|get|check)/.test(String(fn));
+    var max=read?3:1;
+    function run(n){
+      return o.apply(this,[fn].concat(args)).catch(function(e){
+        var m=String(e&&e.message||e);
+        if(netErr(m)&&n<max) return new Promise(function(r){setTimeout(r,900*n);}).then(function(){return run(n+1);});
+        throw e;
+      });
+    }
+    return run(1);
+  };
+  w.__zv=true; window.api=w;
+}
+function repair(){
+  var db=window.DB; if(!db||typeof db!=='object') return;
+  if(db.finance&&!Array.isArray(db.finance)){
+    var f=db.finance;
+    if(!db.financeStats) db.financeStats=f;
+    db.finance=Array.isArray(f.rows)?f.rows:[];
+  }
+  if(db.financeStats&&Array.isArray(db.finance)){
+    for(var k in db.financeStats){ if(k!=='rows'&&!(k in db.finance)){ try{db.finance[k]=db.financeStats[k];}catch(e){} } }
+  }
+}
+function hooks(){
+  ['loadData','render'].forEach(function(n){
+    var o=window[n];
+    if(typeof o!=='function'||o.__zv) return;
+    var w=(n==='loadData')
+      ? function(){ return Promise.resolve(o.apply(this,arguments)).then(function(r){repair();return r;}); }
+      : function(){ repair(); return o.apply(this,arguments); };
+    w.__zv=true; window[n]=w;
+  });
+}
+function guardCal(){
+  document.querySelectorAll('.ja-date-pop,.jdate-pop,.zvfCal,[class*="cal-pop"]').forEach(function(p){
+    if(p.__zvG) return; p.__zvG=true;
+    p.addEventListener('click',function(e){ e.stopPropagation(); }); /* تغییر ماه/سال تقویم را نمی‌بندد */
+  });
+}
+ensureApi(); hooks(); guardCal();
+setInterval(function(){ ensureApi(); hooks(); },1500);
+if(window.MutationObserver){
+  var tick=null;
+  new MutationObserver(function(){
+    if(tick) return;
+    tick=requestAnimationFrame(function(){ tick=null; guardCal(); });
+  }).observe(document.documentElement,{childList:true,subtree:true});
+}
+try{ console.info('[ZV] manager stability inline ✓'); }catch(e){}
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
 <style>
 :root{--navy:#0B1736;--navy2:#13234D;--brand:#FF6B1A;--brand2:#FF8A3D;--brandDeep:#E4570B;
@@ -1978,6 +2063,6 @@ api('mgrCCSession',TOKEN).then(function(r){USER=r.user;return loadData();}).then
 .catch(function(){localStorage.removeItem('zv_manager_token');TOKEN='';USER=null;$('#app').style.display='none';$('#loginView').style.display='grid';});
 })();
 </script>
-  <script src="zv-manager-finance.js?v=1.1"></script>
+
 </body>
 </html>
