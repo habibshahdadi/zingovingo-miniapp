@@ -1,23 +1,32 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   ZingoVingo — Manager · Finance Repair & Ledger Module  v1.0
+   ZingoVingo — Manager · Finance Repair & Ledger Module   v1.1
    فایل: zv-manager-finance.js
+   ───────────────────────────────────────────────────────────────────────────────
+   ⚠️ علت کارنکردن نسخهٔ قبلی: تگ اسکریپت در خط ۲۷ (داخل <head>) قرار گرفته بود.
+      در آن لحظه هنوز DB / PS / MENU / ACT / render ساخته نشده‌اند، بنابراین
+      هیچ‌کدام از قلاب‌ها نصب نمی‌شد و فایل عملاً بی‌اثر بود.
 
-   نصب (یک خط): در Manager.html دقیقاً پیش از </body> و پس از اسکریپت اصلی:
-       <script src="zv-manager-finance.js"></script>
+   ✅ نصب صحیح (توصیه‌شده):
+      ۱) خط ۲۷ را از <head> حذف کنید.
+      ۲) دقیقاً پیش از </body> و پس از </script> اسکریپت اصلی اضافه کنید:
+         <script src="zv-manager-finance.js?v=1.1"></script>
+      ۳) یک‌بار Ctrl+F5 (کش GitHub Pages).
 
-   کارهایی که انجام می‌دهد:
-   ۱) رفع ریشه‌ای خطای «(DB[e] || []).slice is not a function» برای همهٔ بخش‌ها
-      (هر مجموعه‌ای که آبجکت/JSON/null باشد به آرایهٔ معتبر تبدیل می‌شود).
-   ۲) بازسازی کامل «دفتر مالی»: ثبت/ویرایش/حذف/بازگردانی، جستجو، فیلتر، مرتب‌سازی،
-      انتخاب گروهی، کشوی جزئیات، جابه‌جایی دستی، نماهای ذخیره‌شده، خروجی CSV، چاپ،
-      نمودارهای SVG، تقویم شمسی و ذخیره‌سازی پایدار (سرور در صورت وجود، وگرنه محلی).
+   🛡 از نسخهٔ ۱.۱ به بعد، محل تگ مهم نیست: ماژول خودش منتظر آماده‌شدن پنل
+      می‌ماند و سپس قلاب‌ها را نصب می‌کند (حتی اگر در <head> بماند).
+
+   کارکرد:
+   • رفع ریشه‌ای «(DB[e] || []).slice is not a function» برای همهٔ بخش‌ها
+   • بازسازی کامل دفتر مالی: ثبت/ویرایش/حذف/بازگردانی، جستجو، فیلتر، مرتب‌سازی،
+     انتخاب گروهی، کشوی جزئیات، جابه‌جایی دستی، نماهای ذخیره‌شده، CSV، چاپ،
+     نمودار SVG، تقویم شمسی و ذخیره‌سازی پایدار (سرور در صورت وجود، وگرنه محلی)
    ═══════════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
-  if (window.__ZV_FINANCE_V1__) return;
-  window.__ZV_FINANCE_V1__ = true;
+  if (window.__ZV_FINANCE_V11__) return;
+  window.__ZV_FINANCE_V11__ = true;
 
-  /* ═══════════ 0) پل دسترسی به متغیرهای سراسری پنل ═══════════ */
+  /* ═══════════ 0) پل دسترسی به سراسری‌های پنل ═══════════ */
   function G(name) {
     try { if (name in window) return window[name]; } catch (e) {}
     try { return (0, eval)(name); } catch (e) { return undefined; }
@@ -27,7 +36,7 @@
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
   function pageBox() { return $('#page') || $('#pageContent') || null; }
 
-  /* ═══════════ 1) نرمال‌ساز آرایه + تعمیر سراسری DB ═══════════ */
+  /* ═══════════ 1) نرمال‌ساز آرایه + تعمیر DB ═══════════ */
   var NEST = ['items', 'rows', 'data', 'list', 'records', 'entries', 'results', 'values', 'docs'];
   function zvArr(v, depth) {
     depth = depth || 0;
@@ -90,14 +99,9 @@
   }
   function unitDiv() { return S.ctrl.unit === 'تومان' ? 10 : S.ctrl.unit === 'میلیون ریال' ? 1e6 : 1; }
   function unitName() { return S.ctrl.unit === 'میلیون ریال' ? 'م.ریال' : S.ctrl.unit; }
-  function amt(n) {
-    var d = unitDiv(), v = num(n) / d;
-    if (d === 1e6) return fa(v.toFixed(1));
-    return fa(grp(v));
-  }
-  function pct(n) { return fa((num(n)).toFixed(1)) + '٪'; }
+  function amt(n) { var d = unitDiv(), v = num(n) / d; return d === 1e6 ? fa(v.toFixed(1)) : fa(grp(v)); }
+  function pct(n) { return fa(num(n).toFixed(1)) + '٪'; }
 
-  /* ── تقویم شمسی ── */
   function g2j(gy, gm, gd) {
     var leap = (gy % 4 === 0 && gy % 100 !== 0) || gy % 400 === 0;
     var gdm = [0, 31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -144,26 +148,8 @@
   function shiftDays(k, n) { var d = new Date(k + 'T12:00:00'); d.setDate(d.getDate() + n); return gKey(d); }
   function daySpan(a, b) { return Math.round((new Date(b + 'T12:00:00') - new Date(a + 'T12:00:00')) / 864e5); }
 
-  /* ═══════════ 3) شناسایی صفحه و کلید داده ═══════════ */
-  var PAGE_ID = (function () {
-    var menu = G('MENU') || [];
-    for (var i = 0; i < menu.length; i++) {
-      var l = String(menu[i] && (menu[i].l || menu[i].label || ''));
-      if (/دفتر\s*مالی/.test(l) && menu[i].id) return menu[i].id;
-    }
-    return 'finance';
-  })();
-  var ALIAS = {}; ALIAS[PAGE_ID] = 1; ALIAS.finance = 1; ALIAS.ledger = 1; ALIAS.financeEntries = 1;
-  function dataKey() {
-    var db = G('DB') || {};
-    var c = ['finance', 'financeEntries', 'ledger', 'finEntries', 'financeLedger'];
-    for (var i = 0; i < c.length; i++) if (Array.isArray(db[c[i]]) && db[c[i]].length) return c[i];
-    for (var j = 0; j < c.length; j++) if (c[j] in db) return c[j];
-    return 'finance';
-  }
-  function isFinanceActive() { var ps = G('PS'); return !!(ps && ALIAS[ps.page]); }
-
-  /* ═══════════ 4) وضعیت و ذخیره‌سازی ═══════════ */
+  /* ═══════════ 3) وضعیت ═══════════ */
+  var PAGE_ID = 'finance', ALIAS = { finance: 1, ledger: 1, financeEntries: 1 };
   var LSK = 'zv_mgr_finance_v1';
   var TYPES = ['درآمد', 'هزینه'];
   var CATS = {
@@ -184,12 +170,9 @@
     ctrl: { period: '180', from: '', to: '', unit: 'ریال', chart: 'bar', group: 'cat', cols: 'full', dense: false, tax: true, per: 12 },
     views: [], mode: 'local', seeded: false, backend: null, lastDeleted: null
   };
+  var ROWS = [];
 
-  function persist() {
-    try {
-      localStorage.setItem(LSK, JSON.stringify({ rows: ROWS, views: S.views, ctrl: S.ctrl, seeded: S.seeded, mode: S.mode }));
-    } catch (e) {}
-  }
+  function persist() { try { localStorage.setItem(LSK, JSON.stringify({ rows: ROWS, views: S.views, ctrl: S.ctrl, seeded: S.seeded, mode: S.mode })); } catch (e) {} }
   function restore() {
     try {
       var o = JSON.parse(localStorage.getItem(LSK) || '{}');
@@ -199,8 +182,6 @@
       S.seeded = !!o.seeded;
     } catch (e) {}
   }
-
-  var ROWS = [];
   function nextId() {
     var mx = 0;
     ROWS.forEach(function (r) { var m = String(r.id || '').match(/FIN-(\d+)/); if (m) mx = Math.max(mx, +m[1]); });
@@ -212,8 +193,14 @@
     return [{ id: 'BR-001', name: 'شعبه مرکزی تهران' }, { id: 'BR-002', name: 'شعبه اصفهان' }, { id: 'BR-003', name: 'شعبه مشهد' }];
   }
   function branchName(id) { var b = branches().filter(function (x) { return x.id === id; })[0]; return b ? b.name : (id || '—'); }
+  function dataKey() {
+    var db = G('DB') || {}, c = ['finance', 'financeEntries', 'ledger', 'finEntries', 'financeLedger'], i;
+    for (i = 0; i < c.length; i++) if (Array.isArray(db[c[i]]) && db[c[i]].length) return c[i];
+    for (i = 0; i < c.length; i++) if (c[i] in db) return c[i];
+    return 'finance';
+  }
+  function isFinanceActive() { var ps = G('PS'); return !!(ps && ALIAS[ps.page]); }
 
-  /* ── دادهٔ نمونهٔ باورپذیر ── */
   function seed() {
     var rs = 20261116;
     function rnd() { rs = (rs * 1103515245 + 12345) % 2147483648; return rs / 2147483648; }
@@ -223,8 +210,7 @@
     var expTitles = { 'حقوق و دستمزد': 'حقوق آبان نیروهای عملیاتی', 'اجاره': 'اجاره دفتر مرکزی', 'حمل و نقل': 'هزینه سوخت و ایاب‌وذهاب ناوگان', 'مواد و مصرفی': 'خرید مواد شوینده و مصرفی', 'بازاریابی': 'کمپین تبلیغات محلی دیوار', 'تجهیزات': 'خرید جاروبرقی صنعتی', 'اداری': 'قبوض آب و برق و اینترنت', 'مالیات و عوارض': 'مالیات بر ارزش افزوده فصل پاییز', 'سایر هزینه': 'هزینه تعمیر و نگهداری' };
     var out = [], base = today();
     for (var i = 0; i < 30; i++) {
-      var isInc = i % 3 !== 2;
-      var type = isInc ? 'درآمد' : 'هزینه';
+      var isInc = i % 3 !== 2, type = isInc ? 'درآمد' : 'هزینه';
       var cat = isInc ? pick(CATS['درآمد']) : pick(CATS['هزینه']);
       var d = shiftDays(base, -Math.floor(rnd() * 175));
       var amount = isInc ? (18 + Math.floor(rnd() * 160)) * 1e6 : (4 + Math.floor(rnd() * 70)) * 1e6;
@@ -232,39 +218,18 @@
       if (cat === 'اجاره') amount = 180e6;
       var st = rnd() < .74 ? 'پرداخت شده' : (rnd() < .55 ? 'در انتظار' : 'معوق');
       out.push({
-        id: 'FIN-' + String(i + 1).padStart(6, '0'),
-        date: d, type: type, nature: isInc ? '' : (AUTO_NATURE[cat] || 'متغیر'), cat: cat,
-        title: isInc ? pick(incTitles) : expTitles[cat],
-        amount: amount, tax: isInc ? Math.round(amount * 0.09) : 0,
-        status: st, method: pick(METHODS), branchId: pick(bs),
-        party: isInc ? 'مشتری ' + fa(1000 + i) : 'تأمین‌کننده ' + fa(200 + i),
-        refType: isInc ? pick(['سفارش', 'قرارداد', 'دستی']) : 'دستی',
-        refId: isInc ? 'ZV-' + fa(40000 + i) : '',
+        id: 'FIN-' + String(i + 1).padStart(6, '0'), date: d, type: type,
+        nature: isInc ? '' : (AUTO_NATURE[cat] || 'متغیر'), cat: cat,
+        title: isInc ? pick(incTitles) : expTitles[cat], amount: amount,
+        tax: isInc ? Math.round(amount * 0.09) : 0, status: st, method: pick(METHODS),
+        branchId: pick(bs), party: isInc ? 'مشتری ' + fa(1000 + i) : 'تأمین‌کننده ' + fa(200 + i),
+        refType: isInc ? pick(['سفارش', 'قرارداد', 'دستی']) : 'دستی', refId: isInc ? 'ZV-' + fa(40000 + i) : '',
         note: '', order: i, createdAt: d + 'T09:00:00.000Z', updatedAt: d + 'T09:00:00.000Z', demo: true
       });
     }
     out.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
     out.forEach(function (r, i) { r.order = i; });
     return out;
-  }
-
-  function syncFromDB() {
-    repairDB();
-    var db = G('DB') || {}, k = dataKey();
-    var srv = zvArr(db[k]);
-    if (srv.length) {
-      ROWS = srv.map(function (r, i) { return normalizeRow(r, i); });
-      S.seeded = ROWS.every(function (r) { return r.demo; });
-      S.mode = 'server';
-    } else if (!ROWS.length) {
-      restore();
-      if (!ROWS.length) { ROWS = seed(); S.seeded = true; S.mode = 'local'; persist(); }
-    }
-    if (db[k] !== ROWS) { try { db[k] = ROWS; } catch (e) {} }
-    restoreViewsOnly();
-  }
-  function restoreViewsOnly() {
-    try { var o = JSON.parse(localStorage.getItem(LSK) || '{}'); if (Array.isArray(o.views) && o.views.length) S.views = o.views; } catch (e) {}
   }
   function normalizeRow(r, i) {
     r = r || {};
@@ -275,8 +240,7 @@
     var dk = /^\d{4}-\d{2}-\d{2}/.test(String(d)) ? String(d).slice(0, 10) : (parseJ(d) ? jStore(d) : gKey(d) || today());
     return {
       id: r.id || r.entryId || r.financeId || ('FIN-' + String(i + 1).padStart(6, '0')),
-      date: dk, type: type,
-      nature: type === 'هزینه' ? (r.nature || AUTO_NATURE[cat] || 'متغیر') : '',
+      date: dk, type: type, nature: type === 'هزینه' ? (r.nature || AUTO_NATURE[cat] || 'متغیر') : '',
       cat: cat, title: r.title || r.desc || r.description || 'تراکنش بدون شرح',
       amount: Math.abs(num(r.amount)), tax: num(r.tax),
       status: STATUSES.indexOf(r.status) >= 0 ? r.status : 'پرداخت شده',
@@ -287,19 +251,29 @@
       createdAt: r.createdAt || dk, updatedAt: r.updatedAt || dk, demo: !!r.demo
     };
   }
+  function syncFromDB() {
+    repairDB();
+    var db = G('DB');
+    if (!db) { if (!ROWS.length) { restore(); if (!ROWS.length) { ROWS = seed(); S.seeded = true; persist(); } } return; }
+    var k = dataKey(), srv = zvArr(db[k]);
+    if (srv.length) {
+      ROWS = srv.map(normalizeRow);
+      S.seeded = ROWS.every(function (r) { return r.demo; });
+      S.mode = 'server';
+    } else if (!ROWS.length) {
+      restore();
+      if (!ROWS.length) { ROWS = seed(); S.seeded = true; S.mode = 'local'; persist(); }
+    }
+    if (db[k] !== ROWS) { try { db[k] = ROWS; } catch (e) {} }
+  }
 
-  /* ═══════════ 5) سبک بصری ═══════════ */
+  /* ═══════════ 4) سبک بصری ═══════════ */
   var CSS = [
-    '#zvfRoot{--zi:', HUE.inc, ';--ze:', HUE.exp, ';--zn:', HUE.net, ';--zc:', HUE.cap, ';--zd:', HUE.due, ';--zt:', HUE.tax, ';--zk:', HUE.ok, ';--zm:', HUE.mut, ';',
-    '--surf:var(--surface,#fff);--surf2:var(--surface2,#F6F8FD);--ink:var(--ink,#101A33);--mut:var(--muted,#5C6784);--ln:var(--line,#E2E7F3);--ln2:var(--line2,#D3DAEC);--br:var(--brand,#FF6B1A);',
-    'color:var(--ink);font-family:Vazirmatn,Tahoma,sans-serif;font-size:13px;line-height:1.85}',
+    '#zvfRoot{--surf:var(--surface,#fff);--surf2:var(--surface2,#F6F8FD);--ink:var(--ink,#101A33);--mut:var(--muted,#5C6784);--ln:var(--line,#E2E7F3);--ln2:var(--line2,#D3DAEC);--br:var(--brand,#FF6B1A);color:var(--ink);font-family:Vazirmatn,Tahoma,sans-serif;font-size:13px;line-height:1.85}',
     '#zvfRoot *{box-sizing:border-box}',
     '#zvfRoot ::-webkit-scrollbar,.zvfOv ::-webkit-scrollbar{width:10px;height:10px}',
-    '#zvfRoot ::-webkit-scrollbar-track,.zvfOv ::-webkit-scrollbar-track{background:color-mix(in srgb,var(--surf2,#F6F8FD) 80%,transparent);border-radius:9px}',
     '#zvfRoot ::-webkit-scrollbar-thumb,.zvfOv ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#FF8A3D,#E4570B);border-radius:9px;border:2px solid var(--surf,#fff)}',
-    '#zvfRoot ::-webkit-scrollbar-thumb:hover,.zvfOv ::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#FFB25E,#FF6B1A)}',
-    '.zvfHero{position:relative;overflow:hidden;border-radius:20px;padding:24px 26px;color:#fff;margin-bottom:14px;',
-    'background:radial-gradient(720px 300px at 92% -20%,rgba(255,107,26,.42),transparent 62%),radial-gradient(520px 260px at 4% 120%,rgba(15,163,163,.38),transparent 62%),linear-gradient(120deg,#0B1736,#16295B 44%,#3B2E7E 78%,#0E2E4A 120%)}',
+    '.zvfHero{position:relative;overflow:hidden;border-radius:20px;padding:24px 26px;color:#fff;margin-bottom:14px;background:radial-gradient(720px 300px at 92% -20%,rgba(255,107,26,.42),transparent 62%),radial-gradient(520px 260px at 4% 120%,rgba(15,163,163,.38),transparent 62%),linear-gradient(120deg,#0B1736,#16295B 44%,#3B2E7E 78%,#0E2E4A 120%)}',
     '.zvfHero:after{content:"";position:absolute;inset:0;opacity:.15;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.9) 1px,transparent 1px);background-size:22px 22px}',
     '.zvfHero>*{position:relative;z-index:1}',
     '.zvfHeroTop{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}',
@@ -312,8 +286,7 @@
     '.zvfChip.ok{background:rgba(14,159,110,.24);border-color:rgba(14,159,110,.5);color:#9CF3D0}',
     '.zvfChip.warn{background:rgba(217,119,6,.24);border-color:rgba(217,119,6,.5);color:#FFD79E}',
     '.zvfHeroSpark{margin-top:12px;height:44px}',
-    '.zvfRail{position:sticky;top:64px;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:11px 13px;border-radius:15px;margin-bottom:14px;',
-    'background:color-mix(in srgb,var(--surf) 90%,transparent);backdrop-filter:blur(14px);border:1px solid var(--ln);box-shadow:0 6px 22px rgba(11,23,54,.07)}',
+    '.zvfRail{position:sticky;top:64px;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:11px 13px;border-radius:15px;margin-bottom:14px;background:color-mix(in srgb,var(--surf) 90%,transparent);backdrop-filter:blur(14px);border:1px solid var(--ln);box-shadow:0 6px 22px rgba(11,23,54,.07)}',
     '.zvfF{display:flex;flex-direction:column;gap:3px;min-width:0}',
     '.zvfF>span{font-size:9.5px;font-weight:800;color:var(--mut);padding-right:2px}',
     '.zvfSel,.zvfInp{min-height:34px;padding:6px 10px;border:1px solid var(--ln2);border-radius:9px;background:var(--surf2);color:var(--ink);font:inherit;font-size:11.5px;font-weight:700;outline:none;transition:border-color .16s,box-shadow .16s}',
@@ -325,7 +298,7 @@
     '.zvfTg.on{border-color:var(--br);color:#E4570B;background:rgba(255,107,26,.1)}',
     '.zvfTg.on i{background:rgba(255,107,26,.45)}.zvfTg.on i:after{right:11px;background:var(--br)}',
     '.zvfBtn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:34px;padding:7px 14px;border-radius:10px;border:1px solid transparent;font:inherit;font-size:11.5px;font-weight:800;cursor:pointer;transition:all .16s;white-space:nowrap}',
-    '.zvfBtn:hover{transform:translateY(-1px)}.zvfBtn:active{transform:none}.zvfBtn:disabled{opacity:.5;cursor:not-allowed;transform:none}',
+    '.zvfBtn:hover{transform:translateY(-1px)}.zvfBtn:disabled{opacity:.5;cursor:not-allowed;transform:none}',
     '.zvfBtn.p{background:linear-gradient(135deg,#FF6B1A,#FF8A3D 55%,#FFB25E);color:#fff;box-shadow:0 6px 18px rgba(255,107,26,.34)}',
     '.zvfBtn.s{background:var(--surf2);border-color:var(--ln);color:var(--ink)}.zvfBtn.s:hover{border-color:var(--br);color:#E4570B}',
     '.zvfBtn.d{background:rgba(224,45,60,.12);color:#E02D3C;border-color:rgba(224,45,60,.28)}',
@@ -347,8 +320,7 @@
     '.zvfCbox h3{margin:0 0 10px;font-size:12.5px;font-weight:900;display:flex;align-items:center;gap:8px}',
     '.zvfCbox h3 em{margin-right:auto;font-style:normal;font-size:10.5px;color:var(--mut);font-weight:700}',
     '.zvfLeg{display:flex;gap:12px;flex-wrap:wrap;margin-top:9px;font-size:10.5px;font-weight:800;color:var(--mut)}',
-    '.zvfLeg span{display:inline-flex;align-items:center;gap:5px}',
-    '.zvfLeg i{width:10px;height:10px;border-radius:3px}',
+    '.zvfLeg span{display:inline-flex;align-items:center;gap:5px}.zvfLeg i{width:10px;height:10px;border-radius:3px}',
     '.zvfSvg{width:100%;height:auto;display:block;overflow:visible}',
     '.zvfBar{transform-box:fill-box;transform-origin:bottom;animation:zvfGrow .55s cubic-bezier(.2,.8,.3,1) both}',
     '.zvfHBar{transform-box:fill-box;transform-origin:right;animation:zvfGrowX .55s cubic-bezier(.2,.8,.3,1) both}',
@@ -364,8 +336,7 @@
     '.zvfSearch{position:relative;flex:1;min-width:200px;max-width:330px}',
     '.zvfSearch input{width:100%;padding-right:32px}',
     '.zvfSearch svg{position:absolute;right:9px;top:9px;width:15px;height:15px;color:var(--mut);pointer-events:none}',
-    '.zvfBulk{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:9px 13px;border-radius:12px;margin-bottom:11px;font-size:11.5px;font-weight:700;',
-    'background:linear-gradient(90deg,rgba(255,107,26,.12),rgba(124,77,255,.08));border:1px solid rgba(255,107,26,.3)}',
+    '.zvfBulk{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:9px 13px;border-radius:12px;margin-bottom:11px;font-size:11.5px;font-weight:700;background:linear-gradient(90deg,rgba(255,107,26,.12),rgba(124,77,255,.08));border:1px solid rgba(255,107,26,.3)}',
     '.zvfTw{overflow:auto;border:1px solid var(--ln);border-radius:15px;background:var(--surf)}',
     '.zvfT{width:100%;border-collapse:collapse;font-size:12px;min-width:940px}',
     '.zvfT th{position:sticky;top:0;z-index:2;background:var(--surf2);color:var(--mut);font-size:10.5px;font-weight:900;text-align:right;padding:10px 11px;border-bottom:1px solid var(--ln);white-space:nowrap;cursor:pointer;user-select:none}',
@@ -375,8 +346,7 @@
     '.zvfT tbody tr{transition:background .14s}',
     '.zvfT tbody tr:hover{background:color-mix(in srgb,var(--br) 5%,transparent)}',
     '.zvfT tbody tr.sel{background:color-mix(in srgb,var(--br) 9%,transparent)}',
-    '.zvfT tbody tr.drag{opacity:.4}',
-    '.zvfT tbody tr.over td{border-top:2px solid var(--br)}',
+    '.zvfT tbody tr.drag{opacity:.4}.zvfT tbody tr.over td{border-top:2px solid var(--br)}',
     '.zvfT tbody tr:last-child td{border-bottom:0}',
     '.zvfId{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--mut);direction:ltr}',
     '.zvfTitle{font-weight:800;color:var(--ink);max-width:270px;overflow:hidden;text-overflow:ellipsis;display:block}',
@@ -392,22 +362,18 @@
     '.zvfEmpty h4{color:var(--ink);font-size:14px;margin:0 0 5px}',
     '.zvfOv{position:fixed;inset:0;z-index:300;display:none;font-family:Vazirmatn,Tahoma,sans-serif}',
     '.zvfOv.show{display:block}',
-    '.zvfScrim{position:absolute;inset:0;background:rgba(7,13,31,.6);backdrop-filter:blur(5px);animation:zvfFade .2s ease both;opacity:1}',
-    '.zvfModal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(760px,calc(100vw - 24px));max-height:92vh;display:flex;flex-direction:column;',
-    'background:var(--surface,#fff);color:var(--ink,#101A33);border:1px solid var(--line,#E2E7F3);border-radius:20px;box-shadow:0 30px 70px rgba(3,7,20,.5);overflow:hidden;animation:zvfPop .24s cubic-bezier(.2,.9,.3,1) both}',
+    '.zvfScrim{position:absolute;inset:0;background:rgba(7,13,31,.6);backdrop-filter:blur(5px)}',
+    '.zvfModal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(760px,calc(100vw - 24px));max-height:92vh;display:flex;flex-direction:column;background:var(--surface,#fff);color:var(--ink,#101A33);border:1px solid var(--line,#E2E7F3);border-radius:20px;box-shadow:0 30px 70px rgba(3,7,20,.5);overflow:hidden;animation:zvfPop .24s cubic-bezier(.2,.9,.3,1) both}',
     '@keyframes zvfPop{from{opacity:0;transform:translate(-50%,-46%) scale(.97)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}',
-    '.zvfDrawer{position:absolute;top:0;left:0;height:100%;width:min(520px,100vw);display:flex;flex-direction:column;background:var(--surface,#fff);color:var(--ink,#101A33);',
-    'border-right:1px solid var(--line,#E2E7F3);box-shadow:0 0 60px rgba(3,7,20,.45);animation:zvfSlide .26s cubic-bezier(.3,.9,.3,1) both}',
+    '.zvfDrawer{position:absolute;top:0;left:0;height:100%;width:min(520px,100vw);display:flex;flex-direction:column;background:var(--surface,#fff);color:var(--ink,#101A33);border-right:1px solid var(--line,#E2E7F3);box-shadow:0 0 60px rgba(3,7,20,.45);animation:zvfSlide .26s cubic-bezier(.3,.9,.3,1) both}',
     '@keyframes zvfSlide{from{transform:translateX(-102%)}to{transform:none}}',
     '.zvfOh{display:flex;align-items:center;gap:10px;padding:15px 19px;border-bottom:1px solid var(--line,#E2E7F3);flex:0 0 auto}',
     '.zvfOh h3{margin:0;font-size:14.5px;font-weight:900;flex:1}',
     '.zvfOb{padding:17px 19px;overflow-y:auto;flex:1 1 auto;min-height:0}',
     '.zvfOf{padding:12px 19px;border-top:1px solid var(--line,#E2E7F3);display:flex;gap:8px;flex-wrap:wrap;align-items:center;flex:0 0 auto}',
-    '.zvfGrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}',
-    '.zvfGrid .full{grid-column:1/-1}',
+    '.zvfGrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.zvfGrid .full{grid-column:1/-1}',
     '.zvfFld{display:flex;flex-direction:column;gap:5px;min-width:0}',
-    '.zvfFld label{font-size:11px;font-weight:800;color:var(--muted,#5C6784)}',
-    '.zvfFld .req{color:#E02D3C}',
+    '.zvfFld label{font-size:11px;font-weight:800;color:var(--muted,#5C6784)}.zvfFld .req{color:#E02D3C}',
     '.zvfFld input,.zvfFld select,.zvfFld textarea{min-height:38px;padding:8px 11px;border:1px solid var(--line,#E2E7F3);border-radius:10px;background:var(--surface2,#F6F8FD);color:inherit;font:inherit;font-size:12.5px;width:100%;outline:none;transition:border-color .16s,box-shadow .16s}',
     '.zvfFld textarea{min-height:70px;resize:vertical}',
     '.zvfFld input:focus,.zvfFld select:focus,.zvfFld textarea:focus{border-color:#FF6B1A;box-shadow:0 0 0 3px rgba(255,107,26,.14)}',
@@ -425,8 +391,7 @@
     '.zvfSecT{font-size:11.5px;font-weight:900;color:#E4570B;margin:15px 0 9px}',
     '.zvfAmtPreview{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;border-radius:11px;background:rgba(255,107,26,.09);border:1px solid rgba(255,107,26,.28);font-size:11.5px;font-weight:800}',
     '.zvfCal{position:fixed;z-index:400;display:none;width:min(310px,calc(100vw - 24px));background:var(--surface,#fff);color:var(--ink,#101A33);border:1px solid var(--line,#E2E7F3);border-radius:14px;padding:11px;box-shadow:0 20px 50px rgba(3,7,20,.35)}',
-    '.zvfCal.show{display:block;animation:zvfPop2 .15s ease both}',
-    '@keyframes zvfPop2{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}',
+    '.zvfCal.show{display:block}',
     '.zvfCalH{display:flex;align-items:center;gap:4px;margin-bottom:8px;font-size:12.5px;font-weight:900}',
     '.zvfCalH button{border:0;background:var(--surface2,#F6F8FD);color:inherit;border-radius:8px;padding:4px 9px;cursor:pointer;font:inherit;font-size:13px}',
     '.zvfCalH button:hover{background:#FF6B1A;color:#fff}',
@@ -445,7 +410,6 @@
     '@keyframes zvfTin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}',
     '.zvfToast.ok{border-right-color:#0E9F6E}.zvfToast.err{border-right-color:#E02D3C}.zvfToast.warn{border-right-color:#D97706}',
     '.zvfToast button{margin-right:auto;background:rgba(255,255,255,.16);border:0;color:#fff;font:inherit;font-weight:900;font-size:11.5px;padding:5px 12px;border-radius:8px;cursor:pointer}',
-    '.zvfToast button:hover{background:rgba(255,255,255,.3)}',
     '.zvfNote{display:flex;gap:10px;align-items:flex-start;padding:10px 13px;border-radius:12px;font-size:11.5px;line-height:1.9;margin-bottom:12px;background:rgba(46,99,231,.09);border:1px solid rgba(46,99,231,.26);color:var(--ink)}',
     '.zvfNote.warn{background:rgba(217,119,6,.1);border-color:rgba(217,119,6,.3)}',
     '@media(max-width:1000px){.zvfCharts{grid-template-columns:1fr}.zvfRail{position:static}}',
@@ -453,9 +417,10 @@
     '@media(prefers-reduced-motion:reduce){#zvfRoot *,.zvfOv *,#zvfToasts *{animation:none!important;transition:none!important}.zvfLine{stroke-dashoffset:0}.zvfArea{opacity:1}}',
     '@media print{body>*{display:none!important}#printArea{display:block!important;font-family:Vazirmatn,Tahoma,sans-serif;color:#000}}'
   ].join('');
-  var st = document.createElement('style'); st.id = 'zvfCss'; st.textContent = CSS; document.head.appendChild(st);
+  var st = document.createElement('style'); st.id = 'zvfCss'; st.textContent = CSS;
+  (document.head || document.documentElement).appendChild(st);
 
-  /* ═══════════ 6) محاسبات ═══════════ */
+  /* ═══════════ 5) محاسبات ═══════════ */
   function range() {
     var c = S.ctrl, to = today(), from;
     if (c.period === 'custom') {
@@ -504,16 +469,13 @@
       t.tax += num(r.tax);
       if (r.type === 'درآمد') {
         if (r.status === 'پرداخت شده') { t.inc += r.amount; t.cash += r.amount; }
-        else if (r.status === 'معوق') t.due += r.amount;
-        else t.pend += r.amount;
+        else if (r.status === 'معوق') t.due += r.amount; else t.pend += r.amount;
       } else {
         if (r.status === 'پرداخت شده') {
           if (r.nature === 'سرمایه‌ای') t.cap += r.amount;
-          else if (r.nature === 'ثابت') t.fix += r.amount;
-          else t.vari += r.amount;
+          else if (r.nature === 'ثابت') t.fix += r.amount; else t.vari += r.amount;
           t.cash -= r.amount;
-        } else if (r.status === 'معوق') t.due += r.amount;
-        else t.pend += r.amount;
+        } else if (r.status === 'معوق') t.due += r.amount; else t.pend += r.amount;
       }
     });
     t.net = t.inc - t.fix - t.vari;
@@ -527,7 +489,6 @@
       var mk = jMonthKey(d); return { k: mk, l: JM[(+mk.slice(5, 7)) - 1] };
     }
     if (!weekly) {
-      var cur = rg.from.slice(0, 7);
       var d0 = new Date(rg.from + 'T12:00:00');
       for (var i = 0; i < 24; i++) {
         var dd = new Date(d0.getFullYear(), d0.getMonth() + i, 1), mk = jMonthKey(dd);
@@ -536,7 +497,7 @@
       }
     }
     rows.forEach(function (r) {
-      if (r.status === 'لغو شده' || r.status !== 'پرداخت شده') return;
+      if (r.status !== 'پرداخت شده') return;
       var kk = keyOf(r.date);
       if (!map[kk.k]) { map[kk.k] = { k: kk.k, l: kk.l, inc: 0, exp: 0, net: 0 }; order.push(kk.k); }
       var b = map[kk.k];
@@ -561,7 +522,7 @@
     return totals(ROWS.filter(function (r) { return inRange(r, p); }));
   }
 
-  /* ═══════════ 7) نمودارهای SVG ═══════════ */
+  /* ═══════════ 6) نمودارها ═══════════ */
   function spark(vals, color) {
     vals = vals && vals.length ? vals : [0, 0];
     var w = 120, h = 26, n = Math.max(1, vals.length - 1);
@@ -585,7 +546,7 @@
     s += '<pattern id="zvfExpP" width="6" height="6" patternTransform="rotate(45)" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="0" y2="6" stroke="#fff" stroke-width="2.4" opacity=".38"/></pattern></defs>';
     for (var g = 0; g <= 4; g++) {
       var vv = top * g / 4, yy = y(vv);
-      s += '<line x1="' + PL + ' y1="' + yy.toFixed(1) + '" x2="' + (W - PR) + '" y2="' + yy.toFixed(1) + '" stroke="currentColor" stroke-opacity=".1" stroke-width="1"/>';
+      s += '<line x1="' + PL + '" y1="' + yy.toFixed(1) + '" x2="' + (W - PR) + '" y2="' + yy.toFixed(1) + '" stroke="currentColor" stroke-opacity=".1"/>';
       s += '<text x="' + (PL - 7) + '" y="' + (yy + 3.5).toFixed(1) + '" text-anchor="end" font-size="9.5" fill="currentColor" fill-opacity=".55" font-family="Vazirmatn">' + moneyC(vv / unitDiv()) + '</text>';
     }
     var netPts = [];
@@ -595,18 +556,15 @@
       if (mode === 'bar' || mode === 'stack') {
         var bw = Math.min(26, step * 0.3);
         if (mode === 'stack') {
-          var h1 = (b.inc / top) * ih, h2 = (b.exp / top) * ih;
-          s += '<rect class="zvfBar" x="' + (cx - bw / 2) + '" y="' + y(b.inc) + '" width="' + bw + '" height="' + Math.max(0, h1) + '" rx="4" fill="' + HUE.inc + '"><title>' + esc(b.l) + ' · درآمد ' + amt(b.inc) + '</title></rect>';
-          s += '<rect class="zvfBar" x="' + (cx - bw / 2) + '" y="' + y(b.inc + b.exp) + '" width="' + bw + '" height="' + Math.max(0, h2) + '" rx="4" fill="' + HUE.exp + '"><title>' + esc(b.l) + ' · هزینه ' + amt(b.exp) + '</title></rect>';
-          s += '<rect x="' + (cx - bw / 2) + '" y="' + y(b.inc + b.exp) + '" width="' + bw + '" height="' + Math.max(0, h2) + '" rx="4" fill="url(#zvfExpP)" pointer-events="none"/>';
+          s += '<rect class="zvfBar" x="' + (cx - bw / 2) + '" y="' + y(b.inc) + '" width="' + bw + '" height="' + Math.max(0, (b.inc / top) * ih) + '" rx="4" fill="' + HUE.inc + '"><title>' + esc(b.l) + ' · درآمد ' + amt(b.inc) + '</title></rect>';
+          s += '<rect class="zvfBar" x="' + (cx - bw / 2) + '" y="' + y(b.inc + b.exp) + '" width="' + bw + '" height="' + Math.max(0, (b.exp / top) * ih) + '" rx="4" fill="' + HUE.exp + '"><title>' + esc(b.l) + ' · هزینه ' + amt(b.exp) + '</title></rect>';
+          s += '<rect x="' + (cx - bw / 2) + '" y="' + y(b.inc + b.exp) + '" width="' + bw + '" height="' + Math.max(0, (b.exp / top) * ih) + '" rx="4" fill="url(#zvfExpP)" pointer-events="none"/>';
         } else {
           s += '<rect class="zvfBar" x="' + (cx - bw - 2) + '" y="' + y(b.inc) + '" width="' + bw + '" height="' + Math.max(0, (b.inc / top) * ih) + '" rx="4" fill="' + HUE.inc + '"><title>' + esc(b.l) + ' · درآمد ' + amt(b.inc) + '</title></rect>';
           s += '<rect class="zvfBar" x="' + (cx + 2) + '" y="' + y(b.exp) + '" width="' + bw + '" height="' + Math.max(0, (b.exp / top) * ih) + '" rx="4" fill="' + HUE.exp + '"><title>' + esc(b.l) + ' · هزینه ' + amt(b.exp) + '</title></rect>';
           s += '<rect x="' + (cx + 2) + '" y="' + y(b.exp) + '" width="' + bw + '" height="' + Math.max(0, (b.exp / top) * ih) + '" rx="4" fill="url(#zvfExpP)" pointer-events="none"/>';
         }
-        if (n <= 7) {
-          s += '<text x="' + cx + '" y="' + (y(mode === 'stack' ? b.inc + b.exp : Math.max(b.inc, b.exp)) - 6) + '" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" fill-opacity=".7" font-family="Vazirmatn">' + moneyC((mode === 'stack' ? b.inc + b.exp : Math.max(b.inc, b.exp)) / unitDiv()) + '</text>';
-        }
+        if (n <= 7) s += '<text x="' + cx + '" y="' + (y(mode === 'stack' ? b.inc + b.exp : Math.max(b.inc, b.exp)) - 6) + '" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" fill-opacity=".7" font-family="Vazirmatn">' + moneyC((mode === 'stack' ? b.inc + b.exp : Math.max(b.inc, b.exp)) / unitDiv()) + '</text>';
       }
       s += '<text x="' + cx + '" y="' + (H - 12) + '" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor" fill-opacity=".65" font-family="Vazirmatn">' + esc(b.l) + '</text>';
     });
@@ -623,21 +581,17 @@
       s += '<polyline class="zvfLine" points="' + np + '" fill="none" stroke="' + HUE.net + '" stroke-width="2.6" stroke-dasharray="6 4" stroke-linejoin="round"/>';
       netPts.forEach(function (q, i) { s += '<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="3.6" fill="' + HUE.net + '" stroke="#fff" stroke-width="1.4"><title>' + esc(bs[i].l) + ' · سود ' + amt(bs[i].net) + '</title></circle>'; });
     }
-    s += '</svg>';
-    return s;
+    return s + '</svg>';
   }
   function chartBreak(gs) {
     if (!gs.length) return '<div class="zvfEmpty" style="padding:26px"><p>داده‌ای برای گروه‌بندی نیست.</p></div>';
     var total = gs.reduce(function (a, b) { return a + b.v; }, 0) || 1;
     var W = 420, rowH = 34, H = gs.length * rowH + 8, LW = 118, BW = W - LW - 78;
-    var s = '<svg class="zvfSvg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="تفکیک بر اساس گروه">';
-    s += '<defs>';
+    var s = '<svg class="zvfSvg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="تفکیک گروهی"><defs>';
     for (var p = 0; p < 3; p++) s += '<pattern id="zvfp' + p + '" width="' + (5 + p * 2) + '" height="' + (5 + p * 2) + '" patternTransform="rotate(' + (45 + p * 30) + ')" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="0" y2="' + (5 + p * 2) + '" stroke="#fff" stroke-width="2" opacity=".4"/></pattern>';
     s += '</defs>';
     gs.forEach(function (g, i) {
-      var yy = i * rowH + 6, w = Math.max(2, (g.v / total) * BW * (total / (gs[0].v || 1)));
-      w = Math.max(2, (g.v / (gs[0].v || 1)) * BW);
-      var c = PAL[i % PAL.length];
+      var yy = i * rowH + 6, w = Math.max(2, (g.v / (gs[0].v || 1)) * BW), c = PAL[i % PAL.length];
       s += '<text x="' + (W - 4) + '" y="' + (yy + 15) + '" text-anchor="end" font-size="11" font-weight="700" fill="currentColor" font-family="Vazirmatn">' + esc(g.l.length > 16 ? g.l.slice(0, 15) + '…' : g.l) + '</text>';
       s += '<rect x="' + (W - LW - BW) + '" y="' + (yy + 4) + '" width="' + BW + '" height="15" rx="7.5" fill="currentColor" fill-opacity=".07"/>';
       s += '<rect class="zvfHBar" x="' + (W - LW - w) + '" y="' + (yy + 4) + '" width="' + w + '" height="15" rx="7.5" fill="' + c + '"><title>' + esc(g.l) + ' · ' + amt(g.v) + ' ' + unitName() + '</title></rect>';
@@ -645,11 +599,10 @@
       s += '<text x="' + (W - LW - BW - 8) + '" y="' + (yy + 16) + '" text-anchor="end" font-size="10.5" font-weight="800" fill="' + c + '" font-family="Vazirmatn">' + moneyC(g.v / unitDiv()) + '</text>';
       s += '<text x="' + (W - LW - BW - 8) + '" y="' + (yy + 27) + '" text-anchor="end" font-size="9" fill="currentColor" fill-opacity=".5" font-family="Vazirmatn">' + fa((g.v / total * 100).toFixed(0)) + '٪</text>';
     });
-    s += '</svg>';
-    return s;
+    return s + '</svg>';
   }
 
-  /* ═══════════ 8) رندر صفحه ═══════════ */
+  /* ═══════════ 7) رندر ═══════════ */
   function ico(n) {
     var m = {
       plus: '<path d="M12 5v14M5 12h14"/>', search: '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
@@ -664,18 +617,15 @@
     };
     return '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto">' + (m[n] || m.plus) + '</svg>';
   }
-  function pill(text, color) { return '<span class="zvfPill" style="background:color-mix(in srgb,' + color + ' 14%,transparent);color:' + color + '">' + esc(text) + '</span>'; }
+  function pill(t, c) { return '<span class="zvfPill" style="background:color-mix(in srgb,' + c + ' 14%,transparent);color:' + c + '">' + esc(t) + '</span>'; }
   function statusColor(s) { return s === 'پرداخت شده' ? HUE.ok : s === 'در انتظار' ? HUE.tax : s === 'معوق' ? HUE.exp : HUE.mut; }
-
   function sel(key, val, opts, label) {
-    return '<label class="zvfF"><span>' + esc(label) + '</span><select class="zvfSel" data-zvf-ctrl="' + key + '">' +
-      opts.map(function (o) { var v = Array.isArray(o) ? o[0] : o, l = Array.isArray(o) ? o[1] : o; return '<option value="' + esc(v) + '"' + (String(val) === String(v) ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('') +
-      '</select></label>';
+    return '<label class="zvfF"><span>' + esc(label) + '</span><select class="zvfSel" data-zvf-ctrl="' + key + '" data-zvf-key="c-' + key + '">' +
+      opts.map(function (o) { var v = Array.isArray(o) ? o[0] : o, l = Array.isArray(o) ? o[1] : o; return '<option value="' + esc(v) + '"' + (String(val) === String(v) ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('') + '</select></label>';
   }
   function fsel(key, val, opts, label) {
-    return '<label class="zvfF"><span>' + esc(label) + '</span><select class="zvfSel" data-zvf-filter="' + key + '"><option value="">همه</option>' +
-      opts.map(function (o) { var v = typeof o === 'string' ? o : o.id, l = typeof o === 'string' ? o : o.name; return '<option value="' + esc(v) + '"' + (String(val) === String(v) ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('') +
-      '</select></label>';
+    return '<label class="zvfF"><span>' + esc(label) + '</span><select class="zvfSel" data-zvf-filter="' + key + '" data-zvf-key="f-' + key + '"><option value="">همه</option>' +
+      opts.map(function (o) { var v = typeof o === 'string' ? o : o.id, l = typeof o === 'string' ? o : o.name; return '<option value="' + esc(v) + '"' + (String(val) === String(v) ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('') + '</select></label>';
   }
 
   function render() {
@@ -692,11 +642,9 @@
     var ttl = (G('TITLES') || {})[PAGE_ID] || ['دفتر مالی', 'درآمد، هزینه و مطالبات'];
     var tb = $('#tbTitle'); if (tb) tb.textContent = ttl[0];
     var tc = $('#tbCrumb'); if (tc) tc.textContent = 'ZingoVingo · ' + ttl[1];
+    var th = $('#themeBtn'); if (th && host('icon')) { try { th.innerHTML = host('icon')(document.documentElement.dataset.theme === 'dark' ? 'sun' : 'moon'); } catch (e) {} }
 
-    var h = [];
-    h.push('<div id="zvfRoot">');
-
-    /* hero */
+    var h = ['<div id="zvfRoot">'];
     var netColor = t.net >= 0 ? '#9CF3D0' : '#FFB4B4';
     h.push('<section class="zvfHero"><div class="zvfHeroTop"><div>',
       '<h2>سود خالص عملیاتی · ' + esc(jDisp(rg.from)) + ' تا ' + esc(jDisp(rg.to)) + '</h2>',
@@ -708,11 +656,8 @@
       '<span class="zvfChip ' + (S.mode === 'server' ? 'ok' : 'warn') + '"><i></i>' + (S.mode === 'server' ? 'همگام با سرور' : 'ذخیره محلی') + '</span>',
       '<button class="zvfBtn p" data-zvf="new">' + ico('plus') + ' ثبت تراکنش</button>',
       '<button class="zvfBtn s" data-zvf="diag" style="background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.24);color:#fff">' + ico('tool') + ' تشخیص</button>',
-      '</div></div>',
-      '<div class="zvfHeroSpark">' + spark(bs.map(function (b) { return b.net; }), '#9CF3D0') + '</div>',
-      '</section>');
+      '</div></div><div class="zvfHeroSpark">' + spark(bs.map(function (b) { return b.net; }), '#9CF3D0') + '</div></section>');
 
-    /* rail */
     h.push('<div class="zvfRail">');
     h.push(sel('period', S.ctrl.period, [['30', '۳۰ روز'], ['90', '۹۰ روز'], ['180', '۶ ماه'], ['365', '۱۲ ماه'], ['all', 'همه'], ['custom', 'بازه دلخواه']], 'بازه'));
     if (S.ctrl.period === 'custom') {
@@ -722,22 +667,17 @@
     h.push(sel('unit', S.ctrl.unit, ['ریال', 'تومان', 'میلیون ریال'], 'واحد'));
     h.push(sel('chart', S.ctrl.chart, [['bar', 'ستونی'], ['line', 'خطی'], ['stack', 'انباشته']], 'نمودار'));
     h.push(sel('group', S.ctrl.group, [['cat', 'دسته'], ['branch', 'شعبه'], ['method', 'روش'], ['type', 'نوع'], ['status', 'وضعیت']], 'گروه‌بندی'));
-    h.push(sel('sort', S.sort, [['date_desc', 'تاریخ ↓'], ['date_asc', 'تاریخ ↑'], ['amount_desc', 'مبلغ ↓'], ['amount_asc', 'مبلغ ↑'], ['manual', 'دستی (کشیدنی)']], 'مرتب‌سازی'), '');
+    h.push(sel('sort', S.sort, [['date_desc', 'تاریخ ↓'], ['date_asc', 'تاریخ ↑'], ['amount_desc', 'مبلغ ↓'], ['amount_asc', 'مبلغ ↑'], ['manual', 'دستی (کشیدنی)']], 'مرتب‌سازی'));
     h.push(sel('cols', S.ctrl.cols, [['full', 'کامل'], ['brief', 'خلاصه']], 'ستون‌ها'));
     h.push(sel('per', S.ctrl.per, [[12, '۱۲'], [25, '۲۵'], [50, '۵۰'], [100, '۱۰۰']], 'در صفحه'));
     h.push('<label class="zvfF"><span>نمایش</span><span style="display:flex;gap:6px">',
       '<button class="zvfTg' + (S.ctrl.dense ? ' on' : '') + '" data-zvf-tg="dense"><i></i>فشرده</button>',
-      '<button class="zvfTg' + (S.ctrl.tax ? ' on' : '') + '" data-zvf-tg="tax"><i></i>مالیات</button>',
-      '</span></label>');
-    h.push('<span class="zvfRailSep"></span>');
-    h.push('<label class="zvfF"><span>&nbsp;</span><span style="display:flex;gap:6px">',
+      '<button class="zvfTg' + (S.ctrl.tax ? ' on' : '') + '" data-zvf-tg="tax"><i></i>مالیات</button></span></label>');
+    h.push('<span class="zvfRailSep"></span><label class="zvfF"><span>&nbsp;</span><span style="display:flex;gap:6px">',
       '<button class="zvfBtn s" data-zvf="reset">' + ico('undo') + ' بازنشانی</button>',
       '<button class="zvfBtn s" data-zvf="csv">' + ico('dl') + ' CSV</button>',
-      '<button class="zvfBtn s" data-zvf="print">' + ico('print') + ' چاپ</button>',
-      '</span></label>');
-    h.push('</div>');
+      '<button class="zvfBtn s" data-zvf="print">' + ico('print') + ' چاپ</button></span></label></div>');
 
-    /* kpis */
     function delta(cur, prev) { if (!prev) return ''; var d = Math.round((cur - prev) / Math.abs(prev) * 100); return '<span class="kd ' + (d >= 0 ? 'up' : 'dn') + '">' + (d >= 0 ? '▲' : '▼') + ' ' + fa(Math.abs(d)) + '٪</span>'; }
     var kp = [
       ['درآمد تحقق‌یافته', t.inc, HUE.inc, 'د', bs.map(function (b) { return b.inc; }), delta(t.inc, pt.inc)],
@@ -748,36 +688,23 @@
       ['مالیات ثبت‌شده', t.tax, HUE.tax, 'م', bs.map(function (b) { return b.inc; }), '']
     ];
     h.push('<div class="zvfKpis">' + kp.map(function (k) {
-      return '<div class="zvfK" style="--c:' + k[2] + '">' + k[5] + '<div class="kl"><b>' + k[3] + '</b>' + esc(k[0]) + '</div>' +
-        '<div class="kv">' + amt(k[1]) + '</div><div class="ku">' + esc(unitName()) + '</div>' + spark(k[4], k[2]) + '</div>';
+      return '<div class="zvfK" style="--c:' + k[2] + '">' + k[5] + '<div class="kl"><b>' + k[3] + '</b>' + esc(k[0]) + '</div><div class="kv">' + amt(k[1]) + '</div><div class="ku">' + esc(unitName()) + '</div>' + spark(k[4], k[2]) + '</div>';
     }).join('') + '</div>');
 
-    /* charts */
     var gl = { cat: 'دسته', branch: 'شعبه', method: 'روش پرداخت', type: 'نوع', status: 'وضعیت' }[S.ctrl.group];
-    h.push('<div class="zvfCharts">',
-      '<div class="zvfCbox"><h3>روند درآمد، هزینه و سود<em>' + esc(unitName()) + ' · ' + fa(bs.length) + ' بازه</em></h3>' + chartMain(bs) +
+    h.push('<div class="zvfCharts"><div class="zvfCbox"><h3>روند درآمد، هزینه و سود<em>' + esc(unitName()) + ' · ' + fa(bs.length) + ' بازه</em></h3>' + chartMain(bs) +
       '<div class="zvfLeg"><span><i style="background:' + HUE.inc + '"></i>درآمد</span><span><i style="background:' + HUE.exp + '"></i>هزینه عملیاتی</span><span><i style="background:' + HUE.net + '"></i>سود خالص</span><span>هزینه سرمایه‌ای در سود لحاظ نمی‌شود</span></div></div>',
-      '<div class="zvfCbox"><h3>تفکیک بر اساس ' + esc(gl) + '<em>۸ گروه برتر</em></h3>' + chartBreak(gs) + '</div>',
-      '</div>');
+      '<div class="zvfCbox"><h3>تفکیک بر اساس ' + esc(gl) + '<em>۸ گروه برتر</em></h3>' + chartBreak(gs) + '</div></div>');
 
-    /* views + search + filters */
-    h.push('<div class="zvfViews">',
-      '<button class="zvfBtn s" data-zvf="saveview">' + ico('star') + ' ذخیره نما</button>',
-      S.views.map(function (v) { return '<span class="zvfVChip" data-zvf="applyview" data-id="' + esc(v.id) + '">' + esc(v.name) + ' <b data-zvf="delview" data-id="' + esc(v.id) + '">✕</b></span>'; }).join(''),
-      '</div>');
+    h.push('<div class="zvfViews"><button class="zvfBtn s" data-zvf="saveview">' + ico('star') + ' ذخیره نما</button>',
+      S.views.map(function (v) { return '<span class="zvfVChip" data-zvf="applyview" data-id="' + esc(v.id) + '">' + esc(v.name) + ' <b data-zvf="delview" data-id="' + esc(v.id) + '">✕</b></span>'; }).join(''), '</div>');
 
-    var allCats = CATS['درآمد'].concat(CATS['هزینه']);
     h.push('<div class="zvfRail" style="position:static;top:auto">',
       '<div class="zvfSearch">' + ico('search') + '<input class="zvfInp" data-zvf-q data-zvf-key="q" placeholder="جستجو در شرح، دسته، شناسه، طرف حساب…" value="' + esc(S.q) + '"></div>',
-      fsel('type', S.f.type, TYPES, 'نوع'),
-      fsel('cat', S.f.cat, allCats, 'دسته'),
-      fsel('status', S.f.status, STATUSES, 'وضعیت'),
-      fsel('branch', S.f.branch, branches(), 'شعبه'),
-      fsel('method', S.f.method, METHODS, 'روش'),
-      '<label class="zvfF"><span>&nbsp;</span><button class="zvfBtn s" data-zvf="clearf">پاک کردن فیلترها</button></label>',
-      '</div>');
+      fsel('type', S.f.type, TYPES, 'نوع'), fsel('cat', S.f.cat, CATS['درآمد'].concat(CATS['هزینه']), 'دسته'),
+      fsel('status', S.f.status, STATUSES, 'وضعیت'), fsel('branch', S.f.branch, branches(), 'شعبه'), fsel('method', S.f.method, METHODS, 'روش'),
+      '<label class="zvfF"><span>&nbsp;</span><button class="zvfBtn s" data-zvf="clearf">پاک کردن فیلترها</button></label></div>');
 
-    /* bulk */
     if (selN) {
       h.push('<div class="zvfBulk"><b>' + fa(selN) + '</b> مورد انتخاب شده',
         '<select class="zvfSel" id="zvfBulkStatus"><option value="">تغییر وضعیت…</option>' + STATUSES.map(function (s) { return '<option>' + esc(s) + '</option>'; }).join('') + '</select>',
@@ -787,10 +714,8 @@
         '<button class="zvfBtn s" data-zvf="selclear">انصراف</button></div>');
     }
 
-    /* table */
     if (!page.length) {
-      h.push('<div class="zvfCbox"><div class="zvfEmpty"><div class="ei">＋</div><h4>تراکنشی در این بازه یافت نشد</h4>',
-        '<p>فیلترها را تغییر دهید یا اولین تراکنش را ثبت کنید.</p>',
+      h.push('<div class="zvfCbox"><div class="zvfEmpty"><div class="ei">＋</div><h4>تراکنشی در این بازه یافت نشد</h4><p>فیلترها را تغییر دهید یا اولین تراکنش را ثبت کنید.</p>',
         '<div style="margin-top:12px;display:flex;gap:8px;justify-content:center"><button class="zvfBtn p" data-zvf="new">' + ico('plus') + ' ثبت تراکنش</button>',
         '<button class="zvfBtn s" data-zvf="reset">بازنشانی فیلترها</button></div></div></div>');
     } else {
@@ -799,62 +724,49 @@
         '<th style="width:34px"><input type="checkbox" data-zvf="selall"' + (page.every(function (r) { return S.sel[r.id]; }) ? ' checked' : '') + '></th>',
         S.sort === 'manual' ? '<th style="width:28px"></th>' : '',
         '<th data-zvf-sort="date_desc">تاریخ' + (S.sort.indexOf('date') === 0 ? (S.sort === 'date_desc' ? ' ↓' : ' ↑') : '') + '</th>',
-        '<th>شناسه</th><th>نوع</th><th>شرح</th><th>دسته</th>',
-        full ? '<th>شعبه</th>' : '',
+        '<th>شناسه</th><th>نوع</th><th>شرح</th><th>دسته</th>', full ? '<th>شعبه</th>' : '',
         '<th data-zvf-sort="amount_desc">مبلغ (' + esc(unitName()) + ')' + (S.sort.indexOf('amount') === 0 ? (S.sort === 'amount_desc' ? ' ↓' : ' ↑') : '') + '</th>',
-        S.ctrl.tax ? '<th>مالیات</th>' : '',
-        '<th>وضعیت</th>',
-        full ? '<th>روش</th>' : '',
+        S.ctrl.tax ? '<th>مالیات</th>' : '', '<th>وضعیت</th>', full ? '<th>روش</th>' : '',
         '<th style="text-align:left">عملیات</th></tr></thead><tbody id="zvfBody">');
       page.forEach(function (r) {
         var c = r.type === 'درآمد' ? HUE.inc : HUE.exp;
         h.push('<tr data-zvf-row="' + esc(r.id) + '"' + (S.sel[r.id] ? ' class="sel"' : '') + '>',
           '<td><input type="checkbox" data-zvf-sel="' + esc(r.id) + '"' + (S.sel[r.id] ? ' checked' : '') + '></td>',
-          S.sort === 'manual' ? '<td><span class="zvfDrag" draggable="true" data-zvf-drag="' + esc(r.id) + '" title="جابه‌جایی">⠿</span></td>' : '',
-          '<td>' + jDisp(r.date) + '</td>',
-          '<td><span class="zvfId">' + esc(r.id) + '</span></td>',
-          '<td>' + pill(r.type, c) + '</td>',
+          S.sort === 'manual' ? '<td><span class="zvfDrag" draggable="true" data-zvf-drag="' + esc(r.id) + '">⠿</span></td>' : '',
+          '<td>' + jDisp(r.date) + '</td><td><span class="zvfId">' + esc(r.id) + '</span></td><td>' + pill(r.type, c) + '</td>',
           '<td><span class="zvfTitle" title="' + esc(r.title) + '">' + esc(r.title) + '</span>' +
           (r.refId || r.party ? '<span class="zvfSub">' + esc([r.refType !== 'دستی' ? r.refType + ' ' + r.refId : '', r.party].filter(Boolean).join(' · ')) + '</span>' : '') + '</td>',
           '<td>' + esc(r.cat) + (r.nature ? '<span class="zvfSub"> · ' + esc(r.nature) + '</span>' : '') + '</td>',
           full ? '<td>' + esc(branchName(r.branchId)) + '</td>' : '',
           '<td class="zvfNum" style="color:' + c + '">' + (r.type === 'هزینه' ? '−' : '+') + amt(r.amount) + '</td>',
           S.ctrl.tax ? '<td class="zvfNum" style="color:' + HUE.tax + '">' + (r.tax ? amt(r.tax) : '—') + '</td>' : '',
-          '<td>' + pill(r.status, statusColor(r.status)) + '</td>',
-          full ? '<td>' + esc(r.method) + '</td>' : '',
+          '<td>' + pill(r.status, statusColor(r.status)) + '</td>', full ? '<td>' + esc(r.method) + '</td>' : '',
           '<td><div class="zvfRa">',
           '<button class="zvfBtn s i" data-zvf="view" data-id="' + esc(r.id) + '" title="جزئیات">' + ico('eye') + '</button>',
           '<button class="zvfBtn s i" data-zvf="edit" data-id="' + esc(r.id) + '" title="ویرایش">' + ico('edit') + '</button>',
           '<button class="zvfBtn d i" data-zvf="del" data-id="' + esc(r.id) + '" title="حذف">' + ico('trash') + '</button>',
           '</div></td></tr>');
       });
-      h.push('</tbody></table></div>');
-      h.push('<div class="zvfPager"><span>صفحه ' + fa(S.pn) + ' از ' + fa(pages) + ' · ' + fa(rows.length) + ' تراکنش · جمع صفحه ' + amt(page.reduce(function (a, r) { return a + (r.type === 'درآمد' ? r.amount : -r.amount); }, 0)) + ' ' + esc(unitName()) + '</span>',
+      h.push('</tbody></table></div><div class="zvfPager"><span>صفحه ' + fa(S.pn) + ' از ' + fa(pages) + ' · ' + fa(rows.length) + ' تراکنش · جمع صفحه ' +
+        amt(page.reduce(function (a, r) { return a + (r.type === 'درآمد' ? r.amount : -r.amount); }, 0)) + ' ' + esc(unitName()) + '</span>',
         '<span style="display:flex;gap:6px"><button class="zvfBtn s" data-zvf="pg" data-d="-1"' + (S.pn <= 1 ? ' disabled' : '') + '>قبلی</button>',
         '<button class="zvfBtn s" data-zvf="pg" data-d="1"' + (S.pn >= pages ? ' disabled' : '') + '>بعدی</button></span></div>');
     }
 
     if (REPAIR.length) {
-      h.push('<div class="zvfNote" style="margin-top:14px">' + ico('tool') + '<div><b>تعمیر خودکار داده انجام شد.</b> ' +
-        fa(REPAIR.length) + ' مجموعه که به‌جای آرایه، آبجکت بودند نرمال‌سازی شدند (' + esc(REPAIR.slice(0, 6).map(function (x) { return x.key; }).join('، ')) +
+      h.push('<div class="zvfNote" style="margin-top:14px">' + ico('tool') + '<div><b>تعمیر خودکار داده انجام شد.</b> ' + fa(REPAIR.length) +
+        ' مجموعه که به‌جای آرایه، آبجکت بودند نرمال‌سازی شدند (' + esc(REPAIR.slice(0, 6).map(function (x) { return x.key; }).join('، ')) +
         (REPAIR.length > 6 ? ' و …' : '') + '). خطای «slice is not a function» برطرف است.</div></div>');
     }
     h.push('</div>');
-
     box.innerHTML = h.join('');
     var rn = host('renderNav'); if (rn) { try { rn(); } catch (e) {} }
-    if (fk) {
-      var el = $('[data-zvf-key="' + fk + '"]', box);
-      if (el) { try { el.focus(); if (fs != null && el.setSelectionRange) el.setSelectionRange(fs, fe); } catch (e) {} }
-    }
+    var pu = host('paintSideUser'); if (pu) { try { pu(); } catch (e) {} }
+    if (fk) { var el = $('[data-zvf-key="' + fk + '"]', box); if (el) { try { el.focus(); if (fs != null && el.setSelectionRange) el.setSelectionRange(fs, fe); } catch (e) {} } }
   }
 
-  /* ═══════════ 9) اعلان ═══════════ */
-  function toastBox() {
-    var b = $('#zvfToasts');
-    if (!b) { b = document.createElement('div'); b.id = 'zvfToasts'; document.body.appendChild(b); }
-    return b;
-  }
+  /* ═══════════ 8) اعلان و لایه‌ها ═══════════ */
+  function toastBox() { var b = $('#zvfToasts'); if (!b) { b = document.createElement('div'); b.id = 'zvfToasts'; document.body.appendChild(b); } return b; }
   function toast(msg, type, action) {
     var t = document.createElement('div');
     t.className = 'zvfToast ' + (type || '');
@@ -863,13 +775,10 @@
     toastBox().appendChild(t);
     setTimeout(function () { t.style.transition = 'opacity .3s,transform .3s'; t.style.opacity = '0'; t.style.transform = 'translateY(10px)'; setTimeout(function () { t.remove(); }, 320); }, action ? 8000 : 3600);
   }
-
-  /* ═══════════ 10) لایه‌های شناور ═══════════ */
-  var ovId = 'zvfOv';
   function overlay(html, kind) {
     closeOverlay();
     var d = document.createElement('div');
-    d.className = 'zvfOv show'; d.id = ovId;
+    d.className = 'zvfOv show'; d.id = 'zvfOv';
     d.innerHTML = '<div class="zvfScrim" data-zvf="ovclose"></div><div class="' + (kind === 'drawer' ? 'zvfDrawer' : 'zvfModal') + '" role="dialog" aria-modal="true">' + html + '</div>';
     document.body.appendChild(d);
     document.body.style.overflow = 'hidden';
@@ -877,19 +786,10 @@
     if (f) setTimeout(function () { try { f.focus(); } catch (e) {} }, 60);
     return d;
   }
-  function closeOverlay() {
-    var d = $('#' + ovId); if (d) d.remove();
-    closeCal();
-    if (!$('#zvfOv')) document.body.style.overflow = '';
-  }
+  function closeOverlay() { var d = $('#zvfOv'); if (d) d.remove(); closeCal(); if (!$('#zvfOv')) document.body.style.overflow = ''; }
 
-  /* ── تقویم ── */
-  var CAL = { el: null, y: 0, m: 0, input: null };
-  function calBox() {
-    var c = $('#zvfCal');
-    if (!c) { c = document.createElement('div'); c.id = 'zvfCal'; c.className = 'zvfCal'; document.body.appendChild(c); }
-    return c;
-  }
+  var CAL = { y: 0, m: 0, input: null };
+  function calBox() { var c = $('#zvfCal'); if (!c) { c = document.createElement('div'); c.id = 'zvfCal'; c.className = 'zvfCal'; document.body.appendChild(c); } return c; }
   function closeCal() { var c = $('#zvfCal'); if (c) c.classList.remove('show'); CAL.input = null; }
   function placeCal(inp, c) {
     var r = inp.getBoundingClientRect(), w = c.offsetWidth || 300, h = c.offsetHeight || 300;
@@ -898,7 +798,7 @@
     c.style.left = L + 'px'; c.style.top = T + 'px';
   }
   function drawCal() {
-    var c = calBox(), t = g2j(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate());
+    var c = calBox(), n = new Date(), t = g2j(n.getFullYear(), n.getMonth() + 1, n.getDate());
     var max = jDays(CAL.y, CAL.m), first = j2g(CAL.y, CAL.m, 1);
     var wd = (new Date(first[0], first[1] - 1, first[2]).getDay() + 1) % 7;
     var s = '<div class="zvfCalH"><button type="button" data-cal="py">«</button><button type="button" data-cal="pm">‹</button>' +
@@ -907,13 +807,12 @@
     ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'].forEach(function (x) { s += '<button type="button" class="dl" disabled>' + x + '</button>'; });
     for (var i = 0; i < wd; i++) s += '<span></span>';
     for (var d = 1; d <= max; d++) s += '<button type="button" data-day="' + d + '" class="' + (t[0] === CAL.y && t[1] === CAL.m && t[2] === d ? 'td' : '') + '">' + fa(d) + '</button>';
-    s += '</div>';
-    c.innerHTML = s;
+    c.innerHTML = s + '</div>';
   }
   function openCal(inp) {
     CAL.input = inp;
-    var p = parseJ(inp.value), n = g2j(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate());
-    CAL.y = p ? p[0] : n[0]; CAL.m = p ? p[1] : n[1];
+    var p = parseJ(inp.value), n = new Date(), j = g2j(n.getFullYear(), n.getMonth() + 1, n.getDate());
+    CAL.y = p ? p[0] : j[0]; CAL.m = p ? p[1] : j[1];
     drawCal();
     var c = calBox(); c.classList.add('show');
     requestAnimationFrame(function () { placeCal(inp, c); });
@@ -946,36 +845,30 @@
       CAL.input.dispatchEvent(new Event('input', { bubbles: true }));
       closeCal(); return;
     }
-    if (!e.target.closest || (!e.target.closest('#zvfCal') && !e.target.closest('[data-zvf-cal]'))) closeCal();
+    if (!e.target.closest || (!e.target.closest('#zvfCal') && !e.target.closest('[data-zvf-calbtn]'))) closeCal();
   }, true);
   window.addEventListener('scroll', function () { var c = $('#zvfCal'); if (c && c.classList.contains('show') && CAL.input) placeCal(CAL.input, c); }, true);
   window.addEventListener('resize', function () { var c = $('#zvfCal'); if (c && c.classList.contains('show') && CAL.input) placeCal(CAL.input, c); });
 
-  /* ═══════════ 11) فرم تراکنش ═══════════ */
+  /* ═══════════ 9) فرم تراکنش ═══════════ */
   function fld(label, inner, req, full, hint) {
     return '<div class="zvfFld' + (full ? ' full' : '') + '"><label>' + esc(label) + (req ? ' <span class="req">*</span>' : '') + '</label>' + inner + (hint ? '<span class="zvfHint">' + esc(hint) + '</span>' : '') + '</div>';
   }
   function opts(list, val) { return list.map(function (x) { return '<option value="' + esc(x) + '"' + (String(x) === String(val) ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join(''); }
   function openEntry(id) {
-    var r = id ? ROWS.filter(function (x) { return x.id === id; })[0] : null;
-    var isNew = !r;
+    var r = id ? ROWS.filter(function (x) { return x.id === id; })[0] : null, isNew = !r;
     r = r || { id: '', date: today(), type: 'درآمد', nature: '', cat: CATS['درآمد'][0], title: '', amount: 0, tax: 0, status: 'پرداخت شده', method: 'انتقال', branchId: (branches()[0] || {}).id || '', party: '', refType: 'دستی', refId: '', note: '' };
-    var bs = branches();
-    var h = [];
-    h.push('<div class="zvfOh"><h3>' + (isNew ? 'ثبت تراکنش جدید' : 'ویرایش ' + esc(r.id)) + '</h3>',
-      '<span class="zvfId">' + (isNew ? esc(nextId()) : '') + '</span>',
-      '<button class="zvfBtn s i" data-zvf="ovclose" title="بستن">' + ico('x') + '</button></div>');
+    var bs = branches(), h = [];
+    h.push('<div class="zvfOh"><h3>' + (isNew ? 'ثبت تراکنش جدید' : 'ویرایش ' + esc(r.id)) + '</h3><span class="zvfId">' + (isNew ? esc(nextId()) : '') + '</span><button class="zvfBtn s i" data-zvf="ovclose">' + ico('x') + '</button></div>');
     h.push('<div class="zvfOb"><form id="zvfForm" autocomplete="off"><div class="zvfGrid">');
     h.push(fld('نوع تراکنش', '<div class="zvfSeg" id="zvfTypeSeg">' + TYPES.map(function (t) { return '<button type="button" data-v="' + esc(t) + '" class="' + (r.type === t ? 'on' : '') + '">' + esc(t) + '</button>'; }).join('') + '</div><input type="hidden" name="type" value="' + esc(r.type) + '">', true, true));
-    h.push(fld('تاریخ (شمسی)', '<div class="zvfDateWrap"><input name="date" data-zvf-cal value="' + esc(jInput(r.date)) + '" placeholder="۱۴۰۵/۰۸/۲۵" required><button type="button" class="zvfDateBtn" data-zvf-calbtn>' + ico('cal') + '</button></div>', true));
+    h.push(fld('تاریخ (شمسی)', '<div class="zvfDateWrap"><input name="date" value="' + esc(jInput(r.date)) + '" placeholder="۱۴۰۵/۰۸/۲۵" required><button type="button" class="zvfDateBtn" data-zvf-calbtn>' + ico('cal') + '</button></div>', true));
     h.push(fld('دسته', '<select name="cat" id="zvfCat">' + opts(CATS[r.type], r.cat) + '</select>', true));
     h.push(fld('شرح تراکنش', '<input name="title" value="' + esc(r.title) + '" placeholder="مثلاً تسویه سفارش نظافت مجتمع…" required>', true, true));
-    h.push(fld('مبلغ (' + 'ریال' + ')', '<input name="amount" id="zvfAmount" inputmode="numeric" value="' + (r.amount ? grp(r.amount) : '') + '" placeholder="۰" required>', true, false, 'مبلغ را به ریال وارد کنید؛ جداکننده خودکار درج می‌شود.'));
+    h.push(fld('مبلغ (ریال)', '<input name="amount" id="zvfAmount" inputmode="numeric" value="' + (r.amount ? grp(r.amount) : '') + '" placeholder="۰" required>', true, false, 'مبلغ به ریال؛ جداکننده خودکار درج می‌شود.'));
     h.push(fld('مالیات (ریال)', '<input name="tax" id="zvfTax" inputmode="numeric" value="' + (r.tax ? grp(r.tax) : '') + '" placeholder="۰">'));
     h.push('<div class="zvfFld full"><div class="zvfAmtPreview"><span>معادل مبلغ</span><b id="zvfAmtPv">—</b></div></div>');
-    h.push('<div class="zvfFld full" id="zvfNatureWrap"' + (r.type === 'هزینه' ? '' : ' style="display:none"') + '>' +
-      '<label>ماهیت هزینه</label><select name="nature" id="zvfNature">' + opts(NATURES, r.nature || 'متغیر') + '</select>' +
-      '<span class="zvfHint">هزینه «سرمایه‌ای» در سود و زیان لحاظ نمی‌شود و جداگانه گزارش می‌گردد.</span></div>');
+    h.push('<div class="zvfFld full" id="zvfNatureWrap"' + (r.type === 'هزینه' ? '' : ' style="display:none"') + '><label>ماهیت هزینه</label><select name="nature" id="zvfNature">' + opts(NATURES, r.nature || 'متغیر') + '</select><span class="zvfHint">هزینه «سرمایه‌ای» در سود و زیان لحاظ نمی‌شود.</span></div>');
     h.push(fld('وضعیت', '<select name="status">' + opts(STATUSES, r.status) + '</select>', true));
     h.push(fld('روش پرداخت', '<select name="method">' + opts(METHODS, r.method) + '</select>'));
     h.push(fld('شعبه', '<select name="branchId"><option value="">— بدون شعبه —</option>' + bs.map(function (b) { return '<option value="' + esc(b.id) + '"' + (b.id === r.branchId ? ' selected' : '') + '>' + esc(b.name) + '</option>'; }).join('') + '</select>'));
@@ -984,29 +877,23 @@
     h.push(fld('شناسه مرجع', '<input name="refId" value="' + esc(r.refId) + '" placeholder="ZV-… / CON-… / PRJ-…">'));
     h.push(fld('یادداشت', '<textarea name="note" placeholder="توضیحات تکمیلی…">' + esc(r.note) + '</textarea>', false, true));
     h.push('</div></form></div>');
-    h.push('<div class="zvfOf"><button class="zvfBtn p" data-zvf="submit" data-id="' + esc(id || '') + '">' + ico('plus') + ' ' + (isNew ? 'ثبت تراکنش' : 'ذخیره تغییرات') + '</button>',
-      '<button class="zvfBtn s" data-zvf="ovclose">انصراف</button>',
-      !isNew ? '<button class="zvfBtn s" data-zvf="dup" data-id="' + esc(id) + '" style="margin-right:auto">' + ico('copy') + ' ثبت مشابه</button>' : '',
-      '</div>');
+    h.push('<div class="zvfOf"><button class="zvfBtn p" data-zvf="submit" data-id="' + esc(id || '') + '">' + ico('plus') + ' ' + (isNew ? 'ثبت تراکنش' : 'ذخیره تغییرات') + '</button><button class="zvfBtn s" data-zvf="ovclose">انصراف</button>' +
+      (!isNew ? '<button class="zvfBtn s" data-zvf="dup" data-id="' + esc(id) + '" style="margin-right:auto">' + ico('copy') + ' ثبت مشابه</button>' : '') + '</div>');
     var d = overlay(h.join(''), 'modal');
     d.setAttribute('data-entry', id || '');
     updateAmtPreview();
-
     var seg = $('#zvfTypeSeg', d);
     seg.addEventListener('click', function (e) {
       var b = e.target.closest('button[data-v]'); if (!b) return;
       var v = b.getAttribute('data-v');
       $$('button', seg).forEach(function (x) { x.classList.toggle('on', x === b); });
       d.querySelector('[name="type"]').value = v;
-      var cat = $('#zvfCat', d); cat.innerHTML = opts(CATS[v], CATS[v][0]);
+      $('#zvfCat', d).innerHTML = opts(CATS[v], CATS[v][0]);
       $('#zvfNatureWrap', d).style.display = v === 'هزینه' ? '' : 'none';
       autoNature(d);
     });
     $('#zvfCat', d).addEventListener('change', function () { autoNature(d); });
-    ['zvfAmount', 'zvfTax'].forEach(function (nid) {
-      var el = $('#' + nid, d);
-      el.addEventListener('input', function () { fmtAmount(el); updateAmtPreview(); });
-    });
+    ['zvfAmount', 'zvfTax'].forEach(function (nid) { var el = $('#' + nid, d); el.addEventListener('input', function () { fmtAmount(el); updateAmtPreview(); }); });
     var dateInp = d.querySelector('[name="date"]');
     d.querySelector('[data-zvf-calbtn]').addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); openCal(dateInp); });
     dateInp.addEventListener('input', function () {
@@ -1018,9 +905,8 @@
     $('#zvfForm', d).addEventListener('submit', function (e) { e.preventDefault(); submitEntry(id); });
   }
   function autoNature(d) {
-    var type = d.querySelector('[name="type"]').value;
-    if (type !== 'هزینه') return;
-    var c = $('#zvfCat', d).value, n = AUTO_NATURE[c];
+    if (d.querySelector('[name="type"]').value !== 'هزینه') return;
+    var n = AUTO_NATURE[$('#zvfCat', d).value];
     if (n) $('#zvfNature', d).value = n;
   }
   function fmtAmount(el) {
@@ -1034,9 +920,8 @@
   }
   function updateAmtPreview() {
     var d = $('#zvfOv'); if (!d) return;
-    var a = num(($('#zvfAmount', d) || {}).value), tx = num(($('#zvfTax', d) || {}).value);
-    var pv = $('#zvfAmtPv', d); if (!pv) return;
-    pv.textContent = a ? (fa(grp(a)) + ' ریال  ·  ' + fa(grp(a / 10)) + ' تومان  ·  ' + moneyC(a) + (tx ? '  +  مالیات ' + moneyC(tx) : '')) : '—';
+    var a = num(($('#zvfAmount', d) || {}).value), tx = num(($('#zvfTax', d) || {}).value), pv = $('#zvfAmtPv', d);
+    if (pv) pv.textContent = a ? (fa(grp(a)) + ' ریال  ·  ' + fa(grp(a / 10)) + ' تومان  ·  ' + moneyC(a) + (tx ? '  +  مالیات ' + moneyC(tx) : '')) : '—';
   }
   function submitEntry(id) {
     var d = $('#zvfOv'); if (!d) return;
@@ -1047,88 +932,72 @@
     if (!(amount > 0)) return toast('مبلغ باید بزرگ‌تر از صفر باشد.', 'err');
     if (!parseJ(dateJ)) return toast('تاریخ شمسی معتبر نیست؛ قالب ۱۴۰۵/۰۸/۲۵.', 'err');
     var rec = {
-      id: id || nextId(), date: jStore(dateJ), type: type,
-      nature: type === 'هزینه' ? g('nature') : '', cat: g('cat'), title: title,
-      amount: amount, tax: num(g('tax')), status: g('status'), method: g('method'),
-      branchId: g('branchId'), party: g('party'), refType: g('refType'), refId: g('refId'),
-      note: g('note'), updatedAt: new Date().toISOString(), demo: false
+      id: id || nextId(), date: jStore(dateJ), type: type, nature: type === 'هزینه' ? g('nature') : '',
+      cat: g('cat'), title: title, amount: amount, tax: num(g('tax')), status: g('status'), method: g('method'),
+      branchId: g('branchId'), party: g('party'), refType: g('refType'), refId: g('refId'), note: g('note'),
+      updatedAt: new Date().toISOString(), demo: false
     };
     if (id) {
       var i = ROWS.findIndex(function (x) { return x.id === id; });
       if (i < 0) return toast('رکورد یافت نشد.', 'err');
-      rec.createdAt = ROWS[i].createdAt; rec.order = ROWS[i].order;
-      ROWS[i] = rec;
+      rec.createdAt = ROWS[i].createdAt; rec.order = ROWS[i].order; ROWS[i] = rec;
     } else {
-      rec.createdAt = rec.updatedAt;
-      rec.order = -1;
-      ROWS.unshift(rec);
+      rec.createdAt = rec.updatedAt; rec.order = -1; ROWS.unshift(rec);
       ROWS.forEach(function (r, i2) { if (r.order == null || r.order < 0) r.order = i2; });
     }
     S.seeded = ROWS.length > 0 && ROWS.every(function (r) { return r.demo; });
-    persist(); pushServer(rec);
-    closeOverlay(); render();
+    var db = G('DB'); if (db) { try { db[dataKey()] = ROWS; } catch (e) {} }
+    persist(); pushServer(rec); closeOverlay(); render();
     toast(id ? 'تراکنش ' + rec.id + ' به‌روزرسانی شد.' : 'تراکنش ' + rec.id + ' ثبت شد.', 'ok');
   }
 
-  /* ═══════════ 12) کشوی جزئیات ═══════════ */
+  /* ═══════════ 10) جزئیات / حذف / گروهی ═══════════ */
   function openDetail(id) {
     var r = ROWS.filter(function (x) { return x.id === id; })[0];
     if (!r) return toast('رکورد یافت نشد.', 'err');
     var c = r.type === 'درآمد' ? HUE.inc : HUE.exp;
-    var kv = [
-      ['شناسه', '<span class="zvfId">' + esc(r.id) + '</span>'], ['تاریخ', jDisp(r.date)],
+    var kv = [['شناسه', '<span class="zvfId">' + esc(r.id) + '</span>'], ['تاریخ', jDisp(r.date)],
       ['نوع', pill(r.type, c)], ['وضعیت', pill(r.status, statusColor(r.status))],
       ['دسته', esc(r.cat)], ['ماهیت', esc(r.nature || '—')],
       ['مبلغ', '<b style="color:' + c + '">' + fa(grp(r.amount)) + ' ریال</b>'], ['مالیات', r.tax ? fa(grp(r.tax)) + ' ریال' : '—'],
       ['معادل تومان', fa(grp(r.amount / 10))], ['روش پرداخت', esc(r.method)],
       ['شعبه', esc(branchName(r.branchId))], ['طرف حساب', esc(r.party || '—')],
       ['مرجع', esc(r.refType + (r.refId ? ' · ' + r.refId : ''))], ['خالص پس از مالیات', fa(grp(r.amount - r.tax)) + ' ریال'],
-      ['شرح', esc(r.title), 1], ['یادداشت', esc(r.note || '—'), 1]
-    ];
-    var h = '<div class="zvfOh"><h3>جزئیات تراکنش</h3>' + pill(r.status, statusColor(r.status)) +
-      '<button class="zvfBtn s i" data-zvf="ovclose">' + ico('x') + '</button></div>' +
-      '<div class="zvfOb">' +
-      '<div style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;margin-bottom:14px;background:linear-gradient(120deg,rgba(255,107,26,.1),rgba(124,77,255,.07));border:1px solid var(--line,#E2E7F3)">' +
+      ['شرح', esc(r.title), 1], ['یادداشت', esc(r.note || '—'), 1]];
+    overlay('<div class="zvfOh"><h3>جزئیات تراکنش</h3>' + pill(r.status, statusColor(r.status)) + '<button class="zvfBtn s i" data-zvf="ovclose">' + ico('x') + '</button></div>' +
+      '<div class="zvfOb"><div style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;margin-bottom:14px;background:linear-gradient(120deg,rgba(255,107,26,.1),rgba(124,77,255,.07));border:1px solid var(--line,#E2E7F3)">' +
       '<div style="width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:19px;font-weight:900;color:#fff;background:' + c + '">' + (r.type === 'درآمد' ? '+' : '−') + '</div>' +
       '<div><div style="font-size:19px;font-weight:900;color:' + c + '">' + fa(grp(r.amount)) + ' <span style="font-size:12px">ریال</span></div>' +
       '<div style="font-size:11px;color:var(--muted,#5C6784)">' + esc(r.title) + '</div></div></div>' +
       '<div class="zvfKv">' + kv.map(function (x) { return '<div class="it' + (x[2] ? ' full' : '') + '"><small>' + esc(x[0]) + '</small><b>' + x[1] + '</b></div>'; }).join('') + '</div>' +
       '<div class="zvfSecT">فراترینش</div><div class="zvfKv">' +
-      '<div class="it"><small>ایجاد</small><b>' + jDisp(r.createdAt) + '</b></div>' +
-      '<div class="it"><small>آخرین تغییر</small><b>' + jDisp(r.updatedAt) + '</b></div>' +
-      '<div class="it full"><small>منبع ذخیره</small><b>' + (r.demo ? 'داده نمونه — با ویرایش، واقعی می‌شود' : (S.mode === 'server' ? 'همگام با سرور' : 'ذخیره محلی مرورگر')) + '</b></div></div>' +
-      '</div>' +
+      '<div class="it"><small>ایجاد</small><b>' + jDisp(r.createdAt) + '</b></div><div class="it"><small>آخرین تغییر</small><b>' + jDisp(r.updatedAt) + '</b></div>' +
+      '<div class="it full"><small>منبع ذخیره</small><b>' + (r.demo ? 'داده نمونه — با ویرایش واقعی می‌شود' : (S.mode === 'server' ? 'همگام با سرور' : 'ذخیره محلی مرورگر')) + '</b></div></div></div>' +
       '<div class="zvfOf"><button class="zvfBtn p" data-zvf="edit" data-id="' + esc(r.id) + '">' + ico('edit') + ' ویرایش</button>' +
       '<button class="zvfBtn s" data-zvf="dup" data-id="' + esc(r.id) + '">' + ico('copy') + ' ثبت مشابه</button>' +
       '<button class="zvfBtn s" data-zvf="receipt" data-id="' + esc(r.id) + '">' + ico('print') + ' چاپ رسید</button>' +
-      '<button class="zvfBtn d" data-zvf="del" data-id="' + esc(r.id) + '" style="margin-right:auto">' + ico('trash') + ' حذف</button></div>';
-    overlay(h, 'drawer');
+      '<button class="zvfBtn d" data-zvf="del" data-id="' + esc(r.id) + '" style="margin-right:auto">' + ico('trash') + ' حذف</button></div>', 'drawer');
   }
-
-  /* ═══════════ 13) حذف / بازگردانی / گروهی ═══════════ */
-  function removeIds(ids, silent) {
+  function removeIds(ids) {
     var snap = ROWS.filter(function (r) { return ids.indexOf(r.id) >= 0; });
     if (!snap.length) return;
     S.lastDeleted = snap;
     ROWS = ROWS.filter(function (r) { return ids.indexOf(r.id) < 0; });
     ids.forEach(function (i) { delete S.sel[i]; });
     var db = G('DB'); if (db) { try { db[dataKey()] = ROWS; } catch (e) {} }
-    persist(); ids.forEach(deleteServer);
-    closeOverlay(); render();
-    if (!silent) toast(fa(snap.length) + ' تراکنش حذف شد.', 'warn', {
+    persist(); ids.forEach(deleteServer); closeOverlay(); render();
+    toast(fa(snap.length) + ' تراکنش حذف شد.', 'warn', {
       label: 'بازگردانی', fn: function () {
         ROWS = ROWS.concat(S.lastDeleted).sort(function (a, b) { return num(a.order) - num(b.order); });
-        var db2 = G('DB'); if (db2) { try { db2[dataKey()] = ROWS; } catch (e) {} }
+        var d2 = G('DB'); if (d2) { try { d2[dataKey()] = ROWS; } catch (e) {} }
         S.lastDeleted = null; persist(); render(); toast('بازگردانی شد.', 'ok');
       }
     });
   }
   function confirmDel(ids) {
     overlay('<div class="zvfOh"><h3>حذف تراکنش</h3><button class="zvfBtn s i" data-zvf="ovclose">' + ico('x') + '</button></div>' +
-      '<div class="zvfOb"><p style="font-size:13px;line-height:2">آیا از حذف <b>' + fa(ids.length) + '</b> تراکنش مطمئن هستید؟<br>' +
-      '<span class="zvfHint">بلافاصله پس از حذف، دکمهٔ «بازگردانی» در اعلان ظاهر می‌شود.</span></p></div>' +
-      '<div class="zvfOf"><button class="zvfBtn d" data-zvf="delok" data-ids="' + esc(ids.join(',')) + '">' + ico('trash') + ' بله، حذف شود</button>' +
-      '<button class="zvfBtn s" data-zvf="ovclose">انصراف</button></div>', 'modal');
+      '<div class="zvfOb"><p style="font-size:13px;line-height:2">آیا از حذف <b>' + fa(ids.length) + '</b> تراکنش مطمئن هستید؟<br><span class="zvfHint">بلافاصله پس از حذف، دکمهٔ «بازگردانی» در اعلان ظاهر می‌شود.</span></p></div>' +
+      '<div class="zvfOf"><button class="zvfBtn d" data-zvf="delok" data-ids="' + esc(ids.join(',')) + '">' + ico('trash') + ' بله، حذف شود</button><button class="zvfBtn s" data-zvf="ovclose">انصراف</button></div>', 'modal');
   }
   function bulkStatus() {
     var v = ($('#zvfBulkStatus') || {}).value;
@@ -1143,33 +1012,28 @@
     var c = JSON.parse(JSON.stringify(r));
     c.id = nextId(); c.date = today(); c.createdAt = c.updatedAt = new Date().toISOString(); c.demo = false; c.order = -1;
     ROWS.unshift(c); ROWS.forEach(function (x, i) { if (x.order < 0) x.order = i; });
+    var db = G('DB'); if (db) { try { db[dataKey()] = ROWS; } catch (e) {} }
     persist(); pushServer(c); closeOverlay(); render(); toast('تراکنش مشابه با شناسه ' + c.id + ' ثبت شد.', 'ok');
   }
 
-  /* ═══════════ 14) خروجی و چاپ ═══════════ */
-  function download(name, text, mime) {
+  /* ═══════════ 11) خروجی / چاپ / نماها ═══════════ */
+  function download(name, text) {
     var a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob(['\uFEFF' + text], { type: mime || 'text/csv;charset=utf-8' }));
+    a.href = URL.createObjectURL(new Blob(['\uFEFF' + text], { type: 'text/csv;charset=utf-8' }));
     a.download = name; a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
   }
   function csv(rows) {
     var head = ['شناسه', 'تاریخ', 'نوع', 'ماهیت', 'دسته', 'شرح', 'مبلغ (ریال)', 'مالیات', 'وضعیت', 'روش', 'شعبه', 'طرف حساب', 'مرجع', 'یادداشت'];
     var q = function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
     var lines = [head.map(q).join(',')];
-    rows.forEach(function (r) {
-      lines.push([r.id, jDisp(r.date), r.type, r.nature, r.cat, r.title, r.amount, r.tax, r.status, r.method, branchName(r.branchId), r.party, r.refType + ' ' + r.refId, r.note].map(q).join(','));
-    });
+    rows.forEach(function (r) { lines.push([r.id, jDisp(r.date), r.type, r.nature, r.cat, r.title, r.amount, r.tax, r.status, r.method, branchName(r.branchId), r.party, r.refType + ' ' + r.refId, r.note].map(q).join(',')); });
     download('zingovingo-finance-' + en(jDisp(today())).replace(/\//g, '-') + '.csv', lines.join('\n'));
     toast('فایل CSV با ' + fa(rows.length) + ' ردیف دانلود شد.', 'ok');
   }
-  function printArea() {
-    var p = $('#printArea');
-    if (!p) { p = document.createElement('div'); p.id = 'printArea'; p.style.display = 'none'; document.body.appendChild(p); }
-    return p;
-  }
+  function printArea() { var p = $('#printArea'); if (!p) { p = document.createElement('div'); p.id = 'printArea'; p.style.display = 'none'; document.body.appendChild(p); } return p; }
   function printLedger() {
     var rows = filtered(), t = totals(rows), rg = range();
-    var h = '<div style="padding:22px;font-family:Vazirmatn,Tahoma,sans-serif;direction:rtl">' +
+    printArea().innerHTML = '<div style="padding:22px;font-family:Vazirmatn,Tahoma,sans-serif;direction:rtl">' +
       '<div style="display:flex;justify-content:space-between;border-bottom:3px solid #0B1736;padding-bottom:10px;margin-bottom:14px">' +
       '<div><h1 style="margin:0;font-size:20px;color:#0B1736">Zingo<span style="color:#FF6B1A">Vingo</span></h1>' +
       '<div style="font-size:12px;color:#5C6784">گزارش دفتر مالی · ' + jDisp(rg.from) + ' تا ' + jDisp(rg.to) + '</div></div>' +
@@ -1177,15 +1041,13 @@
       '<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px"><tr>' +
       [['درآمد', t.inc], ['هزینه ثابت', t.fix], ['هزینه متغیر', t.vari], ['سرمایه‌ای', t.cap], ['سود خالص', t.net], ['حاشیه', t.margin]]
         .map(function (x) { return '<td style="border:1px solid #ddd;padding:8px;text-align:center"><div style="font-size:10px;color:#5C6784">' + x[0] + '</div><b>' + (x[0] === 'حاشیه' ? pct(x[1]) : fa(grp(x[1]))) + '</b></td>'; }).join('') +
-      '</tr></table>' +
-      '<table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="background:#f2f4fb">' +
+      '</tr></table><table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="background:#f2f4fb">' +
       ['تاریخ', 'شناسه', 'نوع', 'شرح', 'دسته', 'مبلغ', 'وضعیت'].map(function (x) { return '<th style="border:1px solid #ddd;padding:7px;text-align:right">' + x + '</th>'; }).join('') +
-      '</tr></thead><tbody>' +
-      rows.map(function (r) {
+      '</tr></thead><tbody>' + rows.map(function (r) {
         return '<tr>' + [jDisp(r.date), r.id, r.type, r.title, r.cat, (r.type === 'هزینه' ? '−' : '+') + fa(grp(r.amount)), r.status]
           .map(function (x) { return '<td style="border:1px solid #ddd;padding:6px">' + esc(x) + '</td>'; }).join('') + '</tr>';
       }).join('') + '</tbody></table></div>';
-    printArea().innerHTML = h; window.print();
+    window.print();
   }
   function printReceipt(id) {
     var r = ROWS.filter(function (x) { return x.id === id; })[0]; if (!r) return;
@@ -1200,15 +1062,11 @@
       '<div style="margin-top:34px;display:flex;justify-content:space-between;font-size:11px;color:#5C6784"><span>امضای ثبت‌کننده</span><span>امضای تأییدکننده</span></div></div>';
     window.print();
   }
-
-  /* ═══════════ 15) نماها ═══════════ */
   function saveView() {
     overlay('<div class="zvfOh"><h3>ذخیره نمای فعلی</h3><button class="zvfBtn s i" data-zvf="ovclose">' + ico('x') + '</button></div>' +
-      '<div class="zvfOb"><div class="zvfFld"><label>نام نما <span class="req">*</span></label>' +
-      '<input id="zvfViewName" placeholder="مثلاً هزینه‌های معوق پاییز"></div>' +
+      '<div class="zvfOb"><div class="zvfFld"><label>نام نما <span class="req">*</span></label><input id="zvfViewName" placeholder="مثلاً هزینه‌های معوق پاییز"></div>' +
       '<p class="zvfHint" style="margin-top:9px">جستجو، فیلترها، مرتب‌سازی و همهٔ تنظیمات نمایش ذخیره می‌شود.</p></div>' +
-      '<div class="zvfOf"><button class="zvfBtn p" data-zvf="saveviewok">' + ico('star') + ' ذخیره</button>' +
-      '<button class="zvfBtn s" data-zvf="ovclose">انصراف</button></div>', 'modal');
+      '<div class="zvfOf"><button class="zvfBtn p" data-zvf="saveviewok">' + ico('star') + ' ذخیره</button><button class="zvfBtn s" data-zvf="ovclose">انصراف</button></div>', 'modal');
   }
   function applyView(id) {
     var v = S.views.filter(function (x) { return x.id === id; })[0]; if (!v) return;
@@ -1217,7 +1075,7 @@
     persist(); render(); toast('نما «' + v.name + '» اعمال شد.', 'ok');
   }
 
-  /* ═══════════ 16) تشخیص و همگام‌سازی ═══════════ */
+  /* ═══════════ 12) سرور / تشخیص ═══════════ */
   function token() { return G('TOKEN') || localStorage.getItem('zv_manager_token') || localStorage.getItem('zv_admin_token') || ''; }
   function apiCall(fn, args) {
     return new Promise(function (res, rej) {
@@ -1231,23 +1089,16 @@
   var DEL_FNS = ['mgrCCDeleteFinance', 'mgrCCFinanceDelete', 'mgrDeleteFinance'];
   function pushServer(rec) {
     var tk = token(); if (!tk) { S.mode = 'local'; return; }
-    var tryAt = function (i) {
+    (function tryAt(i) {
       if (i >= SAVE_FNS.length) { S.mode = 'local'; return; }
       var fn = SAVE_FNS[i], args = fn === 'admCCSave' ? ['finance', rec, tk] : [rec, tk];
       apiCall(fn, args).then(function () { S.mode = 'server'; S.backend = fn; persist(); })
-        .catch(function (e) {
-          if (/No such|not a function|is not defined|Unknown/i.test(e.message)) tryAt(i + 1);
-          else { S.mode = 'local'; }
-        });
-    };
-    tryAt(0);
+        .catch(function (e) { if (/No such|not a function|is not defined|Unknown/i.test(e.message)) tryAt(i + 1); else S.mode = 'local'; });
+    })(0);
   }
   function deleteServer(id) {
     var tk = token(); if (!tk || !S.backend) return;
-    DEL_FNS.some(function (fn) {
-      apiCall(fn, [id, tk]).then(function () {}).catch(function () {});
-      return false;
-    });
+    DEL_FNS.forEach(function (fn) { apiCall(fn, [id, tk]).catch(function () {}); });
   }
   function syncAll() {
     var tk = token();
@@ -1257,13 +1108,12 @@
     toast('در حال ارسال ' + fa(real.length) + ' تراکنش…');
     var ok = 0, done = 0;
     real.forEach(function (r) {
-      var tryAt = function (i) {
+      (function tryAt(i) {
         if (i >= SAVE_FNS.length) { done++; finish(); return; }
         var fn = SAVE_FNS[i], args = fn === 'admCCSave' ? ['finance', r, tk] : [r, tk];
         apiCall(fn, args).then(function () { ok++; S.backend = fn; done++; finish(); })
           .catch(function (e) { if (/No such|not a function|is not defined/i.test(e.message)) tryAt(i + 1); else { done++; finish(); } });
-      };
-      tryAt(0);
+      })(0);
     });
     function finish() {
       if (done < real.length) return;
@@ -1274,49 +1124,31 @@
   function diagnostics() {
     repairDB();
     var db = G('DB') || {}, k = dataKey();
-    var nonArr = Object.keys(db).filter(function (x) { return !PRESERVE[x] && COLLECTIONS.indexOf(x) >= 0 && !Array.isArray(db[x]); });
-    var h = '<div class="zvfOh"><h3>تشخیص و تعمیر داده</h3><button class="zvfBtn s i" data-zvf="ovclose">' + ico('x') + '</button></div><div class="zvfOb">' +
-      '<div class="zvfNote' + (nonArr.length ? ' warn' : '') + '">' + ico('tool') + '<div>' +
-      (nonArr.length ? 'هنوز ' + fa(nonArr.length) + ' مجموعه نرمال نشده است؛ دکمهٔ تعمیر را بزنید.' : 'همهٔ مجموعه‌های داده آرایهٔ معتبر هستند. خطای «slice is not a function» برطرف است.') +
-      '</div></div>' +
-      '<div class="zvfKv">' +
-      '<div class="it"><small>صفحه</small><b>' + esc(PAGE_ID) + '</b></div>' +
+    var bad = Object.keys(db).filter(function (x) { return !PRESERVE[x] && COLLECTIONS.indexOf(x) >= 0 && !Array.isArray(db[x]); });
+    overlay('<div class="zvfOh"><h3>تشخیص و تعمیر داده</h3><button class="zvfBtn s i" data-zvf="ovclose">' + ico('x') + '</button></div><div class="zvfOb">' +
+      '<div class="zvfNote' + (bad.length ? ' warn' : '') + '">' + ico('tool') + '<div>' +
+      (bad.length ? 'هنوز ' + fa(bad.length) + ' مجموعه نرمال نشده است؛ دکمهٔ تعمیر را بزنید.' : 'همهٔ مجموعه‌های داده آرایهٔ معتبر هستند. خطای «slice is not a function» برطرف است.') + '</div></div>' +
+      '<div class="zvfKv"><div class="it"><small>صفحه</small><b>' + esc(PAGE_ID) + '</b></div>' +
       '<div class="it"><small>کلید داده</small><b>DB.' + esc(k) + '</b></div>' +
       '<div class="it"><small>رکوردها</small><b>' + fa(ROWS.length) + '</b></div>' +
       '<div class="it"><small>حالت ذخیره</small><b>' + (S.mode === 'server' ? 'سرور · ' + esc(S.backend || '—') : 'محلی (localStorage)') + '</b></div>' +
       '<div class="it"><small>داده نمونه</small><b>' + (S.seeded ? 'بله' : 'خیر') + '</b></div>' +
-      '<div class="it"><small>نماهای ذخیره‌شده</small><b>' + fa(S.views.length) + '</b></div>' +
-      '</div>' +
-      '<div class="zvfSecT">مجموعه‌های تعمیرشده در این نشست</div>' +
-      (REPAIR.length ? '<div class="zvfTw"><table class="zvfT" style="min-width:0"><thead><tr><th>کلید</th><th>نوع قبلی</th><th>رکورد پس از تعمیر</th></tr></thead><tbody>' +
-        REPAIR.map(function (x) { return '<tr><td>' + esc(x.key) + '</td><td>' + esc(x.was) + '</td><td>' + fa(x.n) + '</td></tr>'; }).join('') +
-        '</tbody></table></div>' : '<p class="zvfHint">موردی ثبت نشده است.</p>') +
-      '</div><div class="zvfOf">' +
-      '<button class="zvfBtn p" data-zvf="repair">' + ico('tool') + ' تعمیر مجدد داده‌ها</button>' +
+      '<div class="it"><small>قلاب‌ها</small><b>' + (HOOKS.render ? 'render ✓' : 'render ✗ (ناظر DOM)') + '</b></div></div>' +
+      '<div class="zvfSecT">مجموعه‌های تعمیرشده</div>' +
+      (REPAIR.length ? '<div class="zvfTw"><table class="zvfT" style="min-width:0"><thead><tr><th>کلید</th><th>نوع قبلی</th><th>رکورد</th></tr></thead><tbody>' +
+        REPAIR.map(function (x) { return '<tr><td>' + esc(x.key) + '</td><td>' + esc(x.was) + '</td><td>' + fa(x.n) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="zvfHint">موردی ثبت نشده است.</p>') +
+      '</div><div class="zvfOf"><button class="zvfBtn p" data-zvf="repair">' + ico('tool') + ' تعمیر مجدد داده‌ها</button>' +
       '<button class="zvfBtn s" data-zvf="sync">همگام‌سازی با سرور</button>' +
-      (S.seeded ? '<button class="zvfBtn d" data-zvf="cleandemo" style="margin-right:auto">پاک کردن داده نمونه</button>' : '') +
-      '</div>';
-    overlay(h, 'drawer');
+      (S.seeded ? '<button class="zvfBtn d" data-zvf="cleandemo" style="margin-right:auto">پاک کردن داده نمونه</button>' : '') + '</div>', 'drawer');
   }
 
-  /* ═══════════ 17) رویدادها ═══════════ */
-  function rerender() { S.pn = 1; render(); }
+  /* ═══════════ 13) رویدادها ═══════════ */
   document.addEventListener('click', function (e) {
     var el = e.target.closest && e.target.closest('[data-zvf],[data-zvf-sort],[data-zvf-tg],[data-zvf-sel]');
     if (!el) return;
-    if (el.hasAttribute('data-zvf-sel')) {
-      var sid = el.getAttribute('data-zvf-sel');
-      if (el.checked) S.sel[sid] = true; else delete S.sel[sid];
-      render(); return;
-    }
-    if (el.hasAttribute('data-zvf-sort')) {
-      var s = el.getAttribute('data-zvf-sort');
-      S.sort = S.sort === s ? (s === 'date_desc' ? 'date_asc' : 'amount_asc') : s;
-      persist(); rerender(); return;
-    }
-    if (el.hasAttribute('data-zvf-tg')) {
-      var t = el.getAttribute('data-zvf-tg'); S.ctrl[t] = !S.ctrl[t]; persist(); render(); return;
-    }
+    if (el.hasAttribute('data-zvf-sel')) { var sid = el.getAttribute('data-zvf-sel'); if (el.checked) S.sel[sid] = true; else delete S.sel[sid]; render(); return; }
+    if (el.hasAttribute('data-zvf-sort')) { var s = el.getAttribute('data-zvf-sort'); S.sort = S.sort === s ? (s === 'date_desc' ? 'date_asc' : 'amount_asc') : s; persist(); S.pn = 1; render(); return; }
+    if (el.hasAttribute('data-zvf-tg')) { var t = el.getAttribute('data-zvf-tg'); S.ctrl[t] = !S.ctrl[t]; persist(); render(); return; }
     var a = el.getAttribute('data-zvf'); if (!a) return;
     e.preventDefault();
     var id = el.getAttribute('data-id');
@@ -1342,7 +1174,7 @@
       case 'receipt': printReceipt(id); break;
       case 'submit': submitEntry(el.getAttribute('data-id')); break;
       case 'ovclose': closeOverlay(); break;
-      case 'clearf': S.f = { type: '', cat: '', status: '', branch: '', method: '' }; S.q = ''; rerender(); toast('فیلترها پاک شد.'); break;
+      case 'clearf': S.f = { type: '', cat: '', status: '', branch: '', method: '' }; S.q = ''; S.pn = 1; render(); toast('فیلترها پاک شد.'); break;
       case 'reset':
         S.q = ''; S.f = { type: '', cat: '', status: '', branch: '', method: '' }; S.sort = 'date_desc'; S.sel = {}; S.pn = 1;
         S.ctrl = { period: '180', from: '', to: '', unit: 'ریال', chart: 'bar', group: 'cat', cols: 'full', dense: false, tax: true, per: 12 };
@@ -1364,13 +1196,10 @@
         persist(); closeOverlay(); render(); toast('دادهٔ نمونه پاک شد. دفتر آمادهٔ ثبت واقعی است.', 'ok'); break;
     }
   });
-
   var qTimer = null;
   document.addEventListener('input', function (e) {
     var t = e.target;
-    if (t.hasAttribute && t.hasAttribute('data-zvf-q')) {
-      S.q = t.value; clearTimeout(qTimer); qTimer = setTimeout(function () { S.pn = 1; render(); }, 240); return;
-    }
+    if (t.hasAttribute && t.hasAttribute('data-zvf-q')) { S.q = t.value; clearTimeout(qTimer); qTimer = setTimeout(function () { S.pn = 1; render(); }, 240); return; }
     if (t.hasAttribute && t.hasAttribute('data-zvf-ctrl')) {
       var k = t.getAttribute('data-zvf-ctrl');
       if (k === 'from' || k === 'to') {
@@ -1389,9 +1218,7 @@
       if (k === 'sort') S.sort = t.value; else S.ctrl[k] = t.value;
       S.pn = 1; persist(); render(); return;
     }
-    if (t.hasAttribute && t.hasAttribute('data-zvf-filter')) {
-      S.f[t.getAttribute('data-zvf-filter')] = t.value; S.pn = 1; render(); return;
-    }
+    if (t.hasAttribute && t.hasAttribute('data-zvf-filter')) { S.f[t.getAttribute('data-zvf-filter')] = t.value; S.pn = 1; render(); }
   });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
@@ -1408,8 +1235,6 @@
       e.preventDefault(); submitEntry($('#zvfOv').getAttribute('data-entry') || '');
     }
   });
-
-  /* ── کشیدن و رها کردن در حالت مرتب‌سازی دستی ── */
   var dragId = null;
   document.addEventListener('dragstart', function (e) {
     var h = e.target.closest && e.target.closest('[data-zvf-drag]'); if (!h) return;
@@ -1429,108 +1254,90 @@
     var tr = e.target.closest && e.target.closest('[data-zvf-row]');
     e.preventDefault();
     $$('#zvfBody tr.over').forEach(function (x) { x.classList.remove('over'); });
-    if (!tr) { dragId = null; return; }
-    var target = tr.getAttribute('data-zvf-row');
-    if (target !== dragId) {
-      var from = ROWS.findIndex(function (r) { return r.id === dragId; });
-      var to = ROWS.findIndex(function (r) { return r.id === target; });
-      if (from >= 0 && to >= 0) {
-        var m = ROWS.splice(from, 1)[0]; ROWS.splice(to, 0, m);
-        ROWS.forEach(function (r, i) { r.order = i; });
-        persist(); render(); toast('ترتیب دفتر تغییر کرد.', 'ok');
+    if (tr) {
+      var target = tr.getAttribute('data-zvf-row');
+      if (target !== dragId) {
+        var from = ROWS.findIndex(function (r) { return r.id === dragId; });
+        var to = ROWS.findIndex(function (r) { return r.id === target; });
+        if (from >= 0 && to >= 0) {
+          var m = ROWS.splice(from, 1)[0]; ROWS.splice(to, 0, m);
+          ROWS.forEach(function (r, i) { r.order = i; });
+          persist(); render(); toast('ترتیب دفتر تغییر کرد.', 'ok');
+        }
       }
     }
     dragId = null;
   });
   document.addEventListener('dragend', function () {
     dragId = null;
-    $$('#zvfBody tr.drag').forEach(function (x) { x.classList.remove('drag'); });
-    $$('#zvfBody tr.over').forEach(function (x) { x.classList.remove('over'); });
+    $$('#zvfBody tr.drag,#zvfBody tr.over').forEach(function (x) { x.classList.remove('drag', 'over'); });
   });
 
-  /* ═══════════ 18) اتصال به چرخهٔ پنل ═══════════ */
+  /* ═══════════ 14) نصب قلاب‌ها (پس از آماده‌شدن پنل) ═══════════ */
+  var HOOKS = { render: false, loadData: false, rowsFor: false, entityPage: false, act: false, watch: false };
+  var INSTALLED = false;
+
   function wrap(name, maker) {
     var orig = window[name];
-    if (typeof orig !== 'function') return false;
-    try { window[name] = maker(orig); return true; } catch (e) { return false; }
+    if (typeof orig !== 'function' || orig.__zvf) return false;
+    try { var w = maker(orig); w.__zvf = true; window[name] = w; return true; } catch (e) { return false; }
   }
-  wrap('loadData', function (orig) {
-    return function () {
-      var p = orig.apply(this, arguments);
-      if (p && typeof p.then === 'function') return p.then(function (r) { repairDB(); syncFromDB(); return r; });
-      repairDB(); syncFromDB(); return p;
-    };
-  });
-  wrap('rowsFor', function (orig) {
-    return function (e) {
-      var db = G('DB');
-      if (db && e in db && !Array.isArray(db[e])) db[e] = zvArr(db[e]);
-      return orig.apply(this, arguments);
-    };
-  });
-  wrap('entityPage', function (orig) {
-    return function (e) {
-      var db = G('DB');
-      if (db && e in db && !Array.isArray(db[e])) db[e] = zvArr(db[e]);
-      return orig.apply(this, arguments);
-    };
-  });
-  var wrappedRender = wrap('render', function (orig) {
-    return function () {
-      repairDB();
-      if (isFinanceActive()) { try { render(); } catch (e) { console.error('[ZV Finance]', e); orig.apply(this, arguments); } return; }
-      return orig.apply(this, arguments);
-    };
-  });
+  function installHooks() {
+    HOOKS.loadData = wrap('loadData', function (orig) {
+      return function () {
+        var p = orig.apply(this, arguments);
+        if (p && typeof p.then === 'function') return p.then(function (r) { repairDB(); syncFromDB(); return r; });
+        repairDB(); syncFromDB(); return p;
+      };
+    }) || HOOKS.loadData;
 
-  /* fallback: اگر render قابل بازنویسی نبود، ناظر DOM صفحه را می‌گیرد */
-  function watch() {
-    var box = pageBox(); if (!box || !window.MutationObserver) return;
-    var busy = false;
-    new MutationObserver(function () {
-      if (busy) return;
-      if (!isFinanceActive()) return;
-      if (box.querySelector('#zvfRoot')) return;
-      busy = true;
-      requestAnimationFrame(function () {
-        busy = false;
-        if (isFinanceActive() && !box.querySelector('#zvfRoot')) { try { render(); } catch (e) { console.error('[ZV Finance]', e); } }
-      });
-    }).observe(box, { childList: true });
+    HOOKS.rowsFor = wrap('rowsFor', function (orig) {
+      return function (e) { var db = G('DB'); if (db && e in db && !Array.isArray(db[e])) db[e] = zvArr(db[e]); return orig.apply(this, arguments); };
+    }) || HOOKS.rowsFor;
+
+    HOOKS.entityPage = wrap('entityPage', function (orig) {
+      return function (e) { var db = G('DB'); if (db && e in db && !Array.isArray(db[e])) db[e] = zvArr(db[e]); return orig.apply(this, arguments); };
+    }) || HOOKS.entityPage;
+
+    HOOKS.render = wrap('render', function (orig) {
+      return function () {
+        repairDB();
+        if (isFinanceActive()) { try { render(); } catch (e) { console.error('[ZV Finance]', e); orig.apply(this, arguments); } return; }
+        return orig.apply(this, arguments);
+      };
+    }) || HOOKS.render;
   }
-
-  /* دکمهٔ «ثبت سریع» نوار بالا در صفحهٔ مالی */
-  var ACT = G('ACT');
-  if (ACT && typeof ACT === 'object') {
-    ['new', 'quick-add', 'new-entry', 'new-finance'].forEach(function (k) {
+  function installMenu() {
+    var MENU = G('MENU'), TITLES = G('TITLES');
+    if (Array.isArray(MENU)) {
+      var found = null;
+      MENU.forEach(function (m) { if (m && m.id && /دفتر\s*مالی/.test(String(m.l || m.label || ''))) found = m.id; });
+      if (found) PAGE_ID = found;
+      else {
+        var idx = -1;
+        for (var i = 0; i < MENU.length; i++) if (MENU[i] && MENU[i].sec === 'سیستم') { idx = i; break; }
+        var item = { id: 'finance', l: 'دفتر مالی', ic: 'wallet' };
+        if (idx >= 0) MENU.splice(idx, 0, { sec: 'مالی و سرمایه' }, item); else MENU.push({ sec: 'مالی و سرمایه' }, item);
+        PAGE_ID = 'finance';
+      }
+    }
+    ALIAS = {}; ALIAS[PAGE_ID] = 1; ALIAS.finance = 1; ALIAS.ledger = 1; ALIAS.financeEntries = 1;
+    if (TITLES && !TITLES[PAGE_ID]) TITLES[PAGE_ID] = ['دفتر مالی', 'درآمد، هزینه و مطالبات'];
+  }
+  function installAct() {
+    var ACT = G('ACT');
+    if (!ACT || typeof ACT !== 'object' || HOOKS.act) return;
+    ['new', 'quick-add', 'new-entry', 'new-finance', 'new-order'].forEach(function (k) {
       var o = ACT[k];
       ACT[k] = function () {
-        if (isFinanceActive()) { openEntry(''); return; }
+        if (isFinanceActive() && k !== 'new-order') { openEntry(''); return; }
         if (typeof o === 'function') return o.apply(this, arguments);
       };
     });
     ACT['zvf-new'] = function () { openEntry(''); };
     ACT['zvf-diag'] = function () { diagnostics(); };
+    HOOKS.act = true;
   }
-
-  /* ═══════════ 19) راه‌اندازی ═══════════ */
-  restore();
-  repairDB();
-  syncFromDB();
-  watch();
-  if (isFinanceActive()) { try { render(); } catch (e) { console.error('[ZV Finance]', e); } }
-  else {
-    var boot = setInterval(function () {
-      var box = pageBox();
-      if (box && isFinanceActive() && !box.querySelector('#zvfRoot')) { try { render(); } catch (e) {} }
-      if (box && G('PS')) clearInterval(boot);
-    }, 400);
-    setTimeout(function () { clearInterval(boot); }, 20000);
-  }
-
-  window.ZVFinance = {
-    render: render, rows: function () { return ROWS; }, repair: repairDB,
-    open: openEntry, detail: openDetail, export: function () { csv(filtered()); },
-    sync: syncAll, state: S, page: PAGE_ID
-  };
-})();
+  function installWatch() {
+    var box = pageBox();
+    if (!box || !window.MutationObserver || HOOKS.wat
