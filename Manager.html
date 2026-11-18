@@ -56,14 +56,34 @@ function netErr(m){ return /زمان|نرسید|timeout|network|ارتباط|fai
 function ensureApi(){
   var o=window.api;
   if(typeof o!=='function'||o.__zv) return;
+  function norm(res){
+    if(!res||typeof res!=='object') return res;
+    if(res.user===null||res.user===undefined) res.user={};
+    if(res.user&&typeof res.user==='object'){
+      if(res.user.permissions===null||typeof res.user.permissions!=='object') res.user.permissions={};
+      if(res.user.name==null) res.user.name='';
+      if(res.user.role==null) res.user.role='Manager';
+    }
+    if(res.data===null||res.data===undefined) res.data={};
+    if(res.data&&typeof res.data==='object'){
+      ['settings','company','defs','views','nextIds','advisor','notifications','financeStats','cash','invest','equity','contractStats','projectStats'].forEach(function(k){
+        if(res.data[k]===null||res.data[k]===undefined) res.data[k]={};
+      });
+    }
+    return res;
+  }
   var w=function(fn){
     var args=[].slice.call(arguments,1);
-    var read=/^(mgrCC(Bootstrap|Session|Ping|Export)|mgr(Advisor|Charts|FinanceReport)|get|check)/.test(String(fn));
+    var isLogin=/^(managerLogin|mgrCCSession|mgrCCBootstrap|adminLogin|admCCSession|admCCBootstrap)$/.test(String(fn));
+    var read=/^(mgrCC(Bootstrap|Session|Ping|Export)|mgr(Advisor|Charts|FinanceReport)|get|check|admCC(Bootstrap|Session|Ping))/.test(String(fn));
     var max=read?3:1;
     function run(n){
-      return o.apply(this,[fn].concat(args)).catch(function(e){
+      return o.apply(this,[fn].concat(args)).then(function(r){
+        return isLogin?norm(r):r;
+      }).catch(function(e){
         var m=String(e&&e.message||e);
-        if(netErr(m)&&n<max) return new Promise(function(r){setTimeout(r,900*n);}).then(function(){return run(n+1);});
+        var net=/زمان|نرسید|timeout|network|ارتباط|failed|fetch|load|deadline/i.test(m);
+        if(net&&n<max) return new Promise(function(r){setTimeout(r,900*n);}).then(function(){return run(n+1);});
         throw e;
       });
     }
