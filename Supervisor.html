@@ -327,7 +327,7 @@ var $=function(s,r){return (r||document).querySelector(s);};
 var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
 function esc(v){var m={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};return String(v==null?'':v).replace(/[&<>"']/g,function(c){return m[c];});}
 function fa(v){return String(v==null?'':v).replace(/\d/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'[+d];});}
-function en(v){return String(v==null?'':v).replace(/[۰-۹]/g,function(d){return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d));}).replace(/[٠-٩]/g,function(d){return String('٠١٢٣٤٥٦٧٨٩'.indexOf(d));});}
+function en(v){return String(v==null?'':v).replace(/[۰-۹]/g,function(d){return String('۰۱۳۴۵۶۷۸۹'.indexOf(d));}).replace(/[٠-٩]/g,function(d){return String('٠١٢٣٤٥٦٧٨٩'.indexOf(d));});}
 function num(v){var n=Number(en(v).replace(/[٬,\s]/g,''));return isFinite(n)?n:0;}
 var NF=new Intl.NumberFormat('fa-IR');
 function money(n){return NF.format(Math.round(num(n)))+' ریال';}
@@ -384,7 +384,8 @@ alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2
 };
 function icon(n,s){return '<svg class="ic" viewBox="0 0 24 24"'+(s?' style="'+s+'"':'')+'>'+(IC[n]||IC.grid)+'</svg>';}
 /* ═════ 3) STATE ═════ */
-var STC={'جدید':'blue','در حال انجام':'amber','تکمیل شده':'green','لغو شده':'red','تعلیق':'gray','ارجاع به سرپرست':'pink','فعال':'green','غیرفعال':'gray','OPEN':'blue','ANSWERED':'green','CLOSED':'gray','worker':'blue','operator':'teal','عادی':'gray','مهم':'violet','فوری':'red','در بررسی':'violet','پذیرفته شده':'teal','در حال ساخت':'amber','منتشر شد':'green','رد شده':'red','feature':'blue','bug':'red','notify':'violet'};
+var CARD_ST=['جدید','درحال بررسی','درحال اجرا','انجام شده','لغو شده','تعلیق','ارجاع به سرپرست','ارجاع به شعبه'];
+var STC={'جدید':'blue','درحال بررسی':'violet','در حال بررسی':'violet','درحال اجرا':'amber','در حال انجام':'amber','انجام شده':'green','تکمیل شده':'green','لغو شده':'red','تعلیق':'gray','ارجاع به سرپرست':'pink','ارجاع به شعبه':'teal','فعال':'green','غیرفعال':'gray','مشغول به کار':'amber','OPEN':'blue','ANSWERED':'green','CLOSED':'gray','worker':'blue','operator':'teal','supervisor':'violet','عادی':'gray','مهم':'violet','فوری':'red','در بررسی':'violet','پذیرفته شده':'teal','در حال ساخت':'amber','منتشر شد':'green','رد شده':'red','feature':'blue','bug':'red','notify':'violet'};
 function pill(s){return '<span class="pill p-'+(STC[s]||'gray')+'">'+esc(s||'—')+'</span>';}
 function av(n,u){return '<span class="av">'+(u?'<img src="'+esc(u)+'" alt="">':esc(String(n||'؟').trim().charAt(0)))+'</span>';}
 var TOKEN=localStorage.getItem('zv_supervisor_token')||'';
@@ -564,7 +565,7 @@ function dashboard(){
       kpi('مشغول به کار',fa(d.busyMembers||0),'worker','var(--amber)','در حال اجرا')+
       kpi('کارت‌های جدید',fa(d.newCards||0),'cards','var(--violet)','در انتظار تخصیص')+
       kpi('در حال اجرا',fa(d.inProgressCards||0),'clock','var(--teal)','کارت فعال')+
-      kpi('تکمیل شده',fa(d.completedCards||0),'check','var(--green)','مجموع دوره')+'</div>';
+      kpi('انجام شده',fa(d.completedCards||0),'check','var(--green)','مجموع دوره')+'</div>';
     h+='<div class="grid charts"><div class="cbox"><h3>'+icon('report','width:15px;height:15px;color:var(--brand)')+' توزیع وضعیت کارت‌ها</h3><div class="cwrap"><canvas id="dStatus"></canvas></div></div>'+
       '<div class="cbox"><h3>'+icon('groups','width:15px;height:15px;color:var(--violet)')+' گروه‌های من</h3>'+
       ((d.groupRows||[]).length?(d.groupRows||[]).map(function(g){return '<div class="rank"><div class="info"><b>'+esc(g.name)+'</b><small>'+esc(g.area||'—')+' · '+fa(g.members||0)+' عضو</small></div>'+pill(g.status)+'</div>';}).join(''):'<p class="sub">گروهی ثبت نشده است.</p>')+'</div></div>';
@@ -573,7 +574,7 @@ function chartsDash(){
   if(!window.Chart||!_DASH)return;var d=_DASH,P=pal();
   Chart.defaults.font.family='Vazirmatn';Chart.defaults.color=cssVar('--muted');
   var el=$('#dStatus');if(!el)return;
-  CH.push(new Chart(el,{type:'doughnut',data:{labels:['جدید','در حال اجرا','تکمیل شده','لغو شده'],datasets:[{data:[d.newCards||0,d.inProgressCards||0,d.completedCards||0,d.cancelledCards||0],backgroundColor:[P[2],P[5],P[6],P[7]],borderWidth:2,borderColor:cssVar('--surface')}]},
+  CH.push(new Chart(el,{type:'doughnut',data:{labels:['جدید','درحال اجرا','انجام شده','لغو شده'],datasets:[{data:[d.newCards||0,d.inProgressCards||0,d.completedCards||0,d.cancelledCards||0],backgroundColor:[P[2],P[5],P[6],P[7]],borderWidth:2,borderColor:cssVar('--surface')}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}}}}));}
 /* ═════ 9) ORDERS ═════ */
 function ordersPage(){
@@ -598,7 +599,7 @@ function cardsPage(){
       '<button class="btn btn-sm '+(PS.view!=='table'?'btn-p':'btn-s')+'" data-act="cards-view" data-mode="cards">'+icon('grid','width:14px;height:14px')+' کارت</button>'+
       '<button class="btn btn-sm '+(PS.view==='table'?'btn-p':'btn-s')+'" data-act="cards-view" data-mode="table">'+icon('list','width:14px;height:14px')+' جدول</button>');
     h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-search placeholder="جستجو در کارت‌ها…" value="'+esc(PS.q||'')+'"></div>'+
-      '<select class="sel" data-cstatus><option value="همه">وضعیت: همه</option>'+['جدید','در حال انجام','تکمیل شده','لغو شده','ارجاع به سرپرست','تعلیق'].map(function(s){return '<option'+(PS.status===s?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select></div>';
+      '<select class="sel" data-cstatus><option value="همه">وضعیت: همه</option>'+CARD_ST.map(function(s){return '<option'+(PS.status===s?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select></div>';
     if(!rows.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('cards')+'</div><h4>کارتی یافت نشد</h4></div></div>';
     if(PS.view==='table'){
       h+='<div class="tw"><table class="tb"><thead><tr><th>کارت</th><th>مشتری</th><th>خدمت</th><th>نیرو</th><th>اجرا</th><th>مبلغ</th><th>وضعیت</th><th style="text-align:left">عملیات</th></tr></thead><tbody>'+
@@ -685,7 +686,7 @@ function plannerPage(){
     var opts='<option value="">تمام اعضای گروه</option>'+workers.map(function(w){return '<option value="'+esc(w.id)+'"'+(String(w.id)===String(PS.plWorker)?' selected':'')+'>'+esc(w.name)+'</option>';}).join('');
     var h=head('برنامه کاری گروه',jDisp(days[0])+' تا '+jDisp(days[6])+' · '+fa(list.length)+' کارت',
       '<button class="btn btn-s btn-sm" data-act="week" data-d="-7">هفته قبل</button><button class="btn btn-p btn-sm" data-act="week" data-d="0">هفته جاری</button><button class="btn btn-s btn-sm" data-act="week" data-d="7">هفته بعد</button><select class="sel" data-plworker>'+opts+'</select>');
-    h+='<div class="zv-planner-legend"><span><i class="zv-planner-dot" style="background:var(--blue)"></i>جدید</span><span><i class="zv-planner-dot" style="background:var(--amber)"></i>در حال انجام</span><span><i class="zv-planner-dot" style="background:var(--green)"></i>تکمیل شده</span><span><i class="zv-planner-dot" style="background:var(--red)"></i>لغو / مرجوع</span></div>';
+    h+='<div class="zv-planner-legend"><span><i class="zv-planner-dot" style="background:var(--blue)"></i>جدید</span><span><i class="zv-planner-dot" style="background:var(--amber)"></i>درحال بررسی / اجرا</span><span><i class="zv-planner-dot" style="background:var(--green)"></i>انجام شده</span><span><i class="zv-planner-dot" style="background:var(--red)"></i>لغو / ارجاع</span></div>';
     var noTime=list.filter(function(c){return !c._t;});
     h+='<div class="zv-planner-scroll">';
     if(noTime.length)h+='<div class="zv-planner-unscheduled"><span style="font-size:11px;color:var(--muted);font-weight:800;min-width:80px;padding-top:5px">بدون ساعت</span>'+noTime.map(plEvent).join('')+'</div>';
@@ -698,7 +699,7 @@ function plannerPage(){
         h+='<div class="zv-planner-cell'+(gKey(d)===tk?' today':'')+'">'+dl.map(plEvent).join('')+'</div>';});}
     h+='</div></div>';return h;});}
 function plEvent(c){
-  var s=String(c.status||''),cls=/تکمیل/.test(s)?'status-done':/لغو|مرجوع|ارجاع/.test(s)?'status-cancel':/جدید/.test(s)?'status-new':/در حال/.test(s)?'status-progress':'';
+  var s=String(c.status||''),cls=/انجام شده|تکمیل/.test(s)?'status-done':/لغو|مرجوع|ارجاع/.test(s)?'status-cancel':/جدید/.test(s)?'status-new':/درحال|در حال|بررسی|اجرا/.test(s)?'status-progress':'';
   return '<button class="zv-planner-event '+cls+'" data-act="card-detail" data-id="'+esc(c.cardId)+'"><strong>'+fa(c._t?c._t+' · ':'')+esc(c.cardId)+'</strong><small>'+esc(c.customer||'')+'</small><small>'+esc(s)+'</small></button>';}
 /* ═════ 12) RETURNED / GROUPS / MEMBERS ═════ */
 function returnedPage(){
@@ -736,7 +737,7 @@ function membersPage(){
     if(!rows.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('people')+'</div><h4>عضوی ثبت نشده است</h4></div></div>';
     h+='<div class="tw"><table class="tb"><thead><tr><th>شناسه</th><th>نام کامل</th><th>نام کاربری</th><th>نقش</th><th>وضعیت</th><th style="text-align:left">عملیات</th></tr></thead><tbody>'+
       rows.map(function(m){return '<tr><td class="ltr">'+esc(m.workerId||'—')+'</td><td>'+esc(m.fullName)+'</td><td class="ltr">'+esc(m.username)+'</td><td>'+pill(m.role)+'</td><td>'+pill(m.status)+'</td><td><div class="ra">'+
-        '<select class="sel" data-mstatus="'+m.rowIndex+'" style="min-width:120px"><option value="">تغییر وضعیت…</option>'+st.map(function(s){return '<option'+(s===m.status?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select>'+
+        '<select class="sel" data-mstatus="'+m.rowIndex+'" style="min-width:130px"><option value="">تغییر وضعیت…</option>'+st.map(function(s){return '<option'+(s===m.status?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select>'+
         ibtn('member-msg','msg','پیام به عضو',' data-worker="'+esc(m.workerId||'')+'"')+
         ibtn('remove-member','trash','حذف',' data-id="'+m.rowIndex+'"')+'</div></td></tr>';}).join('')+
       '</tbody></table></div>';return h;});}
@@ -746,7 +747,7 @@ function addMemberModal(gid){
     '<div class="field"><label>شناسه نیرو (Worker-ID) <span class="req">*</span></label><input name="workerId" required placeholder="W-44400000001"></div>'+
     '<div class="field"><label>نقش <span class="req">*</span></label><select name="role"><option value="worker">worker</option><option value="operator">operator</option></select></div>'+
     '</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('plus','width:14px;height:14px')+' افزودن</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);}
-/* ═════ 13) MESSAGES — موتور یکپارچه ═════ */
+/* ═════ 13) MESSAGES ═════ */
 function messagesPage(){
   return api('supervisorGetConversations',TOKEN).then(function(rows){
     _MSGS=rows||[];
@@ -842,11 +843,11 @@ function runReports(){
   api('getSupervisorReports',TOKEN,f?f.value:'',t?t.value:'').then(function(rep){
     var h='<div class="grid kpis" style="margin-bottom:18px">'+
       kpi('کل کارت‌ها',fa(rep.totalCards||0),'cards','var(--blue)','در بازه')+
-      kpi('تکمیل شده',fa(rep.completedCards||0),'check','var(--green)','موفق')+
-      kpi('در حال انجام',fa(rep.inProgressCards||0),'clock','var(--amber)','جاری')+
+      kpi('انجام شده',fa(rep.completedCards||0),'check','var(--green)','موفق')+
+      kpi('در حال اجرا',fa(rep.inProgressCards||0),'clock','var(--amber)','جاری')+
       kpi('درآمد کل',moneyC(rep.totalRevenue||0),'wallet','var(--brand)','ریال')+'</div>';
     h+='<div class="card"><h3 style="margin-bottom:12px;display:flex;gap:8px;align-items:center">'+icon('people','width:15px;height:15px;color:var(--violet)')+' عملکرد اعضا</h3>'+
-      ((rep.byWorker||[]).length?'<div class="tw"><table class="tb"><thead><tr><th>نام</th><th>کل</th><th>تکمیل</th><th>درآمد</th></tr></thead><tbody>'+
+      ((rep.byWorker||[]).length?'<div class="tw"><table class="tb"><thead><tr><th>نام</th><th>کل</th><th>انجام شده</th><th>درآمد</th></tr></thead><tbody>'+
       rep.byWorker.map(function(w){return '<tr><td><b>'+esc(w.name)+'</b></td><td class="num">'+fa(w.total)+'</td><td class="num">'+fa(w.completed)+'</td><td class="num">'+money(w.revenue)+'</td></tr>';}).join('')+'</tbody></table></div>':'<p class="sub">داده‌ای نیست.</p>')+'</div>';
     $('#repOut').innerHTML=h;
   }).catch(function(e){$('#repOut').innerHTML=errCard(e);});}
