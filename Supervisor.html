@@ -10,9 +10,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet">
-<script src="zv-compat.js" onerror="console.warn('[ZV] zv-compat.js not loaded')"></script>
-<script src="zv-api.js" onerror="console.warn('[ZV] zv-api.js not loaded')"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous" onerror="console.warn('[ZV] Chart.js load failed')"></script>
+<script src="zv-compat.js" onerror="console.warn('[ZV] compat')"></script>
+<script src="zv-api.js" onerror="console.warn('[ZV] api')"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous" onerror="console.warn('[ZV] chart')"></script>
 <style>
 :root{--navy:#0B1736;--navy2:#13234D;--brand:#FF6B1A;--brand2:#FF8A3D;--brandDeep:#E4570B;--blue:#2E63E7;--violet:#7C4DFF;--teal:#0FA3A3;--green:#0E9F6E;--amber:#D97706;--red:#E02D3C;--pink:#E0447C;--slate:#64748B;--bg:#F3F5FB;--surface:#fff;--surface2:#F6F8FD;--ink:#101A33;--muted:#5C6784;--line:#E2E7F3;--line2:#D3DAEC;--scrim:rgba(7,13,31,.58);--sh:0 6px 22px rgba(11,23,54,.07);--sh2:0 16px 44px rgba(11,23,54,.16);--r:16px;--tr:180ms ease;--grad:linear-gradient(135deg,#FF6B1A,#FF8A3D 55%,#FFB25E);--hero:linear-gradient(120deg,#0B1736,#16295B 40%,#3B2E7E 74%,#7C4DFF 128%);--glass:rgba(148,163,184,.16);--glassBrd:rgba(100,116,139,.28);--panBg:#0D1A38;--rail:78px;--zv-tr:240ms cubic-bezier(.3,.9,.3,1)}
 [data-theme=dark]{--bg:#070D1F;--surface:#0E1830;--surface2:#121F3D;--ink:#E9EEFC;--muted:#93A0C2;--line:#1D2B4F;--line2:#27375F;--scrim:rgba(2,6,18,.74);--sh:0 8px 26px rgba(0,0,0,.42);--sh2:0 18px 50px rgba(0,0,0,.58);--glass:rgba(203,213,225,.11);--glassBrd:rgba(148,163,184,.26)}
@@ -30,17 +30,19 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:8px 16px;border-radius:11px;border:1px solid transparent;font-size:12.5px;font-weight:800;cursor:pointer;transition:all var(--tr);white-space:nowrap}
 .btn:hover{transform:translateY(-1px)}.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
 .btn-p{background:var(--grad);color:#fff;box-shadow:0 6px 18px rgba(255,107,26,.35)}
+.btn-v{background:linear-gradient(135deg,#7C4DFF,#9E7BFF);color:#fff;box-shadow:0 6px 18px rgba(124,77,255,.32)}
 .btn-s{background:var(--surface2);border-color:var(--line);color:var(--ink)}.btn-s:hover{border-color:var(--brand);color:var(--brandDeep)}
 .btn-d{background:rgba(224,45,60,.12);color:var(--red)}.btn-sm{min-height:30px;padding:5px 11px;font-size:11.5px}
 .btn-i{width:31px;height:31px;min-height:31px;padding:0;border-radius:9px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:18px}
-.grid{display:grid;gap:16px}.kpis{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.grid{display:grid;gap:16px}.kpis{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
 .kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--sh);position:relative;overflow:hidden;transition:transform var(--tr)}
 .kpi:hover{transform:translateY(-3px)}.kpi .top{display:flex;justify-content:space-between;align-items:center}
 .kpi .chip{width:38px;height:38px;border-radius:12px;display:grid;place-items:center}
-.kpi .l{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:10px}.kpi .v{font-size:22px;font-weight:900;font-variant-numeric:tabular-nums;margin-top:2px}.kpi .s{font-size:10.5px;color:var(--muted)}
+.kpi .l{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:10px}.kpi .v{font-size:21px;font-weight:900;font-variant-numeric:tabular-nums;margin-top:2px}.kpi .s{font-size:10.5px;color:var(--muted)}
 .hero{background:var(--hero);color:#fff;border-radius:20px;padding:26px 28px;position:relative;overflow:hidden;margin-bottom:18px}
 .hero:before{content:"";position:absolute;inset:0;background:radial-gradient(420px 220px at 88% 18%,rgba(255,107,26,.4),transparent 60%),radial-gradient(320px 210px at 8% 112%,rgba(15,163,163,.3),transparent 60%)}
+.hero:after{content:"";position:absolute;inset:0;opacity:.16;background-image:radial-gradient(rgba(255,255,255,.85) 1px,transparent 1px);background-size:22px 22px}
 .hero>*{position:relative;z-index:1}.hero h2{font-size:21px;font-weight:900}.hero p{color:#D3DCF5;font-size:12px;margin-top:4px}
 .hero .acts{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap}.hero .btn-s{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.22);color:#fff}
 .hero .dchip{position:absolute;left:26px;top:24px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24);padding:7px 14px;border-radius:12px;font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:7px}
@@ -63,12 +65,12 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
 .nav-item.on:before{content:"";position:absolute;right:-12px;top:8px;bottom:8px;width:3.5px;border-radius:4px;background:var(--grad)}
 .nav-item.soon{opacity:.72}
 .bdg{margin-right:auto;background:var(--brand);color:#fff;font-size:10px;font-weight:900;min-width:20px;height:20px;padding:0 6px;border-radius:12px;display:grid;place-items:center}
-.bdg.t{background:var(--teal)}.bdg.b{background:var(--blue)}.bdg.r{background:var(--red)}
+.bdg.b{background:var(--blue)}.bdg.r{background:var(--red)}.bdg.v{background:var(--violet)}.bdg.t{background:var(--teal)}
 .side-foot{padding:14px;border-top:1px solid rgba(255,255,255,.08)}
 .uchip{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.05)}
 .uchip b{color:#fff;font-size:12.5px;display:block}.uchip small{color:#8E9BC4;font-size:10px}
 .av{width:36px;height:36px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:900;overflow:hidden;flex:0 0 auto;cursor:pointer}
-.av img{width:100%;height:100%;object-fit:cover}.av.lg{width:96px;height:96px;font-size:32px;border:3px solid var(--surface);box-shadow:0 0 0 2px var(--line)}
+.av img{width:100%;height:100%;object-fit:cover}
 .main{min-width:0;display:flex;flex-direction:column}
 .topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:12px 26px;background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .topbar h2{font-size:17px;font-weight:900}.crumb{font-size:11px;color:var(--muted)}.sp{flex:1}
@@ -80,7 +82,7 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
 .toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .inp,.sel{min-height:37px;padding:7px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-size:12px}
 .inp:focus,.sel:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px rgba(255,107,26,.12)}
-.sw{position:relative;min-width:230px;flex:1;max-width:340px}.sw .ic{position:absolute;right:11px;top:10px;width:16px;height:16px;color:var(--muted)}.sw input{width:100%;padding-right:36px}
+.sw{position:relative;min-width:220px;flex:1;max-width:340px}.sw .ic{position:absolute;right:11px;top:10px;width:16px;height:16px;color:var(--muted)}.sw input{width:100%;padding-right:36px}
 .tw{overflow:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
 table.tb{width:100%;border-collapse:collapse;font-size:12.5px;min-width:780px}
 .tb th{position:sticky;top:0;background:var(--surface2);color:var(--muted);font-size:11px;font-weight:900;text-align:right;padding:11px 13px;border-bottom:1px solid var(--line);white-space:nowrap;z-index:2}
@@ -89,18 +91,22 @@ table.tb{width:100%;border-collapse:collapse;font-size:12.5px;min-width:780px}
 .num{font-variant-numeric:tabular-nums}.ltr{direction:ltr;text-align:right}.ra{display:flex;gap:5px;justify-content:flex-end}
 .pill{display:inline-flex;align-items:center;gap:6px;padding:3.5px 11px;border-radius:20px;font-size:11px;font-weight:800;white-space:nowrap}
 .pill:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
-.p-blue{background:rgba(46,99,231,.12);color:var(--blue)}.p-green{background:rgba(14,159,110,.13);color:var(--green)}.p-amber{background:rgba(217,119,6,.13);color:var(--amber)}.p-red{background:rgba(224,45,60,.12);color:var(--red)}.p-violet{background:rgba(124,77,255,.12);color:var(--violet)}.p-teal{background:rgba(15,163,163,.13);color:var(--teal)}.p-gray{background:rgba(100,116,139,.14);color:var(--slate)}.p-brand{background:rgba(255,107,26,.13);color:var(--brandDeep)}.p-pink{background:rgba(224,68,124,.12);color:var(--pink)}
+.p-blue{background:rgba(46,99,231,.12);color:var(--blue)}.p-green{background:rgba(14,159,110,.13);color:var(--green)}
+.p-amber{background:rgba(217,119,6,.13);color:var(--amber)}.p-red{background:rgba(224,45,60,.12);color:var(--red)}
+.p-violet{background:rgba(124,77,255,.12);color:var(--violet)}.p-teal{background:rgba(15,163,163,.13);color:var(--teal)}
+.p-gray{background:rgba(100,116,139,.14);color:var(--slate)}.p-brand{background:rgba(255,107,26,.13);color:var(--brandDeep)}.p-pink{background:rgba(224,68,124,.12);color:var(--pink)}
 .empty{text-align:center;padding:52px 20px;color:var(--muted)}
 .empty .ei{width:74px;height:74px;margin:0 auto 14px;border-radius:22px;background:linear-gradient(135deg,rgba(255,107,26,.14),rgba(124,77,255,.14));display:grid;place-items:center;color:var(--brand)}
 .empty .ei .ic{width:32px;height:32px}.empty h4{color:var(--ink);font-size:14px;margin-bottom:4px}
-.charts{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.charts{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
 .cbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
 .cbox h3{font-size:13px;font-weight:900;margin-bottom:12px;display:flex;align-items:center;gap:8px}.cwrap{position:relative;height:250px}
 .rank{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:11px;background:var(--surface2);margin-bottom:7px;font-size:12px}
 .rank .info{flex:1;min-width:0}.rank b{display:block;font-size:12px}.rank small{color:var(--muted);font-size:10px}.rank .v{font-weight:900;color:var(--brandDeep)}
 .scrim{position:fixed;inset:0;background:var(--scrim);backdrop-filter:blur(3px);z-index:90;opacity:0;pointer-events:none;transition:opacity .22s}.scrim.show{opacity:1;pointer-events:auto}
 .mback{position:fixed;inset:0;z-index:100;background:var(--scrim);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow-y:auto}.mback.show{display:flex}
-.modal{background:var(--surface);border:1px solid var(--line);border-radius:20px;width:min(660px,100%);box-shadow:var(--sh2);max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+.modal{background:var(--surface);border:1px solid var(--line);border-radius:20px;width:min(680px,100%);box-shadow:var(--sh2);max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+.modal.w{width:min(1060px,100%)}
 .modal>form{display:flex;flex-direction:column;min-height:0;flex:1;overflow:hidden}
 .mh{display:flex;align-items:center;gap:11px;padding:17px 20px;border-bottom:1px solid var(--line);flex:0 0 auto}.mh h3{font-size:15px;font-weight:900;flex:1}
 .mb{padding:20px 22px;overflow-y:auto;flex:1 1 auto;min-height:0}
@@ -111,12 +117,15 @@ table.tb{width:100%;border-collapse:collapse;font-size:12.5px;min-width:780px}
 .modal.dk .btn-s{background:rgba(255,255,255,.09);border-color:#3A4880;color:#fff}.modal.dk .hint{color:#93A3C8}
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.fgrid .full{grid-column:1/-1}
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}.field label{font-size:11.5px;font-weight:800;color:var(--muted)}
+.req{color:var(--red)}
 .field input,.field textarea,.field select{min-height:40px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);font-size:12.5px;width:100%}
 .field textarea{min-height:78px;resize:vertical}
 .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px rgba(255,107,26,.14)}
 .field .hint{font-size:10px;color:var(--muted)}
 .kv{display:grid;grid-template-columns:1fr 1fr;gap:10px}.kvi{background:var(--surface2);border:1px solid var(--line);border-radius:11px;padding:9px 12px;min-width:0}
 .kvi small{display:block;font-size:10px;color:var(--muted)}.kvi b{font-size:12.5px;font-weight:800;word-break:break-word}.kvi.full{grid-column:1/-1}
+.sec-t{font-size:12px;font-weight:900;color:var(--brandDeep);margin:18px 0 10px;display:flex;align-items:center;gap:8px}
+.sec-t:after{content:"";flex:1;height:1px;background:var(--line)}
 select{background:var(--glass);border:1px solid var(--glassBrd);color:inherit}select option{background:#111A30;color:#fff}
 .zsel{position:relative;width:100%}
 .zsel>select{position:absolute!important;width:1px!important;height:1px!important;opacity:0;pointer-events:none;padding:0!important;border:0!important;margin:0!important}
@@ -128,51 +137,65 @@ select{background:var(--glass);border:1px solid var(--glassBrd);color:inherit}se
 .zsel.open .zsel-pan{display:block}
 .zsel-opt{padding:8px 11px;border-radius:9px;color:#F2F6FF;font-size:12.5px;font-weight:600;cursor:pointer}
 .zsel-opt:hover{background:rgba(255,107,26,.24)}.zsel-opt.on{background:rgba(255,107,26,.34);font-weight:800}.zsel-opt.muted{color:#A9B6D4}
+.toolbar .zsel{width:auto;min-width:150px}.toolbar .zsel-btn{min-height:37px;font-size:12px}
+.jdw{position:relative;width:100%}.jdw input{padding-left:42px!important;direction:ltr;text-align:right}
+.jdb{position:absolute;left:6px;top:50%;transform:translateY(-50%);border:0;border-radius:8px;background:rgba(255,107,26,.14);color:var(--brandDeep);padding:6px 8px;cursor:pointer;z-index:2;display:grid;place-items:center}
+.jdb:hover{background:var(--brand);color:#fff}
+.jpop{display:none;position:fixed;z-index:400;width:min(320px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:11px;box-shadow:var(--sh2)}
+.jpop.open{display:block}
+.jh{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:9px;font-weight:800;font-size:13px}
+.jh button{border:0;background:var(--surface2);border-radius:8px;padding:5px 9px;cursor:pointer;font-size:14px}
+.jh button:hover{background:var(--brand);color:#fff}.jh .yr{flex:1;text-align:center;cursor:pointer;border-radius:6px;padding:2px 6px}
+.jh .yr:hover{background:rgba(255,107,26,.12)}
+.jg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}
+.jg button{border:0;border-radius:7px;padding:7px 0;background:var(--surface2);cursor:pointer;font:inherit;font-size:12px;color:var(--ink)}
+.jg button:hover{background:rgba(255,107,26,.18);color:var(--brandDeep)}
+.jg .dl{background:transparent;color:var(--muted);font-weight:700;cursor:default}
+.jg .today{outline:2px solid var(--brand);outline-offset:-2px}.jg .on{background:var(--grad);color:#fff;font-weight:800}
 #toasts{position:fixed;bottom:18px;left:18px;z-index:200;display:flex;flex-direction:column-reverse;gap:9px;max-width:min(400px,90vw)}
 .toast{display:flex;align-items:center;gap:10px;background:var(--navy);color:#fff;padding:12px 16px;border-radius:13px;font-size:12.5px;box-shadow:var(--sh2);border-right:4px solid var(--blue)}
 .toast.ok{border-right-color:var(--green)}.toast.err{border-right-color:var(--red)}.toast.warn{border-right-color:var(--amber)}
-.thread{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;background:var(--surface)}
-.thread.unread{border-right:3px solid var(--brand)}
-.msgb{border:1px solid var(--line);border-radius:12px;padding:9px 12px;margin-bottom:8px;background:var(--surface);font-size:12.5px}
-.msgb.me{background:rgba(255,107,26,.08);border-color:rgba(255,107,26,.3);margin-left:26px}.msgb.them{margin-right:26px}
-.msgb b{font-size:11.5px}.msgb small{color:var(--muted);font-size:10px;display:block;margin-top:4px}.msgb .body{white-space:pre-wrap;margin:5px 0;word-break:break-word}
+.thread{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px;background:var(--surface);transition:all var(--tr)}
+.thread:hover{border-color:var(--line2);box-shadow:var(--sh)}.thread.unread{border-right:3px solid var(--brand)}
+.tmeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:10.5px;color:var(--muted);margin-top:3px}
+.tno{font-size:10.5px;color:var(--brandDeep);font-weight:800}
+.tprev{background:var(--surface2);border-radius:9px;padding:7px 10px;margin-top:7px;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.ubdg{background:var(--red);color:#fff;border-radius:10px;font-size:10px;font-weight:900;padding:1px 8px}
 .chatbox{max-height:44vh;overflow-y:auto;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface2);margin-bottom:12px}
+.msgb{border:1px solid var(--line);border-radius:12px;padding:9px 12px;margin-bottom:8px;background:var(--surface);font-size:12.5px}
+.msgb.me{background:rgba(255,107,26,.08);border-color:rgba(255,107,26,.3);margin-left:26px}
+.msgb.them{margin-right:26px}
+.msgb.sys{background:transparent;border:0;text-align:center;color:var(--muted);font-size:10.5px;padding:3px;margin-bottom:6px}
+.msgb b{font-size:11.5px}.msgb small{color:var(--muted);font-size:10px;display:block;margin-top:4px}
+.msgb .body{white-space:pre-wrap;margin:5px 0;word-break:break-word}
 .modal.dk .chatbox{background:rgba(255,255,255,.04);border-color:#2E3A66}
-.modal.dk .msgb{background:rgba(255,255,255,.07);border-color:#3A4880;color:#fff}.modal.dk .msgb.me{background:rgba(255,107,26,.18);border-color:rgba(255,107,26,.45)}.modal.dk .msgb small{color:#93A3C8}
-.soon-hero{background:var(--hero);color:#fff;border-radius:20px;padding:30px;position:relative;overflow:hidden;margin-bottom:18px}
-.soon-hero:before{content:"";position:absolute;inset:0;background:radial-gradient(420px 220px at 86% 15%,rgba(255,107,26,.4),transparent 60%)}
-.soon-hero>*{position:relative;z-index:1}
-.soon-hero .tag{display:inline-flex;gap:6px;align-items:center;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:800;margin-bottom:12px}
-.soon-hero h2{font-size:22px;font-weight:900;margin-bottom:8px}.soon-hero p{color:#D3DCF5;font-size:12.5px;max-width:720px;line-height:2}
-.prog{height:9px;border-radius:9px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:16px;max-width:460px}
-.prog i{display:block;height:100%;width:0;background:var(--grad);transition:width 1s cubic-bezier(.3,.9,.3,1)}
-.prog-l{display:flex;justify-content:space-between;max-width:460px;font-size:11px;color:#D3DCF5;margin-top:6px;font-weight:700}
-.soon-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-.soon-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--sh)}
-.soon-card .sic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;margin-bottom:10px}
-.soon-card h4{font-size:13.5px;font-weight:900;margin-bottom:6px}.soon-card p{font-size:11.5px;color:var(--muted);line-height:1.9}
+.modal.dk .msgb{background:rgba(255,255,255,.07);border-color:#3A4880;color:#fff}
+.modal.dk .msgb.me{background:rgba(255,107,26,.18);border-color:rgba(255,107,26,.45)}
+.modal.dk .msgb.sys{background:transparent;border:0;color:#93A3C8}.modal.dk .msgb small{color:#93A3C8}
 .zv-card-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,390px),1fr));gap:16px;margin-top:14px}
 .zv-work-card{background:var(--surface);border:1px solid var(--line);border-radius:17px;overflow:hidden;box-shadow:var(--sh);transition:.2s}
 .zv-work-card:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
 .zv-work-card-head{padding:16px 18px 12px;display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
-.zv-work-card-title{font-size:16px;font-weight:900;color:var(--ink);margin:0 0 4px}.zv-work-card-id{font-size:10px;color:var(--muted);direction:ltr;text-align:right}
+.zv-work-card-title{font-size:16px;font-weight:900;margin:0 0 4px}.zv-work-card-id{font-size:10px;color:var(--muted);direction:ltr;text-align:right}
 .zv-work-card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
 .zv-work-card-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:0 18px 15px}
 .zv-work-card-stat{background:var(--surface2);border-radius:10px;padding:9px 11px;min-width:0}
-.zv-work-card-stat small{display:block;color:var(--muted);font-size:10px}.zv-work-card-stat b{display:block;color:var(--ink);font-size:12px;overflow-wrap:anywhere}
+.zv-work-card-stat small{display:block;color:var(--muted);font-size:10px}.zv-work-card-stat b{display:block;font-size:12px;overflow-wrap:anywhere}
 .zv-work-card-toggle{width:calc(100% - 36px);margin:0 18px 16px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:10px;padding:10px 12px;font-weight:800;cursor:pointer}
 .zv-work-card-toggle:hover{border-color:var(--brand);color:var(--brandDeep)}
-.zv-work-card-detail{border-top:1px solid var(--line);padding:16px 18px 18px;background:var(--surface)}
+.zv-work-card-detail{border-top:1px solid var(--line);padding:16px 18px 18px}
 .zv-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .zv-detail-item{background:var(--surface2);border:1px solid var(--line);border-radius:9px;padding:9px 10px;min-width:0}
-.zv-detail-item small{display:block;color:var(--muted);font-size:10px}.zv-detail-item b{display:block;color:var(--ink);font-size:12px;overflow-wrap:anywhere;white-space:pre-wrap}
-.zv-card-actions{border-top:1px dashed var(--line);padding-top:13px;margin-top:14px}.zv-card-actions-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.zv-detail-item small{display:block;color:var(--muted);font-size:10px}.zv-detail-item b{display:block;font-size:12px;overflow-wrap:anywhere;white-space:pre-wrap}
+.zv-detail-wide{grid-column:1/-1}
+.zv-card-actions{border-top:1px dashed var(--line);padding-top:13px;margin-top:14px}
+.zv-card-actions-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .zv-planner-scroll{overflow:auto;border:1px solid var(--line);border-radius:13px;background:var(--surface)}
 .zv-planner-grid{display:grid;grid-template-columns:66px repeat(7,minmax(142px,1fr));min-width:1060px}
 .zv-planner-head{position:sticky;top:0;z-index:3;background:var(--surface2);border-bottom:1px solid var(--line);padding:10px 7px;text-align:center;min-height:63px}
-.zv-planner-head.today{background:rgba(255,107,26,.12)}.zv-planner-head strong{display:block;color:var(--ink);font-size:12px}.zv-planner-head small{color:var(--muted);font-size:11px}
+.zv-planner-head.today{background:rgba(255,107,26,.12)}.zv-planner-head strong{display:block;font-size:12px}.zv-planner-head small{color:var(--muted);font-size:11px}
 .zv-planner-time{height:72px;padding:6px 7px;border-bottom:1px solid var(--line);color:var(--muted);font-size:10px;text-align:center;background:var(--surface2)}
-.zv-planner-cell{height:72px;padding:4px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);min-width:0;position:relative}
+.zv-planner-cell{height:72px;padding:4px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);min-width:0}
 .zv-planner-cell.today{background:rgba(255,107,26,.05)}
 .zv-planner-event{display:block;width:100%;text-align:right;border:0;border-right:3px solid var(--brand);border-radius:7px;background:rgba(255,107,26,.11);padding:5px 6px;margin:0 0 4px;color:var(--ink);font:inherit;cursor:pointer;overflow:hidden}
 .zv-planner-event strong{display:block;font-size:10px;line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -185,6 +208,18 @@ select{background:var(--glass);border:1px solid var(--glassBrd);color:inherit}se
 .zv-planner-unscheduled .zv-planner-event{width:190px;margin:0}
 .zv-planner-legend{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 14px;color:var(--muted);font-size:11px}
 .zv-planner-legend span{display:inline-flex;align-items:center;gap:5px}.zv-planner-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.soon-hero{background:var(--hero);color:#fff;border-radius:20px;padding:30px;position:relative;overflow:hidden;margin-bottom:18px}
+.soon-hero:before{content:"";position:absolute;inset:0;background:radial-gradient(420px 220px at 86% 15%,rgba(255,107,26,.4),transparent 60%)}
+.soon-hero>*{position:relative;z-index:1}
+.soon-hero .tag{display:inline-flex;gap:6px;align-items:center;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:800;margin-bottom:12px}
+.soon-hero h2{font-size:22px;font-weight:900;margin-bottom:8px}.soon-hero p{color:#D3DCF5;font-size:12.5px;max-width:720px;line-height:2}
+.prog{height:9px;border-radius:9px;background:rgba(255,255,255,.16);overflow:hidden;margin-top:16px;max-width:460px}
+.prog i{display:block;height:100%;width:0;background:var(--grad);transition:width 1s cubic-bezier(.3,.9,.3,1)}
+.prog-l{display:flex;justify-content:space-between;max-width:460px;font-size:11px;color:#D3DCF5;margin-top:6px;font-weight:700}
+.soon-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.soon-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--sh)}
+.soon-card .sic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;margin-bottom:10px}
+.soon-card h4{font-size:13.5px;font-weight:900;margin-bottom:6px}.soon-card p{font-size:11.5px;color:var(--muted);line-height:1.9}
 .profile-layout{display:grid;grid-template-columns:minmax(220px,280px) 1fr;gap:22px;align-items:start}
 .profile-photo-card{text-align:center;padding:22px}
 .profile-photo-large{width:136px;height:136px;margin:0 auto 14px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:rgba(255,107,26,.12);color:var(--brandDeep);font-size:42px;font-weight:900;border:4px solid var(--surface);box-shadow:0 0 0 1px var(--line),0 8px 24px rgba(11,23,54,.1)}
@@ -209,6 +244,7 @@ html.zv-rail .sidebar .uchip>div:not(.av){display:none}
 html.zv-rail .sidebar .av{width:34px;height:34px;font-size:14px}
 #zvTip{position:fixed;z-index:300;pointer-events:none;background:linear-gradient(135deg,#0B1736,#3B2E7E);color:#fff;font-size:11.5px;font-weight:800;padding:7px 12px;border-radius:10px;white-space:nowrap;border:1px solid rgba(255,138,61,.35);box-shadow:0 12px 30px rgba(3,7,20,.45);opacity:0;transition:opacity 140ms}
 #zvTip.on{opacity:1}#zvTip b{color:#FFB25E;margin-right:6px;font-size:10.5px}
+#printArea{display:none}
 .loading{text-align:center;padding:44px;color:var(--muted)}
 .spinner{display:inline-block;width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -229,9 +265,10 @@ html.zv-rail .sidebar .uchip>div:not(.av){display:block}
 @media(max-width:760px){
 #page{padding:16px 14px 70px}.topbar{padding:10px 14px}.crumb,.branch-chip{display:none}
 .fgrid,.kv,.profile-form{grid-template-columns:1fr}.hero .dchip{display:none}.topbar .btn-p span{display:none}
-.profile-layout{grid-template-columns:1fr}.zv-detail-grid{grid-template-columns:1fr 1fr}.zv-card-actions-grid{grid-template-columns:1fr 1fr}
+.profile-layout{grid-template-columns:1fr}.zv-detail-grid,.zv-card-actions-grid{grid-template-columns:1fr 1fr}
+.chatbox{max-height:38vh}.msgb.me{margin-left:8px}.msgb.them{margin-right:8px}
 }
-@media print{body>*{display:none!important}}
+@media print{body>*{display:none!important}#printArea{display:block!important;font-family:Vazirmatn,Tahoma,sans-serif}}
 </style>
 </head>
 <body>
@@ -265,13 +302,13 @@ html.zv-rail .sidebar .uchip>div:not(.av){display:block}
   </aside>
   <div class="main">
     <header class="topbar">
-      <button class="ibtn rail-btn" id="railBtn" data-act="rail" title="جمع کردن منو (Ctrl+B)"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9 4v16"/><path class="ra" d="M16.5 9.5 14 12l2.5 2.5"/></svg></button>
+      <button class="ibtn rail-btn" data-act="rail" title="جمع کردن منو (Ctrl+B)"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9 4v16"/><path class="ra" d="M16.5 9.5 14 12l2.5 2.5"/></svg></button>
       <button class="ibtn menu-btn" data-act="menu"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
       <div><h2 id="tbTitle">داشبورد</h2><div class="crumb" id="tbCrumb"></div></div>
       <div class="branch-chip" id="branchChip"></div>
       <div class="sp"></div>
       <button class="ibtn" data-act="theme" id="themeBtn"></button>
-      <button class="btn btn-p" data-act="go" data-page="cards"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M12 5v14M5 12h14"/></svg><span>کارت‌های گروه</span></button>
+      <button class="btn btn-p" data-act="msg-team"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg><span>پیام به تیم</span></button>
     </header>
     <main id="page"></main>
   </div>
@@ -279,10 +316,13 @@ html.zv-rail .sidebar .uchip>div:not(.av){display:block}
 
 <div class="scrim" id="scrim" data-act="scrim"></div>
 <div class="mback" id="mback"><div class="modal" id="modal"></div></div>
+<div class="jpop" id="jpop"></div>
 <div id="toasts"></div>
+<div id="printArea"></div>
 
 <script>
 'use strict';
+/* ═════ 1) UTIL ═════ */
 var $=function(s,r){return (r||document).querySelector(s);};
 var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
 function esc(v){var m={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};return String(v==null?'':v).replace(/[&<>"']/g,function(c){return m[c];});}
@@ -298,10 +338,12 @@ function j2g(jy,jm,jd){jy+=1595;var d=-355668+365*jy+Math.floor(jy/33)*8+Math.fl
 function jLeap(y){var g=j2g(y,12,30),j=g2j(g[0],g[1],g[2]);return j[0]===y&&j[1]===12&&j[2]===30;}
 function jDays(y,m){return m<=6?31:(m<=11?30:(jLeap(y)?30:29));}
 function parseJ(s){var m=en(s).trim().replace(/[.\-]/g,'/').match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);if(!m)return null;var y=+m[1],mo=+m[2],d=+m[3];if(mo<1||mo>12||d<1||d>jDays(y,mo))return null;return[y,mo,d];}
+function jStore(s){var p=parseJ(s);if(!p)return '';var g=j2g(p[0],p[1],p[2]);return g[0]+'-'+String(g[1]).padStart(2,'0')+'-'+String(g[2]).padStart(2,'0');}
 function jDisp(v){if(!v)return '—';var d=new Date(v);if(isNaN(d.getTime()))return esc(v);var j=g2j(d.getFullYear(),d.getMonth()+1,d.getDate());return fa(j[0]+'/'+String(j[1]).padStart(2,'0')+'/'+String(j[2]).padStart(2,'0'));}
 function jDT(v){if(!v)return '—';var d=new Date(v);if(isNaN(d.getTime()))return jDisp(v);return jDisp(v)+' · '+fa(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));}
 function gKey(v){var d=new Date(v);return isNaN(d.getTime())?'':d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 var JM=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+/* ═════ 2) ICONS ═════ */
 var IC={
 dash:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
 orders:'<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/>',
@@ -328,27 +370,31 @@ send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
 sun:'<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22"/>',
 moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
 chevD:'<path d="m6 9 6 6 6-6"/>',chevL:'<path d="m15 18-6-6 6-6"/>',chevR:'<path d="m9 18 6-6-6-6"/>',
-cam:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
 save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',
 print:'<path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
 bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
 wallet:'<path d="M20 7H4a2 2 0 0 1 0-4h14v4M4 7v12a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1"/>',
 branch:'<path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/>',
 worker:'<path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z"/>',
-lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'
+lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+unlock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
+headset:'<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>',
+list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'
 };
 function icon(n,s){return '<svg class="ic" viewBox="0 0 24 24"'+(s?' style="'+s+'"':'')+'>'+(IC[n]||IC.grid)+'</svg>';}
-var STC={'جدید':'blue','در حال انجام':'amber','تکمیل شده':'green','لغو شده':'red','تعلیق':'gray','ارجاع به سرپرست':'pink','فعال':'green','غیرفعال':'gray','OPEN':'blue','CLOSED':'gray','worker':'blue','operator':'teal','Supervisor':'violet'};
+/* ═════ 3) STATE ═════ */
+var STC={'جدید':'blue','در حال انجام':'amber','تکمیل شده':'green','لغو شده':'red','تعلیق':'gray','ارجاع به سرپرست':'pink','فعال':'green','غیرفعال':'gray','OPEN':'blue','ANSWERED':'green','CLOSED':'gray','worker':'blue','operator':'teal','عادی':'gray','مهم':'violet','فوری':'red','در بررسی':'violet','پذیرفته شده':'teal','در حال ساخت':'amber','منتشر شد':'green','رد شده':'red','feature':'blue','bug':'red','notify':'violet'};
 function pill(s){return '<span class="pill p-'+(STC[s]||'gray')+'">'+esc(s||'—')+'</span>';}
-function av(n,u,cls){return '<span class="av '+(cls||'')+'">'+(u?'<img src="'+esc(u)+'" alt="">':esc(String(n||'؟').trim().charAt(0)))+'</span>';}
+function av(n,u){return '<span class="av">'+(u?'<img src="'+esc(u)+'" alt="">':esc(String(n||'؟').trim().charAt(0)))+'</span>';}
 var TOKEN=localStorage.getItem('zv_supervisor_token')||'';
-var USER=null,PS={page:'dashboard',q:'',status:'همه',week:new Date(),plWorker:'',group:''};
-var CH=[],RKEY='zv_supervisor_rail';
+var USER=null,PS={page:'dashboard',q:'',status:'همه',view:'cards',week:new Date(),plWorker:'',group:'',mq:'',mch:'',mst:''};
+var CH=[],RKEY='zv_supervisor_rail',MSG_UNREAD=0,_MSGS=[],_DASH=null;
 var SOON={
 analytics:{t:'تحلیل عملکرد پیشرفته',ic:'report',c:'var(--blue)',p:42,eta:'اسفند ۱۴۰۵',d:'داشبورد تحلیلی عملکرد اعضا، نرخ تکمیل، میانگین زمان اجرا و مقایسه دوره‌ای گروه‌ها.',items:[['report','نرخ تکمیل اعضا','مقایسه عملکرد هر عضو در بازه‌های زمانی'],['clock','میانگین زمان اجرا','تحلیل سرعت اجرای کارت‌ها به تفکیک خدمت'],['star','امتیاز کیفیت','امتیازدهی بر اساس بازخورد مشتری و سرپرست']]},
 scheduler:{t:'زمان‌بندی هوشمند',ic:'cal',c:'var(--teal)',p:35,eta:'اسفند ۱۴۰۵',d:'تخصیص خودکار کارت بر اساس تخصص، ظرفیت و نزدیکی جغرافیایی اعضا.',items:[['worker','تخصیص هوشمند','پیشنهاد بهترین نیرو برای هر کارت'],['cal','تقویم شیفت','تعریف شیفت و ظرفیت روزانه اعضا'],['clock','مدیریت مرخصی','ثبت مرخصی و جلوگیری از تخصیص در بازه غیبت']]},
 quality:{t:'کنترل کیفیت و بازخورد',ic:'star',c:'var(--amber)',p:28,eta:'فروردین ۱۴۰۶',d:'ثبت بازخورد مشتری پس از تکمیل کارت و گردش کار رسیدگی به شکایات.',items:[['star','بازخورد مشتری','نظرسنجی خودکار پس از تکمیل خدمت'],['check','تأیید کیفیت','چک‌لیست تأیید سرپرست پیش از تسویه'],['report','گزارش شکایات','گردش کار رسیدگی به شکایت مشتری']]},
-mobile:{t:'اپلیکیشن سوپروایزر',ic:'grid',c:'var(--violet)',p:18,eta:'اردیبهشت ۱۴۰۶',d:'اپلیکیشن PWA برای مدیریت گروه در حرکت.',items:[['cards','تخصیص در حرکت','مدیریت کارت‌ها از موبایل'],['bell','اعلان فوری','هشدار تأخیر و کارت مرجوعی'],['cam','تأیید تصویری','مشاهده عکس قبل/بعد خدمت']]},
+mobile:{t:'اپلیکیشن سوپروایزر',ic:'grid',c:'var(--violet)',p:18,eta:'اردیبهشت ۱۴۰۶',d:'اپلیکیشن PWA برای مدیریت گروه در حرکت.',items:[['cards','تخصیص در حرکت','مدیریت کارت‌ها از موبایل'],['bell','اعلان فوری','هشدار تأخیر و کارت مرجوعی'],['eye','تأیید تصویری','مشاهده عکس قبل/بعد خدمت']]},
 ai:{t:'دستیار هوش مصنوعی',ic:'brain',c:'var(--pink)',p:22,eta:'اردیبهشت ۱۴۰۶',d:'پیشنهاد تخصیص بهینه، پیش‌بینی تأخیر و خلاصه هفتگی عملکرد گروه.',items:[['brain','خلاصه هفتگی','روایت عملکرد گروه به زبان طبیعی'],['alert','پیش‌بینی تأخیر','شناسایی کارت‌های در معرض تأخیر'],['worker','پیشنهاد تخصیص','توصیه نیرو بر اساس تاریخچه عملکرد']]}
 };
 var SOON_ORDER=['analytics','scheduler','quality','mobile','ai'];
@@ -357,12 +403,12 @@ function api(fn){var a=Array.prototype.slice.call(arguments,1);return new Promis
   var r=google.script.run.withSuccessHandler(res).withFailureHandler(function(e){rej(new Error(e&&e.message?e.message:String(e)));});
   if(typeof r[fn]!=='function'){rej(new Error('تابع '+fn+' در بک‌اند نصب نیست.'));return;}
   r[fn].apply(r,a);});}
-function toast(m,t,a){var d=document.createElement('div');d.className='toast '+(t||'');
-  d.innerHTML=icon(t==='ok'?'check':t==='err'?'x':t==='warn'?'undo':'zap','width:16px;height:16px')+'<span>'+esc(m)+'</span>'+(a?'<button type="button">'+esc(a.label)+'</button>':'');
-  if(a)d.querySelector('button').onclick=function(){a.fn();d.remove();};
-  $('#toasts').appendChild(d);setTimeout(function(){d.remove();},a?8000:3800);}
-function openModal(h,w,d){var m=$('#modal');m.className='modal'+(w?' w':'')+(d?' dk':'');m.innerHTML=h;$('#mback').classList.add('show');document.body.style.overflow='hidden';decorate(m);}
-function closeModal(){$('#mback').classList.remove('show');document.body.style.overflow='';}
+/* ═════ 4) UI ═════ */
+function toast(m,t){var d=document.createElement('div');d.className='toast '+(t||'');
+  d.innerHTML=icon(t==='ok'?'check':t==='err'?'x':t==='warn'?'undo':'zap','width:16px;height:16px')+'<span>'+esc(m)+'</span>';
+  $('#toasts').appendChild(d);setTimeout(function(){d.remove();},4200);}
+function openModal(h,w,d){var m=$('#modal');m.className='modal'+(w?' w':'')+(d?' dk':'');m.innerHTML=h;$('#mback').classList.add('show');document.body.style.overflow='hidden';decorate(m);jdInit(m);}
+function closeModal(){$('#mback').classList.remove('show');document.body.style.overflow='';jdClose();}
 function confirmBox(t,b,fn,y,n,dg){openModal('<div class="mh"><h3>'+esc(t)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><div class="mb"><p style="font-size:13px;line-height:2">'+b+'</p></div><div class="mf"><button class="btn '+(dg===false?'btn-p':'btn-d')+'" id="cfY">'+esc(y||'بله')+'</button><button class="btn btn-s" data-act="mclose">'+esc(n||'انصراف')+'</button></div>');$('#cfY').onclick=function(){closeModal();fn();};}
 function kv(p){return '<div class="kv">'+p.map(function(x){return '<div class="kvi'+(x[2]?' full':'')+'"><small>'+esc(x[0])+'</small><b>'+(x[1]==null?'—':x[1])+'</b></div>';}).join('')+'</div>';}
 function head(t,s,a){return '<div class="ph"><div><h1>'+esc(t)+'</h1><div class="sub">'+esc(s)+'</div></div><div style="display:flex;gap:8px;flex-wrap:wrap">'+(a||'')+'</div></div>';}
@@ -371,6 +417,7 @@ function ibtn(act,ic,t,ex){return '<button class="btn btn-s btn-i" title="'+esc(
 function kpi(l,v,ic,c,s){return '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,'+c+' 14%,transparent);color:'+c+'">'+icon(ic)+'</span></div><div class="l">'+esc(l)+'</div><div class="v">'+v+'</div><div class="s">'+esc(s||'')+'</div></div>';}
 function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
 function pal(){return ['--brand','--violet','--blue','--teal','--pink','--amber','--green','--slate'].map(cssVar);}
+/* ═════ 5) SELECT + DATE ═════ */
 function zClose(ex){$$('.zsel.open').forEach(function(w){if(w!==ex)w.classList.remove('open');});}
 function zSync(s){if(s&&s._sync)s._sync();}
 function decorate(root){$$('select',root||document).forEach(function(sel){
@@ -379,55 +426,100 @@ function decorate(root){$$('select',root||document).forEach(function(sel){
   var b=document.createElement('button');b.type='button';b.className='zsel-btn';
   var p=document.createElement('div');p.className='zsel-pan';w.appendChild(b);w.appendChild(p);
   function lab(){var o=sel.options[sel.selectedIndex];b.innerHTML='<span>'+esc(o?(o.text||o.value||'—'):'—')+'</span>'+icon('chevD');}
-  function build(){p.innerHTML=Array.prototype.map.call(sel.options,function(o,i){var txt=(o.text||o.value||'').trim();if(!txt&&i>0)return '';return '<div class="zsel-opt'+(i===sel.selectedIndex?' on':'')+(o.value?'':' muted')+'" data-i="'+i+'">'+esc(txt||'انتخاب کنید')+'</div>';}).join('');}
-  b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();var op=w.classList.contains('open');zClose();if(!op){build();w.classList.add('open');var c=p.querySelector('.zsel-opt.on');if(c)p.scrollTop=Math.max(0,c.offsetTop-90);}});
-  p.addEventListener('click',function(e){var o=e.target.closest('.zsel-opt');if(!o)return;e.stopPropagation();sel.selectedIndex=+o.dataset.i;sel.dispatchEvent(new Event('input',{bubbles:true}));sel.dispatchEvent(new Event('change',{bubbles:true}));lab();w.classList.remove('open');});
+  function build(){p.innerHTML=Array.prototype.map.call(sel.options,function(o,i){var t=(o.text||o.value||'').trim();if(!t&&i>0)return '';
+    return '<div class="zsel-opt'+(i===sel.selectedIndex?' on':'')+(o.value?'':' muted')+'" data-i="'+i+'">'+esc(t||'انتخاب کنید')+'</div>';}).join('');}
+  b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();var op=w.classList.contains('open');zClose();
+    if(!op){build();w.classList.add('open');var c=p.querySelector('.zsel-opt.on');if(c)p.scrollTop=Math.max(0,c.offsetTop-90);}});
+  p.addEventListener('click',function(e){var o=e.target.closest('.zsel-opt');if(!o)return;e.stopPropagation();
+    sel.selectedIndex=+o.dataset.i;sel.dispatchEvent(new Event('input',{bubbles:true}));sel.dispatchEvent(new Event('change',{bubbles:true}));lab();w.classList.remove('open');});
   sel._sync=lab;lab();});}
-/* ═════════ لوگو ═════════ */
+var JD={inp:null,y:0,m:0};
+function jdInit(root){$$('input[data-jd]',root||document).forEach(function(inp){
+  if(inp._jd)return;inp._jd=true;inp.autocomplete='off';if(!inp.placeholder)inp.placeholder='۱۴۰۵/۰۹/۰۱';
+  var w=document.createElement('div');w.className='jdw';inp.parentNode.insertBefore(w,inp);w.appendChild(inp);
+  var b=document.createElement('button');b.type='button';b.className='jdb';b.innerHTML=icon('cal','width:14px;height:14px');w.appendChild(b);
+  b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();jdOpen(inp);});
+  inp.addEventListener('input',function(){var v=en(inp.value).replace(/\D/g,'').slice(0,8);if(v.length>4)v=v.slice(0,4)+'/'+v.slice(4);if(v.length>7)v=v.slice(0,7)+'/'+v.slice(7);inp.value=v;});});}
+function jdOpen(inp){JD.inp=inp;var p=parseJ(inp.value),n=new Date(),j=g2j(n.getFullYear(),n.getMonth()+1,n.getDate());
+  JD.y=p?p[0]:j[0];JD.m=p?p[1]:j[1];jdRender();
+  var pop=$('#jpop');pop.classList.add('open');var r=inp.getBoundingClientRect(),pw=320,ph=pop.offsetHeight||330;
+  pop.style.left=Math.min(Math.max(8,r.left),window.innerWidth-pw-8)+'px';
+  var t=r.bottom+6;if(t+ph>window.innerHeight-8)t=Math.max(8,r.top-ph-6);pop.style.top=t+'px';}
+function jdClose(){var p=$('#jpop');if(p)p.classList.remove('open');JD.inp=null;}
+function jdRender(){var pop=$('#jpop');if(!pop)return;
+  var n=new Date(),t=g2j(n.getFullYear(),n.getMonth()+1,n.getDate()),mx=jDays(JD.y,JD.m),f=j2g(JD.y,JD.m,1);
+  var wd=(new Date(f[0],f[1]-1,f[2]).getDay()+1)%7,sel=JD.inp?parseJ(JD.inp.value):null;
+  var h='<div class="jh"><button type="button" data-j="py">«</button><button type="button" data-j="pm">‹</button><span class="yr" data-j="yr">'+JM[JD.m-1]+' '+fa(JD.y)+'</span><button type="button" data-j="nm">›</button><button type="button" data-j="ny">»</button></div><div class="jg">';
+  ['ش','ی','د','س','چ','پ','ج'].forEach(function(x){h+='<button type="button" class="dl" disabled>'+x+'</button>';});
+  for(var i=0;i<wd;i++)h+='<span></span>';
+  for(var d=1;d<=mx;d++){var isT=t[0]===JD.y&&t[1]===JD.m&&t[2]===d,isS=sel&&sel[0]===JD.y&&sel[1]===JD.m&&sel[2]===d;
+    h+='<button type="button" data-day="'+d+'" class="'+(isT?'today ':'')+(isS?'on':'')+'">'+fa(d)+'</button>';}
+  pop.innerHTML=h+'</div>';}
+(function(){var pop=$('#jpop');if(!pop)return;
+  pop.addEventListener('click',function(e){e.stopPropagation();
+    var nav=e.target.closest('[data-j]');
+    if(nav){e.preventDefault();var k=nav.dataset.j;
+      if(k==='py')JD.y--;else if(k==='ny')JD.y++;
+      else if(k==='pm'){JD.m--;if(JD.m<1){JD.m=12;JD.y--;}}
+      else if(k==='nm'){JD.m++;if(JD.m>12){JD.m=1;JD.y++;}}
+      else if(k==='yr'){var inp=document.createElement('input');inp.type='number';inp.min=1300;inp.max=1500;inp.value=JD.y;
+        inp.style.cssText='width:74px;text-align:center;font-weight:800;border:1px solid var(--brand);border-radius:6px;padding:2px;font-size:12px';
+        nav.replaceWith(inp);inp.focus();inp.select();
+        var done=function(){var v=parseInt(inp.value,10);if(v>=1300&&v<=1500)JD.y=v;jdRender();};
+        inp.addEventListener('blur',done);
+        inp.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();done();}if(ev.key==='Escape')jdRender();});
+        return;}
+      jdRender();return;}
+    var day=e.target.closest('[data-day]');
+    if(day&&JD.inp){e.preventDefault();
+      JD.inp.value=JD.y+'/'+String(JD.m).padStart(2,'0')+'/'+String(day.dataset.day).padStart(2,'0');
+      JD.inp.dispatchEvent(new Event('input',{bubbles:true}));JD.inp.dispatchEvent(new Event('change',{bubbles:true}));jdClose();}
+  });})();
+/* ═════ 6) LOGO / AUTH ═════ */
 var MARK='<svg class="ic" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg>';
-function applyLogo(url){
-  var im=new Image();
-  im.onload=function(){
-    var m=$('#sideMark');if(m){m.classList.add('zv-logo');m.innerHTML='<img src="'+esc(url)+'" alt="ZingoVingo">';}
-    var l=$('#loginLogo');if(l){l.style.display='flex';l.innerHTML='<img src="'+esc(url)+'" alt="ZingoVingo">';}
-  };
+function applyLogo(url){var im=new Image();
+  im.onload=function(){var m=$('#sideMark');if(m){m.classList.add('zv-logo');m.innerHTML='<img src="'+esc(url)+'" alt="ZingoVingo">';}
+    var l=$('#loginLogo');if(l){l.style.display='flex';l.innerHTML='<img src="'+esc(url)+'" alt="">';}};
   im.onerror=function(){var m=$('#sideMark');if(m){m.classList.remove('zv-logo');m.innerHTML=MARK;}};
-  im.src=url;
-}
-function loadBranding(){
-  api('getSupervisorBrandSettings',TOKEN).then(function(r){applyLogo((r&&r.logoUrl)||'LOGO.png');}).catch(function(){applyLogo('LOGO.png');});
-}
-/* ═════════ AUTH / SHELL ═════════ */
+  im.src=url;}
+function loadBranding(){api('getSupervisorBrandSettings',TOKEN).then(function(r){applyLogo((r&&r.logoUrl)||'LOGO.png');}).catch(function(){applyLogo('LOGO.png');});}
 function setErr(m){var e=$('#loginError');e.textContent=m;e.style.display='block';}
 function doLogin(){
   var u=$('#loginUser').value.trim(),p=$('#loginPass').value;
   if(!u||!p){setErr('نام کاربری و رمز عبور را وارد کنید.');return;}
   $('#loginError').style.display='none';
   var b=$('#loginBtn');b.disabled=true;b.textContent='در حال ورود…';
-  api('supervisorLogin',u,p).then(function(r){TOKEN=r.token;USER=r.user;localStorage.setItem('zv_supervisor_token',TOKEN);localStorage.setItem('zv_supervisor_user',JSON.stringify(USER));showApp();})
+  api('supervisorLogin',u,p).then(function(r){TOKEN=r.token;USER=r.user;
+    localStorage.setItem('zv_supervisor_token',TOKEN);localStorage.setItem('zv_supervisor_user',JSON.stringify(USER));showApp();})
   .catch(function(e){setErr(e.message);}).then(function(){b.disabled=false;b.textContent='ورود به پنل';});}
 function doLogout(){confirmBox('خروج از پنل','آیا برای خروج مطمئن هستید؟',function(){
   api('supervisorLogout',TOKEN).catch(function(){}).then(function(){localStorage.removeItem('zv_supervisor_token');localStorage.removeItem('zv_supervisor_user');TOKEN='';USER=null;location.reload();});},'بله، خروج','خیر',false);}
-function showApp(){$('#loginView').style.display='none';$('#app').style.display='grid';paintUser();loadBranding();go('dashboard');}
+function showApp(){$('#loginView').style.display='none';$('#app').style.display='grid';paintUser();loadBranding();refreshUnread();go('dashboard');}
 function paintUser(){if(!USER)return;$('#sideName').textContent=USER.name||'—';$('#sideRole').textContent='سوپروایزر · '+(USER.workerId||'');
   $('#sideAv').innerHTML=USER.avatar?'<img src="'+esc(USER.avatar)+'" alt="">':esc(String(USER.name||'؟').trim().charAt(0));
   $('#branchChip').innerHTML=icon('branch','width:14px;height:14px')+' '+esc(USER.branchName||('شعبه '+(USER.branchId||'—')));}
-/* منو: پروفایل AFTER از بلوک در حال توسعه */
+function refreshUnread(){api('supervisorGetUnreadConversationCount',TOKEN).then(function(n){MSG_UNREAD=num(n);renderNav();}).catch(function(){});}
+/* ═════ 7) NAV / SHELL ═════ */
 var MENU=[
   {sec:'نمای کلی'},{id:'dashboard',l:'داشبورد',ic:'dash'},{id:'reports',l:'گزارش عملکرد',ic:'report'},
   {sec:'عملیات گروه'},{id:'orders',l:'سفارش‌های گروه',ic:'orders'},{id:'cards',l:'کارت‌های گروه',ic:'cards'},{id:'planner',l:'برنامه کاری گروه',ic:'cal'},{id:'returned',l:'کارت‌های مرجوعی',ic:'undo'},
-  {sec:'تیم'},{id:'groups',l:'گروه‌های من',ic:'groups'},{id:'members',l:'اعضای گروه',ic:'people'},{id:'messages',l:'مکاتبات متخصصان',ic:'msg'},
-  {sec:'در حال توسعه'},{id:'roadmap',l:'نقشه راه',ic:'target',soon:1}
+  {sec:'تیم'},{id:'groups',l:'گروه‌های من',ic:'groups'},{id:'members',l:'اعضای گروه',ic:'people'},
+  {sec:'گفتگوها'},{id:'messages',l:'مکاتبات و پیام‌ها',ic:'msg',bc:'r',badge:function(){return MSG_UNREAD;}},
+  {sec:'در حال توسعه'},{id:'roadmap',l:'نقشه راه',ic:'target',soon:1},{id:'devRequests',l:'درخواست‌های توسعه',ic:'zap'}
 ];
 SOON_ORDER.forEach(function(k){MENU.push({id:k,l:SOON[k].t,ic:SOON[k].ic,soon:1});});
 MENU.push({sec:'حساب'},{id:'profile',l:'پروفایل من',ic:'user'});
-var TITLES={dashboard:['داشبورد','نمای زنده گروه‌های تحت نظارت'],reports:['گزارش عملکرد','تحلیل عملکرد اعضا'],orders:['سفارش‌های گروه','تبدیل سفارش به کارت'],cards:['کارت‌های گروه','تخصیص و پیگیری اجرا'],planner:['برنامه کاری گروه','تقویم هفتگی اجرا'],returned:['کارت‌های مرجوعی','کارت‌های ارجاع‌شده به سرپرست'],groups:['گروه‌های من','مدیریت گروه‌ها'],members:['اعضای گروه','مدیریت اعضا'],messages:['مکاتبات متخصصان','گفتگو با نیروها'],roadmap:['نقشه راه','ماژول‌های در راه'],profile:['پروفایل من','حساب کاربری']};
+var TITLES={dashboard:['داشبورد','نمای زنده گروه‌های تحت نظارت'],reports:['گزارش عملکرد','تحلیل عملکرد اعضا'],orders:['سفارش‌های گروه','تبدیل سفارش به کارت'],cards:['کارت‌های گروه','تخصیص و پیگیری اجرا'],planner:['برنامه کاری گروه','تقویم هفتگی اجرا'],returned:['کارت‌های مرجوعی','کارت‌های ارجاع‌شده به سرپرست'],groups:['گروه‌های من','مدیریت گروه‌ها'],members:['اعضای گروه','مدیریت اعضا'],messages:['مکاتبات و پیام‌ها','گفتگو با تیم و پشتیبانی'],roadmap:['نقشه راه','ماژول‌های در راه'],devRequests:['درخواست‌های توسعه','پیشنهادها و نیازمندی‌های ثبت‌شده'],profile:['پروفایل من','حساب کاربری']};
 SOON_ORDER.forEach(function(k){TITLES[k]=[SOON[k].t,'در حال توسعه · '+SOON[k].eta];});
 function renderNav(){$('#nav').innerHTML=MENU.map(function(m){
   if(m.sec)return '<div class="nav-sec">'+esc(m.sec)+'</div>';
-  return '<div class="nav-item'+(PS.page===m.id?' on':'')+(m.soon?' soon':'')+'" data-act="go" data-page="'+m.id+'">'+icon(m.ic,'width:17px;height:17px')+'<span>'+esc(m.l)+'</span>'+(m.soon?'<span class="bdg t">به‌زودی</span>':'')+'</div>';}).join('');}
-function go(p){PS.page=p;PS.q='';PS.status='همه';$('#sidebar').classList.remove('open');$('#scrim').classList.remove('show');render();}
-function toggleTheme(){var t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;localStorage.setItem('zv_supervisor_theme',t);$('#themeBtn').innerHTML=icon(t==='dark'?'sun':'moon');if(PS.page==='dashboard'||PS.page==='reports')render();}
+  var b=m.badge?m.badge():0;
+  return '<div class="nav-item'+(PS.page===m.id?' on':'')+(m.soon?' soon':'')+'" data-act="go" data-page="'+m.id+'">'+icon(m.ic,'width:17px;height:17px')+'<span>'+esc(m.l)+'</span>'+(m.soon?'<span class="bdg t">به‌زودی</span>':(b?'<span class="bdg '+(m.bc||'')+'">'+fa(b)+'</span>':''))+'</div>';}).join('');}
+function go(p){PS.page=p;PS.q='';PS.status='همه';PS.mq='';PS.mch='';PS.mst='';
+  $('#sidebar').classList.remove('open');$('#scrim').classList.remove('show');render();}
+function toggleTheme(){var t=document.documentElement.dataset.theme==='dark'?'light':'dark';
+  document.documentElement.dataset.theme=t;localStorage.setItem('zv_supervisor_theme',t);
+  $('#themeBtn').innerHTML=icon(t==='dark'?'sun':'moon');if(PS.page==='dashboard')render();}
 function render(){
   CH.forEach(function(c){try{c.destroy();}catch(e){}});CH=[];
   var p=PS.page||'dashboard',t=TITLES[p]||TITLES.dashboard;
@@ -446,216 +538,185 @@ function render(){
     else if(p==='reports')out=reportsPage();
     else if(p==='profile')out=profilePage();
     else if(p==='roadmap')out=roadmapPage();
+    else if(p==='devRequests')out=devPage();
     else if(SOON[p])out=soonPage(p);
     else out=dashboard();
-  }catch(e){out='<div class="card"><div class="empty"><div class="ei">'+icon('x')+'</div><h4>خطا در ساخت صفحه</h4><p class="sub">'+esc(e.message)+'</p></div></div>';}
-  Promise.resolve(out).then(function(h){$('#page').innerHTML=h;decorate($('#page'));renderNav();paintUser();
+  }catch(e){out=errCard(e);}
+  Promise.resolve(out).then(function(h){$('#page').innerHTML=h;decorate($('#page'));jdInit($('#page'));renderNav();paintUser();
     $$('[data-w]').forEach(function(el){var w=el.getAttribute('data-w');el.removeAttribute('data-w');setTimeout(function(){el.style.width=w+'%';},50);});
     if(p==='dashboard')chartsDash();
-  }).catch(function(e){$('#page').innerHTML='<div class="card"><div class="empty"><div class="ei">'+icon('x')+'</div><h4>خطا</h4><p class="sub">'+esc(e.message)+'</p></div></div>';});}
-/* ═════════ DASHBOARD ═════════ */
+  }).catch(function(e){$('#page').innerHTML=errCard(e);});}
+function errCard(e){return '<div class="card"><div class="empty"><div class="ei">'+icon('x')+'</div><h4>خطا</h4><p class="sub">'+esc(e.message||String(e))+'</p></div></div>';}
+/* ═════ 8) DASHBOARD ═════ */
 function dashboard(){
   return api('getSupervisorDashboard',TOKEN).then(function(d){
-    var n=new Date(),hr=n.getHours(),greet=hr<12?'صبح بخیر':hr<17?'ظهر بخیر':'عصر بخیر';
-    window._dash=d;
+    _DASH=d;var n=new Date(),hr=n.getHours(),greet=hr<12?'صبح بخیر':hr<17?'ظهر بخیر':'عصر بخیر';
     var h='<div class="hero"><span class="dchip">'+icon('cal','width:14px;height:14px')+' '+jDisp(n)+'</span>'+
       '<h2>'+greet+'، '+esc(String(USER.name||'').split(' ')[0])+'</h2>'+
       '<p>نمای زنده گروه‌های تحت نظارت شما — '+fa(d.groups||0)+' گروه، '+fa(d.activeMembers||0)+' عضو فعال و '+fa(d.busyMembers||0)+' عضو مشغول.</p>'+
       '<div class="acts">'+btn('go','کارت‌های گروه','cards','btn-p',' data-page="cards"')+
       '<button class="btn btn-s" data-act="go" data-page="planner">'+icon('cal','width:15px;height:15px')+' برنامه کاری</button>'+
-      '<button class="btn btn-s" data-act="go" data-page="returned">'+icon('undo','width:15px;height:15px')+' مرجوعی‌ها</button>'+
-      '<button class="btn btn-s" data-act="go" data-page="reports">'+icon('report','width:15px;height:15px')+' گزارش عملکرد</button></div></div>';
+      '<button class="btn btn-s" data-act="go" data-page="messages">'+icon('msg','width:15px;height:15px')+' مکاتبات'+(MSG_UNREAD?' ('+fa(MSG_UNREAD)+')':'')+'</button>'+
+      '<button class="btn btn-s" data-act="msg-support">'+icon('headset','width:15px;height:15px')+' پیام به پشتیبانی</button></div></div>';
     h+='<div class="grid kpis" style="margin-bottom:18px">'+
-      kpi('گروه‌های تحت نظارت',fa(d.groups||0),'groups','var(--blue)','گروه فعال')+
+      kpi('گروه‌های تحت نظارت',fa(d.groups||0),'groups','var(--blue)','بر پایه Worker-ID')+
       kpi('اعضای فعال',fa(d.activeMembers||0),'people','var(--green)','نیرو و اپراتور')+
       kpi('مشغول به کار',fa(d.busyMembers||0),'worker','var(--amber)','در حال اجرا')+
       kpi('کارت‌های جدید',fa(d.newCards||0),'cards','var(--violet)','در انتظار تخصیص')+
       kpi('در حال اجرا',fa(d.inProgressCards||0),'clock','var(--teal)','کارت فعال')+
-      kpi('تکمیل شده',fa(d.completedCards||0),'check','var(--green)','مجموع دوره')+
-      '</div>';
-    h+='<div class="grid charts" style="margin-bottom:18px">'+
-      '<div class="cbox"><h3>'+icon('report','width:15px;height:15px;color:var(--brand)')+' توزیع وضعیت کارت‌ها</h3><div class="cwrap"><canvas id="dStatus"></canvas></div></div>'+
+      kpi('تکمیل شده',fa(d.completedCards||0),'check','var(--green)','مجموع دوره')+'</div>';
+    h+='<div class="grid charts"><div class="cbox"><h3>'+icon('report','width:15px;height:15px;color:var(--brand)')+' توزیع وضعیت کارت‌ها</h3><div class="cwrap"><canvas id="dStatus"></canvas></div></div>'+
       '<div class="cbox"><h3>'+icon('groups','width:15px;height:15px;color:var(--violet)')+' گروه‌های من</h3>'+
       ((d.groupRows||[]).length?(d.groupRows||[]).map(function(g){return '<div class="rank"><div class="info"><b>'+esc(g.name)+'</b><small>'+esc(g.area||'—')+' · '+fa(g.members||0)+' عضو</small></div>'+pill(g.status)+'</div>';}).join(''):'<p class="sub">گروهی ثبت نشده است.</p>')+'</div></div>';
-    return h;
-  });
-}
+    return h;});}
 function chartsDash(){
-  if(!window.Chart||!window._dash)return;
-  var d=window._dash,P=pal();
+  if(!window.Chart||!_DASH)return;var d=_DASH,P=pal();
   Chart.defaults.font.family='Vazirmatn';Chart.defaults.color=cssVar('--muted');
   var el=$('#dStatus');if(!el)return;
   CH.push(new Chart(el,{type:'doughnut',data:{labels:['جدید','در حال اجرا','تکمیل شده','لغو شده'],datasets:[{data:[d.newCards||0,d.inProgressCards||0,d.completedCards||0,d.cancelledCards||0],backgroundColor:[P[2],P[5],P[6],P[7]],borderWidth:2,borderColor:cssVar('--surface')}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}}}}));
-}
-/* ═════════ ORDERS ═════════ */
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}}}}));}
+/* ═════ 9) ORDERS ═════ */
 function ordersPage(){
   return api('getSupervisorOrders',TOKEN).then(function(rows){
     var h=head('سفارش‌های گروه',fa(rows.length)+' سفارش · قابل تبدیل به کارت',btn('refresh','بروزرسانی','undo','btn-s'));
     if(!rows.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('orders')+'</div><h4>سفارشی برای گروه‌های شما نیست</h4></div></div>';
     h+='<div class="tw"><table class="tb"><thead><tr><th>تاریخ</th><th>کد</th><th>مشتری</th><th>موبایل</th><th>خدمت</th><th>مبلغ</th><th>گروه</th><th>وضعیت</th><th style="text-align:left">عملیات</th></tr></thead><tbody>'+
-      rows.map(function(r){return '<tr><td>'+jDT(r.date)+'</td><td><b style="color:var(--brandDeep)">'+esc(r.requestId)+'</b></td><td>'+esc(r.customer)+'</td><td class="ltr">'+fa(r.phone)+'</td><td>'+esc(r.service)+'</td><td class="num">'+money(r.finalPrice)+'</td><td>'+esc(r.groupName||'—')+'</td><td>'+pill(r.status)+'</td><td><div class="ra">'+btn('convert-order','تبدیل به کارت','cards','btn-p btn-sm',' data-id="'+esc(r.requestId)+'"')+'</div></td></tr>';}).join('')+
-      '</tbody></table></div>';
-    return h;
-  });
-}
-function convertOrderModal(requestId){
-  api('getSupervisorWorkersForDropdown',TOKEN).then(function(workers){
-    var opts='<option value="">بدون تخصیص (استخر گروه)</option>'+workers.map(function(w){return '<option value="'+esc(w.id)+'">'+esc(w.name)+' ('+esc(w.operations)+')</option>';}).join('');
+      rows.map(function(r){return '<tr><td>'+jDT(r.date)+'</td><td><b style="color:var(--brandDeep)">'+esc(r.requestId)+'</b></td><td>'+esc(r.customer)+'</td><td class="ltr">'+fa(r.phone)+'</td><td>'+esc(r.service)+'</td><td class="num">'+money(r.finalPrice)+'</td><td>'+esc(r.groupName||'—')+'</td><td>'+pill(r.status)+'</td><td><div class="ra">'+(r.status!=='تبدیل به کارت'?btn('convert-order','تبدیل به کارت','cards','btn-p btn-sm',' data-id="'+esc(r.requestId)+'"'):btn('card-invoice','فاکتور','wallet','btn-s btn-sm',' data-id="'+esc(r.requestId)+'"'))+'</div></td></tr>';}).join('')+
+      '</tbody></table></div>';return h;});}
+function convertOrderModal(id){
+  api('getSupervisorWorkersForDropdown',TOKEN).then(function(ws){
+    var opts='<option value="">بدون تخصیص (استخر گروه)</option>'+ws.map(function(w){return '<option value="'+esc(w.id)+'">'+esc(w.name)+' ('+esc(w.operations)+')</option>';}).join('');
     openModal('<div class="mh"><h3>تبدیل سفارش به کارت</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-      '<form data-form="convert" data-id="'+esc(requestId)+'"><div class="mb"><div class="field"><label>تخصیص به نیروی گروه</label><select name="workerId">'+opts+'</select></div>'+
+      '<form data-form="convert" data-id="'+esc(id)+'"><div class="mb"><div class="field"><label>تخصیص به نیروی گروه</label><select name="workerId">'+opts+'</select></div>'+
       '<p class="hint" style="margin-top:8px">با تأیید، کارت عملیاتی ایجاد و وضعیت سفارش به «تبدیل به کارت» تغییر می‌کند.</p></div>'+
       '<div class="mf"><button class="btn btn-p" type="submit">'+icon('check','width:14px;height:14px')+' تأیید و ایجاد کارت</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
-  }).catch(function(e){toast(e.message,'err');});
-}
-/* ═════════ CARDS ═════════ */
+  }).catch(function(e){toast(e.message,'err');});}
+/* ═════ 10) CARDS ═════ */
 function cardsPage(){
   return api('getSupervisorCards',{search:PS.q,status:PS.status},TOKEN).then(function(rows){
     var h=head('کارت‌های گروه',fa(rows.length)+' کارت',
-      '<button class="btn btn-sm '+(PS.view==='table'?'btn-s':'btn-p')+'" data-act="cards-view" data-mode="kanban">'+icon('grid','width:14px;height:14px')+' کارت</button>'+
-      '<button class="btn btn-sm '+(PS.view==='table'?'btn-p':'btn-s')+'" data-act="cards-view" data-mode="table">'+icon('report','width:14px;height:14px')+' جدول</button>');
+      '<button class="btn btn-sm '+(PS.view!=='table'?'btn-p':'btn-s')+'" data-act="cards-view" data-mode="cards">'+icon('grid','width:14px;height:14px')+' کارت</button>'+
+      '<button class="btn btn-sm '+(PS.view==='table'?'btn-p':'btn-s')+'" data-act="cards-view" data-mode="table">'+icon('list','width:14px;height:14px')+' جدول</button>');
     h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-search placeholder="جستجو در کارت‌ها…" value="'+esc(PS.q||'')+'"></div>'+
       '<select class="sel" data-cstatus><option value="همه">وضعیت: همه</option>'+['جدید','در حال انجام','تکمیل شده','لغو شده','ارجاع به سرپرست','تعلیق'].map(function(s){return '<option'+(PS.status===s?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select></div>';
     if(!rows.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('cards')+'</div><h4>کارتی یافت نشد</h4></div></div>';
     if(PS.view==='table'){
       h+='<div class="tw"><table class="tb"><thead><tr><th>کارت</th><th>مشتری</th><th>خدمت</th><th>نیرو</th><th>اجرا</th><th>مبلغ</th><th>وضعیت</th><th style="text-align:left">عملیات</th></tr></thead><tbody>'+
-        rows.map(function(r){return '<tr><td><b>'+esc(r.cardId)+'</b></td><td>'+esc(r.customer)+'</td><td>'+esc(r.details)+'</td><td>'+esc(r.workerName||'—')+'</td><td>'+esc(r.executeDateTime||'—')+'</td><td class="num">'+money(r.amount)+'</td><td>'+pill(r.status)+'</td><td><div class="ra">'+ibtn('card-detail','eye','جزئیات',' data-id="'+esc(r.cardId)+'"')+ibtn('card-status','edit','تغییر وضعیت',' data-id="'+esc(r.cardId)+'" data-status="'+esc(r.status)+'"')+ibtn('card-assign','worker','تخصیص',' data-id="'+esc(r.cardId)+'"')+'</div></td></tr>';}).join('')+
-        '</tbody></table></div>';
-      return h;
-    }
-    h+='<div class="zv-card-list">'+rows.map(function(r){return cardHtml(r);}).join('')+'</div>';
-    return h;
-  });
-}
-function cardHtml(r){
-  var id=esc(r.cardId);
+        rows.map(function(r){return '<tr><td><b>'+esc(r.cardId)+'</b></td><td>'+esc(r.customer)+'</td><td>'+esc(r.details)+'</td><td>'+esc(r.workerName||'—')+'</td><td>'+esc(r.executeDateTime||'—')+'</td><td class="num">'+money(r.amount)+'</td><td>'+pill(r.status)+'</td><td><div class="ra">'+ibtn('card-detail','eye','جزئیات',' data-id="'+esc(r.cardId)+'"')+ibtn('card-status','edit','تغییر وضعیت',' data-id="'+esc(r.cardId)+'" data-status="'+esc(r.status)+'"')+ibtn('card-assign','worker','تخصیص',' data-id="'+esc(r.cardId)+'"')+ibtn('card-msg','msg','پیام به نیرو',' data-id="'+esc(r.cardId)+'" data-worker="'+esc(r.workerId||'')+'"')+'</div></td></tr>';}).join('')+
+        '</tbody></table></div>';return h;}
+    h+='<div class="zv-card-list">'+rows.map(cardHtml).join('')+'</div>';return h;});}
+function cardHtml(r){var id=esc(r.cardId);
   return '<article class="zv-work-card" id="zv-card-'+id+'"><div class="zv-work-card-head"><div style="min-width:0"><h3 class="zv-work-card-title">'+esc(r.details||'درخواست خدمت')+'</h3><div class="zv-work-card-id">'+id+(r.requestId?' · '+esc(r.requestId):'')+'</div><div class="zv-work-card-tags">'+pill(r.status)+'</div></div>'+av(r.workerName||'؟','')+'</div>'+
     '<div class="zv-work-card-summary"><div class="zv-work-card-stat"><small>مشتری</small><b>'+esc(r.customer||'—')+'</b></div><div class="zv-work-card-stat"><small>مبلغ</small><b>'+money(r.amount)+'</b></div><div class="zv-work-card-stat"><small>زمان اجرا</small><b>'+esc(r.executeDateTime||'ثبت نشده')+'</b></div><div class="zv-work-card-stat"><small>متخصص مسئول</small><b>'+esc(r.workerName||'تخصیص‌نیافته')+'</b></div></div>'+
     '<button class="zv-work-card-toggle" type="button" data-act="card-detail" data-id="'+id+'">نمایش تمام اطلاعات کارت ⌄</button>'+
-    '<div class="zv-work-card-detail" id="zv-detail-'+id+'" hidden></div></article>';
-}
-function cardDetail(cardId){
-  var panel=$('#zv-detail-'+cardId);
+    '<div class="zv-work-card-detail" id="zv-detail-'+id+'" hidden></div></article>';}
+function detailHtml(d,id){
+  function it(l,v,w){if(v==null||String(v).trim()==='')return '';return '<div class="zv-detail-item'+(w?' zv-detail-wide':'')+'"><small>'+esc(l)+'</small><b>'+esc(v)+'</b></div>';}
+  return '<div class="zv-detail-grid">'+
+    it('شناسه کارت',d.cardId)+it('شناسه سفارش',d.requestId)+it('مشتری',d.customer)+it('شماره تماس',d.phone?fa(d.phone):'')+
+    it('خدمت',d.service)+it('نوع اقدام',d.actionType)+it('تاریخ اجرا',d.executeDate)+it('ساعت اجرا',d.executeTime?fa(d.executeTime):'')+
+    it('متخصص',d.workerName)+it('وضعیت',d.status)+it('تاریخ ثبت',d.createdAt)+it('آخرین بروزرسانی',d.updatedAt)+
+    it('آدرس',d.address,true)+it('خدمات جانبی',d.sideServices,true)+it('شرح درخواست',d.details,true)+it('توضیحات',d.notes,true)+
+    it('مبلغ پایه',d.basePrice?money(d.basePrice):'')+it('تخفیف',d.discount?money(d.discount):'')+it('مالیات',d.tax?money(d.tax):'')+it('مبلغ نهایی',money(d.finalPrice||d.amount))+
+    '</div><div class="zv-card-actions"><div class="zv-card-actions-grid">'+
+    btn('card-status','تغییر وضعیت','check','btn-p btn-sm',' data-id="'+esc(id)+'" data-status="'+esc(d.status||'')+'"')+
+    btn('card-assign','مدیریت تخصیص','worker','btn-s btn-sm',' data-id="'+esc(id)+'"')+
+    btn('card-msg','پیام به نیرو','msg','btn-s btn-sm',' data-id="'+esc(id)+'" data-worker="'+esc(d.workerId||'')+'"')+
+    btn('card-invoice','مشاهده فاکتور','wallet','btn-s btn-sm',' data-id="'+esc(d.requestId||'')+'"')+
+    '</div></div>';}
+function cardDetail(id){
+  var panel=$('#zv-detail-'+id);
+  var load=function(){return api('getSupervisorCardDetails',id,TOKEN).catch(function(){
+    return api('getSupervisorCards',{search:id,status:'همه'},TOKEN).then(function(rows){
+      var r=rows.find(function(x){return x.cardId===id;})||{};
+      return {cardId:r.cardId,requestId:r.requestId,customer:r.customer,service:r.details,executeDate:r.executeDateTime,
+        workerName:r.workerName,workerId:r.workerId,status:r.status,finalPrice:r.amount,amount:r.amount};});});};
   if(panel){
     if(!panel.hidden){panel.hidden=true;return;}
-    panel.hidden=false;
-    panel.innerHTML='<div style="text-align:center;padding:18px;color:var(--muted)">در حال دریافت…</div>';
-    api('getSupervisorCards',{search:cardId,status:'همه'},TOKEN).then(function(rows){
-      var r=rows.find(function(x){return x.cardId===cardId;})||{};
-      panel.innerHTML='<div class="zv-detail-grid">'+
-        '<div class="zv-detail-item"><small>شناسه کارت</small><b>'+esc(r.cardId)+'</b></div>'+
-        '<div class="zv-detail-item"><small>شناسه سفارش</small><b>'+esc(r.requestId||'—')+'</b></div>'+
-        '<div class="zv-detail-item"><small>مشتری</small><b>'+esc(r.customer||'—')+'</b></div>'+
-        '<div class="zv-detail-item"><small>خدمت</small><b>'+esc(r.details||'—')+'</b></div>'+
-        '<div class="zv-detail-item"><small>مبلغ</small><b>'+money(r.amount)+'</b></div>'+
-        '<div class="zv-detail-item"><small>زمان اجرا</small><b>'+esc(r.executeDateTime||'—')+'</b></div>'+
-        '<div class="zv-detail-item"><small>متخصص</small><b>'+esc(r.workerName||'تخصیص‌نیافته')+'</b></div>'+
-        '<div class="zv-detail-item"><small>وضعیت</small><b>'+esc(r.status||'—')+'</b></div>'+
-        '</div><div class="zv-card-actions"><div class="zv-card-actions-grid">'+
-        btn('card-status','تغییر وضعیت','check','btn-p btn-sm',' data-id="'+esc(cardId)+'" data-status="'+esc(r.status||'')+'"')+
-        btn('card-assign','مدیریت تخصیص','worker','btn-s btn-sm',' data-id="'+esc(cardId)+'"')+
-        btn('card-invoice','مشاهده فاکتور','wallet','btn-s btn-sm',' data-id="'+esc(r.requestId||'')+'"')+
-        btn('card-print','چاپ کارت','print','btn-s btn-sm',' data-id="'+esc(cardId)+'"')+
-        '</div></div>';
-      decorate(panel);
-    }).catch(function(e){panel.innerHTML='<div style="color:var(--red);padding:12px">'+esc(e.message)+'</div>';});
-    return;
-  }
-  api('getSupervisorCards',{search:cardId,status:'همه'},TOKEN).then(function(rows){
-    var r=rows.find(function(x){return x.cardId===cardId;})||{};
-    openModal('<div class="mh"><h3>کارت '+esc(cardId)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><div class="mb">'+
-      kv([['کارت',esc(r.cardId)],['وضعیت',pill(r.status)],['سفارش',esc(r.requestId||'—')],['مشتری',esc(r.customer||'—')],['خدمت',esc(r.details||'—')],['نیرو',esc(r.workerName||'تخصیص‌نیافته')],['اجرا',esc(r.executeDateTime||'—')],['مبلغ',money(r.amount)]])+
-      '</div><div class="mf">'+btn('card-status','تغییر وضعیت','check','btn-p',' data-id="'+esc(cardId)+'" data-status="'+esc(r.status||'')+'"')+btn('card-assign','تخصیص نیرو','worker','btn-s',' data-id="'+esc(cardId)+'"')+'<button class="btn btn-s" data-act="mclose">بستن</button></div>',false,true);
-  }).catch(function(e){toast(e.message,'err');});
-}
-function cardStatusModal(cardId,current){
-  api('getSupervisorCardStatuses',TOKEN).then(function(statuses){
-    openModal('<div class="mh"><h3>تغییر وضعیت '+esc(cardId)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-      '<form data-form="card-status" data-id="'+esc(cardId)+'"><div class="mb"><div class="field"><label>وضعیت جدید</label><select name="status">'+statuses.map(function(s){return '<option'+(s===current?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select></div></div>'+
+    panel.hidden=false;panel.innerHTML='<div style="text-align:center;padding:18px;color:var(--muted)">در حال دریافت…</div>';
+    load().then(function(d){panel.innerHTML=detailHtml(d,id);decorate(panel);})
+      .catch(function(e){panel.innerHTML='<div style="color:var(--red);padding:12px">'+esc(e.message)+'</div>';});
+    return;}
+  load().then(function(d){
+    openModal('<div class="mh"><h3>کارت '+esc(id)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><div class="mb">'+detailHtml(d,id)+'</div><div class="mf"><button class="btn btn-s" data-act="mclose">بستن</button></div>',false,true);
+  }).catch(function(e){toast(e.message,'err');});}
+function cardStatusModal(id,current){
+  api('getSupervisorCardStatuses',TOKEN).then(function(st){
+    openModal('<div class="mh"><h3>تغییر وضعیت '+esc(id)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+      '<form data-form="card-status" data-id="'+esc(id)+'"><div class="mb"><div class="field"><label>وضعیت جدید</label><select name="status">'+st.map(function(s){return '<option'+(s===current?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select></div></div>'+
       '<div class="mf"><button class="btn btn-p" type="submit">ثبت</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
-  }).catch(function(e){toast(e.message,'err');});
-}
-function cardAssignModal(cardId){
-  api('getSupervisorWorkersForDropdown',TOKEN).then(function(workers){
-    var opts='<option value="">بازگشت به استخر گروه</option>'+workers.map(function(w){return '<option value="'+esc(w.id)+'">'+esc(w.name)+' ('+esc(w.operations)+')</option>';}).join('');
-    openModal('<div class="mh"><h3>تخصیص کارت '+esc(cardId)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-      '<form data-form="card-assign" data-id="'+esc(cardId)+'"><div class="mb"><div class="field"><label>عضو فعال گروه</label><select name="workerId">'+opts+'</select></div></div>'+
+  }).catch(function(e){toast(e.message,'err');});}
+function cardAssignModal(id){
+  api('getSupervisorWorkersForDropdown',TOKEN).then(function(ws){
+    var opts='<option value="">بازگشت به استخر گروه</option>'+ws.map(function(w){return '<option value="'+esc(w.id)+'">'+esc(w.name)+' ('+esc(w.operations)+')</option>';}).join('');
+    openModal('<div class="mh"><h3>تخصیص کارت '+esc(id)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+      '<form data-form="card-assign" data-id="'+esc(id)+'"><div class="mb"><div class="field"><label>عضو فعال گروه</label><select name="workerId">'+opts+'</select></div></div>'+
       '<div class="mf"><button class="btn btn-p" type="submit">ثبت تخصیص</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
-  }).catch(function(e){toast(e.message,'err');});
-}
-function cardInvoice(requestId){
-  if(!requestId)return toast('شناسه سفارش موجود نیست','warn');
-  api('getSupervisorOrderInvoice',requestId,TOKEN).then(function(d){
-    openModal('<div class="mh"><h3>فاکتور '+esc(requestId)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><div class="mb"><div id="invBox" style="background:#fff;color:#17213B;border-radius:14px;padding:24px">'+
-      '<div style="text-align:center;border-bottom:2px solid #0B1736;padding-bottom:12px;margin-bottom:14px"><h2 style="color:#0B1736">Zingo<span style="color:#FF6B1A">Vingo</span></h2><div style="font-size:11px;color:#5C6784">صورت‌حساب '+esc(requestId)+'</div></div>'+
+  }).catch(function(e){toast(e.message,'err');});}
+function cardInvoice(reqId){
+  if(!reqId)return toast('شناسه سفارش موجود نیست','warn');
+  api('getSupervisorOrderInvoice',reqId,TOKEN).then(function(d){
+    openModal('<div class="mh"><h3>فاکتور '+esc(reqId)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><div class="mb"><div id="invBox" style="background:#fff;color:#17213B;border-radius:14px;padding:24px">'+
+      '<div style="text-align:center;border-bottom:2px solid #0B1736;padding-bottom:12px;margin-bottom:14px"><h2 style="color:#0B1736">Zingo<span style="color:#FF6B1A">Vingo</span></h2><div style="font-size:11px;color:#5C6784">صورت‌حساب '+esc(reqId)+'</div></div>'+
       [['مشتری',d.customer],['تماس',fa(d.phone)],['خدمت',d.service],['اجرا',esc(d.executeDate)+' '+fa(d.executeTime)],['آدرس',d.address]].map(function(x){return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed #ddd"><span>'+x[0]+'</span><b>'+esc(x[1]||'—')+'</b></div>';}).join('')+
       '<div style="display:flex;justify-content:space-between;padding:5px 0"><span>قیمت پایه</span><b>'+money(d.basePrice)+'</b></div>'+
       '<div style="display:flex;justify-content:space-between;padding:5px 0"><span>تخفیف</span><b>−'+money(d.discount)+'</b></div>'+
       '<div style="display:flex;justify-content:space-between;padding:5px 0"><span>مالیات</span><b>'+money(d.tax)+'</b></div>'+
       '<div style="display:flex;justify-content:space-between;font-size:16px;font-weight:900;color:#E4570B;border-top:2px solid #0B1736;margin-top:10px;padding-top:10px"><span>نهایی</span><span>'+money(d.finalPrice)+'</span></div>'+
       '</div></div><div class="mf">'+btn('print-inv','چاپ / PDF','print','btn-p')+'<button class="btn btn-s" data-act="mclose">بستن</button></div>',false,true);
-  }).catch(function(e){toast(e.message,'err');});
-}
-/* ═════════ PLANNER ═════════ */
+  }).catch(function(e){toast(e.message,'err');});}
+/* ═════ 11) PLANNER ═════ */
 function plannerPage(){
-  return Promise.all([api('getSupervisorCards',{search:'',status:'همه'},TOKEN),api('getSupervisorWorkersForDropdown',TOKEN)]).then(function(res){
-    var cards=res[0]||[],workers=res[1]||[];
+  return api('getSupervisorPlannerData',TOKEN).catch(function(){
+    return Promise.all([api('getSupervisorCards',{search:'',status:'همه'},TOKEN),api('getSupervisorWorkersForDropdown',TOKEN)]).then(function(r){return {cards:r[0],workers:r[1]};});
+  }).then(function(data){
+    var cards=data.cards||[],workers=data.workers||[];
     var start=new Date(PS.week||new Date());start.setHours(12,0,0,0);start.setDate(start.getDate()-((start.getDay()+1)%7));
     var days=[];for(var i=0;i<7;i++){var d=new Date(start);d.setDate(start.getDate()+i);days.push(d);}
     var keys=days.map(gKey);
-    var list=cards.filter(function(c){var p=parseJ(String(c.executeDateTime||'').split(' ')[0]);if(!p)return false;var g=j2g(p[0],p[1],p[2]);return keys.indexOf(g[0]+'-'+String(g[1]).padStart(2,'0')+'-'+String(g[2]).padStart(2,'0'))>=0;});
+    var norm=cards.map(function(c){
+      var k=c.execDateKey,t=c.execTimeKey;
+      if(!k&&c.executeDateTime){var p=parseJ(String(c.executeDateTime).split(' ')[0]);if(p){var g=j2g(p[0],p[1],p[2]);k=g[0]+'-'+String(g[1]).padStart(2,'0')+'-'+String(g[2]).padStart(2,'0');}
+        var tm=String(c.executeDateTime).match(/(\d{1,2}):(\d{2})/);if(tm)t=String(+tm[1]).padStart(2,'0')+':'+tm[2];}
+      return Object.assign({},c,{_k:k,_t:t||''});});
+    var list=norm.filter(function(c){return c._k&&keys.indexOf(c._k)>=0;});
     if(PS.plWorker)list=list.filter(function(c){return String(c.workerId)===String(PS.plWorker);});
     var tk=gKey(new Date());
     var opts='<option value="">تمام اعضای گروه</option>'+workers.map(function(w){return '<option value="'+esc(w.id)+'"'+(String(w.id)===String(PS.plWorker)?' selected':'')+'>'+esc(w.name)+'</option>';}).join('');
     var h=head('برنامه کاری گروه',jDisp(days[0])+' تا '+jDisp(days[6])+' · '+fa(list.length)+' کارت',
-      '<button class="btn btn-s btn-sm" data-act="week" data-d="-7">هفته قبل</button><button class="btn btn-p btn-sm" data-act="week" data-d="0">هفته جاری</button><button class="btn btn-s btn-sm" data-act="week" data-d="7">هفته بعد</button>'+
-      '<select class="sel" data-plworker>'+opts+'</select>');
+      '<button class="btn btn-s btn-sm" data-act="week" data-d="-7">هفته قبل</button><button class="btn btn-p btn-sm" data-act="week" data-d="0">هفته جاری</button><button class="btn btn-s btn-sm" data-act="week" data-d="7">هفته بعد</button><select class="sel" data-plworker>'+opts+'</select>');
     h+='<div class="zv-planner-legend"><span><i class="zv-planner-dot" style="background:var(--blue)"></i>جدید</span><span><i class="zv-planner-dot" style="background:var(--amber)"></i>در حال انجام</span><span><i class="zv-planner-dot" style="background:var(--green)"></i>تکمیل شده</span><span><i class="zv-planner-dot" style="background:var(--red)"></i>لغو / مرجوع</span></div>';
-    var noTime=list.filter(function(c){return !/\d{1,2}:\d{2}/.test(String(c.executeDateTime||''));});
+    var noTime=list.filter(function(c){return !c._t;});
     h+='<div class="zv-planner-scroll">';
-    if(noTime.length)h+='<div class="zv-planner-unscheduled"><span style="font-size:11px;color:var(--muted);font-weight:800;min-width:80px;padding-top:5px">بدون ساعت</span>'+noTime.map(function(c){return plEvent(c);}).join('')+'</div>';
+    if(noTime.length)h+='<div class="zv-planner-unscheduled"><span style="font-size:11px;color:var(--muted);font-weight:800;min-width:80px;padding-top:5px">بدون ساعت</span>'+noTime.map(plEvent).join('')+'</div>';
     h+='<div class="zv-planner-grid"><div class="zv-planner-head">ساعت</div>';
     days.forEach(function(d){h+='<div class="zv-planner-head'+(gKey(d)===tk?' today':'')+'"><strong>'+new Intl.DateTimeFormat('fa-IR',{weekday:'short'}).format(d)+'</strong><small>'+jDisp(d)+'</small></div>';});
     for(var hr=6;hr<23;hr++){
       h+='<div class="zv-planner-time">'+fa(String(hr).padStart(2,'0'))+':۰۰</div>';
       days.forEach(function(d){
-        var dl=list.filter(function(c){var p=parseJ(String(c.executeDateTime||'').split(' ')[0]);if(!p)return false;var g=j2g(p[0],p[1],p[2]);var k=g[0]+'-'+String(g[1]).padStart(2,'0')+'-'+String(g[2]).padStart(2,'0');var tm=String(c.executeDateTime||'').match(/(\d{1,2}):\d{2}/);return k===gKey(d)&&tm&&+tm[1]===hr;});
-        h+='<div class="zv-planner-cell'+(gKey(d)===tk?' today':'')+'">'+dl.map(function(c){return plEvent(c);}).join('')+'</div>';
-      });
-    }
-    h+='</div></div>';
-    return h;
-  });
-}
+        var dl=list.filter(function(c){return c._k===gKey(d)&&c._t&&+c._t.slice(0,2)===hr;});
+        h+='<div class="zv-planner-cell'+(gKey(d)===tk?' today':'')+'">'+dl.map(plEvent).join('')+'</div>';});}
+    h+='</div></div>';return h;});}
 function plEvent(c){
-  var s=String(c.status||''),cls=/تکمیل/.test(s)?'status-done':/لغو|مرجوع/.test(s)?'status-cancel':/جدید/.test(s)?'status-new':/در حال/.test(s)?'status-progress':'';
-  var tm=String(c.executeDateTime||'').match(/(\d{1,2}:\d{2})/);
-  return '<button class="zv-planner-event '+cls+'" data-act="card-detail" data-id="'+esc(c.cardId)+'"><strong>'+fa(tm?tm[1]+' · ':'')+esc(c.cardId)+'</strong><small>'+esc(c.customer||'')+'</small><small>'+esc(s)+'</small></button>';
-}
-/* ═════════ RETURNED ═════════ */
+  var s=String(c.status||''),cls=/تکمیل/.test(s)?'status-done':/لغو|مرجوع|ارجاع/.test(s)?'status-cancel':/جدید/.test(s)?'status-new':/در حال/.test(s)?'status-progress':'';
+  return '<button class="zv-planner-event '+cls+'" data-act="card-detail" data-id="'+esc(c.cardId)+'"><strong>'+fa(c._t?c._t+' · ':'')+esc(c.cardId)+'</strong><small>'+esc(c.customer||'')+'</small><small>'+esc(s)+'</small></button>';}
+/* ═════ 12) RETURNED / GROUPS / MEMBERS ═════ */
 function returnedPage(){
   return api('getSupervisorReturnedCards',TOKEN).then(function(rows){
     var h=head('کارت‌های مرجوعی',fa(rows.length)+' کارت ارجاع‌شده به سرپرست',btn('refresh','بروزرسانی','undo','btn-s'));
     if(!rows.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('check')+'</div><h4>کارت مرجوعی نیست</h4></div></div>';
     h+='<div class="tw"><table class="tb"><thead><tr><th>کد کارت</th><th>مشتری</th><th>خدمت</th><th>اجراکننده</th><th>وضعیت</th><th style="text-align:left">عملیات</th></tr></thead><tbody>'+
-      rows.map(function(r){return '<tr><td><b>'+esc(r.cardId)+'</b></td><td>'+esc(r.customer)+'</td><td>'+esc(r.details)+'</td><td>'+esc(r.workerId||'—')+'</td><td>'+pill(r.status)+'</td><td><div class="ra">'+btn('card-status','تغییر وضعیت','check','btn-p btn-sm',' data-id="'+esc(r.cardId)+'" data-status="'+esc(r.status)+'"')+btn('card-assign','تخصیص مجدد','worker','btn-s btn-sm',' data-id="'+esc(r.cardId)+'"')+'</div></td></tr>';}).join('')+
-      '</tbody></table></div>';
-    return h;
-  });
-}
-/* ═════════ GROUPS / MEMBERS ═════════ */
+      rows.map(function(r){return '<tr><td><b>'+esc(r.cardId)+'</b></td><td>'+esc(r.customer)+'</td><td>'+esc(r.details)+'</td><td>'+esc(r.workerName||r.workerId||'—')+'</td><td>'+pill(r.status)+'</td><td><div class="ra">'+btn('card-status','تغییر وضعیت','check','btn-p btn-sm',' data-id="'+esc(r.cardId)+'" data-status="'+esc(r.status)+'"')+btn('card-assign','تخصیص مجدد','worker','btn-s btn-sm',' data-id="'+esc(r.cardId)+'"')+'</div></td></tr>';}).join('')+
+      '</tbody></table></div>';return h;});}
 function groupsPage(){
-  return api('getSupervisorGroups',TOKEN).then(function(groups){
-    var h=head('گروه‌های من',fa(groups.length)+' گروه تحت نظارت',btn('refresh','بروزرسانی','undo','btn-s'));
-    if(!groups.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('groups')+'</div><h4>گروهی تحت نظارت شما نیست</h4></div></div>';
-    h+='<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">'+groups.map(function(g){
+  return api('getSupervisorGroups',TOKEN).then(function(gs){
+    var h=head('گروه‌های من',fa(gs.length)+' گروه · تطبیق بر پایه Worker-ID',btn('refresh','بروزرسانی','undo','btn-s'));
+    if(!gs.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('groups')+'</div><h4>گروهی تحت نظارت شما نیست</h4><p class="sub">ستون Worker-ID گروه باید برابر شناسه یکتای شما ('+esc(USER.workerId||'')+')</p></div></div>';
+    h+='<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">'+gs.map(function(g){
       return '<div class="card"><div style="display:flex;gap:11px;align-items:center;margin-bottom:10px"><span style="width:42px;height:42px;flex:0 0 42px;border-radius:12px;display:grid;place-items:center;background:rgba(46,99,231,.12);color:var(--blue)">'+icon('groups')+'</span><div style="flex:1;min-width:0"><b style="font-size:14px;display:block">'+esc(g.name)+'</b><small class="sub">'+esc(g.groupId)+' · '+esc(g.area||'—')+'</small></div>'+pill(g.status)+'</div>'+
         '<div class="kv" style="margin-bottom:12px"><div class="kvi"><small>اعضا</small><b>'+fa(g.totalMembers||0)+'</b></div><div class="kvi"><small>نوع</small><b>'+esc(g.groupType||'—')+'</b></div></div>'+
-        '<div style="display:flex;gap:7px;flex-wrap:wrap">'+btn('view-members','اعضا','people','btn-p btn-sm',' data-id="'+esc(g.groupId)+'"')+btn('edit-group','ویرایش','edit','btn-s btn-sm',' data-id="'+esc(g.groupId)+'" data-name="'+esc(g.name)+'" data-area="'+esc(g.area||'')+'" data-type="'+esc(g.groupType||'')+'" data-desc="'+esc(g.description||'')+'"')+'</div></div>';
-    }).join('')+'</div>';
-    return h;
-  });
-}
+        '<div style="display:flex;gap:7px;flex-wrap:wrap">'+btn('view-members','اعضا','people','btn-p btn-sm',' data-id="'+esc(g.groupId)+'"')+btn('edit-group','ویرایش','edit','btn-s btn-sm',' data-id="'+esc(g.groupId)+'" data-name="'+esc(g.name)+'" data-area="'+esc(g.area||'')+'" data-type="'+esc(g.groupType||'')+'" data-desc="'+esc(g.description||'')+'"')+'</div></div>';}).join('')+'</div>';
+    return h;});}
 function editGroupModal(d){
   openModal('<div class="mh"><h3>ویرایش گروه</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
     '<form data-form="edit-group" data-id="'+esc(d.id)+'"><div class="mb"><div class="fgrid">'+
@@ -663,157 +724,214 @@ function editGroupModal(d){
     '<div class="field"><label>منطقه فعالیت</label><input name="area" value="'+esc(d.area)+'"></div>'+
     '<div class="field"><label>نوع گروه</label><input name="groupType" value="'+esc(d.type)+'"></div>'+
     '<div class="field full"><label>توضیحات</label><textarea name="description">'+esc(d.desc)+'</textarea></div>'+
-    '</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ذخیره</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
-}
+    '</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ذخیره</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);}
 function membersPage(){
-  if(!PS.group){
-    return api('getSupervisorGroups',TOKEN).then(function(groups){
-      if(!groups.length)return '<div class="card"><div class="empty"><div class="ei">'+icon('groups')+'</div><h4>گروهی ندارید</h4></div></div>';
-      PS.group=groups[0].groupId;return membersPage();
-    });
-  }
+  if(!PS.group){return api('getSupervisorGroups',TOKEN).then(function(gs){
+    if(!gs.length)return '<div class="card"><div class="empty"><div class="ei">'+icon('groups')+'</div><h4>گروهی ندارید</h4></div></div>';
+    PS.group=gs[0].groupId;return membersPage();});}
   return Promise.all([api('getGroupMembers',PS.group,TOKEN),api('getSupervisorMemberStatuses',TOKEN),api('getSupervisorGroups',TOKEN)]).then(function(res){
-    var rows=res[0]||[],statuses=res[1]||[],groups=res[2]||[];
-    var gopts=groups.map(function(g){return '<option value="'+esc(g.groupId)+'"'+(g.groupId===PS.group?' selected':'')+'>'+esc(g.name)+'</option>';}).join('');
+    var rows=res[0]||[],st=res[1]||[],gs=res[2]||[];
+    var gopts=gs.map(function(g){return '<option value="'+esc(g.groupId)+'"'+(g.groupId===PS.group?' selected':'')+'>'+esc(g.name)+'</option>';}).join('');
     var h=head('اعضای گروه',fa(rows.length)+' عضو',btn('add-member','افزودن عضو','plus','btn-p',' data-id="'+esc(PS.group)+'"')+'<select class="sel" data-group>'+gopts+'</select>');
     if(!rows.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('people')+'</div><h4>عضوی ثبت نشده است</h4></div></div>';
     h+='<div class="tw"><table class="tb"><thead><tr><th>شناسه</th><th>نام کامل</th><th>نام کاربری</th><th>نقش</th><th>وضعیت</th><th style="text-align:left">عملیات</th></tr></thead><tbody>'+
       rows.map(function(m){return '<tr><td class="ltr">'+esc(m.workerId||'—')+'</td><td>'+esc(m.fullName)+'</td><td class="ltr">'+esc(m.username)+'</td><td>'+pill(m.role)+'</td><td>'+pill(m.status)+'</td><td><div class="ra">'+
-        '<select class="sel" data-mstatus="'+m.rowIndex+'" style="min-width:120px"><option value="">تغییر وضعیت…</option>'+statuses.map(function(s){return '<option'+(s===m.status?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select>'+
+        '<select class="sel" data-mstatus="'+m.rowIndex+'" style="min-width:120px"><option value="">تغییر وضعیت…</option>'+st.map(function(s){return '<option'+(s===m.status?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select>'+
+        ibtn('member-msg','msg','پیام به عضو',' data-worker="'+esc(m.workerId||'')+'"')+
         ibtn('remove-member','trash','حذف',' data-id="'+m.rowIndex+'"')+'</div></td></tr>';}).join('')+
-      '</tbody></table></div>';
-    return h;
-  });
-}
-function addMemberModal(groupId){
+      '</tbody></table></div>';return h;});}
+function addMemberModal(gid){
   openModal('<div class="mh"><h3>افزودن عضو به گروه</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-    '<form data-form="add-member" data-id="'+esc(groupId)+'"><div class="mb"><div class="fgrid">'+
+    '<form data-form="add-member" data-id="'+esc(gid)+'"><div class="mb"><div class="fgrid">'+
     '<div class="field"><label>شناسه نیرو (Worker-ID) <span class="req">*</span></label><input name="workerId" required placeholder="W-44400000001"></div>'+
     '<div class="field"><label>نقش <span class="req">*</span></label><select name="role"><option value="worker">worker</option><option value="operator">operator</option></select></div>'+
-    '</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('plus','width:14px;height:14px')+' افزودن</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
-}
-/* ═════════ MESSAGES ═════════ */
+    '</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('plus','width:14px;height:14px')+' افزودن</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);}
+/* ═════ 13) MESSAGES — موتور یکپارچه ═════ */
 function messagesPage(){
   return api('supervisorGetConversations',TOKEN).then(function(rows){
-    var h=head('مکاتبات متخصصان',fa(rows.length)+' گفتگو',btn('refresh','بروزرسانی','undo','btn-s'));
-    if(!rows.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('msg')+'</div><h4>مکاتبه‌ای ثبت نشده است</h4><p class="sub">متخصصان از کارت‌های خود می‌توانند گفتگو آغاز کنند.</p></div></div>';
-    h+='<div class="card">'+rows.map(function(t){
-      return '<div class="thread'+(t.unreadCount>0?' unread':'')+'"><div style="flex:1;min-width:0"><b>'+esc(t.subject)+'</b>'+
-        '<div style="font-size:10.5px;color:var(--muted);margin-top:3px">کارت '+esc(t.cardId)+' · '+esc(t.workerUsername)+' · '+jDT(t.lastMessageAt)+'</div>'+
-        '<div style="background:var(--surface2);border-radius:9px;padding:7px 10px;margin-top:7px;font-size:11.5px;color:var(--muted)">'+esc(t.preview||'—')+'</div></div>'+
-        '<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">'+pill(t.status)+(t.unreadCount>0?'<span class="bdg r">'+fa(t.unreadCount)+'</span>':'')+
-        btn('open-thread','گفتگو','msg','btn-p btn-sm',' data-id="'+esc(t.threadId)+'"')+'</div></div>';
-    }).join('')+'</div>';
-    return h;
-  });
-}
-function openThread(id){
-  api('supervisorGetConversation',id,TOKEN).then(function(d){
-    var msgs=d.messages||[];
-    var bubbles=msgs.map(function(m){var me=m.senderRole==='supervisor';return '<div class="msgb '+(me?'me':'them')+'"><b>'+esc(m.senderUsername)+'</b><div class="body">'+esc(m.body)+'</div><small>'+jDT(m.createdAt)+(m.readAt?' · دیده شد':'')+'</small></div>';}).join('');
-    openModal('<div class="mh"><h3>'+esc(d.thread.subject)+'</h3>'+pill(d.thread.status)+'<button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-      '<form data-form="thread-reply" data-id="'+esc(id)+'"><div class="mb"><div class="chatbox" id="chatBox">'+(bubbles||'<p class="hint" style="text-align:center;padding:14px">پیامی نیست.</p>')+'</div>'+
-      '<div class="field"><label>پاسخ شما</label><textarea name="body" required placeholder="متن پاسخ…"></textarea></div></div>'+
-      '<div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ارسال</button>'+
-      (d.thread.status==='CLOSED'?btn('thread-open-status','بازکردن گفتگو','check','btn-s',' data-id="'+esc(id)+'"'):btn('thread-close-status','بستن گفتگو','lock','btn-s',' data-id="'+esc(id)+'"'))+
+    _MSGS=rows||[];
+    MSG_UNREAD=_MSGS.reduce(function(n,t){return n+(t.state!=='CLOSED'?num(t.unread):0);},0);
+    return renderInbox();});}
+function renderInbox(){
+  var all=_MSGS;
+  var rows=all.filter(function(t){
+    if(PS.mch&&t.channel!==PS.mch)return false;
+    if(PS.mst&&t.state!==PS.mst)return false;
+    if(PS.mq){var q=en(PS.mq).toLowerCase();
+      if(![t.subject,t.ticketNo,t.workerName,t.workerUsername,t.preview,t.cardId].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;}))return false;}
+    return true;});
+  var open=all.filter(function(t){return t.state==='OPEN';}).length;
+  var closed=all.filter(function(t){return t.state==='CLOSED';}).length;
+  var team=all.filter(function(t){return t.channel==='TEAM';}).length;
+  var sup=all.filter(function(t){return t.channel==='SUPPORT';}).length;
+  var h=head('مکاتبات و پیام‌ها',fa(all.length)+' گفتگو · '+fa(team)+' تیم · '+fa(sup)+' پشتیبانی',
+    btn('msg-team','پیام به عضو تیم','send','btn-p')+btn('msg-support','پیام به پشتیبانی','headset','btn-v')+btn('msg-refresh','بروزرسانی','undo','btn-s'));
+  h+='<div class="grid kpis" style="margin-bottom:16px">'+
+    kpi('کل گفتگوها',fa(all.length),'msg','var(--blue)','تیم + پشتیبانی')+
+    kpi('در انتظار پاسخ',fa(open),'clock','var(--amber)','OPEN')+
+    kpi('خوانده‌نشده',fa(MSG_UNREAD),'bell','var(--red)','پیام جدید')+
+    kpi('بسته‌شده',fa(closed),'lock','var(--slate)','CLOSED')+'</div>';
+  h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-msearch placeholder="جستجو در موضوع، شماره تیکت، طرف گفتگو…" value="'+esc(PS.mq||'')+'"></div>'+
+    '<select class="sel" data-mch><option value="">کانال: همه</option><option value="TEAM"'+(PS.mch==='TEAM'?' selected':'')+'>تیم ('+fa(team)+')</option><option value="SUPPORT"'+(PS.mch==='SUPPORT'?' selected':'')+'>پشتیبانی ('+fa(sup)+')</option></select>'+
+    '<select class="sel" data-mst><option value="">وضعیت: همه</option>'+[['OPEN','در انتظار پاسخ'],['ANSWERED','پاسخ داده شده'],['CLOSED','بسته']].map(function(s){return '<option value="'+s[0]+'"'+(PS.mst===s[0]?' selected':'')+'>'+s[1]+'</option>';}).join('')+'</select></div>';
+  if(!rows.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('msg')+'</div><h4>گفتگویی یافت نشد</h4><p class="sub">با «پیام به عضو تیم» یا «پیام به پشتیبانی» اولین گفتگو را آغاز کنید.</p></div></div>';
+  h+='<div class="card">'+rows.map(function(t){
+    var un=num(t.unread),st=t.state||'OPEN';
+    return '<div class="thread'+(un>0?' unread':'')+'"><div style="flex:1;min-width:0">'+
+      '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>'+esc(t.subject||'بدون موضوع')+'</b>'+
+      '<span class="tno">'+esc(t.ticketNo)+'</span>'+
+      '<span class="pill '+(t.channel==='SUPPORT'?'p-violet':'p-teal')+'">'+(t.channel==='SUPPORT'?'پشتیبانی':'تیم')+'</span>'+
+      (un>0?'<span class="ubdg">'+fa(un)+' جدید</span>':'')+'</div>'+
+      '<div class="tmeta"><span>'+esc(t.workerName||'—')+'</span>'+(t.cardId?'<span>·</span><span>کارت '+esc(t.cardId)+'</span>':'')+'<span>·</span><span>'+fa(num(t.messageCount))+' پیام</span><span>·</span><span>'+jDT(t.lastMessageAt||t.createdAt)+'</span></div>'+
+      '<div class="tprev">'+esc(t.preview||'—')+'</div></div>'+
+      '<div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">'+pill(t.status||st)+
+      btn('chat-open','گفتگو','msg','btn-p btn-sm',' data-id="'+esc(t.threadId)+'"')+
+      (st==='CLOSED'?btn('chat-status','بازکردن','unlock','btn-s btn-sm',' data-id="'+esc(t.threadId)+'" data-state="OPEN"'):btn('chat-status','بستن','lock','btn-s btn-sm',' data-id="'+esc(t.threadId)+'" data-state="CLOSED"'))+
+      '</div></div>';}).join('')+'</div>';
+  return h;}
+function chatOpen(id){
+  return api('supervisorGetConversation',id,TOKEN).then(function(d){
+    var t=d.thread,msgs=d.messages||[],closed=t.state==='CLOSED';
+    var bubbles=msgs.map(function(m){
+      if(m.messageType==='SYSTEM')return '<div class="msgb sys">'+esc(m.body)+' · '+jDT(m.createdAt)+'</div>';
+      var me=m.senderRole==='supervisor';
+      return '<div class="msgb '+(me?'me':'them')+'"><b>'+esc(m.senderName||m.senderUsername)+' <span style="font-weight:600;opacity:.7">('+esc(m.senderRole)+')</span></b><div class="body">'+esc(m.body)+'</div><small>'+jDT(m.createdAt)+(m.readAt?' · دیده شد':'')+'</small></div>';}).join('');
+    openModal('<div class="mh"><h3>'+esc(t.subject||'گفتگو')+'</h3><span class="tno">'+esc(t.ticketNo)+'</span>'+pill(t.status||t.state)+
+      '<button class="ibtn" data-act="chat-open" data-id="'+esc(id)+'" title="بروزرسانی">'+icon('undo')+'</button>'+
+      '<button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+      '<form data-form="chat-reply" data-id="'+esc(id)+'"><div class="mb">'+
+      '<div class="tmeta" style="margin-bottom:10px"><span>'+(t.channel==='SUPPORT'?'پشتیبانی سامانه':esc(t.workerName||''))+'</span>'+(t.cardId?'<span>·</span><span>کارت '+esc(t.cardId)+'</span>':'')+'</div>'+
+      '<div class="chatbox" id="chatBox">'+(bubbles||'<p class="hint" style="text-align:center;padding:14px">پیامی ثبت نشده است.</p>')+'</div>'+
+      (closed?'<p class="hint" style="color:var(--amber)">این گفتگو بسته است؛ برای ارسال پاسخ ابتدا بازگشایی کنید.</p>':
+      '<div class="field"><label>پاسخ شما <span class="req">*</span></label><textarea name="body" required placeholder="متن پاسخ…"></textarea></div>')+
+      '</div><div class="mf">'+(closed?'':'<button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ارسال</button>')+
+      (closed?btn('chat-status','بازکردن گفتگو','unlock','btn-s',' data-id="'+esc(id)+'" data-state="OPEN"'):btn('chat-status','بستن گفتگو','lock','btn-s',' data-id="'+esc(id)+'" data-state="CLOSED"'))+
       '<button type="button" class="btn btn-s" data-act="mclose">بستن</button></div></form>',false,true);
     var box=$('#chatBox');if(box)box.scrollTop=box.scrollHeight;
-  }).catch(function(e){toast(e.message,'err');});
-}
-/* ═════════ REPORTS ═════════ */
+    refreshUnread();
+  }).catch(function(e){toast(e.message,'err');});}
+function msgTeamModal(preWorker,preCard){
+  Promise.all([api('supervisorGetTeamRecipients',TOKEN),api('getSupervisorCards',{search:'',status:'همه'},TOKEN)]).then(function(res){
+    var rs=res[0]||[],cards=res[1]||[];
+    if(!rs.length){toast('عضو فعالی در گروه‌های شما نیست.','warn');return;}
+    var ropts='<option value="">انتخاب عضو…</option>'+rs.map(function(r){return '<option value="'+esc(r.id)+'"'+(String(r.id)===String(preWorker)?' selected':'')+'>'+esc(r.name)+' — '+esc(r.id)+' ('+esc(r.operations)+' · '+esc(r.groupName||'')+')</option>';}).join('');
+    var copts='<option value="">بدون کارت مرتبط</option>'+cards.map(function(c){return '<option value="'+esc(c.cardId)+'"'+(String(c.cardId)===String(preCard)?' selected':'')+'>'+esc(c.cardId)+' — '+esc(c.customer||'')+'</option>';}).join('');
+    openModal('<div class="mh"><h3>پیام به عضو تیم</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+      '<form data-form="msg-team"><div class="mb"><div class="fgrid">'+
+      '<div class="field full"><label>گیرنده (عضو فعال گروه‌های شما) <span class="req">*</span></label><select name="workerId">'+ropts+'</select></div>'+
+      '<div class="field full"><label>یا ورود مستقیم شناسه گیرنده (Worker-ID)</label><input name="manualId" placeholder="W-44400000001" value="'+esc(preWorker&&rs.some(function(r){return r.id===preWorker;})?'':(preWorker||''))+'" style="direction:ltr;text-align:right"><span class="hint">اگر پر شود، بر انتخاب بالا اولویت دارد و باید عضو فعال گروه‌های شما باشد.</span></div>'+
+      '<div class="field full"><label>کارت مرتبط (اختیاری)</label><select name="cardId">'+copts+'</select></div>'+
+      '<div class="field full"><label>موضوع</label><input name="subject" placeholder="مثلاً پیگیری اجرای کارت"></div>'+
+      '<div class="field full"><label>متن پیام <span class="req">*</span></label><textarea name="body" required style="min-height:120px"></textarea></div>'+
+      '</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ارسال پیام</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+  }).catch(function(e){toast(e.message,'err');});}
+function msgSupportModal(){
+  openModal('<div class="mh"><h3>پیام به پشتیبانی سامانه</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+    '<form data-form="msg-support"><div class="mb"><p class="hint" style="margin-bottom:12px">این پیام به‌عنوان تیکت در «پشتیبانی کارکنان» پنل ادمین ثبت می‌شود و پاسخ آن در همین‌جا نمایش داده می‌شود.</p><div class="fgrid">'+
+    '<div class="field full"><label>موضوع <span class="req">*</span></label><input name="subject" required placeholder="مثلاً مشکل در تخصیص کارت"></div>'+
+    '<div class="field full"><label>شرح پیام <span class="req">*</span></label><textarea name="body" required style="min-height:130px"></textarea></div>'+
+    '</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ارسال به پشتیبانی</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);}
+/* ═════ 14) REPORTS ═════ */
 function reportsPage(){
   var h=head('گزارش عملکرد','تحلیل عملکرد اعضا در بازه انتخابی',btn('rep-run','نمایش گزارش','report','btn-p'));
-  h+='<div class="toolbar"><input class="inp" data-rep="from" placeholder="از تاریخ ۱۴۰۵/۰۱/۰۱" style="width:160px"><input class="inp" data-rep="to" placeholder="تا تاریخ ۱۴۰۵/۱۲/۲۹" style="width:160px"></div><div id="repOut"><div class="card"><div class="empty"><div class="ei">'+icon('report')+'</div><h4>بازه را انتخاب و «نمایش گزارش» را بزنید</h4></div></div></div>';
-  return h;
-}
+  h+='<div class="toolbar"><input class="inp" data-rep="from" data-jd placeholder="از تاریخ" style="width:150px"><input class="inp" data-rep="to" data-jd placeholder="تا تاریخ" style="width:150px"></div><div id="repOut"><div class="card"><div class="empty"><div class="ei">'+icon('report')+'</div><h4>بازه را انتخاب و «نمایش گزارش» را بزنید</h4></div></div></div>';
+  return h;}
 function runReports(){
-  var from=$('[data-rep="from"]')?$('[data-rep="from"]').value:'',to=$('[data-rep="to"]')?$('[data-rep="to"]').value:'';
+  var f=$('[data-rep="from"]'),t=$('[data-rep="to"]');
   $('#repOut').innerHTML='<div class="loading"><div class="spinner"></div></div>';
-  api('getSupervisorReports',TOKEN,from,to).then(function(rep){
+  api('getSupervisorReports',TOKEN,f?f.value:'',t?t.value:'').then(function(rep){
     var h='<div class="grid kpis" style="margin-bottom:18px">'+
       kpi('کل کارت‌ها',fa(rep.totalCards||0),'cards','var(--blue)','در بازه')+
       kpi('تکمیل شده',fa(rep.completedCards||0),'check','var(--green)','موفق')+
       kpi('در حال انجام',fa(rep.inProgressCards||0),'clock','var(--amber)','جاری')+
-      kpi('درآمد کل',moneyC(rep.totalRevenue||0),'wallet','var(--brand)','ریال')+
-      '</div>';
+      kpi('درآمد کل',moneyC(rep.totalRevenue||0),'wallet','var(--brand)','ریال')+'</div>';
     h+='<div class="card"><h3 style="margin-bottom:12px;display:flex;gap:8px;align-items:center">'+icon('people','width:15px;height:15px;color:var(--violet)')+' عملکرد اعضا</h3>'+
       ((rep.byWorker||[]).length?'<div class="tw"><table class="tb"><thead><tr><th>نام</th><th>کل</th><th>تکمیل</th><th>درآمد</th></tr></thead><tbody>'+
-      (rep.byWorker||[]).map(function(w){return '<tr><td><b>'+esc(w.name)+'</b></td><td class="num">'+fa(w.total)+'</td><td class="num">'+fa(w.completed)+'</td><td class="num">'+money(w.revenue)+'</td></tr>';}).join('')+'</tbody></table></div>':'<p class="sub">داده‌ای نیست.</p>')+'</div>';
+      rep.byWorker.map(function(w){return '<tr><td><b>'+esc(w.name)+'</b></td><td class="num">'+fa(w.total)+'</td><td class="num">'+fa(w.completed)+'</td><td class="num">'+money(w.revenue)+'</td></tr>';}).join('')+'</tbody></table></div>':'<p class="sub">داده‌ای نیست.</p>')+'</div>';
     $('#repOut').innerHTML=h;
-  }).catch(function(e){$('#repOut').innerHTML='<div class="card"><div class="empty"><div class="ei">'+icon('x')+'</div><h4>خطا</h4><p class="sub">'+esc(e.message)+'</p></div></div>';});
-}
-/* ═════════ PROFILE ═════════ */
+  }).catch(function(e){$('#repOut').innerHTML=errCard(e);});}
+/* ═════ 15) ROADMAP / DEV / SOON ═════ */
+function devPage(){
+  return api('supervisorGetDevRequests',TOKEN).then(function(res){
+    var rows=res.items||[],mine=rows.filter(function(r){return r.mine;});
+    var h=head('درخواست‌های توسعه',fa(rows.length)+' درخواست · '+fa(mine.length)+' از شما',btn('dev-new','درخواست جدید','plus','btn-p')+btn('refresh','بروزرسانی','undo','btn-s'));
+    h+='<div class="grid kpis" style="margin-bottom:16px">'+
+      kpi('کل درخواست‌ها',fa(rows.length),'zap','var(--blue)','همه پنل‌ها')+
+      kpi('جدید',fa(rows.filter(function(r){return r.status==='جدید';}).length),'clock','var(--amber)','در انتظار بررسی')+
+      kpi('در حال ساخت',fa(rows.filter(function(r){return r.status==='در حال ساخت';}).length),'worker','var(--teal)','در اجرا')+
+      kpi('منتشر شده',fa(rows.filter(function(r){return r.status==='منتشر شد';}).length),'check','var(--green)','تکمیل')+'</div>';
+    if(!rows.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('zap')+'</div><h4>درخواستی ثبت نشده است</h4><p class="sub">اولین پیشنهاد توسعه را ثبت کنید.</p></div></div>';
+    h+='<div class="tw"><table class="tb"><thead><tr><th>شناسه</th><th>ماژول</th><th>نوع</th><th>شرح</th><th>اولویت</th><th>وضعیت</th><th>ثبت‌کننده</th><th>تاریخ</th><th style="text-align:left">عملیات</th></tr></thead><tbody>'+
+      rows.map(function(r){return '<tr><td><b class="ltr">'+esc(r.id)+'</b></td><td>'+esc(r.moduleName||r.module)+'</td><td>'+pill(r.kind)+'</td>'+
+        '<td style="white-space:normal;max-width:320px">'+esc(String(r.note||'').slice(0,160))+'</td><td>'+pill(r.priority)+'</td><td>'+pill(r.status)+'</td>'+
+        '<td>'+esc(r.createdByName||r.createdBy)+(r.mine?' <span class="pill p-brand">شما</span>':'')+'</td><td>'+jDT(r.createdAt)+'</td>'+
+        '<td><div class="ra">'+(r.mine?ibtn('dev-del','trash','حذف',' data-id="'+esc(r.id)+'"'):'')+'</div></td></tr>';}).join('')+
+      '</tbody></table></div>';return h;});}
+function devNewModal(kind){
+  var mods='<option value="general">پیشنهاد عمومی</option>'+SOON_ORDER.map(function(k){return '<option value="'+k+'"'+(k===kind?' selected':'')+'>'+esc(SOON[k].t)+'</option>';}).join('');
+  openModal('<div class="mh"><h3>ثبت درخواست توسعه</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+    '<form data-form="dev-new"><div class="mb"><p class="hint" style="margin-bottom:12px">درخواست در شیت DevelopmentRequests ثبت و در پنل مدیر کل قابل پیگیری است.</p><div class="fgrid">'+
+    '<div class="field"><label>ماژول</label><select name="module">'+mods+'</select></div>'+
+    '<div class="field"><label>نوع</label><select name="kind"><option value="feature">قابلیت جدید</option><option value="bug">گزارش مشکل</option><option value="notify">اطلاع‌رسانی</option></select></div>'+
+    '<div class="field"><label>اولویت</label><select name="priority"><option>عادی</option><option>مهم</option><option>فوری</option></select></div>'+
+    '<div class="field full"><label>شرح درخواست <span class="req">*</span></label><textarea name="note" required style="min-height:130px" placeholder="مثلاً: تخصیص خودکار کارت بر اساس تخصص و ظرفیت نیرو…"></textarea></div>'+
+    '</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ثبت درخواست</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);}
+function devNotify(kind){
+  var name=SOON[kind]?SOON[kind].t:'توسعه عمومی';
+  api('supervisorSubmitDevRequest',{module:kind||'general',moduleName:name,kind:'notify',priority:'عادی',note:'لطفاً هنگام فعال‌سازی ماژول «'+name+'» در پنل سوپروایزر اطلاع‌رسانی شود.'},TOKEN)
+  .then(function(r){toast('درخواست اطلاع‌رسانی ثبت شد · '+r.id,'ok');refreshUnread();if(PS.page==='roadmap'||SOON[PS.page]||PS.page==='devRequests')render();})
+  .catch(function(e){toast(e.message,'err');});}
+function roadmapPage(){
+  return api('supervisorGetDevRequests',TOKEN).catch(function(){return {items:[]};}).then(function(res){
+    var rows=res.items||[];
+    var avg=Math.round(SOON_ORDER.reduce(function(a,k){return a+SOON[k].p;},0)/SOON_ORDER.length);
+    var h='<div class="soon-hero"><span class="tag">'+icon('target','width:13px;height:13px')+' نقشه راه ۱۴۰۵ — ۱۴۰۶</span>'+
+      '<h2>ماژول‌های در راه پنل سوپروایزر</h2><p>پنج ماژول زیر به‌ترتیب اولویت در حال ساخت‌اند. درخواست‌های توسعه در شیت DevelopmentRequests تجمیع و در پنل مدیر کل پیگیری می‌شوند.</p>'+
+      '<div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">'+btn('dev-new','ثبت پیشنهاد توسعه','send','btn-p')+btn('go','درخواست‌های توسعه','zap','btn-s',' data-page="devRequests"')+'</div></div>';
+    h+='<div class="grid kpis" style="margin-bottom:18px">'+
+      kpi('ماژول در راه',fa(SOON_ORDER.length),'grid','var(--blue)','در صف توسعه')+
+      kpi('میانگین پیشرفت',fa(avg)+'٪','report','var(--brand)','وزنی ساده')+
+      kpi('نزدیک‌ترین انتشار','اسفند ۱۴۰۵','cal','var(--teal)','تحلیل عملکرد')+
+      kpi('درخواست ثبت‌شده',fa(rows.length),'zap','var(--violet)','همه پنل‌ها')+'</div>';
+    h+='<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">'+SOON_ORDER.map(function(k,i){
+      var c=SOON[k],n=rows.filter(function(r){return r.module===k;}).length;
+      return '<div class="card" style="display:flex;flex-direction:column;gap:10px"><div style="display:flex;gap:11px;align-items:center"><span style="width:42px;height:42px;flex:0 0 42px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,'+c.c+' 14%,transparent);color:'+c.c+'">'+icon(c.ic)+'</span>'+
+        '<div style="flex:1;min-width:0"><b style="font-size:14px;display:block">'+esc(c.t)+'</b><small class="sub">اولویت '+fa(i+1)+' · '+esc(c.eta)+(n?' · '+fa(n)+' درخواست':'')+'</small></div>'+pill(c.p>=40?'در حال ساخت':'در طراحی')+'</div>'+
+        '<p class="sub" style="font-size:11.5px">'+esc(c.d)+'</p>'+
+        '<div class="prog" style="margin-top:0;max-width:none;background:var(--surface2);border:1px solid var(--line)"><i data-w="'+c.p+'" style="background:'+c.c+'"></i></div>'+
+        '<div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);font-weight:800"><span>پیشرفت</span><span>'+fa(c.p)+'٪</span></div>'+
+        '<div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:4px">'+btn('go','جزئیات','eye','btn-s btn-sm',' data-page="'+k+'"')+btn('dev-notify','اطلاع‌رسانی','bell','btn-p btn-sm',' data-kind="'+k+'"')+'</div></div>';}).join('')+'</div>';
+    return h;});}
+function soonPage(k){
+  var c=SOON[k];if(!c)return '<div class="card">صفحه یافت نشد.</div>';
+  var h='<div class="soon-hero"><span class="tag">'+icon('clock','width:13px;height:13px')+' در حال توسعه</span>'+
+    '<h2>'+esc(c.t)+'</h2><p>'+esc(c.d)+'</p><div class="prog"><i data-w="'+c.p+'"></i></div>'+
+    '<div class="prog-l"><span>پیشرفت پیاده‌سازی '+fa(c.p)+'٪</span><span>انتشار هدف: '+esc(c.eta)+'</span></div>'+
+    '<div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">'+btn('dev-new-kind','ثبت نیازمندی','edit','btn-p',' data-kind="'+k+'"')+btn('dev-notify','اطلاع‌رسانی هنگام انتشار','bell','btn-s',' data-kind="'+k+'"')+'<button class="btn btn-s" data-act="go" data-page="roadmap">'+icon('target','width:15px;height:15px')+' نقشه راه کامل</button></div></div>';
+  h+='<div class="soon-grid">'+c.items.map(function(x){return '<div class="soon-card"><div class="sic" style="background:color-mix(in srgb,'+c.c+' 14%,transparent);color:'+c.c+'">'+icon(x[0])+'</div><h4>'+esc(x[1])+'</h4><p>'+esc(x[2])+'</p></div>';}).join('')+'</div>';
+  h+='<div class="card" style="margin-top:16px;display:flex;gap:12px;align-items:flex-start;border-right:4px solid '+c.c+'">'+icon('zap','width:20px;height:20px;color:'+c.c)+'<div><b style="font-size:13px">این بخش هنوز داده عملیاتی ذخیره نمی‌کند</b><p class="sub" style="margin-top:4px;line-height:1.9">تا انتشار رسمی تنها «درخواست توسعه» ثبت می‌شود تا اولویت‌بندی نسخه‌ها بر اساس نیاز واقعی انجام شود.</p></div></div>';
+  return h;}
+/* ═════ 16) PROFILE ═════ */
 function profilePage(){
   return api('getSupervisorProfile',TOKEN).then(function(p){
     var photo=p.avatar?'<img src="'+esc(p.avatar)+'" alt="">':esc(String(p.name||'؟').trim().charAt(0));
-    var h=head('پروفایل من','حساب کاربری سوپروایزر',btn('my-photo','تغییر عکس','cam','btn-s'));
-    h+='<div class="profile-layout"><div class="card profile-photo-card"><div class="profile-photo-large" id="profilePhoto">'+photo+'</div><h3>'+esc(p.name)+'</h3><div class="sub">'+esc(p.role)+' · '+esc(p.workerId)+'</div></div>'+
+    var h=head('پروفایل من','حساب کاربری سوپروایزر');
+    h+='<div class="profile-layout"><div class="card profile-photo-card"><div class="profile-photo-large">'+photo+'</div><h3>'+esc(p.name)+'</h3><div class="sub">'+esc(p.role)+' · '+esc(p.workerId)+'</div></div>'+
       '<div class="card"><h3 style="margin-bottom:16px">اطلاعات حساب</h3><div class="kv" style="margin-bottom:18px">'+
-      '<div class="kvi"><small>شناسه</small><b>'+esc(p.workerId)+'</b></div><div class="kvi"><small>نام</small><b>'+esc(p.name)+'</b></div>'+
+      '<div class="kvi"><small>شناسه یکتا</small><b>'+esc(p.workerId)+'</b></div><div class="kvi"><small>نام</small><b>'+esc(p.name)+'</b></div>'+
       '<div class="kvi"><small>شعبه</small><b>'+esc(p.branchName||p.branchId)+'</b></div><div class="kvi"><small>گروه</small><b>'+esc(p.groupId||'—')+'</b></div></div>'+
       '<form data-form="profile"><div class="profile-form">'+
       '<div class="field"><label>نام کاربری</label><input name="username" value="'+esc(p.username)+'"></div>'+
       '<div class="field"><label>رمز عبور جدید</label><input name="password" type="password" placeholder="خالی = بدون تغییر"></div>'+
       '<div class="field full"><label>توضیحات</label><textarea name="description">'+esc(p.description||'')+'</textarea></div>'+
       '</div><br><button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ذخیره تغییرات</button></form></div></div>';
-    return h;
-  });
-}
-/* ═════════ ROADMAP / SOON ═════════ */
-function soonRequests(){try{return JSON.parse(localStorage.getItem('zv_supervisor_soon')||'[]');}catch(e){return [];}}
-function roadmapPage(){
-  var reqs=soonRequests();
-  var avg=Math.round(SOON_ORDER.reduce(function(a,k){return a+SOON[k].p;},0)/SOON_ORDER.length);
-  var h='<div class="soon-hero"><span class="tag">'+icon('target','width:13px;height:13px')+' نقشه راه ۱۴۰۵ — ۱۴۰۶</span>'+
-    '<h2>ماژول‌های در راه پنل سوپروایزر</h2><p>پنج ماژول زیر به‌ترتیب اولویت در حال ساخت‌اند و پس از انتشار، بدون تغییر در داده‌های فعلی به همین پنل اضافه می‌شوند.</p>'+
-    '<div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">'+btn('soon-request','ثبت پیشنهاد توسعه','send','btn-p',' data-kind="roadmap"')+'</div></div>';
-  h+='<div class="grid kpis" style="margin-bottom:18px">'+
-    kpi('ماژول در راه',fa(SOON_ORDER.length),'grid','var(--blue)','در صف توسعه')+
-    kpi('میانگین پیشرفت',fa(avg)+'٪','report','var(--brand)','وزنی ساده')+
-    kpi('نزدیک‌ترین انتشار','اسفند ۱۴۰۵','cal','var(--teal)','تحلیل عملکرد')+
-    kpi('درخواست اطلاع‌رسانی',fa(reqs.length),'bell','var(--violet)','ثبت‌شده توسط شما')+'</div>';
-  h+='<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">'+SOON_ORDER.map(function(k,i){
-    var c=SOON[k];
-    return '<div class="card" style="display:flex;flex-direction:column;gap:10px"><div style="display:flex;gap:11px;align-items:center"><span style="width:42px;height:42px;flex:0 0 42px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,'+c.c+' 14%,transparent);color:'+c.c+'">'+icon(c.ic)+'</span>'+
-      '<div style="flex:1;min-width:0"><b style="font-size:14px;display:block">'+esc(c.t)+'</b><small class="sub">اولویت '+fa(i+1)+' · '+esc(c.eta)+'</small></div>'+pill(c.p>=40?'در حال ساخت':'در طراحی')+'</div>'+
-      '<p class="sub" style="font-size:11.5px">'+esc(c.d)+'</p>'+
-      '<div class="prog" style="margin-top:0;max-width:none;background:var(--surface2);border:1px solid var(--line)"><i data-w="'+c.p+'" style="background:'+c.c+'"></i></div>'+
-      '<div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);font-weight:800"><span>پیشرفت</span><span>'+fa(c.p)+'٪</span></div>'+
-      '<div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:4px">'+btn('go','جزئیات','eye','btn-s btn-sm',' data-page="'+k+'"')+btn('soon-notify','اطلاع‌رسانی','bell','btn-p btn-sm',' data-kind="'+k+'"')+'</div></div>';
-  }).join('')+'</div>';
-  if(reqs.length)h+='<div class="card" style="margin-top:18px"><h3 style="margin-bottom:12px;display:flex;gap:8px;align-items:center">'+icon('bell','width:15px;height:15px;color:var(--brand)')+' درخواست‌های اطلاع‌رسانی شما</h3>'+
-    reqs.map(function(r){return '<div class="rank"><div class="info"><b>'+esc(r.title)+'</b><small>'+jDT(r.at)+'</small></div>'+pill('ثبت شده')+'</div>';}).join('')+'</div>';
-  return h;
-}
-function soonPage(k){
-  var c=SOON[k];if(!c)return '<div class="card">صفحه یافت نشد.</div>';
-  var h='<div class="soon-hero"><span class="tag">'+icon('clock','width:13px;height:13px')+' در حال توسعه</span>'+
-    '<h2>'+esc(c.t)+'</h2><p>'+esc(c.d)+'</p><div class="prog"><i data-w="'+c.p+'"></i></div>'+
-    '<div class="prog-l"><span>پیشرفت پیاده‌سازی '+fa(c.p)+'٪</span><span>انتشار هدف: '+esc(c.eta)+'</span></div>'+
-    '<div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">'+btn('soon-request','ثبت نیازمندی','edit','btn-p',' data-kind="'+k+'"')+btn('soon-notify','اطلاع‌رسانی هنگام انتشار','bell','btn-s',' data-kind="'+k+'"')+'<button class="btn btn-s" data-act="go" data-page="roadmap">'+icon('target','width:15px;height:15px')+' نقشه راه کامل</button></div></div>';
-  h+='<div class="soon-grid">'+c.items.map(function(x){return '<div class="soon-card"><div class="sic" style="background:color-mix(in srgb,'+c.c+' 14%,transparent);color:'+c.c+'">'+icon(x[0])+'</div><h4>'+esc(x[1])+'</h4><p>'+esc(x[2])+'</p></div>';}).join('')+'</div>';
-  return h;
-}
-function soonRequestModal(kind){
-  var name=SOON[kind]?SOON[kind].t:'پیشنهاد عمومی توسعه';
-  openModal('<div class="mh"><h3>ثبت درخواست توسعه — '+esc(name)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-    '<form data-form="soon-request" data-kind="'+esc(kind)+'"><div class="mb"><div class="field"><label>شرح نیازمندی <span class="req">*</span></label><textarea name="note" required style="min-height:130px"></textarea></div></div>'+
-    '<div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ثبت درخواست</button><button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
-}
-function soonNotify(kind){
-  var name=SOON[kind]?SOON[kind].t:'توسعه عمومی';
-  api('submitSupervisorRecord',{type:'branch_request',title:'درخواست اطلاع‌رسانی: '+name,details:'لطفاً هنگام فعال‌سازی ماژول «'+name+'» در پنل سوپروایزر، اطلاع‌رسانی شود.',groupId:PS.group||'',workerId:'',cardId:'',amount:0},TOKEN)
-  .then(function(){
-    var reqs=soonRequests();reqs.unshift({kind:kind,title:name,at:new Date().toISOString()});
-    try{localStorage.setItem('zv_supervisor_soon',JSON.stringify(reqs.slice(0,30)));}catch(e){}
-    toast('درخواست اطلاع‌رسانی ثبت شد.','ok');render();
-  }).catch(function(e){toast(e.message,'err');});
-}
-/* ═════════ RAIL / TIP ═════════ */
+    return h;});}
+/* ═════ 17) RAIL / TIP ═════ */
 var TIP=null,TIPT=null;
 function isMobile(){return window.matchMedia&&window.matchMedia('(max-width:1120px)').matches;}
 function applyRail(on){document.documentElement.classList.toggle('zv-rail',!!on);try{localStorage.setItem(RKEY,on?'1':'0');}catch(e){}if(!on)hideTip();}
-function toggleRail(){if(isMobile()){var s=$('#sidebar'),sc=$('#scrim');var o=!s.classList.contains('open');s.classList.toggle('open',o);sc.classList.toggle('show',o);return;}applyRail(!document.documentElement.classList.contains('zv-rail'));}
+function toggleRail(){if(isMobile()){var s=$('#sidebar'),sc=$('#scrim');var o=!s.classList.contains('open');s.classList.toggle('open',o);sc.classList.toggle('show',o);return;}
+  applyRail(!document.documentElement.classList.contains('zv-rail'));}
 function showTip(el){if(!document.documentElement.classList.contains('zv-rail')||isMobile()||!el)return;
   var sp=el.querySelector('span'),l=sp?sp.textContent:(el.title||'');l=String(l||'').trim();if(!l)return;
   if(!TIP){TIP=document.createElement('div');TIP.id='zvTip';document.body.appendChild(TIP);}
@@ -823,77 +941,129 @@ function showTip(el){if(!document.documentElement.classList.contains('zv-rail')|
   var left=r.left-w-12;if(left<8)left=r.right+12;
   TIP.style.left=left+'px';TIP.style.top=Math.max(8,Math.min(r.top+(r.height-h)/2,window.innerHeight-h-8))+'px';}
 function hideTip(){if(TIP)TIP.classList.remove('on');}
-/* ═════════ ACTIONS ═════════ */
+/* ═════ 18) ACTIONS ═════ */
 var ACT={
 'login':doLogin,'logout':doLogout,'rail':toggleRail,'theme':toggleTheme,
 'menu':function(){var s=$('#sidebar'),sc=$('#scrim');var o=!s.classList.contains('open');s.classList.toggle('open',o);sc.classList.toggle('show',o);},
 'scrim':function(){$('#sidebar').classList.remove('open');$('#scrim').classList.remove('show');},
 'mclose':closeModal,
 'go':function(d){go(d.page);},
-'refresh':function(){render();toast('بروزرسانی شد.','ok');},
+'refresh':function(){render();refreshUnread();toast('بروزرسانی شد.','ok');},
 'convert-order':function(d){convertOrderModal(d.id);},
 'cards-view':function(d){PS.view=d.mode;render();},
 'card-detail':function(d){cardDetail(d.id);},
 'card-status':function(d){cardStatusModal(d.id,d.status||'');},
 'card-assign':function(d){cardAssignModal(d.id);},
 'card-invoice':function(d){cardInvoice(d.id);},
-'card-print':function(d){var el=$('#zv-detail-'+d.id);if(!el){toast('ابتدا جزئیات کارت را باز کنید','warn');return;}var w=window.open('','_blank');if(!w)return;w.document.write('<html lang="fa" dir="rtl"><meta charset="utf-8"><body style="font-family:Tahoma;padding:24px">'+el.innerHTML+'</body></html>');w.document.close();w.print();},
+'card-msg':function(d){msgTeamModal(d.worker||'',d.id||'');},
+'member-msg':function(d){msgTeamModal(d.worker||'','');},
 'print-inv':function(){var b=$('#invBox');if(b){var w=window.open('','_blank');if(!w)return;w.document.write('<html lang="fa" dir="rtl"><meta charset="utf-8"><body style="font-family:Tahoma;padding:24px">'+b.outerHTML+'</body></html>');w.document.close();w.print();}},
 'week':function(d){var n=num(d.d);PS.week=n?new Date((PS.week||new Date()).getTime()+n*864e5):new Date();render();},
 'view-members':function(d){PS.group=d.id;go('members');},
 'edit-group':function(d){editGroupModal(d);},
 'add-member':function(d){addMemberModal(d.id);},
-'remove-member':function(d){confirmBox('حذف عضو','آیا از حذف این عضو از گروه مطمئن هستید؟',function(){api('removeGroupMember',Number(d.id),TOKEN).then(function(){toast('حذف شد.','ok');render();}).catch(function(e){toast(e.message,'err');});});},
-'open-thread':function(d){openThread(d.id);},
-'thread-close-status':function(d){api('supervisorSetConversationStatus',d.id,'CLOSED',TOKEN).then(function(){toast('گفتگو بسته شد.','ok');closeModal();render();}).catch(function(e){toast(e.message,'err');});},
-'thread-open-status':function(d){api('supervisorSetConversationStatus',d.id,'OPEN',TOKEN).then(function(){toast('گفتگو باز شد.','ok');openThread(d.id);}).catch(function(e){toast(e.message,'err');});},
+'remove-member':function(d){confirmBox('حذف عضو','آیا از حذف این عضو از گروه مطمئن هستید؟',function(){
+  api('removeGroupMember',Number(d.id),TOKEN).then(function(){toast('حذف شد.','ok');render();}).catch(function(e){toast(e.message,'err');});});},
+'msg-team':function(){msgTeamModal('','');},
+'msg-support':function(){msgSupportModal();},
+'msg-refresh':function(){return messagesPage().then(function(h){$('#page').innerHTML=h;decorate($('#page'));renderNav();});},
+'chat-open':function(d){return chatOpen(d.id);},
+'chat-status':function(d){return api('supervisorSetConversationStatus',d.id,d.state,TOKEN).then(function(){
+  toast(d.state==='CLOSED'?'گفتگو بسته شد.':'گفتگو باز شد.','ok');
+  var open=$('#mback').classList.contains('show');
+  return (open?chatOpen(d.id):Promise.resolve()).then(function(){return messagesPage().then(function(h){if(PS.page==='messages'){$('#page').innerHTML=h;decorate($('#page'));}renderNav();});});});},
 'rep-run':runReports,
-'my-photo':function(){toast('برای تغییر عکس از پنل اصلی پروفایل استفاده کنید.','warn');},
-'soon-request':function(d){soonRequestModal(d.kind||'roadmap');},
-'soon-notify':function(d){soonNotify(d.kind);}
+'dev-new':function(){devNewModal('');},
+'dev-new-kind':function(d){devNewModal(d.kind||'');},
+'dev-notify':function(d){devNotify(d.kind);},
+'dev-del':function(d){confirmBox('حذف درخواست','آیا از حذف <b>'+esc(d.id)+'</b> مطمئن هستید؟',function(){
+  api('supervisorDeleteDevRequest',d.id,TOKEN).then(function(){toast('حذف شد.','ok');render();}).catch(function(e){toast(e.message,'err');});});}
 };
 document.addEventListener('click',function(e){
+  if(!e.target.closest('.jdw')&&!e.target.closest('#jpop'))jdClose();
   var el=e.target.closest('[data-act]');
-  if(el){var fn=ACT[el.dataset.act];if(fn){e.preventDefault();e.stopPropagation();try{var r=fn(el.dataset,el,e);if(r&&typeof r.catch==='function')r.catch(function(x){toast(x.message||String(x),'err');});}catch(x){toast(x.message||String(x),'err');}return;}}
+  if(el){var fn=ACT[el.dataset.act];
+    if(fn){e.preventDefault();e.stopPropagation();
+      try{var r=fn(el.dataset,el,e);if(r&&typeof r.catch==='function')r.catch(function(x){toast(x.message||String(x),'err');});}
+      catch(x){toast(x.message||String(x),'err');}return;}}
   if(!e.target.closest('.zsel'))zClose();
   if(e.target.id==='mback')closeModal();
 });
 var sDeb=debounce(function(){render();},300);
-document.addEventListener('input',function(e){if(e.target.matches('[data-search]')){PS.q=e.target.value;sDeb();}});
+var mDeb=debounce(function(){if(PS.page==='messages'){$('#page').innerHTML=renderInbox();decorate($('#page'));}},250);
+document.addEventListener('input',function(e){
+  if(e.target.matches('[data-search]')){PS.q=e.target.value;sDeb();return;}
+  if(e.target.matches('[data-msearch]')){PS.mq=e.target.value;mDeb();return;}
+});
 document.addEventListener('change',function(e){
   var t=e.target;
   if(t.matches('[data-cstatus]')){PS.status=t.value;render();return;}
   if(t.matches('[data-plworker]')){PS.plWorker=t.value;render();return;}
   if(t.matches('[data-group]')){PS.group=t.value;render();return;}
-  if(t.matches('[data-mstatus]')){if(!t.value)return;api('toggleMemberStatus',Number(t.dataset.mstatus),t.value,TOKEN).then(function(){toast('وضعیت تغییر کرد.','ok');render();}).catch(function(x){toast(x.message,'err');});return;}
+  if(t.matches('[data-mch]')){PS.mch=t.value;$('#page').innerHTML=renderInbox();decorate($('#page'));return;}
+  if(t.matches('[data-mst]')){PS.mst=t.value;$('#page').innerHTML=renderInbox();decorate($('#page'));return;}
+  if(t.matches('[data-mstatus]')){if(!t.value)return;
+    api('toggleMemberStatus',Number(t.dataset.mstatus),t.value,TOKEN).then(function(){toast('وضعیت تغییر کرد.','ok');render();}).catch(function(x){toast(x.message,'err');});return;}
 });
 document.addEventListener('submit',function(e){
   var f=e.target,k=f.dataset.form;if(!k)return;e.preventDefault();
+  var sub=f.querySelector('[type="submit"]');
   var run=function(){
-    if(k==='convert'){return api('supervisorConvertOrderToCard',f.dataset.id,f.elements.workerId.value,TOKEN).then(function(r){closeModal();toast(r.message||'کارت ایجاد شد.','ok');render();});}
-    if(k==='card-status'){return api('updateSupervisorCardStatus',f.dataset.id,f.elements.status.value,TOKEN).then(function(){closeModal();toast('وضعیت ثبت شد.','ok');render();});}
-    if(k==='card-assign'){return api('assignCardToWorker',f.dataset.id,f.elements.workerId.value,TOKEN).then(function(){closeModal();toast('تخصیص ثبت شد.','ok');render();});}
-    if(k==='edit-group'){var p={name:f.elements.name.value,area:f.elements.area.value,groupType:f.elements.groupType.value,description:f.elements.description.value};if(!p.name.trim()){toast('نام گروه الزامی است.','err');return;}return api('updateSupervisorGroup',f.dataset.id,p,TOKEN).then(function(){closeModal();toast('ذخیره شد.','ok');render();});}
-    if(k==='add-member'){if(!f.elements.workerId.value.trim()){toast('شناسه نیرو الزامی است.','err');return;}return api('addGroupMember',f.dataset.id,f.elements.workerId.value.trim(),f.elements.role.value,TOKEN).then(function(){closeModal();toast('عضو افزوده شد.','ok');render();});}
-    if(k==='thread-reply'){if(!f.elements.body.value.trim()){toast('متن پاسخ الزامی است.','err');return;}return api('supervisorCreateConversationReply',f.dataset.id,f.elements.body.value,TOKEN).then(function(){toast('ارسال شد.','ok');openThread(f.dataset.id);});}
-    if(k==='profile'){var p={username:f.elements.username.value.trim(),description:f.elements.description.value};if(f.elements.password.value)p.password=f.elements.password.value;if(!p.username){toast('نام کاربری الزامی است.','err');return;}return api('updateSupervisorProfile',p,TOKEN).then(function(){if(USER){USER.username=p.username;localStorage.setItem('zv_supervisor_user',JSON.stringify(USER));}toast('پروفایل ذخیره شد.','ok');render();});}
-    if(k==='soon-request'){if(!f.elements.note.value.trim()){toast('شرح درخواست الزامی است.','err');return;}var kind=f.dataset.kind,name=SOON[kind]?SOON[kind].t:'توسعه عمومی';
-      return api('submitSupervisorRecord',{type:'branch_request',title:'درخواست توسعه: '+name,details:f.elements.note.value,groupId:PS.group||'',workerId:'',cardId:'',amount:0},TOKEN).then(function(){
-        var reqs=soonRequests();reqs.unshift({kind:kind,title:name,at:new Date().toISOString()});try{localStorage.setItem('zv_supervisor_soon',JSON.stringify(reqs.slice(0,30)));}catch(x){}
-        closeModal();toast('درخواست ثبت شد.','ok');render();});}
+    if(k==='convert')return api('supervisorConvertOrderToCard',f.dataset.id,f.elements.workerId.value,TOKEN).then(function(r){closeModal();toast(r.message||'کارت ایجاد شد.','ok');render();});
+    if(k==='card-status')return api('updateSupervisorCardStatus',f.dataset.id,f.elements.status.value,TOKEN).then(function(){closeModal();toast('وضعیت ثبت شد.','ok');render();});
+    if(k==='card-assign')return api('assignCardToWorker',f.dataset.id,f.elements.workerId.value,TOKEN).then(function(){closeModal();toast('تخصیص ثبت شد.','ok');render();});
+    if(k==='edit-group'){var p={name:f.elements.name.value,area:f.elements.area.value,groupType:f.elements.groupType.value,description:f.elements.description.value};
+      if(!p.name.trim()){toast('نام گروه الزامی است.','err');return;}
+      return api('updateSupervisorGroup',f.dataset.id,p,TOKEN).then(function(){closeModal();toast('ذخیره شد.','ok');render();});}
+    if(k==='add-member'){var id=f.elements.workerId.value.trim();if(!id){toast('شناسه نیرو الزامی است.','err');return;}
+      return api('addGroupMember',f.dataset.id,id,f.elements.role.value,TOKEN).then(function(){closeModal();toast('عضو افزوده شد.','ok');render();});}
+    if(k==='chat-reply'){var b=f.elements.body.value.trim();if(!b){toast('متن پاسخ الزامی است.','err');return;}
+      if(sub)sub.disabled=true;
+      return api('supervisorCreateConversationReply',f.dataset.id,b,TOKEN).then(function(){toast('ارسال شد.','ok');return chatOpen(f.dataset.id);})
+        .catch(function(x){if(sub)sub.disabled=false;throw x;});}
+    if(k==='msg-team'){
+      var wid=(f.elements.manualId.value||'').trim()||f.elements.workerId.value;
+      if(!wid){toast('گیرنده را انتخاب یا شناسه آن را وارد کنید.','err');return;}
+      var body=f.elements.body.value.trim();if(!body){toast('متن پیام الزامی است.','err');return;}
+      if(sub)sub.disabled=true;
+      return api('supervisorCreateTeamMessage',{workerId:wid,cardId:f.elements.cardId.value,subject:f.elements.subject.value,body:body},TOKEN)
+        .then(function(r){closeModal();toast('پیام ارسال شد.','ok');refreshUnread();go('messages');return chatOpen(r.threadId);})
+        .catch(function(x){if(sub)sub.disabled=false;throw x;});}
+    if(k==='msg-support'){
+      var sb=f.elements.body.value.trim();if(!sb){toast('متن پیام الزامی است.','err');return;}
+      if(sub)sub.disabled=true;
+      return api('supervisorCreateSupportMessage',{subject:f.elements.subject.value,body:sb},TOKEN)
+        .then(function(r){closeModal();toast('پیام به پشتیبانی ارسال شد.','ok');refreshUnread();go('messages');return chatOpen(r.threadId);})
+        .catch(function(x){if(sub)sub.disabled=false;throw x;});}
+    if(k==='dev-new'){
+      var note=f.elements.note.value.trim();if(!note){toast('شرح درخواست الزامی است.','err');return;}
+      var mod=f.elements.module.value,name=SOON[mod]?SOON[mod].t:'پیشنهاد عمومی';
+      if(sub)sub.disabled=true;
+      return api('supervisorSubmitDevRequest',{module:mod,moduleName:name,kind:f.elements.kind.value,priority:f.elements.priority.value,note:note},TOKEN)
+        .then(function(r){closeModal();toast('درخواست ثبت شد · '+r.id,'ok');render();})
+        .catch(function(x){if(sub)sub.disabled=false;throw x;});}
+    if(k==='profile'){var pp={username:f.elements.username.value.trim(),description:f.elements.description.value};
+      if(f.elements.password.value)pp.password=f.elements.password.value;
+      if(!pp.username){toast('نام کاربری الزامی است.','err');return;}
+      return api('updateSupervisorProfile',pp,TOKEN).then(function(){if(USER){USER.username=pp.username;localStorage.setItem('zv_supervisor_user',JSON.stringify(USER));}toast('پروفایل ذخیره شد.','ok');render();});}
   };
-  try{var r=run();if(r&&typeof r.catch==='function')r.catch(function(x){toast(x.message||String(x),'err');});}catch(x){toast(x.message||String(x),'err');}
+  try{var r=run();if(r&&typeof r.catch==='function')r.catch(function(x){toast(x.message||String(x),'err');});}
+  catch(x){toast(x.message||String(x),'err');}
 });
 document.addEventListener('keydown',function(e){
-  if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==='b'){var tg=(e.target&&e.target.tagName||'').toLowerCase();if(tg==='input'||tg==='textarea'||e.target.isContentEditable)return;e.preventDefault();toggleRail();return;}
-  if(e.key==='Escape'){if($$('.zsel.open').length){zClose();return;}closeModal();hideTip();return;}
+  if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==='b'){var tg=(e.target&&e.target.tagName||'').toLowerCase();
+    if(tg==='input'||tg==='textarea'||e.target.isContentEditable)return;e.preventDefault();toggleRail();return;}
+  if(e.key==='Escape'){if($('#jpop').classList.contains('open')){jdClose();return;}
+    if($$('.zsel.open').length){zClose();return;}closeModal();hideTip();return;}
   if(e.key==='Enter'&&$('#loginView').style.display!=='none'&&(e.target.id==='loginUser'||e.target.id==='loginPass'))doLogin();
 });
-document.addEventListener('mouseover',function(e){var el=e.target.closest?e.target.closest('.sidebar .nav-item'):null;if(!el)return;clearTimeout(TIPT);TIPT=setTimeout(function(){showTip(el);},90);});
-document.addEventListener('mouseout',function(e){var el=e.target.closest?e.target.closest('.sidebar .nav-item'):null;if(!el)return;clearTimeout(TIPT);hideTip();});
-window.addEventListener('scroll',hideTip,true);
-window.addEventListener('resize',hideTip);
-/* ═════════ INIT ═════════ */
+document.addEventListener('mouseover',function(e){var el=e.target.closest?e.target.closest('.sidebar .nav-item'):null;
+  if(!el)return;clearTimeout(TIPT);TIPT=setTimeout(function(){showTip(el);},90);});
+document.addEventListener('mouseout',function(e){var el=e.target.closest?e.target.closest('.sidebar .nav-item'):null;
+  if(!el)return;clearTimeout(TIPT);hideTip();});
+window.addEventListener('scroll',function(){hideTip();if($('#jpop').classList.contains('open')&&JD.inp)jdOpen(JD.inp);},true);
+window.addEventListener('resize',function(){hideTip();if($('#jpop').classList.contains('open')&&JD.inp)jdOpen(JD.inp);});
+/* ═════ 19) INIT ═════ */
 (function init(){
   var th=localStorage.getItem('zv_supervisor_theme');if(th)document.documentElement.dataset.theme=th;
   $('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
@@ -905,8 +1075,13 @@ window.addEventListener('resize',hideTip);
   $('#page').innerHTML='<div class="loading"><div class="spinner"></div></div>';
   if(saved){try{USER=JSON.parse(saved);}catch(e){}}
   loadBranding();
-  api('getSupervisorProfile',TOKEN).then(function(p){USER={name:p.name,workerId:p.workerId,username:p.username,branchId:p.branchId,branchName:p.branchName,groupId:p.groupId,avatar:p.avatar};localStorage.setItem('zv_supervisor_user',JSON.stringify(USER));paintUser();go('dashboard');})
-  .catch(function(){if(USER){paintUser();go('dashboard');}else{localStorage.removeItem('zv_supervisor_token');TOKEN='';$('#app').style.display='none';$('#loginView').style.display='grid';}});
+  api('getSupervisorProfile',TOKEN).then(function(p){
+    USER={name:p.name,workerId:p.workerId,username:p.username,branchId:p.branchId,branchName:p.branchName,groupId:p.groupId,avatar:p.avatar};
+    localStorage.setItem('zv_supervisor_user',JSON.stringify(USER));paintUser();refreshUnread();go('dashboard');
+  }).catch(function(){
+    if(USER){paintUser();refreshUnread();go('dashboard');}
+    else{localStorage.removeItem('zv_supervisor_token');TOKEN='';$('#app').style.display='none';$('#loginView').style.display='grid';}
+  });
 })();
 </script>
 </body>
