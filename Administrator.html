@@ -3115,5 +3115,42 @@ if(typeof _load==='function')window.loadData=function(){return _load.apply(this,
 window.ZVDev={open:devModal,page:devPage,view:devDrawer,meta:function(){return META;},filter:FILTER};
 })();
 </script>
+  <script>
+/* ZingoVingo — صندوق «پیام‌های سایت» (کانال PUBLIC_CONTACT) */
+(function(){
+'use strict';
+if(window.__zvSiteInbox)return;window.__zvSiteInbox=true;
+CH_MAP.PUBLIC_CONTACT='siteMessages';
+CH_TITLE.PUBLIC_CONTACT='پیام‌های سایت';
+TITLES.siteMessages=['پیام‌های سایت','فرم تماس با ما و درخواست‌های عمومی'];
+var item={id:'siteMessages',l:'پیام‌های سایت',ic:'headset',bc:'b',badge:function(){return unreadOf('siteMessages');}};
+var idx=-1;
+for(var i=0;i<MENU.length;i++){if(MENU[i].id==='adminSupport'){idx=i+1;break;}}
+if(idx<0){for(var j=0;j<MENU.length;j++){if(MENU[j].sec==='سیستم'){idx=j;break;}}}
+if(idx>=0)MENU.splice(idx,0,item);else MENU.push(item);
+var _meta=window.ticketMeta;
+window.ticketMeta=function(t){
+  if(t.channel!=='PUBLIC_CONTACT')return _meta(t);
+  return esc(t.ownerName||'بازدیدکننده')+' · <span class="ltr">'+esc(t.ownerId||'')+'</span> · '+esc(t.branchName||branchName(t.branchId)||'صندوق مرکزی');
+};
+var _render=window.render;
+window.render=function(){
+  if(PS.page!=='siteMessages')return _render.apply(this,arguments);
+  CH.forEach(function(c){try{c.destroy();}catch(e){}});CH=[];
+  $('#tbTitle').textContent=TITLES.siteMessages[0];
+  $('#tbCrumb').textContent='ZingoVingo · '+TITLES.siteMessages[1];
+  $('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
+  $('#page').innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  return api('admCCMessages','PUBLIC_CONTACT',{},TOKEN).then(function(r){
+    DB.siteMessages=(r&&r.items)||[];
+    $('#page').innerHTML=ticketsPage('PUBLIC_CONTACT');
+    decorate($('#page'));renderNav();paintSideUser();
+    $('#bellDot').hidden=!notifications().some(function(n){return !n.read;});
+  }).catch(function(e){
+    $('#page').innerHTML='<div class="card"><div class="empty"><div class="ei">'+icon('x')+'</div><h4>خطا در بارگذاری</h4><p class="sub">'+esc(e.message)+'</p></div></div>';
+  });
+};
+})();
+</script>
 </body>
 </html>
