@@ -117,11 +117,11 @@ input[type=radio]{accent-color:var(--zv-accent);}
 <nav class="hidden lg:flex items-center gap-7 text-[13px] font-semibold text-slate-300">
 <a href="#services" class="hover:text-white transition">خدمات</a>
 <a href="#features" class="hover:text-white transition">قابلیت‌ها</a>
-<a href="?page=portal" class="hover:text-white transition">پنل مدیریت</a>
+<a href="#CTA" class="hover:text-white transition">شروع همکاری</a>
 <a href="#contact" class="hover:text-white transition">تماس با ما</a>
 </nav>
 <div class="flex items-center gap-2">
-<a href="?page=portal" class="btn btn-primary btn-sm hidden sm:inline-flex">ورود به پنل‌ها</a>
+<a href="Portal.html" class="btn btn-primary btn-sm hidden sm:inline-flex">ورود به پنل‌</a>
 <button id="menuBtn" class="lg:hidden p-2 rounded-[10px] text-white" style="background:rgba(255,255,255,.08);" aria-label="منو">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
 </button>
@@ -130,7 +130,7 @@ input[type=radio]{accent-color:var(--zv-accent);}
 <div id="mobileMenu" class="hidden lg:hidden px-4 pb-4 space-y-1 text-[13px] font-semibold text-slate-300" style="background:var(--zv-navy);">
 <a href="#services" class="block py-2.5 px-3 rounded-lg hover:bg-white/5">خدمات</a>
 <a href="#features" class="block py-2.5 px-3 rounded-lg hover:bg-white/5">قابلیت‌ها</a>
-<a href="?page=portal" class="block py-2.5 px-3 rounded-lg hover:bg-white/5">پنل مدیریت</a>
+<a href="#CTA" class="block py-2.5 px-3 rounded-lg hover:bg-white/5">شروع همکاری</a>
 <a href="#contact" class="block py-2.5 px-3 rounded-lg hover:bg-white/5">تماس با ما</a>
 </div>
 </header>
@@ -141,19 +141,19 @@ input[type=radio]{accent-color:var(--zv-accent);}
 <div class="fade-up">
 <span class="hero-chip inline-flex items-center gap-2 text-[12px] font-bold px-4 py-1.5 rounded-[20px] mb-6">
 <span class="w-2 h-2 rounded-full animate-pulse" style="background:var(--zv-accent);"></span>
-پلتفرم جامع مدیریت خدمات — چابک، مطمئن، سازمانی
+Zingo Vingo — سریع، مطمئن، بی مرز، همراه همیشگی شما
 </span>
 <h1 class="text-white text-3xl sm:text-5xl font-extrabold leading-[1.45] mb-6">
-بستری هوشمند برای
-<span style="color:var(--zv-accent);">ارائه خدمات متنوع</span><br>
-و مدیریت یکپارچه شعب
+پلتفرم هوشمند Zingo 
+<span style="color:var(--zv-accent);">Vingo</span><br>
+ ارائه خدمات و مدیریت یکپارچه   
 </h1>
 <p class="text-slate-300 leading-9 mb-9 text-[14px] sm:text-[15px] max-w-xl">
-<b class="text-white">ZingoVingo</b> با تکیه بر فناوری اطلاعات و ارتباطات دیجیتال، بستر مناسبی جهت ارائه خدمات متنوع از قبیل
-<b class="text-white">خدمات نظافتی</b>، <b class="text-white">حمل و نقل</b>، <b class="text-white">جابه‌جایی اثاثیه</b> و <b class="text-white">توسعه کسب‌وکار</b> فراهم کرده و امکان کنترل شعب، کارمندان، گروه‌ها و ثبت درخواست‌ها را به‌صورت یکپارچه در اختیار شما قرار می‌دهد.
+<b class="text-white">ZingoVingo</b> با تکیه بر فناوری هوشمند و نوین ، بستر مناسبی جهت ارائه خدمات مشتریان و تحولی نوین در توسعه کسب کار درحوضه های مختلف خدماتی نظیر 
+<b class="text-white">خدمات آموزشی</b>،<b class="text-white">خدمات تعمیرات وسرویس های دوره ای</b>،<b class="text-white">خدمات نظافتی</b>، <b class="text-white">حمل و نقل</b>، <b class="text-white">جابه‌جایی اثاثیه</b> و <b class="text-white">توسعه کسب‌وکار</b> و...فراهم کرده و امکان رهگیری درخواست ، مدیریت درخواست ها ، توسعه و افزایش توان اجرایی را به ‌صورت یکپارچه در اختیار شما قرار می‌دهد.
 </p>
 <div class="flex flex-wrap gap-3 mb-12">
-<a href="?page=user" class="btn btn-primary">ثبت درخواست خدمات</a>
+<a href="customerform.html" class="btn btn-primary">ثبت درخواست خدمات</a>
 <a href="#services" class="btn" style="background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.18);">مشاهده خدمات</a>
 </div>
 <div class="grid grid-cols-3 gap-4 max-w-md">
@@ -319,14 +319,18 @@ input[type=radio]{accent-color:var(--zv-accent);}
 </section>
 
 <!-- ==================== CTA ==================== -->
+<section id="CTA" class="py-20">
+<div class="max-w-7xl mx-auto px-4 sm:px-6">
+<div class="text-center mb-14">
+<span class="badge" style="background:rgba(255,107,26,.12);color:var(--zv-accent);">شروع همکاری</span>
 <section class="py-16">
 <div class="max-w-5xl mx-auto px-4 sm:px-6">
 <div class="hero rounded-[14px] p-10 sm:p-14 text-center relative" style="box-shadow:0 20px 50px rgba(11,23,54,.35);">
 <div class="absolute -top-14 -left-14 w-48 h-48 rounded-full" style="background:rgba(255,107,26,.15);filter:blur(10px);"></div>
 <h2 class="text-2xl sm:text-4xl font-extrabold mb-4 text-white relative">آماده‌اید کسب‌وکار خود را متحول کنید؟</h2>
-<p class="text-slate-300 text-[13px] sm:text-[14px] mb-8 max-w-xl mx-auto relative leading-8">همین حالا درخواست خود را ثبت کنید یا برای راه‌اندازی شعبه اختصاصی با کارشناسان ZingoVingo در تماس باشید.</p>
+<p class="text-slate-300 text-[13px] sm:text-[14px] mb-8 max-w-xl mx-auto relative leading-8">همین حالا درخواست همکاری  خود را ثبت کنید یا جهت دریافت مشاوره رایگان با کارشناسان ZingoVingo در تماس باشید.</p>
 <div class="flex flex-wrap justify-center gap-3 relative">
-<a href="?page=user" class="btn btn-primary">ثبت درخواست خدمات</a>
+<a href="JobForm.html" class="btn btn-primary"> ثبت درخواست</a>
 <a href="#contact" class="btn" style="background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.2);">دریافت مشاوره رایگان</a>
 </div>
 </div>
@@ -341,7 +345,7 @@ input[type=radio]{accent-color:var(--zv-accent);}
 <h2 class="section-title mt-4 mb-3">در کنار شما هستیم</h2>
 <div class="accent-line mb-5"></div>
 <p class="text-[13px] leading-8 mb-8" style="color:var(--zv-muted);max-width:480px;">
-فرم روبه‌رو را تکمیل کنید؛ درخواست شما مستقیماً در سامانه ZingoVingo ثبت شده و کارشناسان ما در اسرع وقت با شما تماس می‌گیرند.
+فرم  را تکمیل کنید؛ درخواست شما در سامانه ZingoVingo ثبت شده و کارشناسان ما در اسرع وقت با شما تماس می‌گیرند.
 </p>
 <div class="grid sm:grid-cols-2 gap-4">
 <div class="zv-card zv-card-hover p-5">
@@ -357,7 +361,7 @@ input[type=radio]{accent-color:var(--zv-accent);}
 <div class="zv-card zv-card-hover p-5">
 <div class="icon-tile icon-tile-info mb-3" style="width:42px;height:42px;font-size:18px;">📍</div>
 <div class="font-bold text-[13px] mb-1" style="color:var(--zv-navy);">آدرس</div>
-<div class="text-[12px] leading-6" style="color:var(--zv-muted);">تهران، خیابان ولیعصر، برج فناوری، طبقه ۱۲</div>
+<div class="text-[12px] leading-6" style="color:var(--zv-muted);">  تهران، بلوار صالحی,برج فناوری شریف  </div>
 </div>
 <div class="zv-card zv-card-hover p-5">
 <div class="icon-tile icon-tile-info mb-3" style="width:42px;height:42px;font-size:18px;">🕐</div>
@@ -367,22 +371,30 @@ input[type=radio]{accent-color:var(--zv-accent);}
 </div>
 </div>
 <form id="contactForm" class="zv-card p-7 space-y-4" novalidate>
-<h3 class="font-bold text-[15px]" style="color:var(--zv-navy);">ارسال پیام و ثبت درخواست</h3>
+<h3 class="font-bold text-[15px]" style="color:var(--zv-navy);"> ارسال پیام </h3>
 <div class="grid sm:grid-cols-2 gap-4">
 <div><label class="zv-label">نام و نام خانوادگی *</label><input id="ctName" type="text" class="zv-input" placeholder="نام کامل"></div>
 <div><label class="zv-label">شماره تماس *</label><input id="ctPhone" type="text" class="zv-input num" placeholder="09XXXXXXXXX"></div>
 </div>
-<div><label class="zv-label">نوع خدمت</label>
+<div><label class="zv-label">موضوع</label>
 <select id="ctType" class="zv-select">
-<option>خدمات نظافتی</option>
-<option>حمل و نقل</option>
-<option>جابه‌جایی اثاثیه</option>
-<option>توسعه کسب‌وکار</option>
+<option>انتخاب کنید</option>
+<option>ثبت نام متخصصین</option>
+<option>درخواست شعبه</option>
+<option>پیشنهادات تجاری</option>
+<option>خدمات مشتریان</option>
 </select>
 </div>
-<div><label class="zv-label">شعبه (اختیاری)</label><select id="ctBranch" class="zv-select"></select></div>
-<div><label class="zv-label">پیام شما</label><textarea id="ctMsg" rows="4" class="zv-textarea" style="resize:none;" placeholder="شرح مختصر درخواست..."></textarea></div>
-<button type="submit" class="btn btn-primary w-full">ارسال و ثبت درخواست</button>
+<div><label class="zv-label">اهمیت (اختیاری)</label>
+<select id="ctBranch" class="zv-select">
+<option>انتخاب کنید</option>
+<option>عادی</option>
+<option>مهم</option>
+<option>فوری</option>
+</select>
+</div>
+<div><label class="zv-label">پیام شما</label><textarea id="ctMsg" rows="4" class="zv-textarea" style="resize:none;" placeholder="شرح مختصر پیام..."></textarea></div>
+<button type="submit" class="btn btn-primary w-full"> ثبت و ارسال   </button>
 </form>
 </div>
 </section>
@@ -400,14 +412,14 @@ input[type=radio]{accent-color:var(--zv-accent);}
 </span>
 <span class="zv-logo-word text-xl"><span class="z">Zingo</span><span class="v">Vingo</span></span>
 </div>
-<p class="text-[13px] leading-8 max-w-md" style="color:#8b95ad;">فناوری اطلاعات و ارتباطات دیجیتال — ارائه‌دهنده بستر مناسب جهت خدمات متنوع نظافتی، حمل و نقل، جابه‌جایی اثاثیه و توسعه کسب‌وکار با سیستم مدیریت یکپارچه شعب، کارمندان، گروه‌ها و درخواست‌ها.</p>
+<p class="text-[13px] leading-8 max-w-md" style="color:#8b95ad;">تحولی نوین در فناوری اطلاعات و ارتباطات دیجیتال — ارائه‌دهنده بستر مناسب جهت رشد و توسعه کسب‌وکار با سیستم مدیریت یکپارچه شعب، کارمندان، گروه‌ها و درخواست‌ها.</p>
 </div>
 <div>
 <h4 class="font-bold text-white mb-4 text-[14px]">دسترسی سریع</h4>
 <ul class="space-y-2.5 text-[13px]">
 <li><a href="#services" class="hover:text-[var(--zv-accent)] transition">خدمات</a></li>
 <li><a href="#features" class="hover:text-[var(--zv-accent)] transition">قابلیت‌ها</a></li>
-<li><a href="?page=portal" class="hover:text-[var(--zv-accent)] transition">پنل مدیریت</a></li>
+<li><a href="#CTA" class="hover:text-[var(--zv-accent)] transition">شروع همکاری</a></li>
 </ul>
 </div>
 <div>
@@ -415,12 +427,12 @@ input[type=radio]{accent-color:var(--zv-accent);}
 <ul class="space-y-2.5 text-[13px]">
 <li class="flex items-center gap-2">📞 <span dir="ltr" class="num">021-9100 4567</span></li>
 <li class="flex items-center gap-2">✉️ info@zingovingo.ir</li>
-<li class="flex items-start gap-2 leading-6">📍 تهران، خیابان ولیعصر، برج فناوری، طبقه ۱۲</li>
+<li class="flex items-start gap-2 leading-6">📍 تهران، بلوار صالحی,برج فناوری شریف </li>
 </ul>
 </div>
 </div>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 pt-5 text-center text-[12px]" style="border-top:1px solid rgba(255,255,255,.08);color:#5d6883;">
-© <span id="year" class="num">۱۴۰۵</span> کلیه حقوق برای شرکت فناوری اطلاعات و ارتباطات دیجیتال <b style="color:#8b95ad;">ZingoVingo</b> محفوظ است.
+© <span id="year" class="num">۱۴۰۵</span> کلیه حقوق برای شرکت  آذرخش سرویس پیشگامان نوین  <b style="color:#8b95ad;">ZingoVingo</b> محفوظ است.
 </div>
 </footer>
 
