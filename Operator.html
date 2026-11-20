@@ -75,7 +75,7 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
 .topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;padding:12px 26px;background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .topbar h2{font-size:17px;font-weight:900}.crumb{font-size:11px;color:var(--muted)}.sp{flex:1}
 .ibtn{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--muted)}
-.ibtn:hover{color:var(--brand);border-color:var(--brand)}.menu-btn{display:none}
+.ibtn:hover{color:var(--brand);border-color:var(--brand)}
 .branch-chip{display:flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:11px;background:var(--surface2);font-size:11.5px;font-weight:800;color:var(--brandDeep)}
 #page{padding:24px 26px 60px;max-width:1620px;width:100%;margin:0 auto}
 .ph{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
@@ -223,7 +223,7 @@ html.zv-rail .sidebar .nav-item>span{display:inline}
 html.zv-rail .sidebar .nav-item .bdg{position:static;margin-right:auto;min-width:20px;width:auto;height:20px;padding:0 6px;font-size:10px;box-shadow:none}
 html.zv-rail .sidebar .uchip{flex-direction:row;padding:9px 10px}
 html.zv-rail .sidebar .uchip>div:not(.av){display:block}
-.menu-btn{display:grid}#zvTip{display:none!important}}
+#zvTip{display:none!important}}
 @media(max-width:760px){
 #page{padding:16px 14px 70px}.topbar{padding:10px 14px}.crumb,.branch-chip{display:none}
 .fgrid,.kv,.profile-form{grid-template-columns:1fr}.hero .dchip{display:none}.topbar .btn-p span{display:none}
@@ -262,7 +262,6 @@ html.zv-rail .sidebar .uchip>div:not(.av){display:block}
   <div class="main">
     <header class="topbar">
       <button class="ibtn rail-btn" data-act="rail" title="جمع کردن منو (Ctrl+B)"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9 4v16"/><path class="ra" d="M16.5 9.5 14 12l2.5 2.5"/></svg></button>
-      <button class="ibtn menu-btn" data-act="menu"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
       <div><h2 id="tbTitle">داشبورد</h2><div class="crumb" id="tbCrumb"></div></div>
       <div class="branch-chip" id="branchChip"></div>
       <div class="sp"></div>
@@ -720,6 +719,8 @@ function isMobile(){return window.matchMedia&&window.matchMedia('(max-width:1120
 function applyRail(on){document.documentElement.classList.toggle('zv-rail',!!on);try{localStorage.setItem(RKEY,on?'1':'0');}catch(e){}if(!on)hideTip();}
 function toggleRail(){if(isMobile()){var s=$('#sidebar'),sc=$('#scrim'),o=!s.classList.contains('open');s.classList.toggle('open',o);sc.classList.toggle('show',o);return;}
 applyRail(!document.documentElement.classList.contains('zv-rail'));}
+function syncRailTitle(){var b=$('.rail-btn');if(!b)return;
+b.title=isMobile()?($('#sidebar').classList.contains('open')?'بستن منو':'باز کردن منو'):(document.documentElement.classList.contains('zv-rail')?'باز کردن کامل منو (Ctrl+B)':'جمع کردن منو (Ctrl+B)');}
 function showTip(el){if(!document.documentElement.classList.contains('zv-rail')||isMobile()||!el)return;
 var sp=el.querySelector('span'),l=sp?sp.textContent:(el.title||'');l=String(l||'').trim();if(!l)return;
 if(!TIP){TIP=document.createElement('div');TIP.id='zvTip';document.body.appendChild(TIP);}
@@ -731,7 +732,6 @@ function hideTip(){if(TIP)TIP.classList.remove('on');}
 /* ═══ 16) ACTIONS ═══ */
 var ACT={
 'login':doLogin,'logout':doLogout,'rail':toggleRail,'theme':toggleTheme,
-'menu':function(){var s=$('#sidebar'),sc=$('#scrim'),o=!s.classList.contains('open');s.classList.toggle('open',o);sc.classList.toggle('show',o);},
 'scrim':function(){$('#sidebar').classList.remove('open');$('#scrim').classList.remove('show');},
 'mclose':closeModal,'go':function(d){go(d.page);},
 'refresh':function(){render();refreshUnread();toast('بروزرسانی شد.','ok');},
@@ -831,6 +831,8 @@ localStorage.setItem('zv_operator_user',JSON.stringify(USER));paintUser();refres
 if(USER){paintUser();refreshUnread();go('dashboard');}
 else{localStorage.removeItem('zv_operator_token');TOKEN='';$('#app').style.display='none';$('#loginView').style.display='grid';}});
 })();
+  function syncRailTitle(){var b=$('.rail-btn');if(!b)return;
+b.title=isMobile()?($('#sidebar').classList.contains('open')?'بستن منو':'باز کردن منو'):(document.documentElement.classList.contains('zv-rail')?'باز کردن کامل منو (Ctrl+B)':'جمع کردن منو (Ctrl+B)');}
 </script>
 </body>
 </html>
