@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<base target="_top">
+<title>ZingoVingo | پلتفرم هوشمند خدمات</title>
+<meta name="description" content="ZingoVingo — بستر یکپارچه ثبت، مسیریابی و اجرای خدمات نظافتی، حمل‌ونقل، جابه‌جایی اثاثیه، تعمیرات و توسعه کسب‌وکار.">
+<meta name="zv-api-url" content="https://script.google.com/macros/s/AKfycbwjFAiqfPiLijKT5sF63GQocU7tWvrlfFbZCY9CQ39_R_tMT9xq_dZFVSkR-mCaPhgh/exec">
+<link id="zvFavicon" rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet">
+<script>
+window.addEventListener('error',function(ev){var t=ev&&ev.target;if(t&&t!==window&&t.tagName&&/^(SCRIPT|LINK|IMG|SOURCE)$/.test(String(t.tagName).toUpperCase())){console.warn('[ZV] asset:',t.src||t.href);return;}},true);
+window.addEventListener('unhandledrejection',function(ev){console.warn('[ZV] rejected:',ev&&ev.reason);});
+</script>
+<script src="zv-compat.js" onerror="console.warn('[ZV] compat')"></script>
+<script src="zv-api.js" onerror="console.warn('[ZV] api')"></script>
+<style>
+:root{--navy:#0B1736;--brand:#FF6B1A;--brand2:#FF8A3D;--brandDeep:#E4570B;--blue:#2E63E7;--violet:#7C4DFF;--teal:#0FA3A3;--green:#0E9F6E;--amber:#D97706;--red:#E02D3C;--pink:#E0447C;--slate:#64748B;--bg:#F3F5FB;--surface:#fff;--surface2:#F6F8FD;--ink:#101A33;--muted:#5C6784;--line:#E2E7F3;--line2:#D3DAEC;--sh:0 6px 22px rgba(11,23,54,.07);--sh2:0 18px 46px rgba(11,23,54,.14);--r:16px;--tr:190ms ease;--grad:linear-gradient(135deg,#FF6B1A,#FF8A3D 55%,#FFB25E);--hero:linear-gradient(120deg,#0B1736,#16295B 40%,#3B2E7E 74%,#7C4DFF 128%);--glass:rgba(148,163,184,.16);--glassBrd:rgba(100,116,139,.28);--hdr:rgba(255,255,255,.82)}
+[data-theme=dark]{--bg:#070D1F;--surface:#0E1830;--surface2:#121F3D;--ink:#E9EEFC;--muted:#93A0C2;--line:#1D2B4F;--line2:#27375F;--sh:0 8px 26px rgba(0,0,0,.42);--sh2:0 20px 52px rgba(0,0,0,.58);--glass:rgba(203,213,225,.11);--glassBrd:rgba(148,163,184,.26);--hdr:rgba(14,24,48,.82)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;scroll-padding-top:86px}
+body{font-family:'Vazirmatn',Tahoma,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.9;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(700px 420px at 92% -6%,rgba(255,107,26,.13),transparent 60%),radial-gradient(640px 460px at -8% 106%,rgba(46,99,231,.12),transparent 60%),radial-gradient(520px 380px at 55% 118%,rgba(124,77,255,.08),transparent 60%)}
+a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit;color:inherit}img{max-width:100%}
+:focus-visible{outline:3px solid rgba(255,107,26,.45);outline-offset:2px;border-radius:8px}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--line2),var(--slate));border-radius:9px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--brand2),var(--brandDeep))}
+svg.ic{width:20px;height:20px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}.num{font-variant-numeric:tabular-nums}
+.brand-word{font-family:'Nunito','Vazirmatn',sans-serif!important;font-weight:900!important;letter-spacing:-.5px}
+.brand-word span{color:var(--brand2)}
+.hero-brand{font-family:'Nunito','Vazirmatn',sans-serif!important;font-weight:900!important;letter-spacing:-.6px;color:#fff;white-space:nowrap;display:inline-block;line-height:1.25}
+.hero-brand span{color:#FFB25E}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:11px 22px;border-radius:12px;border:1px solid transparent;font-size:13px;font-weight:800;cursor:pointer;transition:all var(--tr);white-space:nowrap}
+.btn:hover{transform:translateY(-2px)}.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-p{background:var(--grad);color:#fff;box-shadow:0 8px 22px rgba(255,107,26,.34)}
+.btn-v{background:linear-gradient(135deg,#7C4DFF,#9E7BFF);color:#fff;box-shadow:0 8px 22px rgba(124,77,255,.3)}
+.btn-s{background:var(--surface2);border-color:var(--line);color:var(--ink)}.btn-s:hover{border-color:var(--brand);color:var(--brandDeep)}
+.btn-g{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.24);color:#fff}
+.btn-sm{min-height:36px;padding:7px 15px;font-size:12px}
+.ibtn{width:40px;height:40px;border-radius:11px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--muted);transition:all var(--tr)}
+.ibtn:hover{color:var(--brand);border-color:var(--brand)}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:20px;font-size:11.5px;font-weight:800}
+.pill:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.p-brand{background:rgba(255,107,26,.13);color:var(--brandDeep)}.p-blue{background:rgba(46,99,231,.12);color:var(--blue)}
+.p-teal{background:rgba(15,163,163,.13);color:var(--teal)}.p-violet{background:rgba(124,77,255,.12);color:var(--violet)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:22px;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr)}
+.card.hov:hover{transform:translateY(-4px);box-shadow:var(--sh2);border-color:var(--line2)}
+.hdr{position:fixed;top:0;left:0;right:0;z-index:80;background:var(--hdr);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);transition:box-shadow var(--tr)}
+.hdr.sc{box-shadow:0 8px 26px rgba(11,23,54,.09)}
+.hdr-in{display:flex;align-items:center;gap:14px;height:70px}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.mark{width:42px;height:42px;flex:0 0 42px;border-radius:13px;background:var(--grad);display:grid;place-items:center;color:#fff;box-shadow:0 6px 18px rgba(255,107,26,.4);overflow:hidden}
+.mark.zv-logo{background:transparent!important;box-shadow:none!important}.mark img{width:100%;height:100%;object-fit:contain}
+.brand b{font-size:20px;display:block;line-height:1.3}.brand small{display:block;font-size:10px;color:var(--muted);line-height:1.4}
+.nav{display:flex;align-items:center;gap:6px;margin-inline-start:14px}
+.nav a{padding:8px 13px;border-radius:10px;font-size:12.5px;font-weight:700;color:var(--muted);transition:all var(--tr)}
+.nav a:hover,.nav a.on{color:var(--brandDeep);background:rgba(255,107,26,.09)}
+.sp{flex:1}.hdr-acts{display:flex;align-items:center;gap:8px}.menu-btn{display:none}
+.mmenu{display:none;border-top:1px solid var(--line);padding:10px 20px 16px;background:var(--surface)}.mmenu.open{display:block}
+.mmenu a{display:block;padding:11px 13px;border-radius:10px;font-size:13px;font-weight:700;color:var(--muted)}
+.mmenu a:hover{background:var(--surface2);color:var(--brandDeep)}
+.hero{background:var(--hero);color:#fff;position:relative;overflow:hidden;padding:118px 0 74px}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(460px 240px at 88% 14%,rgba(255,107,26,.42),transparent 60%),radial-gradient(340px 220px at 6% 112%,rgba(15,163,163,.32),transparent 60%)}
+.hero:after{content:"";position:absolute;inset:0;opacity:.16;background-image:radial-gradient(rgba(255,255,255,.85) 1px,transparent 1px);background-size:24px 24px}
+.hero>*{position:relative;z-index:1}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:46px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.24);padding:7px 16px;border-radius:22px;font-size:11.5px;font-weight:800;margin-bottom:20px}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--brand2);animation:blip 1.8s ease-in-out infinite}
+@keyframes blip{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.75)}}
+.hero h1{font-size:clamp(25px,4vw,42px);font-weight:900;line-height:1.6;margin-bottom:16px}
+.hero p{color:#D3DCF5;font-size:14px;line-height:2.1;max-width:600px;margin-bottom:26px}.hero p b{color:#fff}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:520px}
+.stat{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:15px 12px;text-align:center}
+.stat b{display:block;font-size:24px;font-weight:900;font-variant-numeric:tabular-nums}
+.stat.a b{color:var(--brand2)}.stat small{display:block;font-size:10.5px;color:#B9C6E6;margin-top:3px}
+.hero-art{position:relative}
+.float-a{animation:fl 5s ease-in-out infinite}.float-b{animation:fl 4.2s ease-in-out infinite .7s}.float-c{animation:fl 3.6s ease-in-out infinite 1.4s}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.sec{padding:76px 0}.sec.alt{background:var(--surface);border-block:1px solid var(--line)}
+.sec-head{text-align:center;max-width:620px;margin:0 auto 44px}
+.sec-head h2{font-size:clamp(21px,3vw,30px);font-weight:900;margin:14px 0 12px}
+.line{width:58px;height:4px;border-radius:4px;background:var(--grad);margin:0 auto 14px}
+.sec-head p{font-size:13px;color:var(--muted);line-height:2}
+.grid{display:grid;gap:18px}.g4{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}.g3{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.sic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin-bottom:15px}
+.svc h3,.feat h3{font-size:15.5px;font-weight:900;margin-bottom:8px}
+.svc p,.feat p{font-size:12.5px;color:var(--muted);line-height:2}
+.svc .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:13px;border-top:1px dashed var(--line);font-size:11px;color:var(--muted)}
+.svc .go{display:inline-flex;align-items:center;gap:6px;margin-top:13px;font-size:12px;font-weight:800;color:var(--brandDeep)}.svc .go:hover{gap:10px}
+.feat .sic{width:46px;height:46px;border-radius:12px;margin-bottom:13px}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;counter-reset:s}
+.step{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px 20px 20px;box-shadow:var(--sh)}
+.step:before{counter-increment:s;content:counter(s);position:absolute;top:-16px;right:20px;width:34px;height:34px;border-radius:11px;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:900;font-size:14px;box-shadow:0 6px 16px rgba(255,107,26,.35)}
+.step h4{font-size:14px;font-weight:900;margin:8px 0 7px}.step p{font-size:12px;color:var(--muted);line-height:2}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.role{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:13px 15px;font-size:12.5px;font-weight:800;box-shadow:var(--sh);transition:all var(--tr)}
+.role:hover{transform:translateY(-3px);border-color:var(--brand);color:var(--brandDeep)}
+.role .ri{width:32px;height:32px;flex:0 0 32px;border-radius:10px;display:grid;place-items:center;background:rgba(255,107,26,.12);color:var(--brandDeep)}
+.cta{background:var(--hero);color:#fff;border-radius:22px;padding:46px 32px;text-align:center;position:relative;overflow:hidden;box-shadow:var(--sh2)}
+.cta:before{content:"";position:absolute;inset:0;background:radial-gradient(420px 220px at 86% 12%,rgba(255,107,26,.42),transparent 60%)}
+.cta:after{content:"";position:absolute;inset:0;opacity:.15;background-image:radial-gradient(rgba(255,255,255,.85) 1px,transparent 1px);background-size:22px 22px}
+.cta>*{position:relative;z-index:1}.cta h2{font-size:clamp(20px,3vw,30px);font-weight:900;margin-bottom:12px}
+.cta p{color:#D3DCF5;font-size:13px;max-width:620px;margin:0 auto 24px;line-height:2.1}
+.cgrid{display:grid;grid-template-columns:1fr 1.05fr;gap:34px;align-items:start}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+.info{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--sh)}
+.info .ii{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;margin-bottom:10px}
+.info b{display:block;font-size:12.5px;margin-bottom:4px}.info span{font-size:12px;color:var(--muted);line-height:1.9;word-break:break-word}
+.form{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--sh2)}
+.form h3{font-size:16px;font-weight:900;margin-bottom:6px}.form .fh{font-size:11.5px;color:var(--muted);margin-bottom:18px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field.full{grid-column:1/-1}
+.field label{font-size:11.5px;font-weight:800;color:var(--muted)}.req{color:var(--red)}
+.field input,.field select,.field textarea{min-height:44px;padding:11px 13px;border:1px solid var(--glassBrd);border-radius:11px;background:var(--glass);backdrop-filter:blur(10px);font-size:13px;width:100%;transition:all var(--tr)}
+.field textarea{min-height:110px;resize:vertical}
+.field select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(0% + 16px) 19px,calc(0% + 21px) 19px;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.field select option{background:#111A30;color:#fff}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px rgba(255,107,26,.15)}
+.field select:disabled{opacity:.6;cursor:not-allowed}
+.route{grid-column:1/-1;font-size:11.5px;line-height:1.9;color:var(--muted);background:var(--surface2);border:1px dashed var(--line2);border-radius:11px;padding:9px 12px;display:none}
+.route.show{display:block}.route b{color:var(--brandDeep)}.route.warn{border-color:rgba(217,119,6,.5);color:var(--amber)}
+.alert{display:none;align-items:flex-start;gap:10px;padding:13px 15px;border-radius:12px;font-size:12.5px;line-height:1.9;margin-bottom:16px;border-right:4px solid transparent}
+.alert.show{display:flex}.alert.ok{background:rgba(14,159,110,.1);color:var(--green);border-right-color:var(--green)}
+.alert.err{background:rgba(224,45,60,.1);color:var(--red);border-right-color:var(--red)}
+.ft{background:linear-gradient(180deg,#0A1531,#0B1736 45%,#1A1440);color:#B9C4DE;border-top:3px solid var(--brand);padding:52px 0 22px}
+.ft-grid{display:grid;grid-template-columns:1.6fr 1fr 1.2fr;gap:34px}
+.ft .brand b{color:#fff}.ft p{font-size:12.5px;color:#93A0C2;line-height:2.1;margin-top:14px;max-width:420px}
+.ft h4{color:#fff;font-size:13.5px;font-weight:900;margin-bottom:14px}
+.ft ul{list-style:none;display:flex;flex-direction:column;gap:9px;font-size:12.5px}
+.ft ul a:hover{color:var(--brand2)}.ft li{display:flex;align-items:flex-start;gap:8px;line-height:1.9}
+.ft-bot{border-top:1px solid rgba(255,255,255,.09);margin-top:32px;padding-top:18px;text-align:center;font-size:11.5px;color:#7C89B4}
+.ft-bot b{color:#B9C4DE}
+#toasts{position:fixed;bottom:18px;left:18px;z-index:200;display:flex;flex-direction:column-reverse;gap:9px;max-width:min(400px,90vw)}
+.toast{display:flex;align-items:center;gap:10px;background:var(--navy);color:#fff;padding:13px 17px;border-radius:13px;font-size:12.5px;box-shadow:var(--sh2);border-right:4px solid var(--blue);animation:tin .3s ease both}
+.toast.ok{border-right-color:var(--green)}.toast.err{border-right-color:var(--red)}
+@keyframes tin{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+#toTop{position:fixed;bottom:20px;right:20px;width:46px;height:46px;border-radius:13px;background:var(--grad);color:#fff;border:0;cursor:pointer;display:grid;place-items:center;opacity:0;pointer-events:none;transition:all .3s;z-index:90;box-shadow:0 10px 26px rgba(255,107,26,.4)}
+#toTop.show{opacity:1;pointer-events:auto}#toTop:hover{transform:translateY(-3px)}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}.reveal.in{opacity:1;transform:none}
+.skel{height:150px;border-radius:var(--r);background:linear-gradient(90deg,var(--surface2),var(--line),var(--surface2));background-size:200% 100%;animation:sk 1.3s linear infinite;border:1px solid var(--line)}
+@keyframes sk{from{background-position:200% 0}to{background-position:-200% 0}}
+@media(max-width:1000px){.hero-grid,.cgrid,.ft-grid{grid-template-columns:1fr}.hero-art{order:-1;max-width:460px;margin:0 auto}.nav{display:none}.menu-btn{display:grid}.hero{padding:104px 0 60px}}
+@media(max-width:640px){.wrap{padding:0 16px}.sec{padding:56px 0}.brand small{display:none}.brand b{font-size:17px}.hdr-acts .btn-p span{display:none}.stats{gap:8px}.stat{padding:12px 8px}.stat b{font-size:19px}.fgrid,.info-grid{grid-template-columns:1fr}.cta{padding:32px 20px}.hero p{font-size:13px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<header class="hdr" id="hdr">
+  <div class="wrap hdr-in">
+    <a href="#top" class="brand" aria-label="ZingoVingo">
+      <span class="mark" id="hdrMark"><svg class="ic" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg></span>
+      <span><b class="brand-word" id="brandWord">Zingo<span>Vingo</span></b><small>پلتفرم هوشمند خدمات</small></span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="#services">خدمات</a><a href="#features">قابلیت‌ها</a><a href="#flow">فرآیند کار</a><a href="#panels">پنل‌ها</a><a href="#contact">تماس</a>
+    </nav>
+    <div class="sp"></div>
+    <div class="hdr-acts">
+      <button class="ibtn" id="themeBtn" data-act="theme" title="تغییر تم" aria-label="تغییر تم"></button>
+      <a href="Portal.html" class="btn btn-p btn-sm"><svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg><span>ورود به پنل‌ها</span></a>
+      <button class="ibtn menu-btn" data-act="menu" aria-label="منو" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    </div>
+  </div>
+  <div class="mmenu" id="mmenu">
+    <a href="#services">خدمات</a><a href="#features">قابلیت‌ها</a><a href="#flow">فرآیند کار</a><a href="#panels">پنل‌ها</a><a href="#CTA">شروع همکاری</a><a href="#contact">تماس با ما</a>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="chip"><i></i> سریع، مطمئن، بی‌مرز — همراه همیشگی شما</span>
+      <h1>پلتفرم هوشمند <span class="hero-brand">Zingo<span>Vingo</span></span><br>ارائه خدمات و مدیریت یکپارچه</h1>
+      <p><b>ZingoVingo</b> با تکیه بر فناوری نوین، بستری یکپارچه برای ثبت، مسیریابی و اجرای خدمات فراهم کرده است: <b>خدمات نظافتی</b>، <b>حمل‌ونقل</b>، <b>جابه‌جایی اثاثیه</b>، <b>تعمیرات و سرویس‌های دوره‌ای</b>، <b>خدمات آموزشی</b> و <b>توسعه کسب‌وکار</b> — همراه با رهگیری لحظه‌ای درخواست و گزارش‌های مدیریتی.</p>
+      <div class="acts">
+        <a href="customerform.html" class="btn btn-p"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M12 5v14M5 12h14"/></svg> ثبت درخواست خدمات</a>
+        <a href="#services" class="btn btn-g">مشاهده خدمات</a>
+        <a href="JobForm.html" class="btn btn-g">درخواست همکاری</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b class="num" data-counter="120" data-key="branches">۰</b><small>شعبه فعال</small></div>
+        <div class="stat a"><b class="num" data-counter="4500" data-key="orders">۰</b><small>درخواست موفق</small></div>
+        <div class="stat"><b class="num" data-counter="980" data-key="workers">۰</b><small>نیروی متخصص</small></div>
+      </div>
+    </div>
+    <div class="hero-art">
+      <svg viewBox="0 0 520 460" role="img" aria-label="نمای داشبورد ZingoVingo" style="width:100%;filter:drop-shadow(0 24px 46px rgba(3,7,20,.45))">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#16264f"/><stop offset="1" stop-color="#0B1736"/></linearGradient>
+          <linearGradient id="g2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF6B1A"/><stop offset="1" stop-color="#FFB25E"/></linearGradient>
+          <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7C4DFF"/><stop offset="1" stop-color="#2E63E7"/></linearGradient>
+        </defs>
+        <rect x="34" y="52" width="212" height="374" rx="26" fill="url(#g1)" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
+        <rect x="46" y="80" width="188" height="318" rx="15" fill="#fff"/>
+        <rect x="112" y="62" width="56" height="8" rx="4" fill="#2a3a63"/>
+        <rect x="60" y="96" width="92" height="12" rx="6" fill="#0B1736"/>
+        <rect x="164" y="96" width="56" height="12" rx="6" fill="url(#g2)"/>
+        <rect x="60" y="120" width="160" height="7" rx="3.5" fill="#E2E7F3"/>
+        <rect x="60" y="140" width="160" height="54" rx="12" fill="#F6F8FD"/>
+        <circle cx="84" cy="167" r="13" fill="#FF6B1A"/><rect x="106" y="157" width="86" height="7" rx="3.5" fill="#101A33"/><rect x="106" y="171" width="58" height="6" rx="3" fill="#93A0C2"/>
+        <rect x="60" y="204" width="160" height="54" rx="12" fill="#EDF2FF"/>
+        <circle cx="84" cy="231" r="13" fill="#2E63E7"/><rect x="106" y="221" width="74" height="7" rx="3.5" fill="#101A33"/><rect x="106" y="235" width="94" height="6" rx="3" fill="#93A0C2"/>
+        <rect x="60" y="268" width="160" height="54" rx="12" fill="#E8F7F1"/>
+        <circle cx="84" cy="295" r="13" fill="#0E9F6E"/><rect x="106" y="285" width="88" height="7" rx="3.5" fill="#101A33"/><rect x="106" y="299" width="62" height="6" rx="3" fill="#93A0C2"/>
+        <rect x="60" y="336" width="160" height="42" rx="11" fill="url(#g2)"/><rect x="98" y="353" width="84" height="8" rx="4" fill="#fff"/>
+        <g class="float-a">
+          <rect x="286" y="62" width="196" height="92" rx="15" fill="#fff" stroke="#E2E7F3" stroke-width="2"/>
+          <circle cx="320" cy="94" r="17" fill="#E8F7F1"/><path d="M312 94l6 6 10-11" stroke="#0E9F6E" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="348" y="84" width="106" height="8" rx="4" fill="#0B1736"/><rect x="348" y="100" width="68" height="7" rx="3.5" fill="#E2E7F3"/>
+          <rect x="302" y="126" width="164" height="7" rx="3.5" fill="#F3F5FB"/><rect x="302" y="126" width="106" height="7" rx="3.5" fill="#FF6B1A"/>
+        </g>
+        <g class="float-b">
+          <rect x="296" y="180" width="196" height="92" rx="15" fill="#fff" stroke="#E2E7F3" stroke-width="2"/>
+          <circle cx="330" cy="212" r="17" fill="#FFF3E4"/><path d="M322 212h6l3-8 4 16 3-8h6" stroke="#D97706" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="358" y="202" width="106" height="8" rx="4" fill="#0B1736"/><rect x="358" y="218" width="58" height="7" rx="3.5" fill="#E2E7F3"/>
+          <rect x="312" y="244" width="22" height="12" rx="3" fill="#2E63E7"/><rect x="340" y="236" width="22" height="20" rx="3" fill="#FF6B1A"/><rect x="368" y="242" width="22" height="14" rx="3" fill="#0FA3A3"/><rect x="396" y="232" width="22" height="24" rx="3" fill="#0E9F6E"/><rect x="424" y="240" width="22" height="16" rx="3" fill="#7C4DFF"/>
+        </g>
+        <g class="float-c">
+          <rect x="286" y="298" width="196" height="104" rx="15" fill="url(#g3)"/>
+          <circle cx="326" cy="338" r="19" fill="rgba(255,255,255,.18)"/><path d="M317 343a9 9 0 0118 0M326 331a5 5 0 100-10 5 5 0 000 10z" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <rect x="356" y="324" width="100" height="8" rx="4" fill="#fff"/><rect x="356" y="340" width="66" height="7" rx="3.5" fill="rgba(255,255,255,.45)"/>
+          <circle cx="310" cy="378" r="11" fill="#FF6B1A"/><circle cx="328" cy="378" r="11" fill="rgba(255,255,255,.75)"/><circle cx="346" cy="378" r="11" fill="rgba(255,255,255,.35)"/>
+          <rect x="366" y="371" width="90" height="14" rx="7" fill="url(#g2)"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt" id="services">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="pill p-blue">خدمات ما</span>
+      <h2>خدمات متنوع و حرفه‌ای <span class="brand-word" style="font-size:.9em">Zingo<span>Vingo</span></span></h2>
+      <div class="line"></div>
+      <p>کاتالوگ خدمات به‌صورت زنده از سامانه خوانده می‌شود؛ نرخ‌ها و واحدها همان مقادیری هستند که در موتور قیمت‌گذاری ثبت شده‌اند.</p>
+    </div>
+    <div class="grid g4" id="svcGrid"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+  </div>
+</section>
+
+<section class="sec" id="features">
+  <div class="wrap">
+    <div class="sec-head"><span class="pill p-brand">قابلیت‌های پلتفرم</span><h2>مدیریت یکپارچه و سازمانی</h2><div class="line"></div>
+      <p>از ساختار شعب و تیم‌ها تا اجرای خدمت و گزارش مالی — همه در یک سامانه با سطح دسترسی مشخص برای هر نقش.</p></div>
+    <div class="grid g3" id="featGrid"></div>
+  </div>
+</section>
+
+<section class="sec alt" id="flow">
+  <div class="wrap">
+    <div class="sec-head"><span class="pill p-teal">فرآیند کار</span><h2>از ثبت درخواست تا اجرای خدمت</h2><div class="line"></div>
+      <p>مسیر هر درخواست در سامانه شفاف و قابل رهگیری است؛ هر گام مسئول و زمان مشخص دارد.</p></div>
+    <div class="flow" id="flowGrid"></div>
+  </div>
+</section>
+
+<section class="sec" id="panels">
+  <div class="wrap">
+    <div class="sec-head"><span class="pill p-violet">پنل‌های تخصصی</span><h2>برای هر نقش، یک فضای کاری اختصاصی</h2><div class="line"></div>
+      <p>ورود از درگاه یکپارچه انجام می‌شود؛ سامانه بر اساس نقش سازمانی، پنل مناسب را باز می‌کند.</p></div>
+    <div class="roles" id="roleGrid"></div>
+    <div style="text-align:center;margin-top:26px"><a href="Portal.html" class="btn btn-v"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> ورود به درگاه نقش‌ها</a></div>
+  </div>
+</section>
+
+<section class="sec" id="CTA">
+  <div class="wrap">
+    <div class="cta">
+      <h2>آماده‌اید کسب‌وکار خود را متحول کنید؟</h2>
+      <p>درخواست همکاری خود را ثبت کنید یا برای دریافت مشاوره رایگان با کارشناسان ZingoVingo در تماس باشید. تیم ما مسیر راه‌اندازی شعبه، جذب نیرو و اتصال به سامانه را همراه شما طی می‌کند.</p>
+      <div class="acts" style="justify-content:center;margin:0">
+        <a href="JobForm.html" class="btn btn-p"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M15 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg> ثبت درخواست همکاری</a>
+        <a href="#contact" class="btn btn-g">دریافت مشاوره رایگان</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt" id="contact">
+  <div class="wrap cgrid">
+    <div>
+      <span class="pill p-blue">تماس با ما</span>
+      <h2 style="font-size:clamp(21px,3vw,30px);font-weight:900;margin:14px 0 12px">در کنار شما هستیم</h2>
+      <div class="line" style="margin:0 0 16px"></div>
+      <p style="font-size:13px;color:var(--muted);line-height:2.1;max-width:480px">فرم را تکمیل کنید؛ پیام شما با شماره تیکت در صندوق «پیام‌های سایت» پنل مدیریت ثبت و به نزدیک‌ترین شعبه استان/شهر شما مسیریابی می‌شود. برای درخواست همکاری نیروها از فرم اختصاصی «درخواست همکاری» استفاده کنید.</p>
+      <div class="info-grid">
+        <div class="info"><span class="ii" style="background:rgba(11,23,54,.1);color:var(--navy)"><svg class="ic" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></span><b>تلفن تماس</b><span class="num" dir="ltr" style="display:block;text-align:right">021-9100 4567</span></div>
+        <div class="info"><span class="ii" style="background:rgba(255,107,26,.13);color:var(--brandDeep)"><svg class="ic" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg></span><b>ایمیل</b><span dir="ltr" style="display:block;text-align:right">info@zingovingo.ir</span></div>
+        <div class="info"><span class="ii" style="background:rgba(46,99,231,.12);color:var(--blue)"><svg class="ic" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></span><b>آدرس</b><span>تهران، بلوار صالحی، برج فناوری شریف</span></div>
+        <div class="info"><span class="ii" style="background:rgba(15,163,163,.13);color:var(--teal)"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></span><b>ساعات پاسخ‌گویی</b><span>شنبه تا چهارشنبه — ۹ تا ۱۷</span></div>
+      </div>
+    </div>
+    <form class="form" id="contactForm" novalidate>
+      <h3>ارسال پیام</h3>
+      <div class="fh">فیلدهای ستاره‌دار الزامی هستند. استان و شهر برای مسیریابی پیام به شعبه استفاده می‌شود.</div>
+      <div class="alert" id="ctAlert"></div>
+      <div class="fgrid">
+        <div class="field"><label>نام و نام خانوادگی <span class="req">*</span></label><input id="ctName" autocomplete="name" placeholder="نام کامل"></div>
+        <div class="field"><label>شماره تماس <span class="req">*</span></label><input id="ctPhone" inputmode="tel" autocomplete="tel" dir="ltr" style="text-align:right" placeholder="09XXXXXXXXX"></div>
+        <div class="field"><label>استان <span class="req">*</span></label><select id="ctProvince"><option value="">در حال بارگذاری…</option></select></div>
+        <div class="field"><label>شهر <span class="req">*</span></label><select id="ctCity" disabled><option value="">ابتدا استان را انتخاب کنید</option></select></div>
+        <div class="route" id="ctRoute"></div>
+        <div class="field"><label>موضوع</label><select id="ctSubject"><option>خدمات مشتریان</option><option>ثبت‌نام متخصصین</option><option>درخواست شعبه</option><option>پیشنهادات تجاری</option><option>سایر</option></select></div>
+        <div class="field"><label>اهمیت</label><select id="ctPriority"><option>عادی</option><option>مهم</option><option>فوری</option></select></div>
+        <div class="field full"><label>ایمیل (اختیاری)</label><input id="ctEmail" type="email" autocomplete="email" dir="ltr" style="text-align:right" placeholder="name@example.com"></div>
+        <div class="field full"><label>پیام شما <span class="req">*</span></label><textarea id="ctBody" placeholder="شرح مختصر درخواست یا پیام…"></textarea></div>
+      </div>
+      <button type="submit" class="btn btn-p" id="ctBtn" style="width:100%;margin-top:16px"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg> ثبت و ارسال پیام</button>
+    </form>
+  </div>
+</section>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-grid">
+      <div>
+        <div class="brand">
+          <span class="mark" id="ftMark"><svg class="ic" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg></span>
+          <span><b class="brand-word" id="brandWord2">Zingo<span>Vingo</span></b><small style="color:#8E9BC4">پلتفرم هوشمند خدمات</small></span>
+        </div>
+        <p>تحولی نوین در فناوری اطلاعات و ارتباطات دیجیتال — ارائه‌دهنده بستر رشد و توسعه کسب‌وکار با سیستم مدیریت یکپارچه شعب، کارمندان، گروه‌ها، نیروها و درخواست‌ها.</p>
+      </div>
+      <div><h4>دسترسی سریع</h4><ul>
+        <li><a href="#services">خدمات</a></li><li><a href="#features">قابلیت‌ها</a></li><li><a href="#flow">فرآیند کار</a></li>
+        <li><a href="#panels">پنل‌ها</a></li><li><a href="customerform.html">ثبت درخواست خدمات</a></li><li><a href="JobForm.html">درخواست همکاری</a></li></ul></div>
+      <div><h4>تماس با ما</h4><ul>
+        <li><svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px;margin-top:4px"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span class="num" dir="ltr">021-9100 4567</span></li>
+        <li><svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px;margin-top:4px"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg><span dir="ltr">info@zingovingo.ir</span></li>
+        <li><svg class="ic" viewBox="0 0 24 24" style="width:15px;height:15px;margin-top:4px"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg><span>تهران، بلوار صالحی، برج فناوری شریف</span></li></ul></div>
+    </div>
+    <div class="ft-bot">© <span class="num" id="year">۱۴۰۵</span> کلیه حقوق برای شرکت <b>آذرخش سرویس پیشگامان نوین</b> — <b class="brand-word" style="font-size:12.5px">Zingo<span>Vingo</span></b> محفوظ است.</div>
+  </div>
+</footer>
+
+<div id="toasts"></div>
+<button id="toTop" data-act="top" title="بازگشت به بالا" aria-label="بازگشت به بالا"><svg class="ic" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+
+<script>
+'use strict';
+/* ═══ 1) UTIL ═══ */
+var $=function(s,r){return (r||document).querySelector(s);};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function esc(v){var m={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};return String(v==null?'':v).replace(/[&<>"']/g,function(c){return m[c];});}
+function fa(v){return String(v==null?'':v).replace(/\d/g,function(d){return '۰۱۲۳۴۵۶۷۸۹'[+d];});}
+function en(v){return String(v==null?'':v).replace(/[۰-۹]/g,function(d){return String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d));}).replace(/[٠-٩]/g,function(d){return String('٠١٢٣٤٥٦٧٨٩'.indexOf(d));});}
+function num(v){var n=Number(en(v).replace(/[٬,\s]/g,''));return isFinite(n)?n:0;}
+var NF=new Intl.NumberFormat('fa-IR'),CUR='ریال';
+function moneyC(n){n=num(n);if(n>=1e9)return fa((n/1e9).toFixed(1))+' میلیارد '+CUR;if(n>=1e6)return fa((n/1e6).toFixed(1))+' میلیون '+CUR;return NF.format(Math.round(n))+' '+CUR;}
+function api(fn){var a=Array.prototype.slice.call(arguments,1);return new Promise(function(res,rej){
+  if(!window.google||!google.script||!google.script.run){rej(new Error('پل ارتباطی برقرار نیست.'));return;}
+  var r=google.script.run.withSuccessHandler(res).withFailureHandler(function(e){rej(new Error(e&&e.message?e.message:String(e)));});
+  if(typeof r[fn]!=='function'){rej(new Error('تابع '+fn+' در بک‌اند نصب نیست.'));return;}
+  r[fn].apply(r,a);});}
+function toast(m,t){var d=document.createElement('div');d.className='toast '+(t||'');
+  d.innerHTML='<svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px">'+(t==='err'?'<path d="M18 6 6 18M6 6l12 12"/>':'<path d="m4.5 12.5 5 5 10-11"/>')+'</svg><span>'+esc(m)+'</span>';
+  $('#toasts').appendChild(d);setTimeout(function(){d.remove();},4600);}
+/* ═══ 2) ICONS ═══ */
+var IC={
+broom:'<path d="M19 4 9 14"/><path d="M13 3h6v6"/><path d="M9 14l-5 6h9l3-4z"/>',
+truck:'<path d="M1 8h13v9H1zM14 11h4l3 3v3h-7z"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="17.5" cy="18.5" r="1.8"/>',
+box:'<path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/>',
+stairs:'<path d="M3 20h4v-4h4v-4h4V8h5"/>',
+wrench:'<path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z"/>',
+book:'<path d="M4 19.5V5a2 2 0 0 1 2-2h13v18H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M8 7h7M8 11h5"/>',
+chart:'<path d="M3 3v18h18"/><path d="M7 15v3M12 10v8M17 6v12"/>',
+branch:'<path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/>',
+users:'<path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/>',
+user:'<circle cx="12" cy="8" r="4.5"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',
+grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+orders:'<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/>',
+shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+zap:'<path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/>',
+msg:'<path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.86L3 21l1.9-5.2A8.4 8.4 0 1 1 21 11.5z"/>',
+headset:'<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>',
+target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+chevL:'<path d="m15 18-6-6 6-6"/>',
+sun:'<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22"/>',
+moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'};
+function icon(n,s){return '<svg class="ic" viewBox="0 0 24 24"'+(s?' style="'+s+'"':'')+'>'+(IC[n]||IC.grid)+'</svg>';}
+/* ═══ 3) THEME / LOGO ═══ */
+var TKEY='zv_landing_theme';
+function paintTheme(){var d=document.documentElement.dataset.theme==='dark';$('#themeBtn').innerHTML=icon(d?'sun':'moon','width:18px;height:18px');$('#themeBtn').title=d?'تم روشن':'تم تاریک';}
+function toggleTheme(){var t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;try{localStorage.setItem(TKEY,t);}catch(e){}paintTheme();}
+var MARK='<svg class="ic" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg>';
+function paintLogo(url){var im=new Image();
+  im.onload=function(){['#hdrMark','#ftMark'].forEach(function(s){var m=$(s);if(!m)return;m.classList.add('zv-logo');m.innerHTML='<img src="'+esc(url)+'" alt="ZingoVingo">';});};
+  im.onerror=function(){['#hdrMark','#ftMark'].forEach(function(s){var m=$(s);if(!m)return;m.classList.remove('zv-logo');m.innerHTML=MARK;});};im.src=url;}
+function loadBranding(){api('getPublicBranding').then(function(r){r=r||{};
+  if(r.CURRENCY_LABEL)CUR=r.CURRENCY_LABEL;
+  var f=$('#zvFavicon');if(f)f.setAttribute('href',r.FAVICON_URL||'favicon.png');
+  paintLogo(r.LOGO_URL||'LOGO.png');
+  if(r.BRAND_NAME&&r.BRAND_NAME!=='ZingoVingo'){['#brandWord','#brandWord2'].forEach(function(s){var e=$(s);if(e)e.textContent=r.BRAND_NAME;});document.title=r.BRAND_NAME+' | پلتفرم هوشمند خدمات';}
+  renderServices(window.__svc||null);}).catch(function(){paintLogo('LOGO.png');});}
+/* ═══ 4) SERVICES ═══ */
+var FALLBACK=[
+ {name:'خدمات نظافتی',d:'اعزام نیروهای مجرب نظافت برای منازل، ادارات، مجتمع‌ها و اماکن تجاری با تضمین کیفیت خدمت.',ic:'broom',c:'var(--teal)'},
+ {name:'حمل و نقل',d:'ناوگان حمل درون‌شهری و برون‌شهری با رانندگان حرفه‌ای و امکان پیگیری آنلاین محموله.',ic:'truck',c:'var(--brand)'},
+ {name:'جابه‌جایی اثاثیه',d:'بسته‌بندی تخصصی، حمل و جابه‌جایی ایمن اثاثیه منزل و محل کار همراه با بیمه بار.',ic:'box',c:'var(--blue)'},
+ {name:'تعمیرات و سرویس دوره‌ای',d:'سرویس و نگهداری تجهیزات، تعمیرات تخصصی و برنامه‌های دوره‌ای با ثبت سابقه هر خدمت.',ic:'wrench',c:'var(--amber)'},
+ {name:'خدمات آموزشی',d:'برگزاری دوره‌های مهارتی و آموزشی با مدرسین تأییدشده و برنامه‌ریزی قابل پیگیری.',ic:'book',c:'var(--pink)'},
+ {name:'توسعه کسب‌وکار',d:'مشاوره، برندینگ و راهکارهای دیجیتال مارکتینگ برای رشد پایدار کسب‌وکار شما.',ic:'chart',c:'var(--green)'}];
+function svcIcon(name){var n=String(name||'');
+  if(/نظافت|cleaning/i.test(n))return['broom','var(--teal)'];
+  if(/حمل|نقل|transport/i.test(n))return['truck','var(--brand)'];
+  if(/اثاث|بار|furniture|freight/i.test(n))return['box','var(--blue)'];
+  if(/پله|مشاعات|stair/i.test(n))return['stairs','var(--violet)'];
+  if(/تعمیر|سرویس|repair/i.test(n))return['wrench','var(--amber)'];
+  if(/آموزش|education/i.test(n))return['book','var(--pink)'];
+  if(/کسب|توسعه|business/i.test(n))return['chart','var(--green)'];
+  return['grid','var(--slate)'];}
+function renderServices(list){var rows;
+  if(list&&list.length){rows=list.slice(0,8).map(function(s){var m=svcIcon(s.name||s.nameFa||s.nameEn),meta=[];
+    if(num(s.rate)>0)meta.push('نرخ پایه: '+moneyC(s.rate)+(s.unit?' / '+esc(s.unit):''));
+    if(num(s.minimum)>0)meta.push('حداقل سفارش: '+fa(num(s.minimum)));
+    return {name:s.name||s.nameFa||s.nameEn,d:s.description||'ثبت درخواست، مسیریابی خودکار به شعبه و تخصیص نیروی متخصص با رهگیری وضعیت تا تکمیل خدمت.',ic:m[0],c:m[1],meta:meta};});}
+  else rows=FALLBACK.map(function(x){return {name:x.name,d:x.d,ic:x.ic,c:x.c,meta:[]};});
+  $('#svcGrid').innerHTML=rows.map(function(x){
+    return '<article class="card hov svc reveal"><span class="sic" style="background:color-mix(in srgb,'+x.c+' 14%,transparent);color:'+x.c+'">'+icon(x.ic,'width:26px;height:26px')+'</span>'+
+      '<h3>'+esc(x.name)+'</h3><p>'+esc(x.d)+'</p>'+
+      (x.meta.length?'<div class="meta">'+x.meta.map(function(m){return '<span>'+m+'</span>';}).join('<span>·</span>')+'</div>':'')+
+      '<a class="go" href="customerform.html">ثبت درخواست '+icon('chevL','width:14px;height:14px')+'</a></article>';}).join('');
+  observeReveal();}
+function loadServices(){api('getServices').then(function(d){window.__svc=(d&&d.services)||[];renderServices(window.__svc);}).catch(function(){renderServices(null);});}
+/* ═══ 5) STATIC BLOCKS ═══ */
+var FEATURES=[
+ ['branch','var(--blue)','کنترل و ایجاد شعب','ایجاد شعبه در شهرهای مختلف، ویرایش اطلاعات و پایش عملکرد هر شعبه به‌صورت مستقل.'],
+ ['users','var(--violet)','مدیریت کارمندان شعب','ثبت، ویرایش و مدیریت کارمندان هر شعبه همراه با نقش سازمانی و وضعیت فعالیت.'],
+ ['grid','var(--teal)','گروه‌های تخصصی','تعریف گروه‌های اجرایی در هر شعبه برای تقسیم بهینه وظایف و پوشش خدمات.'],
+ ['plus','var(--pink)','افزودن اعضا به گروه','انتساب نیروها و اپراتورها به گروه‌ها با شناسه یکتا و مدیریت عضویت در چند گام.'],
+ ['orders','var(--brand)','ثبت و رهگیری درخواست','ثبت توسط مشتری یا اپراتور، تعیین خدمت، زمان اجرا و پیگیری وضعیت تا تکمیل نهایی.'],
+ ['chart','var(--green)','گزارش‌ها و تحلیل','داشبورد زنده از شعب، نیروی انسانی، درآمد و وضعیت درخواست‌ها برای تصمیم‌گیری دقیق.'],
+ ['shield','var(--amber)','سطح دسترسی و ممیزی','دسترسی نقش‌محور به داده‌ها و ثبت کامل رویدادها در لاگ ممیزی سامانه.'],
+ ['msg','var(--blue)','گفتگوی یکپارچه','مکاتبه رشته‌ای میان مشتری، شعبه، سرپرست و پشتیبانی با شماره تیکت و وضعیت پاسخ.'],
+ ['clock','var(--teal)','برنامه هفتگی اجرا','تقویم شمسی کارت‌های عملیاتی به تفکیک نیرو، روز و ساعت برای مدیریت ظرفیت.']];
+var FLOW=[['ثبت درخواست','درخواست از فرم عمومی یا پنل اپراتور ثبت و پیش‌فاکتور زنده محاسبه می‌شود.'],
+ ['مسیریابی به شعبه','بر اساس استان و شهر، درخواست به شعبه فعال مربوطه ارسال و اعلان می‌شود.'],
+ ['تخصیص نیرو','کارت عملیاتی ساخته شده و به گروه و نیروی متخصص تخصیص می‌یابد.'],
+ ['اجرا و گزارش','وضعیت کارت تا تکمیل به‌روزرسانی و در گزارش‌های مالی و عملکردی منعکس می‌شود.']];
+var ROLES=[['مدیر کل','target'],['ادمین ارشد','shield'],['مدیر شعبه','branch'],['کارمند شعبه','users'],['سرپرست','grid'],['متخصص','wrench'],['اپراتور','headset'],['مشتری','user']];
+function renderStatic(){
+  $('#featGrid').innerHTML=FEATURES.map(function(f){return '<article class="card hov feat reveal"><span class="sic" style="background:color-mix(in srgb,'+f[1]+' 14%,transparent);color:'+f[1]+'">'+icon(f[0],'width:22px;height:22px')+'</span><h3>'+esc(f[2])+'</h3><p>'+esc(f[3])+'</p></article>';}).join('');
+  $('#flowGrid').innerHTML=FLOW.map(function(s){return '<div class="step reveal"><h4>'+esc(s[0])+'</h4><p>'+esc(s[1])+'</p></div>';}).join('');
+  $('#roleGrid').innerHTML=ROLES.map(function(r){return '<a class="role reveal" href="Portal.html"><span class="ri">'+icon(r[1],'width:17px;height:17px')+'</span>'+esc(r[0])+'</a>';}).join('');}
+/* ═══ 6) COUNTERS (fixed) ═══ */
+function animateCounter(el){
+  if(el._iv)clearInterval(el._iv);
+  var target=num(el.dataset.counter),cur=0,step=Math.max(1,Math.ceil(target/58));
+  el._started=true;
+  if(target<=0){el.textContent=NF.format(0);return;}
+  el._iv=setInterval(function(){cur+=step;if(cur>=target){cur=target;clearInterval(el._iv);el._iv=null;}
+    el.textContent=NF.format(cur)+(target>=100?'+':'');},26);}
+function startCounters(){var els=$$('[data-counter]');
+  if(!('IntersectionObserver' in window)){els.forEach(animateCounter);return;}
+  var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){animateCounter(x.target);io.unobserve(x.target);}});},{threshold:.3});
+  els.forEach(function(e){io.observe(e);});}
+function loadStats(){return api('getPublicStats').then(function(r){
+  if(!r)return;
+  $$('[data-counter]').forEach(function(el){
+    var v=num(r[el.dataset.key]);
+    if(v>0&&v!==num(el.dataset.counter)){el.dataset.counter=v;if(el._started)animateCounter(el);}
+  });}).catch(function(){});}
+/* ═══ 7) REVEAL / NAV ═══ */
+var RIO=null;
+function observeReveal(){var els=$$('.reveal:not(.in)');
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+  if(!RIO)RIO=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');RIO.unobserve(x.target);}});},{threshold:.08});
+  els.forEach(function(e){RIO.observe(e);});}
+function syncNav(){var y=window.scrollY+120,cur='';$$('section[id]').forEach(function(s){if(s.offsetTop<=y)cur=s.id;});
+  $$('#nav a').forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+cur);});}
+/* ═══ 8) LOCATIONS + ROUTE ═══ */
+var LOC={provinces:{},branches:[]};
+function fillProvinces(){
+  var ps=$('#ctProvince'),keys=Object.keys(LOC.provinces||{});
+  if(!keys.length){ps.innerHTML='<option value="">بارگذاری نشد</option>';return;}
+  ps.innerHTML='<option value="">انتخاب استان</option>'+keys.map(function(p){
+    var served=(LOC.branches||[]).some(function(b){return b.province===p;});
+    return '<option value="'+esc(p)+'">'+esc(p)+(served?' ✓':'')+'</option>';}).join('');}
+function fillCities(){
+  var p=$('#ctProvince').value,cs=$('#ctCity'),list=(LOC.provinces||{})[p]||[];
+  cs.innerHTML='<option value="">'+(p?'انتخاب شهر':'ابتدا استان را انتخاب کنید')+'</option>'+list.map(function(c){
+    var served=(LOC.branches||[]).some(function(b){return b.province===p&&b.city===c;});
+    return '<option value="'+esc(c)+'">'+esc(c)+(served?' ✓':'')+'</option>';}).join('');
+  cs.disabled=!list.length;routeHint();}
+function routeHint(){
+  var box=$('#ctRoute'),p=$('#ctProvince').value,c=$('#ctCity').value;
+  if(!p){box.className='route';box.innerHTML='';return;}
+  var hit=(LOC.branches||[]).filter(function(b){return b.province===p&&(!c||b.city===c);});
+  if(hit.length){box.className='route show';box.innerHTML='پیام شما به <b>'+esc(hit[0].name)+'</b> ('+esc(hit[0].branchId)+') مسیریابی می‌شود.';}
+  else{box.className='route show warn';box.innerHTML='در این استان/شهر شعبه فعال نداریم؛ پیام به صندوق مرکزی مدیریت ارسال می‌شود.';}}
+function loadLocations(){
+  return api('getPublicLocations').then(function(r){
+    LOC.provinces=(r&&r.provinces)||{};LOC.branches=(r&&r.branches)||[];fillProvinces();
+  }).catch(function(){
+    $('#ctProvince').innerHTML='<option value="">بارگذاری نشد</option>';
+    var box=$('#ctRoute');box.className='route show warn';
+    box.innerHTML='فهرست استان/شهر بارگذاری نشد. برای تماس مستقیم: <b class="num" dir="ltr">021-9100 4567</b>';
+  });}
+/* ═══ 9) CONTACT ═══ */
+function ctAlert(msg,type){var a=$('#ctAlert');a.className='alert show '+(type||'ok');
+  a.innerHTML=icon(type==='err'?'zap':'shield','width:17px;height:17px;margin-top:3px')+'<span>'+msg+'</span>';}
+function submitContact(e){
+  e.preventDefault();
+  var name=$('#ctName').value.trim(),phone=en($('#ctPhone').value).replace(/[\s-]/g,''),
+      prov=$('#ctProvince').value,city=$('#ctCity').value,body=$('#ctBody').value.trim(),
+      email=$('#ctEmail').value.trim();
+  if(!name){ctAlert('نام و نام خانوادگی را وارد کنید.','err');$('#ctName').focus();return;}
+  if(!/^09\d{9}$/.test(phone)){ctAlert('شماره تماس باید ۱۱ رقم و با 09 شروع شود.','err');$('#ctPhone').focus();return;}
+  if(!prov){ctAlert('استان را انتخاب کنید.','err');$('#ctProvince').focus();return;}
+  if(!city){ctAlert('شهر را انتخاب کنید.','err');$('#ctCity').focus();return;}
+  if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ctAlert('ایمیل واردشده معتبر نیست.','err');$('#ctEmail').focus();return;}
+  if(body.length<5){ctAlert('شرح پیام را کامل‌تر بنویسید (حداقل ۵ کاراکتر).','err');$('#ctBody').focus();return;}
+  var p={name:name,phone:phone,email:email,subject:$('#ctSubject').value,priority:$('#ctPriority').value,
+    province:prov,city:city,body:body,source:'Landing'};
+  var b=$('#ctBtn');b.disabled=true;
+  api('submitPublicContact',p).then(function(r){
+    ctAlert('پیام شما ثبت شد'+(r&&r.ticketNo?' — کد پیگیری: <b class="num">'+esc(r.ticketNo)+'</b>':'')+
+      (r&&r.branchName?' · مسیریابی به <b>'+esc(r.branchName)+'</b>':'')+'. کارشناسان ما به‌زودی تماس می‌گیرند.','ok');
+    toast('پیام با موفقیت ثبت شد.','ok');
+    $('#contactForm').reset();$('#ctCity').disabled=true;$('#ctCity').innerHTML='<option value="">ابتدا استان را انتخاب کنید</option>';
+    $('#ctRoute').className='route';
+  }).catch(function(err){
+    var m=String(err&&err.message||err);
+    if(/نصب نیست|not a function|No such/i.test(m))
+      ctAlert('ثبت آنلاین پیام در حال راه‌اندازی است. لطفاً با <b class="num" dir="ltr">021-9100 4567</b> تماس بگیرید یا به <b dir="ltr">info@zingovingo.ir</b> ایمیل بزنید.','err');
+    else ctAlert(esc(m),'err');
+    toast('ثبت پیام ناموفق بود.','err');
+  }).then(function(){b.disabled=false;});}
+/* ═══ 10) ACTIONS / INIT ═══ */
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-act]');
+  if(el){var a=el.dataset.act;
+    if(a==='theme'){e.preventDefault();toggleTheme();return;}
+    if(a==='menu'){e.preventDefault();var m=$('#mmenu'),o=!m.classList.contains('open');m.classList.toggle('open',o);el.setAttribute('aria-expanded',o?'true':'false');return;}
+    if(a==='top'){e.preventDefault();window.scrollTo({top:0,behavior:'smooth'});return;}}
+  if(e.target.closest('#mmenu a')){$('#mmenu').classList.remove('open');$('[data-act="menu"]').setAttribute('aria-expanded','false');}
+});
+document.addEventListener('change',function(e){
+  if(e.target.id==='ctProvince')fillCities();
+  if(e.target.id==='ctCity')routeHint();
+});
+document.addEventListener('submit',function(e){if(e.target.id==='contactForm')submitContact(e);});
+window.addEventListener('scroll',function(){
+  $('#hdr').classList.toggle('sc',window.scrollY>10);
+  $('#toTop').classList.toggle('show',window.scrollY>520);
+  syncNav();},{passive:true});
+(function init(){
+  var t;try{t=localStorage.getItem(TKEY);}catch(e){}
+  if(!t&&window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches)t='dark';
+  if(t)document.documentElement.dataset.theme=t;
+  paintTheme();
+  try{$('#year').textContent=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric'}).format(new Date());}catch(e){$('#year').textContent=fa(new Date().getFullYear());}
+  renderStatic();observeReveal();
+  paintLogo('LOGO.png');
+  loadBranding();loadServices();loadLocations();
+  startCounters();loadStats();
+})();
+</script>
+</body>
+</html>
