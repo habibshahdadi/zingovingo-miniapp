@@ -3152,5 +3152,93 @@ window.render=function(){
 };
 })();
 </script>
+  <script>
+/* ═══ ZingoVingo Admin — کنترل آمار صفحه اصلی (واقعی / نمایشی) ═══ */
+(function(){
+'use strict';
+if(window.__zvPubStatsAdmin)return;window.__zvPubStatsAdmin=true;
+var K={mode:'PUBLIC_STATS_MODE',b:'PUBLIC_STATS_DEMO_BRANCHES',o:'PUBLIC_STATS_DEMO_ORDERS',
+w:'PUBLIC_STATS_DEMO_WORKERS',j:'PUBLIC_STATS_DEMO_JOBS',dj:'PUBLIC_STATS_JOBS_DAILY',
+dor:'PUBLIC_STATS_ORDERS_DAILY',ep:'PUBLIC_STATS_EPOCH'};
+function S(){return (window.DB&&DB.settings)||{};}
+function n(v,d){var x=num(v);return x>0?x:d;}
+function cfg(){var s=S();return{
+mode:String(s[K.mode]||'real').toLowerCase()==='demo'?'demo':'real',
+b:n(s[K.b],120),o:n(s[K.o],4500),w:n(s[K.w],980),j:n(s[K.j],1200),
+dj:s[K.dj]==null||s[K.dj]===''?195:num(s[K.dj]),dor:num(s[K.dor])||0,ep:String(s[K.ep]||'')};}
+function days(ep){if(!ep)return 0;var d=new Date(ep);if(isNaN(d.getTime()))return 0;
+var a=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime(),t=new Date();
+var b=new Date(t.getFullYear(),t.getMonth(),t.getDate()).getTime();var k=Math.floor((b-a)/864e5);return k>0?k:0;}
+function realGuess(){
+var bs=(DB.branches||[]).filter(function(b){return b.status==='فعال';}).length;
+var os=(DB.orders||[]).filter(function(o){return !/لغو/.test(o.status||'');}).length;
+var ws=(DB.workers||[]).filter(function(w){return w.status==='فعال'&&/worker|supervisor|operator/i.test(w.operations||'');}).length;
+return {b:bs,o:os,w:ws,j:(DB.applicants||[]).length};}
+function pv(mode){var c=cfg(),d=days(c.ep),r=realGuess();
+return mode==='demo'?{b:c.b,o:c.o+c.dor*d,w:c.w,j:c.j+c.dj*d}:{b:r.b,o:r.o,w:r.w,j:r.j};}
+function box(t,v){return '<div class="kvi"><small>'+esc(t)+'</small><b class="num">'+fa(v)+'</b></div>';}
+function card(){
+var c=cfg(),p=pv(c.mode),pd=pv('demo'),pr=pv('real'),d=days(c.ep);
+var h='<div class="grid" style="grid-template-columns:1fr;margin-top:16px"><div class="card" id="zvPubStatsCard">'+
+'<h3 style="margin-bottom:12px">'+icon('report','width:15px;height:15px;color:var(--brand)')+' آمار صفحه اصلی (Landing)</h3>'+
+'<p class="sub" style="margin-bottom:12px;line-height:1.9">شمارنده‌های «شعبه فعال، درخواست موفق، نیروی متخصص، درخواست همکاری» از این بخش کنترل می‌شوند. در حالت <b>واقعی</b> اعداد از شیت‌ها خوانده می‌شوند؛ در حالت <b>نمایشی</b> اعداد پایه به‌همراه رشد روزانه نمایش داده می‌شوند.</p>'+
+'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">'+
+'<button class="btn '+(c.mode==='real'?'btn-p':'btn-s')+'" data-act="pubstats-mode" data-mode="real">'+icon('check','width:14px;height:14px')+' حالت واقعی</button>'+
+'<button class="btn '+(c.mode==='demo'?'btn-p':'btn-s')+'" data-act="pubstats-mode" data-mode="demo">'+icon('star','width:14px;height:14px')+' حالت نمایشی</button>'+
+btn('pubstats-probe','خواندن آمار عمومی','undo','btn-s btn-sm')+'</div>'+
+'<div class="sec-t">خروجی فعلی روی سایت — '+esc(c.mode==='demo'?'نمایشی':'واقعی')+'</div>'+
+'<div class="kv" style="margin-bottom:14px">'+box('شعبه فعال',p.b)+box('درخواست موفق',p.o)+box('نیروی متخصص',p.w)+box('درخواست همکاری',p.j)+'</div>'+
+'<form data-form="pubstats"><div class="fgrid">'+
+'<div class="field"><label>شعبه فعال (پایه نمایشی)</label><input name="b" type="number" step="1" value="'+c.b+'"></div>'+
+'<div class="field"><label>درخواست موفق (پایه نمایشی)</label><input name="o" type="number" step="1" value="'+c.o+'"></div>'+
+'<div class="field"><label>نیروی متخصص (پایه نمایشی)</label><input name="w" type="number" step="1" value="'+c.w+'"></div>'+
+'<div class="field"><label>درخواست همکاری (پایه نمایشی)</label><input name="j" type="number" step="1" value="'+c.j+'"></div>'+
+'<div class="field"><label>رشد روزانه درخواست همکاری</label><input name="dj" type="number" step="1" value="'+c.dj+'"><span class="hint">پیش‌فرض ۱۹۵ عدد در روز</span></div>'+
+'<div class="field"><label>رشد روزانه درخواست موفق</label><input name="dor" type="number" step="1" value="'+c.dor+'"><span class="hint">۰ = بدون رشد</span></div>'+
+'<div class="field"><label>تاریخ مبدأ رشد</label><input name="ep" data-jd value="'+esc(c.ep?jInput(c.ep):'')+'" placeholder="۱۴۰۵/۰۹/۰۱"></div>'+
+'<div class="field"><label>روزهای سپری‌شده</label><input value="'+fa(d)+' روز" readonly></div>'+
+'</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">'+
+'<button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ذخیره تنظیمات</button>'+
+btn('pubstats-today','مبدأ رشد = امروز','cal','btn-s btn-sm')+'</div></form>'+
+'<div class="sec-t">پیش‌نمایش دو حالت</div><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">'+
+'<div class="card" style="box-shadow:none"><b style="font-size:12.5px;display:block;margin-bottom:8px">واقعی (برآورد از داده‌های پنل)</b><div class="kv">'+box('شعبه',pr.b)+box('درخواست',pr.o)+box('نیرو',pr.w)+box('همکاری',pr.j)+'</div></div>'+
+'<div class="card" style="box-shadow:none"><b style="font-size:12.5px;display:block;margin-bottom:8px">نمایشی (با رشد '+fa(d)+' روز)</b><div class="kv">'+box('شعبه',pd.b)+box('درخواست',pd.o)+box('نیرو',pd.w)+box('همکاری',pd.j)+'</div></div>'+
+'</div><div id="zvPubStatsOut" style="margin-top:12px"></div>'+
+'<p class="sub" style="margin-top:10px;line-height:1.9">فرمول حالت نمایشی: <b>پایه + (رشد روزانه × روزهای سپری‌شده از مبدأ)</b>. تغییر حالت بلافاصله روی صفحه اصلی اثر می‌گذارد.</p>'+
+'</div></div>';
+return h;}
+var _sp=window.settingsPage;
+window.settingsPage=function(){
+var r=_sp.apply(this,arguments);
+return Promise.resolve(r).then(function(h){return h+card();});};
+function save(obj){
+return api('admCCSaveSettings',obj,TOKEN).then(function(){toast('تنظیمات آمار ذخیره شد.','ok');return reload();});}
+ACT['pubstats-mode']=function(d){
+var c=cfg(),o={};o[K.mode]=d.mode==='demo'?'demo':'real';
+if(d.mode==='demo'&&!c.ep){var t=new Date();o[K.ep]=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');}
+return save(o);};
+ACT['pubstats-today']=function(){
+var t=new Date(),o={};o[K.ep]=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+return save(o);};
+ACT['pubstats-probe']=function(){
+return api('getPublicStats').then(function(r){
+var b=$('#zvPubStatsOut');
+if(b)b.innerHTML='<pre style="white-space:pre-wrap;font-size:11px;background:var(--surface2);padding:11px;border-radius:10px;max-height:240px;overflow:auto">'+esc(JSON.stringify(r,null,1))+'</pre>';
+}).catch(function(e){toast('تابع getPublicStats نصب نیست؛ LandingPublic.gs را Deploy کنید.','err');});};
+document.addEventListener('submit',function(e){
+var f=e.target;if(f.dataset.form!=='pubstats')return;
+e.preventDefault();
+var ep=f.elements.ep.value.trim();
+if(ep&&!parseJ(ep)){toast('تاریخ مبدأ معتبر نیست.','err');return;}
+var o={};
+o[K.b]=num(f.elements.b.value);o[K.o]=num(f.elements.o.value);
+o[K.w]=num(f.elements.w.value);o[K.j]=num(f.elements.j.value);
+o[K.dj]=num(f.elements.dj.value);o[K.dor]=num(f.elements.dor.value);
+o[K.ep]=ep?jStore(ep):'';
+var sub=f.querySelector('[type="submit"]');if(sub)sub.disabled=true;
+save(o).catch(function(err){if(sub)sub.disabled=false;toast(err.message,'err');});
+});
+})();
+</script>
 </body>
 </html>
