@@ -3240,5 +3240,221 @@ save(o).catch(function(err){if(sub)sub.disabled=false;toast(err.message,'err');}
 });
 })();
 </script>
+  <script>
+/* ═══ ZingoVingo Admin — نظرات کاربران + تنظیمات سایت (Landing) ═══ */
+(function(){
+'use strict';
+if(window.__zvSiteSuite)return;window.__zvSiteSuite=true;
+var RVS=['در انتظار','تأیید شده','رد شده','بایگانی'];
+STC['در انتظار']='amber';STC['تأیید شده']='green';STC['رد شده']='red';STC['بایگانی']='gray';
+PS.rvq='';PS.rvst='';PS.rvrate='';PS.rvsel=new Set();
+var K={mode:'PUBLIC_STATS_MODE',b:'PUBLIC_STATS_DEMO_BRANCHES',o:'PUBLIC_STATS_DEMO_ORDERS',w:'PUBLIC_STATS_DEMO_WORKERS',
+j:'PUBLIC_STATS_DEMO_JOBS',c:'PUBLIC_STATS_DEMO_CUSTOMERS',dj:'PUBLIC_STATS_JOBS_DAILY',dor:'PUBLIC_STATS_ORDERS_DAILY',
+dc:'PUBLIC_STATS_CUSTOMERS_DAILY',ep:'PUBLIC_STATS_EPOCH',rvOn:'LANDING_REVIEWS_ENABLED',rvAuto:'LANDING_REVIEWS_AUTO_APPROVE',
+rvMin:'LANDING_REVIEWS_MIN_RATING',rvSpeed:'LANDING_CAROUSEL_SPEED',rvDemo:'LANDING_REVIEWS_DEMO'};
+
+/* ── منو ── */
+TITLES.siteReviews=['نظرات کاربران','دریافت، تأیید، پاسخ و نمایش در سایت'];
+var item={id:'siteReviews',l:'نظرات کاربران',ic:'star',bc:'r',badge:function(){return ((DB.siteReviewStats||{}).pending)||0;}};
+if(!MENU.some(function(m){return m.id==='siteReviews';})){
+  var idx=-1;for(var i=0;i<MENU.length;i++){if(MENU[i].id==='adminSupport'||MENU[i].id==='threads'){idx=i+1;}}
+  if(idx<0)for(var j=0;j<MENU.length;j++){if(MENU[j].sec==='سیستم'){idx=j;break;}}
+  if(idx>=0)MENU.splice(idx,0,item);else MENU.push(item);
+}
+/* ── داده ── */
+var _load=window.loadData;
+window.loadData=function(){
+  return _load.apply(this,arguments).then(function(r){
+    return api('admCCReviews',{},TOKEN).then(function(x){
+      DB.siteReviews=x.items||[];DB.siteReviewStats=x.stats||{};return r;
+    }).catch(function(){DB.siteReviews=DB.siteReviews||[];DB.siteReviewStats=DB.siteReviewStats||{};return r;});
+  });
+};
+function rvStars(n){var h='';for(var i=1;i<=5;i++)h+='<span style="color:'+(i<=n?'var(--amber)':'var(--line2)')+'">★</span>';return '<span style="letter-spacing:1px;font-size:13px">'+h+'</span>';}
+function rvRows(){
+  var rows=(DB.siteReviews||[]).slice();
+  if(PS.rvst)rows=rows.filter(function(r){return r.status===PS.rvst;});
+  if(PS.rvrate)rows=rows.filter(function(r){return String(r.rating)===String(PS.rvrate);});
+  if(PS.rvq){var q=en(PS.rvq).toLowerCase();
+    rows=rows.filter(function(r){return [r.name,r.phone,r.body,r.title,r.city,r.service,r.id].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});}
+  return rows;
+}
+function reviewsPage(){
+  var all=DB.siteReviews||[],st=DB.siteReviewStats||{},rows=rvRows();
+  var h=pageHead('نظرات کاربران',fa(all.length)+' نظر · '+fa(st.pending||0)+' در انتظار تأیید',
+    btn('go','تنظیمات نمایش','settings','btn-s',' data-page="settings"')+btn('refresh','بروزرسانی','undo','btn-s'));
+  h+='<div class="grid kpis" style="margin-bottom:16px">'+
+    [['کل نظرات',fa(st.total||0),'msg','var(--blue)'],['در انتظار',fa(st.pending||0),'clock','var(--amber)'],
+     ['تأیید شده',fa(st.approved||0),'check','var(--green)'],['رد شده',fa(st.rejected||0),'x','var(--red)'],
+     ['میانگین امتیاز',fa(st.average||0)+' از ۵','star','var(--brand)'],['نمایش ویژه',fa(st.featured||0),'zap','var(--violet)']]
+    .map(function(x){return '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,'+x[3]+' 14%,transparent);color:'+x[3]+'">'+icon(x[2])+'</span></div><div class="l">'+x[0]+'</div><div class="v">'+x[1]+'</div></div>';}).join('')+'</div>';
+  h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-rvq placeholder="جستجو در نام، متن، شهر، خدمت…" value="'+esc(PS.rvq||'')+'"></div>'+
+    '<select class="sel" data-rvst><option value="">وضعیت: همه</option>'+RVS.map(function(s){return '<option'+(PS.rvst===s?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select>'+
+    '<select class="sel" data-rvrate><option value="">امتیاز: همه</option>'+[5,4,3,2,1].map(function(n){return '<option value="'+n+'"'+(String(PS.rvrate)===String(n)?' selected':'')+'>'+fa(n)+' ستاره</option>';}).join('')+'</select></div>';
+  h+='<div class="bulk'+(PS.rvsel.size?' show':'')+'"><b>'+fa(PS.rvsel.size)+'</b> نظر انتخاب شده'+
+    btn('rv-bulk-ok','تأیید گروهی','check','btn-p btn-sm')+btn('rv-bulk-no','رد گروهی','x','btn-d btn-sm')+
+    btn('rv-clear','انصراف','','btn-s btn-sm')+'</div>';
+  if(!rows.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('star')+'</div><h4>نظری یافت نشد</h4><p class="sub">نظرات ثبت‌شده از فرم «ثبت نظر و امتیاز» صفحه اصلی اینجا نمایش داده می‌شوند.</p></div></div>';
+  h+='<div class="card">'+rows.map(function(r){
+    return '<div class="thread'+(r.status==='در انتظار'?' unread':'')+'" style="align-items:flex-start">'+
+      '<input type="checkbox" data-rvsel="'+esc(r.id)+'"'+(PS.rvsel.has(r.id)?' checked':'')+' style="margin-top:4px">'+
+      '<div style="flex:1;min-width:0">'+
+      '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+av(r.name,'')+
+      '<b>'+esc(r.name)+'</b>'+rvStars(r.rating)+pill(r.status)+
+      (r.featured?'<span class="pill p-brand">ویژه</span>':'')+
+      '<span class="tno">'+esc(r.id)+'</span></div>'+
+      '<div class="tmeta"><span class="ltr">'+fa(r.phone||'—')+'</span>'+
+      (r.city?'<span>·</span><span>'+esc(r.city)+'</span>':'')+
+      (r.service?'<span>·</span><span>'+esc(r.service)+'</span>':'')+
+      '<span>·</span><span>'+jDT(r.createdAt)+'</span></div>'+
+      (r.title?'<b style="font-size:12.5px;display:block;margin-top:7px">'+esc(r.title)+'</b>':'')+
+      '<div class="tprev" style="white-space:pre-wrap;max-height:88px;overflow:auto">'+esc(r.body)+'</div>'+
+      (r.reply?'<div style="margin-top:8px;background:rgba(14,159,110,.1);border-right:3px solid var(--green);border-radius:9px;padding:7px 10px;font-size:11.5px"><b style="color:var(--green)">پاسخ شما:</b> '+esc(r.reply)+'</div>':'')+
+      '</div><div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">'+
+      (r.status!=='تأیید شده'?btn('rv-ok','تأیید و نمایش','check','btn-p btn-sm',' data-id="'+esc(r.id)+'"'):'')+
+      (r.status!=='رد شده'?btn('rv-no','رد','x','btn-d btn-sm',' data-id="'+esc(r.id)+'"'):'')+
+      btn('rv-reply',r.reply?'ویرایش پاسخ':'پاسخ','msg','btn-s btn-sm',' data-id="'+esc(r.id)+'"')+
+      btn('rv-feat',r.featured?'حذف ویژه':'نشان ویژه','star','btn-s btn-sm',' data-id="'+esc(r.id)+'" data-v="'+(r.featured?'خیر':'بله')+'"')+
+      '<div class="ra">'+ibtn('rv-view','eye','مشاهده',' data-id="'+esc(r.id)+'"')+
+      ibtn('rv-arch','save','بایگانی',' data-id="'+esc(r.id)+'"')+
+      ibtn('rv-del','trash','حذف',' data-id="'+esc(r.id)+'"')+'</div>'+
+      '</div></div>';
+  }).join('')+'</div>';
+  return h;
+}
+function rvFind(id){return (DB.siteReviews||[]).filter(function(r){return r.id===id;})[0];}
+function rvReplyModal(id){
+  var r=rvFind(id);if(!r)return;
+  openModal('<div class="mh"><h3>پاسخ به نظر '+esc(r.name)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+    '<form data-form="rv-reply" data-id="'+esc(id)+'"><div class="mb">'+
+    '<div class="tprev" style="white-space:pre-wrap;margin-bottom:12px">'+esc(r.body)+'</div>'+
+    '<div class="field"><label>پاسخ رسمی (در سایت زیر نظر نمایش داده می‌شود)</label><textarea name="reply" style="min-height:120px" maxlength="800">'+esc(r.reply||'')+'</textarea><span class="hint">خالی بگذارید و ذخیره کنید تا پاسخ حذف شود.</span></div>'+
+    '</div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ذخیره پاسخ</button>'+
+    '<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+}
+function rvViewModal(id){
+  var r=rvFind(id);if(!r)return;
+  openModal('<div class="mh"><h3>'+esc(r.name)+' · '+fa(r.rating)+' ستاره</h3>'+pill(r.status)+'<button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+    '<div class="mb">'+kv([['شناسه',esc(r.id)],['تماس',fa(r.phone)],['شهر',esc(r.city||'—')],['خدمت',esc(r.service||'—')],
+      ['ثبت',jDT(r.createdAt)],['انتشار',r.publishedAt?jDT(r.publishedAt):'—'],['ویژه',r.featured?'بله':'خیر'],['منبع',esc(r.source||'Landing')],
+      ['عنوان',esc(r.title||'—'),1],['متن نظر',esc(r.body),1],['پاسخ',esc(r.reply||'—'),1]])+'</div>'+
+    '<div class="mf">'+(r.status!=='تأیید شده'?btn('rv-ok','تأیید و نمایش','check','btn-p',' data-id="'+esc(id)+'"'):'')+
+    btn('rv-reply','پاسخ','msg','btn-s',' data-id="'+esc(id)+'"')+'<button class="btn btn-s" data-act="mclose">بستن</button></div>',false,true);
+}
+/* ── تنظیمات سایت ── */
+function sCfg(){var s=DB.settings||{};return{
+  mode:String(s[K.mode]||'real').toLowerCase()==='demo'?'demo':'real',
+  b:num(s[K.b])||120,o:num(s[K.o])||4500,w:num(s[K.w])||980,j:num(s[K.j])||1200,c:num(s[K.c])||3200,
+  dj:s[K.dj]==null||s[K.dj]===''?195:num(s[K.dj]),dor:num(s[K.dor])||0,dc:num(s[K.dc])||0,ep:String(s[K.ep]||''),
+  rvOn:s[K.rvOn]||'بله',rvAuto:s[K.rvAuto]||'خیر',rvMin:num(s[K.rvMin])||1,rvSpeed:num(s[K.rvSpeed])||1,rvDemo:s[K.rvDemo]||'بله'};}
+function sDays(ep){if(!ep)return 0;var d=new Date(ep);if(isNaN(d.getTime()))return 0;
+  var a=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime(),t=new Date();
+  var b=new Date(t.getFullYear(),t.getMonth(),t.getDate()).getTime(),k=Math.floor((b-a)/864e5);return k>0?k:0;}
+function sReal(){var st=DB.siteReviewStats||{};return{
+  b:(DB.branches||[]).filter(function(x){return x.status==='فعال';}).length,
+  o:(DB.orders||[]).filter(function(x){return !/لغو/.test(x.status||'');}).length,
+  w:(DB.workers||[]).filter(function(x){return x.status==='فعال'&&/worker|supervisor|operator/i.test(x.operations||'');}).length,
+  j:(DB.applicants||[]).length,c:(DB.customers||[]).filter(function(x){return x.status==='فعال';}).length,rv:st.approved||0};}
+function sPv(mode){var c=sCfg(),d=sDays(c.ep),r=sReal();
+  return mode==='demo'?{b:c.b,o:c.o+c.dor*d,w:c.w,j:c.j+c.dj*d,c:c.c+c.dc*d}:{b:r.b,o:r.o,w:r.w,j:r.j,c:r.c};}
+function sBox(t,v){return '<div class="kvi"><small>'+esc(t)+'</small><b class="num">'+fa(v)+'</b></div>';}
+function siteSettingsCard(){
+  var c=sCfg(),d=sDays(c.ep),p=sPv(c.mode),pd=sPv('demo'),pr=sPv('real');
+  var yesNo=function(n,v){return '<select name="'+n+'"><option'+(v==='بله'?' selected':'')+'>بله</option><option'+(v==='خیر'?' selected':'')+'>خیر</option></select>';};
+  return '<div class="grid" style="grid-template-columns:1fr;margin-top:16px"><div class="card" id="zvSiteSettings">'+
+  '<h3 style="margin-bottom:12px">'+icon('report','width:15px;height:15px;color:var(--brand)')+' تنظیمات سایت (صفحه اصلی)</h3>'+
+  '<div class="sec-t" style="margin-top:0">شمارنده‌های آماری</div>'+
+  '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">'+
+  '<button class="btn '+(c.mode==='real'?'btn-p':'btn-s')+'" data-act="ps-mode" data-mode="real">'+icon('check','width:14px;height:14px')+' حالت واقعی</button>'+
+  '<button class="btn '+(c.mode==='demo'?'btn-p':'btn-s')+'" data-act="ps-mode" data-mode="demo">'+icon('star','width:14px;height:14px')+' حالت نمایشی</button>'+
+  btn('ps-today','مبدأ رشد = امروز','cal','btn-s btn-sm')+btn('ps-probe','خواندن آمار عمومی','undo','btn-s btn-sm')+'</div>'+
+  '<div class="kv" style="margin-bottom:14px">'+sBox('شعبه فعال',p.b)+sBox('درخواست موفق',p.o)+sBox('نیروی متخصص',p.w)+sBox('درخواست همکاری',p.j)+sBox('مشتریان',p.c)+'</div>'+
+  '<form data-form="site-settings"><div class="fgrid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">'+
+  '<div class="field"><label>شعبه (پایه نمایشی)</label><input name="b" type="number" step="1" value="'+c.b+'"></div>'+
+  '<div class="field"><label>درخواست موفق (پایه)</label><input name="o" type="number" step="1" value="'+c.o+'"></div>'+
+  '<div class="field"><label>نیروی متخصص (پایه)</label><input name="w" type="number" step="1" value="'+c.w+'"></div>'+
+  '<div class="field"><label>درخواست همکاری (پایه)</label><input name="j" type="number" step="1" value="'+c.j+'"></div>'+
+  '<div class="field"><label>مشتریان (پایه)</label><input name="c" type="number" step="1" value="'+c.c+'"></div>'+
+  '<div class="field"><label>رشد روزانه همکاری</label><input name="dj" type="number" step="1" value="'+c.dj+'"><span class="hint">پیش‌فرض ۱۹۵</span></div>'+
+  '<div class="field"><label>رشد روزانه درخواست</label><input name="dor" type="number" step="1" value="'+c.dor+'"></div>'+
+  '<div class="field"><label>رشد روزانه مشتری</label><input name="dc" type="number" step="1" value="'+c.dc+'"></div>'+
+  '<div class="field"><label>تاریخ مبدأ رشد</label><input name="ep" value="'+esc(c.ep?(parseJ(c.ep)?c.ep:jInput(c.ep)):'')+'" placeholder="۱۴۰۵/۰۹/۰۱"><span class="hint">'+fa(d)+' روز سپری شده</span></div>'+
+  '</div>'+
+  '<div class="sec-t">نظرات و کاروسل</div><div class="fgrid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">'+
+  '<div class="field"><label>نمایش بخش نظرات</label>'+yesNo('rvOn',c.rvOn)+'</div>'+
+  '<div class="field"><label>تأیید خودکار نظرات</label>'+yesNo('rvAuto',c.rvAuto)+'<span class="hint">خیر = نیاز به تأیید ادمین</span></div>'+
+  '<div class="field"><label>حداقل امتیاز نمایش</label><select name="rvMin">'+[1,2,3,4,5].map(function(n){return '<option value="'+n+'"'+(c.rvMin===n?' selected':'')+'>'+fa(n)+' ستاره به بالا</option>';}).join('')+'</select></div>'+
+  '<div class="field"><label>سرعت کاروسل</label><select name="rvSpeed">'+[[0.6,'آرام'],[1,'معمولی'],[1.7,'تند']].map(function(x){return '<option value="'+x[0]+'"'+(c.rvSpeed===x[0]?' selected':'')+'>'+x[1]+'</option>';}).join('')+'</select></div>'+
+  '<div class="field"><label>نمونهٔ نمایشی تا اولین تأیید</label>'+yesNo('rvDemo',c.rvDemo)+'</div>'+
+  '</div><div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">'+
+  '<button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ذخیره تنظیمات سایت</button></div></form>'+
+  '<div class="sec-t">پیش‌نمایش دو حالت</div><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">'+
+  '<div class="card" style="box-shadow:none"><b style="font-size:12.5px;display:block;margin-bottom:8px">واقعی (داده‌های سامانه)</b><div class="kv">'+sBox('شعبه',pr.b)+sBox('درخواست',pr.o)+sBox('نیرو',pr.w)+sBox('همکاری',pr.j)+sBox('مشتری',pr.c)+'</div></div>'+
+  '<div class="card" style="box-shadow:none"><b style="font-size:12.5px;display:block;margin-bottom:8px">نمایشی (رشد '+fa(d)+' روز)</b><div class="kv">'+sBox('شعبه',pd.b)+sBox('درخواست',pd.o)+sBox('نیرو',pd.w)+sBox('همکاری',pd.j)+sBox('مشتری',pd.c)+'</div></div></div>'+
+  '<div id="psOut" style="margin-top:12px"></div></div></div>';
+}
+var _sp=window.settingsPage;
+window.settingsPage=function(){return Promise.resolve(_sp.apply(this,arguments)).then(function(h){return h+siteSettingsCard();});};
+/* ── رندر ── */
+var _render=window.render;
+window.render=function(){
+  if(PS.page!=='siteReviews')return _render.apply(this,arguments);
+  CH.forEach(function(c){try{c.destroy();}catch(e){}});CH=[];
+  $('#tbTitle').textContent=TITLES.siteReviews[0];$('#tbCrumb').textContent='ZingoVingo · '+TITLES.siteReviews[1];
+  $('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
+  $('#page').innerHTML=reviewsPage();decorate($('#page'));renderNav();paintSideUser();
+  $('#bellDot').hidden=!notifications().some(function(n){return !n.read;});
+};
+var _go=window.go;
+window.go=function(p){if(p==='siteReviews'){PS.rvq='';PS.rvst='';PS.rvrate='';PS.rvsel=new Set();}return _go.apply(this,arguments);};
+/* ── اکشن‌ها ── */
+function rvAct(fn,args,ok){return api.apply(null,[fn].concat(args,[TOKEN])).then(function(){toast(ok,'ok');return reload();});}
+ACT['rv-ok']=function(d){closeModal();return rvAct('admCCReviewStatus',[d.id,'تأیید شده'],'نظر تأیید و در سایت منتشر شد.');};
+ACT['rv-no']=function(d){closeModal();return rvAct('admCCReviewStatus',[d.id,'رد شده'],'نظر رد شد.');};
+ACT['rv-arch']=function(d){return rvAct('admCCReviewStatus',[d.id,'بایگانی'],'نظر بایگانی شد.');};
+ACT['rv-feat']=function(d){return rvAct('admCCReviewFeature',[d.id,d.v],'نشان ویژه به‌روزرسانی شد.');};
+ACT['rv-reply']=function(d){rvReplyModal(d.id);};
+ACT['rv-view']=function(d){rvViewModal(d.id);};
+ACT['rv-del']=function(d){confirmBox('حذف نظر','نظر <b>'+esc(d.id)+'</b> برای همیشه حذف شود؟',function(){
+  rvAct('admCCReviewDelete',[d.id],'نظر حذف شد.');});};
+ACT['rv-clear']=function(){PS.rvsel=new Set();render();};
+ACT['rv-bulk-ok']=function(){return rvAct('admCCReviewBulk',[Array.from(PS.rvsel),'تأیید شده'],'نظرات انتخاب‌شده تأیید شدند.').then(function(){PS.rvsel=new Set();});};
+ACT['rv-bulk-no']=function(){return rvAct('admCCReviewBulk',[Array.from(PS.rvsel),'رد شده'],'نظرات انتخاب‌شده رد شدند.').then(function(){PS.rvsel=new Set();});};
+ACT['ps-mode']=function(d){var c=sCfg(),o={};o[K.mode]=d.mode;
+  if(d.mode==='demo'&&!c.ep){var t=new Date();o[K.ep]=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');}
+  return api('admCCSaveSettings',o,TOKEN).then(function(){toast('حالت آمار ذخیره شد.','ok');return reload();});};
+ACT['ps-today']=function(){var t=new Date(),o={};o[K.ep]=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  return api('admCCSaveSettings',o,TOKEN).then(function(){toast('مبدأ رشد امروز شد.','ok');return reload();});};
+ACT['ps-probe']=function(){return api('getPublicStats').then(function(r){
+  var b=$('#psOut');if(b)b.innerHTML='<pre style="white-space:pre-wrap;font-size:11px;background:var(--surface2);padding:11px;border-radius:10px;max-height:240px;overflow:auto">'+esc(JSON.stringify(r,null,1))+'</pre>';
+}).catch(function(){toast('LandingPublic.gs را Deploy کنید.','err');});};
+/* ── رویدادها ── */
+var rvDeb=debounce(function(){render();},280);
+document.addEventListener('input',function(e){if(e.target.matches('[data-rvq]')){PS.rvq=e.target.value;rvDeb();}});
+document.addEventListener('change',function(e){var t=e.target;
+  if(t.matches('[data-rvst]')){PS.rvst=t.value;render();return;}
+  if(t.matches('[data-rvrate]')){PS.rvrate=t.value;render();return;}
+  if(t.matches('[data-rvsel]')){var id=t.dataset.rvsel;if(t.checked)PS.rvsel.add(id);else PS.rvsel.delete(id);render();return;}
+});
+document.addEventListener('submit',function(e){
+  var f=e.target,k=f.dataset.form;
+  if(k==='rv-reply'){e.preventDefault();var sub=f.querySelector('[type="submit"]');sub.disabled=true;
+    api('admCCReviewReply',f.dataset.id,f.elements.reply.value,TOKEN)
+      .then(function(){closeModal();toast('پاسخ ذخیره شد.','ok');return reload();})
+      .catch(function(x){sub.disabled=false;toast(x.message,'err');});return;}
+  if(k==='site-settings'){e.preventDefault();
+    var g=function(n){return f.elements[n]?f.elements[n].value:'';};
+    var ep=g('ep').trim(),o={};
+    o[K.b]=num(g('b'));o[K.o]=num(g('o'));o[K.w]=num(g('w'));o[K.j]=num(g('j'));o[K.c]=num(g('c'));
+    o[K.dj]=num(g('dj'));o[K.dor]=num(g('dor'));o[K.dc]=num(g('dc'));
+    o[K.ep]=ep?(parseJ(ep)?jStore(ep):ep):'';
+    o[K.rvOn]=g('rvOn');o[K.rvAuto]=g('rvAuto');o[K.rvMin]=num(g('rvMin'));o[K.rvSpeed]=num(g('rvSpeed'));o[K.rvDemo]=g('rvDemo');
+    if(ep&&!parseJ(ep)&&isNaN(new Date(ep).getTime())){toast('تاریخ مبدأ معتبر نیست.','err');return;}
+    var sub2=f.querySelector('[type="submit"]');sub2.disabled=true;
+    api('admCCSaveSettings',o,TOKEN).then(function(){toast('تنظیمات سایت ذخیره شد.','ok');return reload();})
+      .catch(function(x){sub2.disabled=false;toast(x.message,'err');});}
+});
+})();
+</script>
 </body>
 </html>
