@@ -488,11 +488,15 @@ JD.inp.dispatchEvent(new Event('change',{bubbles:true}));jdClose();}});})();
 /* ═══ 6) AUTH ═══ */
 function setErr(m){var e=$('#loginError');e.textContent=m;e.style.display='block';$('#loginInfo').style.display='none';}
 function setInfo(m){var e=$('#loginInfo');e.textContent=m;e.style.display='block';$('#loginError').style.display='none';}
-function doLogin(){var u=$('#loginUser').value.trim(),p=$('#loginPass').value;
-if(!u||!p){setErr('نام کاربری و رمز عبور را وارد کنید.');return;}
-$('#loginError').style.display='none';var b=$('#loginBtn');b.disabled=true;b.textContent='در حال ورود…';
-api('customerLogin',u,p).then(function(r){TOKEN=r.token;USER=r.user;localStorage.setItem('zv_cst_token',TOKEN);return loadData();})
-.then(showApp).catch(function(e){setErr(e.message);}).then(function(){b.disabled=false;b.textContent='ورود به پنل';});}
+function doLogin(){
+  var u=$('#loginUser').value.trim(),p=$('#loginPass').value;
+  if(!u||!p){setErr('نام کاربری و رمز عبور را وارد کنید.');return;}
+  $('#loginError').style.display='none';
+  var loginBtn=$('#loginBtn');loginBtn.disabled=true;loginBtn.textContent='در حال ورود…';
+  api('customerLogin',u,p).then(function(r){TOKEN=r.token;USER=r.user;localStorage.setItem('zv_cst_token',TOKEN);return loadData();})
+  .then(showApp).catch(function(e){setErr(e.message);})
+  .then(function(){loginBtn.disabled=false;loginBtn.textContent='ورود به پنل';});
+}
 function otpSend(){var ph=en($('#otpPhone').value).replace(/\D/g,'');
 if(!/^09\d{9}$/.test(ph)){setErr('شماره موبایل باید ۱۱ رقم و با 09 شروع شود.');return;}
 var b=$('#otpSendBtn');b.disabled=true;b.textContent='در حال ارسال…';
