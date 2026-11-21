@@ -1184,12 +1184,19 @@ api('custCCSession',TOKEN).then(function(r){USER=r.user;return loadData();}).the
 })();
 </script>
   <script>
-/* ═══ ZingoVingo Customer V5 — خوانایی · فرمت مالی · پروفایل · خرید اشتراک ═══ */
+
+<script>
+/* ═══ ZingoVingo Customer V7 — یکپارچه: خوانایی · فرمت مالی · پروفایل · اشتراک · پرداخت کیف پول ═══ */
 (function(){
 'use strict';
-if(window.__zvCstV5)return;window.__zvCstV5=true;
+if(window.__zvCstV7)return;window.__zvCstV7=true;
 
-/* ── ۱) CSS: خوانایی فیلدها در مودال تیره + برچسب‌ها ── */
+/* ═══ 0) ارجاع امن به سازنده‌های دکمه (رفع تداخل نام btn) ═══ */
+var BTN=window.btn,IBTN=window.ibtn;
+if(typeof BTN!=='function'){console.error('[ZV] btn helper missing');return;}
+if(window.IC&&!IC.alert)IC.alert='<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>';
+
+/* ═══ 1) CSS ═══ */
 var CSS=[
 '.modal.dk{color-scheme:dark}',
 '[data-theme=dark] input,[data-theme=dark] select,[data-theme=dark] textarea{color-scheme:dark}',
@@ -1213,187 +1220,7 @@ var CSS=[
 '.ftag.l{background:rgba(100,116,139,.14);color:var(--slate)}',
 '.plegend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);background:var(--surface2);border:1px dashed var(--line2);border-radius:11px;padding:9px 12px;margin-bottom:14px}',
 '.plan-price{font-size:15px;font-weight:900;color:var(--brandDeep);margin-top:6px}',
-'.plan-sub{font-size:10px;color:var(--muted);line-height:1.8}'
-].join('');
-var st=document.createElement('style');st.id='zvCstV5Css';st.textContent=CSS;document.head.appendChild(st);
-
-/* ── ۲) فرمت مالی: کاما + تومان + حروف ── */
-function grp(n){return String(Math.round(Math.abs(num(n)))).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
-window.money=function(n){return (num(n)<0?'−':'')+fa(grp(n))+' '+CUR;};
-window.moneyC=function(n){n=num(n);var s=n<0?'−':'';
-  if(Math.abs(n)>=1e9)return s+fa((Math.abs(n)/1e9).toFixed(1))+' میلیارد';
-  if(Math.abs(n)>=1e6)return s+fa((Math.abs(n)/1e6).toFixed(1))+' میلیون';
-  return s+fa(grp(n));};
-function toman(n){return fa(grp(Math.round(num(n)/10)))+' تومان';}
-var W1=['','یک','دو','سه','چهار','پنج','شش','هفت','هشت','نه'],
-W10=['ده','یازده','دوازده','سیزده','چهارده','پانزده','شانزده','هفده','هجده','نوزده'],
-W20=['','','بیست','سی','چهل','پنجاه','شصت','هفتاد','هشتاد','نود'],
-W100=['','یکصد','دویست','سیصد','چهارصد','پانصد','ششصد','هفتصد','هشتصد','نهصد'],
-WS=['','هزار','میلیون','میلیارد','بیلیون'];
-function three(n){var o=[],h=Math.floor(n/100),r=n%100;
-  if(h)o.push(W100[h]);
-  if(r>=10&&r<20)o.push(W10[r-10]);
-  else{var t=Math.floor(r/10),u=r%10;if(t)o.push(W20[t]);if(u)o.push(W1[u]);}
-  return o.join(' و ');}
-function numWords(v){var n=Math.round(Math.abs(num(v)));if(!n)return 'صفر';
-  var g=[],i=0;
-  while(n>0){var c=n%1000;
-    if(c){var s=three(c);if(i===1&&c===1)s='هزار';else if(WS[i])s+=' '+WS[i];g.unshift(s);}
-    n=Math.floor(n/1000);i++;}
-  return g.join(' و ');}
-function amtHint(n){n=num(n);
-  return '<div class="amt-hint"><span>معادل <b>'+toman(n)+'</b></span><span>'+numWords(Math.round(n/10))+' تومان</span></div>';}
-
-/* ── ۳) تزریق راهنمای مبلغ زیر فیلدها و کارت‌ها ── */
-function enhanceAmounts(){
-  $$('input[name="amount"]').forEach(function(inp){
-    var f=inp.closest('.field')||inp.parentNode;
-    if(!f||f._amt)return;f._amt=true;
-    var box=document.createElement('div');box.className='amt-hint';f.appendChild(box);
-    var upd=function(){var v=num(inp.value);
-      box.innerHTML=v>0?'<span>معادل <b>'+toman(v)+'</b></span><span>'+numWords(Math.round(v/10))+' تومان</span>':'<span>مبلغ را وارد کنید</span>';};
-    inp.addEventListener('input',upd);inp.addEventListener('change',upd);upd();
-  });
-  $$('.wcard .bal').forEach(function(el){
-    if(el._amt)return;el._amt=true;
-    var v=num(en(el.textContent).replace(/[^\d]/g,''));
-    el.insertAdjacentHTML('afterend',amtHint(v));
-  });
-}
-var _oi=window.orderInvoice;
-if(typeof _oi==='function'){
-  window.orderInvoice=function(id){
-    return Promise.resolve(_oi(id)).then(function(){
-      var box=$('#invBox');if(!box||box._amt)return;box._amt=true;
-      var o=(DB.orders||[]).filter(function(x){return x.requestId===id;})[0]||{};
-      var inv=(DB.invoices||[]).filter(function(x){return x.requestId===id;})[0];
-      box.insertAdjacentHTML('beforeend',amtHint(inv?inv.total:o.finalPrice));
-    });
-  };
-}
-if(window.MutationObserver){
-  var t=null;
-  new MutationObserver(function(){clearTimeout(t);t=setTimeout(enhanceAmounts,60);})
-    .observe(document.body,{childList:true,subtree:true});
-}
-
-/* ── ۴) پروفایل: فیلدهای قابل تغییر / اجباری / فقط خواندنی ── */
-window.profilePage=function(){
-  var p=USER||{};
-  var photo=p.avatar?'<img src="'+esc(p.avatar)+'" alt="">':esc(String(p.fullName||'؟').trim().charAt(0));
-  var E='<span class="ftag e">قابل ویرایش</span>',R='<span class="ftag r">الزامی</span>',L='<span class="ftag l">فقط خواندنی</span>';
-  function fld(n,l,v,req,ex){
-    return '<div class="field'+(ex&&ex.full?' full':'')+'"><label>'+esc(l)+E+(req?R:'')+'</label>'+
-      (ex&&ex.ta?'<textarea name="'+n+'"'+(req?' required':'')+'>'+esc(v||'')+'</textarea>'
-       :'<input name="'+n+'" value="'+esc(v||'')+'"'+(req?' required':'')+(ex&&ex.attr?' '+ex.attr:'')+'>')+
-      (ex&&ex.hint?'<span class="hint">'+esc(ex.hint)+'</span>':'')+'</div>';
-  }
-  function ro(l,v){return '<div class="field"><label>'+esc(l)+L+'</label><input value="'+esc(v==null||v===''?'—':v)+'" readonly></div>';}
-  return head('پروفایل من','حساب کاربری مشتری')+
-  '<div class="profile-layout"><div class="card profile-photo-card"><div class="av lg" style="margin:0 auto 14px">'+photo+'</div>'+
-  '<h3>'+esc(p.fullName||'—')+'</h3><div class="sub">'+esc(p.level||'عادی')+' · '+esc(p.customerId||'')+'</div>'+
-  '<div style="margin-top:14px">'+btn('photo-edit','تغییر تصویر','cam','btn-p btn-sm')+'</div></div>'+
-  '<div class="card"><div class="plegend"><span>'+E+' قابل تغییر توسط شما</span><span>'+R+' باید پر باشد</span><span>'+L+' توسط سامانه تعیین می‌شود</span></div>'+
-  '<div class="sec-t" style="margin-top:0">اطلاعات سامانه‌ای</div><div class="fgrid">'+
-  ro('کد اشتراک',p.customerId)+ro('نام کاربری',p.username)+
-  ro('سطح اشتراک',(p.level||'عادی')+' · '+fa(p.discountRate||0)+'٪ تخفیف')+ro('تاریخ عضویت',jDisp(p.joinDate))+
-  ro('کل سفارش',fa(p.totalOrders||0))+ro('مجموع خرید',money(p.totalPayments||0))+'</div>'+
-  '<div class="sec-t">اطلاعات قابل ویرایش</div>'+
-  '<form data-form="profile"><div class="fgrid">'+
-  fld('firstName','نام',p.firstName,true)+
-  fld('lastName','نام خانوادگی',p.lastName,true)+
-  fld('phone','موبایل',p.phone,true,{attr:'dir="ltr" style="text-align:right" inputmode="tel"',hint:'۱۱ رقم و با 09 شروع شود؛ برای ورود با کد یکبار مصرف هم استفاده می‌شود.'})+
-  fld('email','ایمیل',p.email,false,{attr:'type="email" dir="ltr" style="text-align:right"'})+
-  fld('province','استان',p.province,false)+
-  fld('city','شهر',p.city,false)+
-  fld('postalCode','کد پستی',p.postalCode,false,{attr:'dir="ltr" style="text-align:right" inputmode="numeric"'})+
-  fld('password','رمز عبور جدید','',false,{attr:'type="password" placeholder="خالی = بدون تغییر"',hint:'حداقل ۴ کاراکتر؛ در صورت خالی‌بودن تغییر نمی‌کند.'})+
-  fld('address','آدرس',p.address,false,{full:true,ta:true})+
-  '</div><br><button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ذخیره تغییرات</button></form></div></div>';
-};
-document.addEventListener('submit',function(e){
-  var f=e.target;if(!f.dataset||f.dataset.form!=='profile')return;
-  var g=function(n){return f.elements[n]?String(f.elements[n].value).trim():'';};
-  var bad='';
-  if(g('firstName').length<2) bad='نام را کامل وارد کنید.';
-  else if(g('lastName').length<2) bad='نام خانوادگی را کامل وارد کنید.';
-  else if(!/^09\d{9}$/.test(en(g('phone')).replace(/[\s-]/g,''))) bad='شماره موبایل باید ۱۱ رقم و با 09 شروع شود.';
-  else if(g('email')&&!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(g('email'))) bad='ایمیل واردشده معتبر نیست.';
-  else if(g('password')&&g('password').length<4) bad='رمز عبور جدید حداقل ۴ کاراکتر باشد.';
-  if(bad){e.preventDefault();e.stopPropagation();toast(bad,'err');}
-},true);
-
-/* ── ۵) اشتراک‌ها: دکمه خرید برای هر سطح ── */
-window.loyaltyPage=function(){
-  var L=DB.loyalty||{},offs=DB.offers||[],red=DB.redemptions||[],lv=L.levels||[];
-  var colors={'عادی':'var(--slate)','نقره‌ای':'var(--blue)','طلایی':'var(--amber)','پلاتینیوم':'var(--violet)'};
-  var h=head('اشتراک و تخفیف‌ها','سطح فعلی: '+esc(USER.level||'عادی')+' · '+fa(USER.discountRate||0)+'٪ تخفیف',
-    btn('refresh','بروزرسانی','undo','btn-s'));
-  h+='<div class="card" style="margin-bottom:16px"><div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">'+
-    '<div style="flex:1;min-width:220px"><b style="font-size:15px">مسیر ارتقای اشتراک</b>'+
-    '<p class="sub" style="margin-top:4px">'+(L.next?('برای رسیدن به سطح <b>'+esc(L.next.name)+'</b>، '+fa(L.remainOrders)+' سفارش دیگر لازم است — یا همین حالا آن را خریداری کنید.'):'شما در بالاترین سطح اشتراک هستید.')+'</p></div>'+
-    '<div style="min-width:220px;flex:1">'+bar(L.progress||0)+'<div class="sub" style="margin-top:6px">'+pct(L.progress||0)+' · '+fa(L.orders||0)+' سفارش · '+money(L.payments||0)+'</div></div></div>'+
-    (L.subEnd?'<div class="sub" style="margin-top:12px">اعتبار اشتراک: '+jDisp(L.subStart)+' تا '+jDisp(L.subEnd)+'</div>':'')+'</div>';
-  h+='<div class="lv-grid" style="margin-bottom:18px">'+(lv.length?lv.map(function(l){
-    var on=l.name===(USER.level||'عادی'),c=colors[l.name]||'var(--brand)',price=num(l.monthly)||num(l.minAmount);
-    return '<div class="lv'+(on?' on':'')+'" style="--lc:'+c+'">'+
-      '<div style="display:flex;justify-content:space-between;align-items:center">'+icon('star','width:18px;height:18px;color:'+c)+(on?'<span class="pill p-brand">اشتراک فعلی</span>':'')+'</div>'+
-      '<h4>'+esc(l.name)+'</h4><div class="pct">'+fa(l.value)+'٪</div>'+
-      '<ul><li>حداقل سفارش: '+fa(l.minOrders)+'</li><li>حداقل خرید: '+moneyC(l.minAmount)+' '+CUR+'</li>'+
-      '<li>اعتبار: '+fa(l.validity||30)+' روز</li></ul>'+
-      '<div class="plan-price">'+(price>0?money(price):'رایگان / توافقی')+'</div>'+
-      '<div class="plan-sub">'+(price>0?'معادل '+toman(price):'برای فعال‌سازی با پشتیبانی هماهنگ شود')+'</div>'+
-      '<div style="margin-top:12px">'+(on
-        ?'<button class="btn btn-s btn-sm" disabled>'+icon('check','width:13px;height:13px')+' فعال است</button>'
-        :btn('buy-plan','خرید اشتراک','wallet','btn-p btn-sm',' data-id="'+esc(l.id)+'" data-name="'+esc(l.name)+'" data-price="'+price+'" data-validity="'+(l.validity||30)+'"'))+
-      '</div></div>';
-  }).join(''):'<div class="card"><p class="sub">سطح اشتراکی تعریف نشده است.</p></div>')+'</div>';
-  h+='<div class="grid charts"><div class="cbox"><h3>'+icon('offer','width:15px;height:15px;color:var(--brand)')+' کدهای تخفیف فعال ('+fa(offs.length)+')</h3>'+
-    (offs.length?offs.map(function(o){return '<div class="code"><b>'+esc(o.code)+'</b><span class="pill p-green">'+fa(o.percent)+'٪</span>'+
-      '<span class="sub" style="flex:1">'+(o.end?'تا '+jDisp(o.end):'بدون انقضا')+' · استفاده شما: '+fa(o.used)+'</span>'+
-      ibtn('copy-code','save','کپی کد',' data-code="'+esc(o.code)+'"')+'</div>';}).join(''):'<p class="sub">کد تخفیف فعالی وجود ندارد.</p>')+'</div>'+
-    '<div class="cbox"><h3>'+icon('receipt','width:15px;height:15px;color:var(--teal)')+' تخفیف‌های استفاده‌شده ('+fa(red.length)+')</h3>'+
-    (red.length?red.slice(0,10).map(function(r){return '<div class="rank"><div class="info"><b>'+esc(r.code)+'</b><small>'+esc(r.requestId)+' · '+jDT(r.at)+'</small></div><span class="v">'+money(r.amount)+'</span></div>';}).join(''):'<p class="sub">هنوز از کد تخفیفی استفاده نکرده‌اید.</p>')+'</div></div>';
-  return h;
-};
-ACT['buy-plan']=function(d){
-  var price=num(d.price);
-  openModal('<div class="mh"><h3>خرید اشتراک '+esc(d.name)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-    '<form data-form="buy-plan" data-id="'+esc(d.id)+'"><div class="mb">'+
-    kv([['سطح فعلی',esc(USER.level||'عادی')],['سطح جدید',esc(d.name)],['مدت اعتبار',fa(d.validity)+' روز'],['وضعیت پس از خرید','در انتظار تأیید مالی']])+
-    '<div class="fgrid" style="margin-top:12px">'+
-    '<div class="field"><label>مبلغ (ریال)</label><input name="amountView" value="'+price+'" readonly></div>'+
-    '<div class="field"><label>روش پرداخت</label><select name="method"><option>درگاه پرداخت</option><option>کارت به کارت</option><option>حواله بانکی</option><option>کیف پول</option></select></div>'+
-    '<div class="field full"><label>توضیح / شماره پیگیری</label><input name="note" placeholder="اختیاری"></div></div>'+
-    '<p class="hint" style="margin-top:10px">پس از تأیید واحد مالی در پنل مدیریت، سطح اشتراک شما به‌صورت خودکار ارتقا می‌یابد و تاریخ اعتبار ثبت می‌شود.</p>'+
-    '</div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ثبت درخواست خرید</button>'+
-    '<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
-};
-document.addEventListener('submit',function(e){
-  var f=e.target;if(!f.dataset||f.dataset.form!=='buy-plan')return;
-  e.preventDefault();e.stopPropagation();
-  var sub=f.querySelector('[type="submit"]');if(sub)sub.disabled=true;
-  api('custBuySubscription',{levelId:f.dataset.id,method:f.elements.method.value,note:f.elements.note.value},TOKEN)
-    .then(function(r){closeModal();toast(r.message||'درخواست ثبت شد.','ok');PS.page='loyalty';return reload();})
-    .catch(function(x){if(sub)sub.disabled=false;toast(x.message,'err');});
-},true);
-
-/* ── ۶) بازچینی ── */
-setTimeout(enhanceAmounts,120);
-if(window.PS&&window.render)render();
-})();
-</script>
-  <script>
-/* ═══ ZingoVingo Customer V6 — پرداخت آنی از کیف پول · هشدار کسری موجودی ═══ */
-(function(){
-'use strict';
-if(window.__zvCstWalletPay)return;window.__zvCstWalletPay=true;
-
-var W={q:null,ctx:null,busy:false,timer:null,ok:null};
-var METHODS=['کیف پول','درگاه پرداخت','کارت به کارت','حواله بانکی'];
-
-/* ── CSS ── */
-var CSS=[
+'.plan-sub{font-size:10px;color:var(--muted);line-height:1.8}',
 '.wp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}',
 '.wp-box{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:12px 14px;min-width:0}',
 '.modal.dk .wp-box{background:rgba(255,255,255,.06);border-color:#3A4880}',
@@ -1421,6 +1248,8 @@ var CSS=[
 '.wp-figs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}',
 '.wp-fig{background:rgba(255,255,255,.5);border:1px solid rgba(224,45,60,.25);border-radius:10px;padding:7px 9px;text-align:center}',
 '.modal.dk .wp-fig{background:rgba(255,255,255,.07);border-color:rgba(224,45,60,.4)}',
+'.wp-fig.good{border-color:rgba(14,159,110,.3)}',
+'.modal.dk .wp-fig.good{border-color:rgba(14,159,110,.4)}',
 '.wp-fig small{display:block;font-size:9.5px;opacity:.85}',
 '.wp-fig b{display:block;font-size:12.5px;font-weight:900;font-variant-numeric:tabular-nums;margin-top:2px}',
 '.wp-flash{animation:wpFlash .9s ease}',
@@ -1438,306 +1267,404 @@ var CSS=[
 '.wp-tx-in{color:var(--green);font-weight:900}.wp-tx-out{color:var(--red);font-weight:900}',
 '@media(max-width:600px){.wp-grid,.wp-figs{grid-template-columns:1fr}}'
 ].join('');
-var st=document.createElement('style');st.id='zvCstWalletPayCss';st.textContent=CSS;document.head.appendChild(st);
+var st=document.createElement('style');st.id='zvCstV7Css';st.textContent=CSS;document.head.appendChild(st);
 
-/* ── ابزار ── */
-function cash(n){return money(n);}
-function grp(n){return fa(String(Math.round(Math.abs(num(n)))).replace(/\B(?=(\d{3})+(?!\d))/g,','));}
-function toman(n){return grp(Math.round(num(n)/10))+' تومان';}
+/* ═══ 2) فرمت مالی: کاما + تومان + حروف ═══ */
+function grp(n){return String(Math.round(Math.abs(num(n)))).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+window.money=function(n){return (num(n)<0?'−':'')+fa(grp(n))+' '+CUR;};
+window.moneyC=function(n){n=num(n);var s=n<0?'−':'';
+if(Math.abs(n)>=1e9)return s+fa((Math.abs(n)/1e9).toFixed(1))+' میلیارد';
+if(Math.abs(n)>=1e6)return s+fa((Math.abs(n)/1e6).toFixed(1))+' میلیون';
+return s+fa(grp(n));};
+function toman(n){return fa(grp(Math.round(num(n)/10)))+' تومان';}
+var W1=['','یک','دو','سه','چهار','پنج','شش','هفت','هشت','نه'],
+W10=['ده','یازده','دوازده','سیزده','چهارده','پانزده','شانزده','هفده','هجده','نوزده'],
+W20=['','','بیست','سی','چهل','پنجاه','شصت','هفتاد','هشتاد','نود'],
+W100=['','یکصد','دویست','سیصد','چهارصد','پانصد','ششصد','هفتصد','هشتصد','نهصد'],
+WS=['','هزار','میلیون','میلیارد','بیلیون'];
+function three(n){var o=[],h=Math.floor(n/100),r=n%100;
+if(h)o.push(W100[h]);
+if(r>=10&&r<20)o.push(W10[r-10]);
+else{var t=Math.floor(r/10),u=r%10;if(t)o.push(W20[t]);if(u)o.push(W1[u]);}
+return o.join(' و ');}
+function numWords(v){var n=Math.round(Math.abs(num(v)));if(!n)return 'صفر';
+var g=[],i=0;
+while(n>0){var c=n%1000;
+if(c){var s=three(c);if(i===1&&c===1)s='هزار';else if(WS[i])s+=' '+WS[i];g.unshift(s);}
+n=Math.floor(n/1000);i++;}
+return g.join(' و ');}
+function amtHint(n){n=num(n);
+return '<div class="amt-hint"><span>معادل <b>'+toman(n)+'</b></span><span>'+numWords(Math.round(n/10))+' تومان</span></div>';}
+function enhanceAmounts(){
+$$('input[name="amount"]').forEach(function(inp){
+var f=inp.closest('.field')||inp.parentNode;
+if(!f||f._amt)return;f._amt=true;
+var box=document.createElement('div');box.className='amt-hint';f.appendChild(box);
+var upd=function(){var v=num(inp.value);
+box.innerHTML=v>0?'<span>معادل <b>'+toman(v)+'</b></span><span>'+numWords(Math.round(v/10))+' تومان</span>':'<span>مبلغ را وارد کنید</span>';};
+inp.addEventListener('input',upd);inp.addEventListener('change',upd);upd();});
+$$('.wcard .bal').forEach(function(el){
+if(el._amt)return;el._amt=true;
+var v=num(en(el.textContent).replace(/[^\d]/g,''));
+el.insertAdjacentHTML('afterend',amtHint(v));});}
+var _oi=window.orderInvoice;
+if(typeof _oi==='function'){
+window.orderInvoice=function(id){
+return Promise.resolve(_oi(id)).then(function(){
+var box=$('#invBox');if(!box||box._amt)return;box._amt=true;
+var o=(DB.orders||[]).filter(function(x){return x.requestId===id;})[0]||{};
+var inv=(DB.invoices||[]).filter(function(x){return x.requestId===id;})[0];
+box.insertAdjacentHTML('beforeend',amtHint(inv?inv.total:o.finalPrice));});};}
+if(window.MutationObserver){var at=null;
+new MutationObserver(function(){clearTimeout(at);at=setTimeout(enhanceAmounts,70);}).observe(document.body,{childList:true,subtree:true});}
+
+/* ═══ 3) پروفایل ═══ */
+window.profilePage=function(){
+var p=USER||{};
+var photo=p.avatar?'<img src="'+esc(p.avatar)+'" alt="">':esc(String(p.fullName||'؟').trim().charAt(0));
+var E='<span class="ftag e">قابل ویرایش</span>',R='<span class="ftag r">الزامی</span>',L='<span class="ftag l">فقط خواندنی</span>';
+function fld(n,l,v,req,ex){
+return '<div class="field'+(ex&&ex.full?' full':'')+'"><label>'+esc(l)+E+(req?R:'')+'</label>'+
+(ex&&ex.ta?'<textarea name="'+n+'"'+(req?' required':'')+'>'+esc(v||'')+'</textarea>'
+:'<input name="'+n+'" value="'+esc(v||'')+'"'+(req?' required':'')+(ex&&ex.attr?' '+ex.attr:'')+'>')+
+(ex&&ex.hint?'<span class="hint">'+esc(ex.hint)+'</span>':'')+'</div>';}
+function ro(l,v){return '<div class="field"><label>'+esc(l)+L+'</label><input value="'+esc(v==null||v===''?'—':v)+'" readonly></div>';}
+return head('پروفایل من','حساب کاربری مشتری')+
+'<div class="profile-layout"><div class="card profile-photo-card"><div class="av lg" style="margin:0 auto 14px">'+photo+'</div>'+
+'<h3>'+esc(p.fullName||'—')+'</h3><div class="sub">'+esc(p.level||'عادی')+' · '+esc(p.customerId||'')+'</div>'+
+'<div style="margin-top:14px">'+BTN('photo-edit','تغییر تصویر','cam','btn-p btn-sm')+'</div></div>'+
+'<div class="card"><div class="plegend"><span>'+E+' قابل تغییر توسط شما</span><span>'+R+' باید پر باشد</span><span>'+L+' توسط سامانه تعیین می‌شود</span></div>'+
+'<div class="sec-t" style="margin-top:0">اطلاعات سامانه‌ای</div><div class="fgrid">'+
+ro('کد اشتراک',p.customerId)+ro('نام کاربری',p.username)+
+ro('سطح اشتراک',(p.level||'عادی')+' · '+fa(p.discountRate||0)+'٪ تخفیف')+ro('تاریخ عضویت',jDisp(p.joinDate))+
+ro('کل سفارش',fa(p.totalOrders||0))+ro('مجموع خرید',money(p.totalPayments||0))+'</div>'+
+'<div class="sec-t">اطلاعات قابل ویرایش</div>'+
+'<form data-form="profile"><div class="fgrid">'+
+fld('firstName','نام',p.firstName,true)+
+fld('lastName','نام خانوادگی',p.lastName,true)+
+fld('phone','موبایل',p.phone,true,{attr:'dir="ltr" style="text-align:right" inputmode="tel"',hint:'۱۱ رقم و با 09 شروع شود؛ برای ورود با کد یکبار مصرف هم استفاده می‌شود.'})+
+fld('email','ایمیل',p.email,false,{attr:'type="email" dir="ltr" style="text-align:right"'})+
+fld('province','استان',p.province,false)+
+fld('city','شهر',p.city,false)+
+fld('postalCode','کد پستی',p.postalCode,false,{attr:'dir="ltr" style="text-align:right" inputmode="numeric"'})+
+fld('password','رمز عبور جدید','',false,{attr:'type="password" placeholder="خالی = بدون تغییر"',hint:'حداقل ۴ کاراکتر؛ در صورت خالی‌بودن تغییر نمی‌کند.'})+
+fld('address','آدرس',p.address,false,{full:true,ta:true})+
+'</div><br><button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ذخیره تغییرات</button></form></div></div>';};
+document.addEventListener('submit',function(e){
+var f=e.target;if(!f.dataset||f.dataset.form!=='profile')return;
+var g=function(n){return f.elements[n]?String(f.elements[n].value).trim():'';};
+var bad='';
+if(g('firstName').length<2)bad='نام را کامل وارد کنید.';
+else if(g('lastName').length<2)bad='نام خانوادگی را کامل وارد کنید.';
+else if(!/^09\d{9}$/.test(en(g('phone')).replace(/[\s-]/g,'')))bad='شماره موبایل باید ۱۱ رقم و با 09 شروع شود.';
+else if(g('email')&&!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(g('email')))bad='ایمیل واردشده معتبر نیست.';
+else if(g('password')&&g('password').length<4)bad='رمز عبور جدید حداقل ۴ کاراکتر باشد.';
+if(bad){e.preventDefault();e.stopPropagation();toast(bad,'err');}},true);
+
+/* ═══ 4) اشتراک‌ها ═══ */
+window.loyaltyPage=function(){
+var L=DB.loyalty||{},offs=DB.offers||[],red=DB.redemptions||[],lv=L.levels||[];
+var colors={'عادی':'var(--slate)','نقره‌ای':'var(--blue)','طلایی':'var(--amber)','پلاتینیوم':'var(--violet)'};
+var h=head('اشتراک و تخفیف‌ها','سطح فعلی: '+esc(USER.level||'عادی')+' · '+fa(USER.discountRate||0)+'٪ تخفیف',BTN('refresh','بروزرسانی','undo','btn-s'));
+h+='<div class="card" style="margin-bottom:16px"><div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">'+
+'<div style="flex:1;min-width:220px"><b style="font-size:15px">مسیر ارتقای اشتراک</b>'+
+'<p class="sub" style="margin-top:4px">'+(L.next?('برای رسیدن به سطح <b>'+esc(L.next.name)+'</b>، '+fa(L.remainOrders)+' سفارش دیگر لازم است — یا همین حالا آن را خریداری کنید.'):'شما در بالاترین سطح اشتراک هستید.')+'</p></div>'+
+'<div style="min-width:220px;flex:1">'+bar(L.progress||0)+'<div class="sub" style="margin-top:6px">'+pct(L.progress||0)+' · '+fa(L.orders||0)+' سفارش · '+money(L.payments||0)+'</div></div></div>'+
+(L.subEnd?'<div class="sub" style="margin-top:12px">اعتبار اشتراک: '+jDisp(L.subStart)+' تا '+jDisp(L.subEnd)+'</div>':'')+'</div>';
+h+='<div class="lv-grid" style="margin-bottom:18px">'+(lv.length?lv.map(function(l){
+var on=l.name===(USER.level||'عادی'),c=colors[l.name]||'var(--brand)',price=num(l.monthly)||num(l.minAmount);
+return '<div class="lv'+(on?' on':'')+'" style="--lc:'+c+'">'+
+'<div style="display:flex;justify-content:space-between;align-items:center">'+icon('star','width:18px;height:18px;color:'+c)+(on?'<span class="pill p-brand">اشتراک فعلی</span>':'')+'</div>'+
+'<h4>'+esc(l.name)+'</h4><div class="pct">'+fa(l.value)+'٪</div>'+
+'<ul><li>حداقل سفارش: '+fa(l.minOrders)+'</li><li>حداقل خرید: '+moneyC(l.minAmount)+' '+CUR+'</li>'+
+'<li>اعتبار: '+fa(l.validity||30)+' روز</li></ul>'+
+'<div class="plan-price">'+(price>0?money(price):'رایگان / توافقی')+'</div>'+
+'<div class="plan-sub">'+(price>0?'معادل '+toman(price):'برای فعال‌سازی با پشتیبانی هماهنگ شود')+'</div>'+
+'<div style="margin-top:12px">'+(on
+?'<button class="btn btn-s btn-sm" disabled>'+icon('check','width:13px;height:13px')+' فعال است</button>'
+:BTN('buy-plan','خرید اشتراک','wallet','btn-p btn-sm',' data-id="'+esc(l.id)+'" data-name="'+esc(l.name)+'" data-price="'+price+'" data-validity="'+(l.validity||30)+'"'))+
+'</div></div>';}).join(''):'<div class="card"><p class="sub">سطح اشتراکی تعریف نشده است.</p></div>')+'</div>';
+h+='<div class="grid charts"><div class="cbox"><h3>'+icon('offer','width:15px;height:15px;color:var(--brand)')+' کدهای تخفیف فعال ('+fa(offs.length)+')</h3>'+
+(offs.length?offs.map(function(o){return '<div class="code"><b>'+esc(o.code)+'</b><span class="pill p-green">'+fa(o.percent)+'٪</span>'+
+'<span class="sub" style="flex:1">'+(o.end?'تا '+jDisp(o.end):'بدون انقضا')+' · استفاده شما: '+fa(o.used)+'</span>'+
+IBTN('copy-code','save','کپی کد',' data-code="'+esc(o.code)+'"')+'</div>';}).join(''):'<p class="sub">کد تخفیف فعالی وجود ندارد.</p>')+'</div>'+
+'<div class="cbox"><h3>'+icon('receipt','width:15px;height:15px;color:var(--teal)')+' تخفیف‌های استفاده‌شده ('+fa(red.length)+')</h3>'+
+(red.length?red.slice(0,10).map(function(r){return '<div class="rank"><div class="info"><b>'+esc(r.code)+'</b><small>'+esc(r.requestId)+' · '+jDT(r.at)+'</small></div><span class="v">'+money(r.amount)+'</span></div>';}).join(''):'<p class="sub">هنوز از کد تخفیفی استفاده نکرده‌اید.</p>')+'</div></div>';
+return h;};
+
+/* ═══ 5) موتور پرداخت کیف پول ═══ */
+var W={q:null,ctx:null,back:null,busy:false,timer:null};
+var METHODS=['کیف پول','درگاه پرداخت','کارت به کارت','حواله بانکی'];
 function stopPoll(){if(W.timer){clearInterval(W.timer);W.timer=null;}}
 function bal(){return W.q&&W.q.wallet?num(W.q.wallet.balance):num((DB.wallet||{}).balance);}
+function payForm(){return $('#modal form[data-form="wpay"]');}
 
-/* ── مودال پرداخت ── */
 function openPay(ctx){
-  W.ctx=ctx;W.q=null;W.ok=null;stopPoll();
-  var isSub=ctx.kind==='subscription';
-  var title=isSub?('خرید اشتراک '+esc(ctx.name||'')):('پرداخت '+(ctx.inv?('فاکتور '+esc(ctx.inv)):('سفارش '+esc(ctx.req||''))));
-  openModal('<div class="mh"><h3>'+title+'</h3><span class="wp-tag">'+icon('wallet','width:12px;height:12px')+' پرداخت کیف پول</span>'+
-    '<button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-    '<form data-form="wpay"><div class="mb">'+
-    '<div class="wp-grid">'+
-    '<div class="wp-box wp-bal"><small>موجودی کیف پول</small><b id="wpBal">در حال دریافت…</b>'+
-    '<span class="sub2" id="wpBalSub">—</span></div>'+
-    '<div class="wp-box wp-due"><small>'+(isSub?'مبلغ اشتراک':'مانده قابل پرداخت')+'</small><b id="wpDue">'+cash(ctx.amount||0)+'</b>'+
-    '<span class="sub2" id="wpDueSub">'+esc(ctx.title||'')+'</span></div></div>'+
-    '<div class="fgrid">'+
-    '<div class="field"><label>مبلغ پرداخت (ریال) <span class="req">*</span></label>'+
-    '<input name="amount" id="wpAmt" type="number" step="1" min="1" value="'+num(ctx.amount||0)+'"'+(isSub?' readonly':'')+' required></div>'+
-    '<div class="field"><label>روش پرداخت</label><select name="method" id="wpMethod">'+
-    METHODS.map(function(m){return '<option'+(m===(ctx.method||'کیف پول')?' selected':'')+'>'+m+'</option>';}).join('')+
-    '</select></div>'+
-    '<div class="field full"><label>توضیح / شماره پیگیری</label><input name="note" id="wpNote" placeholder="اختیاری"></div>'+
-    '</div>'+
-    '<div class="wp-live" id="wpLive"><div class="wp-note info">'+icon('undo','width:16px;height:16px;margin-top:3px')+'<span>در حال بررسی موجودی کیف پول…</span></div></div>'+
-    '<div class="wp-hint">در روش «کیف پول» پرداخت بدون نیاز به تأیید مالی، آنی انجام می‌شود؛ سایر روش‌ها پس از تأیید واحد مالی ثبت می‌گردند.</div>'+
-    '</div><div class="mf">'+
-    '<button class="btn btn-p" type="submit" id="wpBtn">'+icon('wallet','width:14px;height:14px')+' <span>پرداخت آنی از کیف پول</span></button>'+
-    '<button type="button" class="btn btn-s" data-act="wpay-refresh">'+icon('undo','width:14px;height:14px')+' بروزرسانی موجودی</button>'+
-    '<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
-  var f=$('#modal form');
-  f.addEventListener('input',function(e){if(e.target.id==='wpAmt')paintLive();});
-  f.addEventListener('change',function(e){if(e.target.id==='wpMethod'||e.target.id==='wpAmt')paintLive();});
-  refreshQuote();
-}
+W.ctx=ctx;W.q=null;stopPoll();
+var isSub=ctx.kind==='subscription';
+var title=isSub?('خرید اشتراک '+esc(ctx.name||'')):('پرداخت '+(ctx.inv?('فاکتور '+esc(ctx.inv)):('سفارش '+esc(ctx.req||''))));
+openModal('<div class="mh"><h3>'+title+'</h3><span class="wp-tag">'+icon('wallet','width:12px;height:12px')+' پرداخت کیف پول</span>'+
+'<button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<form data-form="wpay"><div class="mb">'+
+'<div class="wp-grid">'+
+'<div class="wp-box wp-bal"><small>موجودی کیف پول</small><b id="wpBal">در حال دریافت…</b><span class="sub2" id="wpBalSub">—</span></div>'+
+'<div class="wp-box wp-due"><small>'+(isSub?'مبلغ اشتراک':'مانده قابل پرداخت')+'</small><b id="wpDue">'+money(ctx.amount||0)+'</b>'+
+'<span class="sub2" id="wpDueSub">'+esc(ctx.title||'')+'</span></div></div>'+
+'<div class="fgrid">'+
+'<div class="field"><label>مبلغ پرداخت (ریال) <span class="req">*</span></label>'+
+'<input name="amount" id="wpAmt" type="number" step="1" min="1" value="'+num(ctx.amount||0)+'"'+(isSub?' readonly':'')+' required></div>'+
+'<div class="field"><label>روش پرداخت</label><select name="method" id="wpMethod">'+
+METHODS.map(function(m){return '<option'+(m===(ctx.method||'کیف پول')?' selected':'')+'>'+m+'</option>';}).join('')+'</select></div>'+
+'<div class="field full"><label>توضیح / شماره پیگیری</label><input name="note" id="wpNote" value="'+esc(ctx.note||'')+'" placeholder="اختیاری"></div></div>'+
+'<div class="wp-live" id="wpLive"><div class="wp-note info">'+icon('undo','width:16px;height:16px;margin-top:3px')+'<span>در حال بررسی موجودی کیف پول…</span></div></div>'+
+'<div class="wp-hint">در روش «کیف پول» پرداخت بدون نیاز به تأیید مالی، آنی انجام می‌شود؛ سایر روش‌ها پس از تأیید واحد مالی ثبت می‌گردند.</div>'+
+'</div><div class="mf">'+
+'<button class="btn btn-p" type="submit" id="wpBtn">'+icon('wallet','width:14px;height:14px')+' <span>پرداخت آنی از کیف پول</span></button>'+
+'<button type="button" class="btn btn-s" data-act="wpay-refresh">'+icon('undo','width:14px;height:14px')+' بروزرسانی موجودی</button>'+
+'<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+var f=payForm();
+if(f){
+f.addEventListener('input',function(e){if(e.target.id==='wpAmt')paintLive();});
+f.addEventListener('change',function(e){if(e.target.id==='wpMethod'||e.target.id==='wpAmt')paintLive();});}
+refreshQuote();}
+
 function payloadOf(){
-  var f=$('#modal form');if(!f)return null;
-  var c=W.ctx||{};
-  return {kind:c.kind||'',invoiceId:c.inv||'',requestId:c.req||'',levelId:c.plan||'',
-    amount:num(f.elements.amount.value),method:f.elements.method.value,note:f.elements.note.value};
-}
+var f=payForm();if(!f)return null;var c=W.ctx||{};
+return {kind:c.kind||'',invoiceId:c.inv||'',requestId:c.req||'',levelId:c.plan||'',
+amount:num(f.elements.amount.value),method:f.elements.method.value,note:f.elements.note.value};}
+
 function refreshQuote(silent){
-  var p=payloadOf();if(!p)return Promise.resolve();
-  return api('custWalletQuote',{kind:p.kind,invoiceId:p.invoiceId,requestId:p.requestId,levelId:p.levelId,amount:p.amount},TOKEN)
-    .then(function(q){
-      W.q=q;
-      DB.wallet=q.wallet;
-      var b=$('#wpBal'),bs=$('#wpBalSub'),d=$('#wpDue'),ds=$('#wpDueSub'),a=$('#wpAmt');
-      if(b)b.textContent=cash(q.wallet.balance);
-      if(bs)bs.textContent=toman(q.wallet.balance)+(q.wallet.exists?'':' · کیف پول هنوز ساخته نشده');
-      if(d)d.textContent=cash(q.target.remaining);
-      if(ds)ds.textContent=q.target.title+' · پرداخت‌شده: '+cash(q.target.paid);
-      if(a&&q.target.kind!=='subscription'){a.max=q.target.remaining;if(!silent&&num(a.value)>q.target.remaining)a.value=q.target.remaining;}
-      if(q.settled){
-        var live=$('#wpLive');
-        if(live)live.innerHTML='<div class="wp-note ok">'+icon('check','width:16px;height:16px;margin-top:3px')+'<span>این مورد قبلاً به‌طور کامل تسویه شده است.</span></div>';
-        var btn=$('#wpBtn');if(btn)btn.disabled=true;
-        stopPoll();return;
-      }
-      paintLive();
-    })
-    .catch(function(e){
-      var live=$('#wpLive');
-      if(live)live.innerHTML='<div class="wp-note warn">'+icon('zap','width:16px;height:16px;margin-top:3px')+
-        '<span>سرویس پرداخت کیف پول در دسترس نیست: '+esc(e.message)+'<br>می‌توانید روش پرداخت را تغییر دهید تا پرداخت به‌صورت دستی ثبت شود.</span></div>';
-      W.q=null;paintLive(true);
-    });
-}
+var p=payloadOf();if(!p)return Promise.resolve();
+return api('custWalletQuote',{kind:p.kind,invoiceId:p.invoiceId,requestId:p.requestId,levelId:p.levelId,amount:p.amount},TOKEN)
+.then(function(q){
+W.q=q;DB.wallet=q.wallet;
+var eB=$('#wpBal'),eBs=$('#wpBalSub'),eD=$('#wpDue'),eDs=$('#wpDueSub'),eA=$('#wpAmt');
+if(eB)eB.textContent=money(q.wallet.balance);
+if(eBs)eBs.textContent=toman(q.wallet.balance)+(q.wallet.exists?'':' · کیف پول هنوز ساخته نشده');
+if(eD)eD.textContent=money(q.target.remaining);
+if(eDs)eDs.textContent=q.target.title+' · پرداخت‌شده: '+money(q.target.paid);
+if(eA&&q.target.kind!=='subscription'){eA.max=q.target.remaining;if(!silent&&num(eA.value)>q.target.remaining)eA.value=q.target.remaining;}
+if(q.settled){
+var lv=$('#wpLive'),sb=$('#wpBtn');
+if(lv)lv.innerHTML='<div class="wp-note ok">'+icon('check','width:16px;height:16px;margin-top:3px')+'<span>این مورد قبلاً به‌طور کامل تسویه شده است.</span></div>';
+if(sb)sb.disabled=true;
+stopPoll();return;}
+paintLive();})
+.catch(function(e){
+W.q=null;
+var lv=$('#wpLive');
+if(lv)lv.innerHTML='<div class="wp-note warn">'+icon('zap','width:16px;height:16px;margin-top:3px')+
+'<span>سرویس پرداخت کیف پول در دسترس نیست: '+esc(e.message)+'</span></div>';
+paintLive(true);});}
+
 function paintLive(noSvc){
-  var f=$('#modal form'),live=$('#wpLive'),btn=$('#wpBtn');
-  if(!f||!live||!btn)return;
-  var method=f.elements.method.value,amt=num(f.elements.amount.value),b=bal();
-  var lbl=btn.querySelector('span');
-  btn.disabled=false;
-  if(method!=='کیف پول'){
-    stopPoll();
-    if(lbl)lbl.textContent='ثبت پرداخت';
-    if(noSvc&&method==='کیف پول')return;
-    live.innerHTML='<div class="wp-note info">'+icon('clock','width:16px;height:16px;margin-top:3px')+
-      '<span>این پرداخت با روش <b>'+esc(method)+'</b> ثبت و به صف تأیید مالی ارسال می‌شود. برای تسویهٔ فوری، روش «کیف پول» را انتخاب کنید.</span></div>';
-    return;
-  }
-  if(lbl)lbl.textContent='پرداخت آنی از کیف پول';
-  if(!(amt>0)){
-    btn.disabled=true;
-    live.innerHTML='<div class="wp-note warn">'+icon('zap','width:16px;height:16px;margin-top:3px')+'<span>مبلغ پرداخت را وارد کنید.</span></div>';
-    return;
-  }
-  if(!W.q){
-    btn.disabled=true;
-    live.innerHTML='<div class="wp-note warn">'+icon('zap','width:16px;height:16px;margin-top:3px')+
-      '<span>امکان بررسی موجودی نیست. روش پرداخت را تغییر دهید یا صفحه را تازه‌سازی کنید.</span>'+
-      '</div><div class="wp-acts">'+btn('wpay-method','تغییر روش پرداخت','undo','btn-s btn-sm')+'</div>';
-    return;
-  }
-  var short=Math.max(0,amt-b);
-  if(short>0){
-    btn.disabled=true;
-    live.innerHTML='<div class="wp-note bad">'+icon('alert','width:17px;height:17px;margin-top:3px')+
-      '<div style="flex:1"><b>موجودی کیف پول کافی نیست</b>'+
-      '<div class="wp-figs">'+
-      '<div class="wp-fig"><small>موجودی فعلی</small><b>'+grp(b)+'</b></div>'+
-      '<div class="wp-fig"><small>مبلغ تراکنش</small><b>'+grp(amt)+'</b></div>'+
-      '<div class="wp-fig"><small>کسری موجودی</small><b>'+grp(short)+'</b></div></div>'+
-      '<div style="margin-top:8px">برای پرداخت آنی، کیف پول را حداقل به مبلغ <b>'+cash(short)+'</b> ('+toman(short)+') شارژ کنید یا روش پرداخت را تغییر دهید.</div>'+
-      '<div class="wp-acts">'+
-      btn('wpay-topup','شارژ کیف پول','plus','btn-p btn-sm',' data-need="'+short+'"')+
-      btn('wpay-method','تغییر روش پرداخت','undo','btn-s btn-sm')+
-      btn('wpay-refresh','بررسی دوباره موجودی','clock','btn-s btn-sm')+
-      '</div></div></div>';
-    if(!W.timer)W.timer=setInterval(function(){if($('#wpAmt'))refreshQuote(true);else stopPoll();},15000);
-    return;
-  }
-  stopPoll();
-  live.innerHTML='<div class="wp-note ok">'+icon('check','width:17px;height:17px;margin-top:3px')+
-    '<div style="flex:1"><b>موجودی کافی است — پرداخت آنی انجام می‌شود</b>'+
-    '<div class="wp-figs">'+
-    '<div class="wp-fig" style="border-color:rgba(14,159,110,.3)"><small>موجودی فعلی</small><b>'+grp(b)+'</b></div>'+
-    '<div class="wp-fig" style="border-color:rgba(14,159,110,.3)"><small>مبلغ کسرشونده</small><b>'+grp(amt)+'</b></div>'+
-    '<div class="wp-fig" style="border-color:rgba(14,159,110,.3)"><small>موجودی پس از پرداخت</small><b>'+grp(b-amt)+'</b></div></div>'+
-    '<div style="margin-top:8px">معادل '+toman(amt)+' — با تأیید، مبلغ فوراً کسر و '+(W.ctx&&W.ctx.kind==='subscription'?'اشتراک فعال':'فاکتور تسویه')+' می‌شود.</div>'+
-    '</div></div>';
-}
-/* ── نتیجه ── */
+var f=payForm(),live=$('#wpLive'),sub=$('#wpBtn');
+if(!f||!live||!sub)return;
+var method=f.elements.method.value,amt=num(f.elements.amount.value),b=bal();
+var lbl=sub.querySelector('span');
+sub.disabled=false;
+if(method!=='کیف پول'){
+stopPoll();
+if(lbl)lbl.textContent='ثبت پرداخت';
+live.innerHTML='<div class="wp-note info">'+icon('clock','width:16px;height:16px;margin-top:3px')+
+'<span>این پرداخت با روش <b>'+esc(method)+'</b> ثبت و به صف تأیید مالی ارسال می‌شود. برای تسویهٔ فوری، روش «کیف پول» را انتخاب کنید.</span></div>';
+return;}
+if(lbl)lbl.textContent='پرداخت آنی از کیف پول';
+if(!(amt>0)){
+sub.disabled=true;
+live.innerHTML='<div class="wp-note warn">'+icon('zap','width:16px;height:16px;margin-top:3px')+'<span>مبلغ پرداخت را وارد کنید.</span></div>';
+return;}
+if(!W.q){
+sub.disabled=true;
+live.innerHTML='<div class="wp-note warn">'+icon('zap','width:16px;height:16px;margin-top:3px')+
+'<div style="flex:1"><b>امکان بررسی موجودی نیست</b>'+
+'<div style="margin-top:6px">'+(noSvc?'فایل <b>CustomerWallet.gs</b> را اضافه و نسخهٔ جدید Deploy کنید، یا روش پرداخت را تغییر دهید.':'روش پرداخت را تغییر دهید یا موجودی را دوباره بررسی کنید.')+'</div>'+
+'<div class="wp-acts">'+BTN('wpay-method','تغییر روش پرداخت','undo','btn-p btn-sm')+
+BTN('wpay-refresh','بررسی دوباره','undo','btn-s btn-sm')+'</div></div></div>';
+return;}
+var short=Math.max(0,amt-b);
+if(short>0){
+sub.disabled=true;
+live.innerHTML='<div class="wp-note bad">'+icon('alert','width:17px;height:17px;margin-top:3px')+
+'<div style="flex:1"><b>موجودی کیف پول کافی نیست</b>'+
+'<div class="wp-figs">'+
+'<div class="wp-fig"><small>موجودی فعلی</small><b>'+fa(grp(b))+'</b></div>'+
+'<div class="wp-fig"><small>مبلغ تراکنش</small><b>'+fa(grp(amt))+'</b></div>'+
+'<div class="wp-fig"><small>کسری موجودی</small><b>'+fa(grp(short))+'</b></div></div>'+
+'<div style="margin-top:8px">برای پرداخت آنی، کیف پول را حداقل به مبلغ <b>'+money(short)+'</b> ('+toman(short)+') شارژ کنید یا روش پرداخت را تغییر دهید.</div>'+
+'<div class="wp-acts">'+
+BTN('wpay-topup','شارژ کیف پول','plus','btn-p btn-sm',' data-need="'+short+'"')+
+BTN('wpay-method','تغییر روش پرداخت','undo','btn-s btn-sm')+
+BTN('wpay-refresh','بررسی دوباره موجودی','clock','btn-s btn-sm')+
+'</div></div></div>';
+if(!W.timer)W.timer=setInterval(function(){if($('#wpAmt'))refreshQuote(true);else stopPoll();},15000);
+return;}
+stopPoll();
+live.innerHTML='<div class="wp-note ok">'+icon('check','width:17px;height:17px;margin-top:3px')+
+'<div style="flex:1"><b>موجودی کافی است — پرداخت آنی انجام می‌شود</b>'+
+'<div class="wp-figs">'+
+'<div class="wp-fig good"><small>موجودی فعلی</small><b>'+fa(grp(b))+'</b></div>'+
+'<div class="wp-fig good"><small>مبلغ کسرشونده</small><b>'+fa(grp(amt))+'</b></div>'+
+'<div class="wp-fig good"><small>موجودی پس از پرداخت</small><b>'+fa(grp(b-amt))+'</b></div></div>'+
+'<div style="margin-top:8px">معادل '+toman(amt)+' — با تأیید، مبلغ فوراً کسر و '+(W.ctx&&W.ctx.kind==='subscription'?'اشتراک فعال':'فاکتور تسویه')+' می‌شود.</div>'+
+'</div></div>';}
+
 function successCard(r,kind){
-  stopPoll();
-  var isSub=kind==='subscription';
-  openModal('<div class="mh"><h3>پرداخت موفق</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-    '<div class="mb"><div class="wp-succ"><div class="ic1">'+icon('check','width:32px;height:32px')+'</div>'+
-    '<h4>'+esc(r.message||'پرداخت انجام شد.')+'</h4>'+
-    '<p>مبلغ <b>'+cash(r.amount)+'</b> ('+toman(r.amount)+') از کیف پول کسر شد.</p></div>'+
-    '<div class="kv" style="margin-top:14px">'+
-    '<div class="kvi"><small>شناسه تراکنش</small><b class="ltr">'+esc(r.transactionId)+'</b></div>'+
-    '<div class="kvi"><small>موجودی جدید</small><b>'+cash(r.balance)+'</b></div>'+
-    '<div class="kvi"><small>هدف پرداخت</small><b>'+esc((r.target&&r.target.title)||'—')+'</b></div>'+
-    '<div class="kvi"><small>وضعیت</small><b>'+(isSub?'اشتراک فعال شد':(r.fullyPaid?'تسویه کامل':'پرداخت جزئی ثبت شد'))+'</b></div>'+
-    '</div></div><div class="mf">'+
-    btn('wpay-wallet','مشاهده کیف پول','wallet','btn-p')+
-    (isSub?btn('go','اشتراک و تخفیف‌ها','star','btn-s',' data-page="loyalty"'):btn('go','مرکز مالی','finance','btn-s',' data-page="finance"'))+
-    '<button class="btn btn-s" data-act="mclose">بستن</button></div>',false,true);
-}
+stopPoll();
+var isSub=kind==='subscription';
+openModal('<div class="mh"><h3>پرداخت موفق</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<div class="mb"><div class="wp-succ"><div class="ic1">'+icon('check','width:32px;height:32px')+'</div>'+
+'<h4>'+esc(r.message||'پرداخت انجام شد.')+'</h4>'+
+'<p>مبلغ <b>'+money(r.amount)+'</b> ('+toman(r.amount)+') از کیف پول کسر شد.</p></div>'+
+'<div class="kv" style="margin-top:14px">'+
+'<div class="kvi"><small>شناسه تراکنش</small><b class="ltr">'+esc(r.transactionId)+'</b></div>'+
+'<div class="kvi"><small>موجودی جدید</small><b>'+money(r.balance)+'</b></div>'+
+'<div class="kvi"><small>هدف پرداخت</small><b>'+esc((r.target&&r.target.title)||'—')+'</b></div>'+
+'<div class="kvi"><small>وضعیت</small><b>'+(isSub?'اشتراک فعال شد':(r.fullyPaid?'تسویه کامل':'پرداخت جزئی ثبت شد'))+'</b></div>'+
+'</div></div><div class="mf">'+
+BTN('wpay-wallet','مشاهده کیف پول','wallet','btn-p')+
+(isSub?BTN('go','اشتراک و تخفیف‌ها','star','btn-s',' data-page="loyalty"'):BTN('go','مرکز مالی','finance','btn-s',' data-page="finance"'))+
+'<button class="btn btn-s" data-act="mclose">بستن</button></div>',false,true);}
+
 function insufficientCard(r){
-  W.q={wallet:r.wallet,target:r.target,amount:r.amount,settled:false};
-  var b=$('#wpBal');if(b)b.textContent=cash(r.balance);
-  var a=$('#wpAmt');if(a)a.value=r.amount;
-  paintLive();
-  toast('موجودی کیف پول کافی نیست — کسری '+cash(r.shortfall),'err');
-}
-/* ── شارژ ── */
+W.q={wallet:r.wallet,target:r.target,amount:r.amount,settled:false};
+var eB=$('#wpBal'),eA=$('#wpAmt');
+if(eB)eB.textContent=money(r.balance);
+if(eA)eA.value=r.amount;
+paintLive();
+toast('موجودی کیف پول کافی نیست — کسری '+money(r.shortfall),'err');}
+
 function openTopup(need,back){
-  var suggest=Math.max(100000,Math.ceil(num(need||0)/100000)*100000);
-  W.back=back||null;
-  openModal('<div class="mh"><h3>شارژ کیف پول</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-    '<form data-form="wtopup"><div class="mb">'+
-    '<div class="wp-grid">'+
-    '<div class="wp-box wp-bal"><small>موجودی فعلی</small><b>'+cash(bal())+'</b><span class="sub2">'+toman(bal())+'</span></div>'+
-    '<div class="wp-box wp-due"><small>کسری مورد نیاز</small><b>'+(need?cash(need):'—')+'</b><span class="sub2">'+(need?toman(need):'مبلغ دلخواه')+'</span></div></div>'+
-    '<div class="fgrid">'+
-    '<div class="field"><label>مبلغ شارژ (ریال) <span class="req">*</span></label>'+
-    '<input name="amount" type="number" step="1" min="100000" value="'+suggest+'" required></div>'+
-    '<div class="field"><label>روش پرداخت</label><select name="method">'+
-    ['درگاه پرداخت','کارت به کارت','حواله بانکی'].map(function(m){return '<option>'+m+'</option>';}).join('')+'</select></div>'+
-    '<div class="field full"><label>توضیح / شماره پیگیری</label><input name="note" placeholder="اختیاری"></div></div>'+
-    '<div class="wp-live"><div class="wp-note warn">'+icon('clock','width:16px;height:16px;margin-top:3px')+
-    '<span>شارژ کیف پول پس از <b>تأیید واحد مالی</b> در پنل مدیریت به موجودی اضافه می‌شود. اگر پرداخت فوری لازم دارید، از دکمهٔ «تغییر روش پرداخت» استفاده کنید.</span></div></div>'+
-    '</div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ثبت درخواست شارژ</button>'+
-    (back?btn('wtopup-back','بازگشت به پرداخت','chevR','btn-s'):'')+
-    '<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
-}
+var suggest=Math.max(100000,Math.ceil(num(need||0)/100000)*100000);
+W.back=back||null;
+openModal('<div class="mh"><h3>شارژ کیف پول</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<form data-form="wtopup"><div class="mb">'+
+'<div class="wp-grid">'+
+'<div class="wp-box wp-bal"><small>موجودی فعلی</small><b>'+money(bal())+'</b><span class="sub2">'+toman(bal())+'</span></div>'+
+'<div class="wp-box wp-due"><small>کسری مورد نیاز</small><b>'+(need?money(need):'—')+'</b><span class="sub2">'+(need?toman(need):'مبلغ دلخواه')+'</span></div></div>'+
+'<div class="fgrid">'+
+'<div class="field"><label>مبلغ شارژ (ریال) <span class="req">*</span></label>'+
+'<input name="amount" type="number" step="1" min="100000" value="'+suggest+'" required></div>'+
+'<div class="field"><label>روش پرداخت</label><select name="method">'+
+['درگاه پرداخت','کارت به کارت','حواله بانکی'].map(function(m){return '<option>'+m+'</option>';}).join('')+'</select></div>'+
+'<div class="field full"><label>توضیح / شماره پیگیری</label><input name="note" placeholder="اختیاری"></div></div>'+
+'<div class="wp-live"><div class="wp-note warn">'+icon('clock','width:16px;height:16px;margin-top:3px')+
+'<span>شارژ کیف پول پس از <b>تأیید واحد مالی</b> در پنل مدیریت به موجودی اضافه می‌شود. اگر پرداخت فوری لازم دارید، از دکمهٔ «تغییر روش پرداخت» استفاده کنید.</span></div></div>'+
+'</div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ثبت درخواست شارژ</button>'+
+(back?BTN('wtopup-back','بازگشت به پرداخت','chevR','btn-s'):'')+
+'<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);}
+
 function topupDone(r){
-  openModal('<div class="mh"><h3>درخواست شارژ ثبت شد</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-    '<div class="mb"><div class="wp-succ"><div class="ic1" style="background:rgba(217,119,6,.16);color:var(--amber)">'+icon('clock','width:32px;height:32px')+'</div>'+
-    '<h4>در انتظار تأیید مالی</h4><p>'+esc(r.message||'')+'</p></div>'+
-    '<div class="kv" style="margin-top:14px">'+
-    '<div class="kvi"><small>شناسه درخواست</small><b class="ltr">'+esc(r.id)+'</b></div>'+
-    '<div class="kvi"><small>مبلغ</small><b>'+cash(r.amount)+'</b></div>'+
-    '<div class="kvi"><small>موجودی فعلی</small><b>'+cash(r.balance)+'</b></div>'+
-    '<div class="kvi"><small>وضعیت</small><b>در انتظار</b></div></div></div>'+
-    '<div class="mf">'+(W.back?btn('wtopup-back','بازگشت به پرداخت','chevR','btn-p'):'')+
-    btn('wpay-wallet','کیف پول من','wallet','btn-s')+'<button class="btn btn-s" data-act="mclose">بستن</button></div>',false,true);
-}
-/* ── تاریخچه کیف پول ── */
+openModal('<div class="mh"><h3>درخواست شارژ ثبت شد</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+'<div class="mb"><div class="wp-succ"><div class="ic1" style="background:rgba(217,119,6,.16);color:var(--amber)">'+icon('clock','width:32px;height:32px')+'</div>'+
+'<h4>در انتظار تأیید مالی</h4><p>'+esc(r.message||'')+'</p></div>'+
+'<div class="kv" style="margin-top:14px">'+
+'<div class="kvi"><small>شناسه درخواست</small><b class="ltr">'+esc(r.id)+'</b></div>'+
+'<div class="kvi"><small>مبلغ</small><b>'+money(r.amount)+'</b></div>'+
+'<div class="kvi"><small>موجودی فعلی</small><b>'+money(r.balance)+'</b></div>'+
+'<div class="kvi"><small>وضعیت</small><b>در انتظار</b></div></div></div>'+
+'<div class="mf">'+(W.back?BTN('wtopup-back','بازگشت به پرداخت','chevR','btn-p'):'')+
+BTN('wpay-wallet','کیف پول من','wallet','btn-s')+'<button class="btn btn-s" data-act="mclose">بستن</button></div>',false,true);}
+
 function walletTxCard(){
-  var rows=(DB.transactions||[]).filter(function(t){
-    return /کیف پول/.test(t.method||'')||/شارژ/.test(t.type||'');});
-  if(!rows.length)return '';
-  return '<div class="card" style="margin-top:16px"><h3 style="margin-bottom:12px;display:flex;gap:8px;align-items:center">'+
-    icon('wallet','width:15px;height:15px;color:var(--teal)')+' گردش کیف پول ('+fa(rows.length)+')</h3>'+
-    '<div class="tw"><table class="tb"><thead><tr><th>شناسه</th><th>تاریخ</th><th>نوع</th><th>مبلغ</th><th>روش</th><th>مرتبط</th><th>وضعیت</th></tr></thead><tbody>'+
-    rows.slice(0,40).map(function(t){
-      var inn=/شارژ/.test(t.type||'');
-      return '<tr><td><b class="ltr">'+esc(t.id)+'</b></td><td>'+jDisp(t.date)+'</td><td>'+pill(t.type)+'</td>'+
-        '<td class="num '+(inn?'wp-tx-in':'wp-tx-out')+'">'+(inn?'+':'−')+money(t.amount)+'</td>'+
-        '<td>'+esc(t.method||'—')+'</td><td>'+esc(t.invoiceId||t.requestId||'—')+'</td><td>'+pill(t.status)+'</td></tr>';
-    }).join('')+'</tbody></table></div></div>';
-}
-/* ── جایگزینی مودال‌ها ── */
+var rows=(DB.transactions||[]).filter(function(t){return /کیف پول/.test(t.method||'')||/شارژ/.test(t.type||'');});
+if(!rows.length)return '';
+return '<div class="card" style="margin-top:16px"><h3 style="margin-bottom:12px;display:flex;gap:8px;align-items:center">'+
+icon('wallet','width:15px;height:15px;color:var(--teal)')+' گردش کیف پول ('+fa(rows.length)+')</h3>'+
+'<div class="tw"><table class="tb"><thead><tr><th>شناسه</th><th>تاریخ</th><th>نوع</th><th>مبلغ</th><th>روش</th><th>مرتبط</th><th>وضعیت</th></tr></thead><tbody>'+
+rows.slice(0,40).map(function(t){var inn=/شارژ/.test(t.type||'');
+return '<tr><td><b class="ltr">'+esc(t.id)+'</b></td><td>'+jDisp(t.date)+'</td><td>'+pill(t.type)+'</td>'+
+'<td class="num '+(inn?'wp-tx-in':'wp-tx-out')+'">'+(inn?'+':'−')+money(t.amount)+'</td>'+
+'<td>'+esc(t.method||'—')+'</td><td>'+esc(t.invoiceId||t.requestId||'—')+'</td><td>'+pill(t.status)+'</td></tr>';}).join('')+
+'</tbody></table></div></div>';}
+
+/* ═══ 6) جایگزینی مودال‌ها و اکشن‌ها ═══ */
 window.payModal=function(inv,req,amt){
-  openPay({kind:inv?'invoice':'order',inv:inv||'',req:req||'',amount:num(amt),method:'کیف پول',
-    title:inv?('فاکتور '+inv):('سفارش '+req)});
-};
+openPay({kind:inv?'invoice':'order',inv:inv||'',req:req||'',amount:num(amt),method:'کیف پول',
+title:inv?('فاکتور '+inv):('سفارش '+req)});};
 window.topupModal=function(){openTopup(0,null);};
 ACT['wallet-topup']=function(){openTopup(0,null);};
 ACT['buy-plan']=function(d){
-  openPay({kind:'subscription',plan:d.id,name:d.name,amount:num(d.price),method:'کیف پول',
-    title:'اشتراک '+d.name+' · '+fa(d.validity||30)+' روز'});
-};
+openPay({kind:'subscription',plan:d.id,name:d.name,amount:num(d.price),method:'کیف پول',
+title:'اشتراک '+d.name+' · '+fa(d.validity||30)+' روز'});};
 ACT['wpay-refresh']=function(){return refreshQuote();};
 ACT['wpay-method']=function(){
-  var s=$('#wpMethod');if(!s)return;
-  s.value='درگاه پرداخت';
-  if(s._sync)s._sync();
-  s.dispatchEvent(new Event('change',{bubbles:true}));
-  var w=s.closest('.zsel')||s;w.classList.add('wp-flash');setTimeout(function(){w.classList.remove('wp-flash');},900);
-  paintLive();toast('روش پرداخت به «درگاه پرداخت» تغییر کرد.','ok');
-};
+var s=$('#wpMethod');if(!s)return;
+s.value='درگاه پرداخت';
+if(s._sync)s._sync();
+var w=s.closest('.zsel')||s;w.classList.add('wp-flash');setTimeout(function(){w.classList.remove('wp-flash');},900);
+paintLive();toast('روش پرداخت به «درگاه پرداخت» تغییر کرد.','ok');};
 ACT['wpay-topup']=function(d){
-  var f=$('#modal form');
-  var back=W.ctx?Object.assign({},W.ctx,{amount:num(f?f.elements.amount.value:W.ctx.amount),method:'کیف پول',note:f?f.elements.note.value:''}):null;
-  openTopup(num(d.need),back);
-};
+var f=payForm();
+var back=W.ctx?Object.assign({},W.ctx,{amount:num(f?f.elements.amount.value:W.ctx.amount),method:'کیف پول',note:f?f.elements.note.value:''}):null;
+openTopup(num(d.need),back);};
 ACT['wtopup-back']=function(){if(W.back)openPay(W.back);else closeModal();};
 ACT['wpay-wallet']=function(){closeModal();go('wallet');};
 var _close=window.closeModal;
 window.closeModal=function(){stopPoll();return _close.apply(this,arguments);};
+ACT['mclose']=window.closeModal;
 var _walletPage=window.walletPage;
 if(typeof _walletPage==='function'){
-  window.walletPage=function(){
-    return Promise.resolve(_walletPage.apply(this,arguments)).then(function(h){return h+walletTxCard();});
-  };
-}
-/* ── ارسال فرم‌ها ── */
+window.walletPage=function(){return Promise.resolve(_walletPage.apply(this,arguments)).then(function(h){return h+walletTxCard();});};}
+
+/* ═══ 7) ارسال فرم‌ها ═══ */
 document.addEventListener('submit',function(e){
-  var f=e.target,k=f.dataset?f.dataset.form:'';
-  if(k!=='wpay'&&k!=='wtopup')return;
-  e.preventDefault();
-  if(W.busy)return;
-  var sub=f.querySelector('[type="submit"]');
-  if(k==='wtopup'){
-    var a=num(f.elements.amount.value);
-    if(a<100000){toast('حداقل مبلغ شارژ ۱۰۰٬۰۰۰ ریال است.','err');return;}
-    W.busy=true;if(sub)sub.disabled=true;
-    api('custWalletTopupRequest',a,f.elements.method.value,f.elements.note.value,TOKEN)
-      .then(function(r){topupDone(r);return reload();})
-      .catch(function(x){toast(x.message,'err');if(sub)sub.disabled=false;})
-      .then(function(){W.busy=false;});
-    return;
-  }
-  var p=payloadOf();if(!p)return;
-  if(!(p.amount>0)){toast('مبلغ پرداخت معتبر نیست.','err');return;}
-  if(p.method==='کیف پول'&&W.q&&p.amount>bal()){
-    paintLive();toast('موجودی کیف پول کافی نیست.','err');return;
-  }
-  W.busy=true;if(sub)sub.disabled=true;
-  var done=function(){W.busy=false;if(sub)sub.disabled=false;};
-  if(p.method==='کیف پول'){
-    api('custPayWithWallet',p,TOKEN).then(function(r){
-      if(r&&r.success){
-        DB.wallet=r.wallet;
-        if(USER&&r.wallet){USER.credit=r.wallet.credit;USER.debit=r.wallet.debit;}
-        successCard(r,p.kind);
-        return reload();
-      }
-      if(r&&r.code==='INSUFFICIENT_FUNDS'){insufficientCard(r);return;}
-      if(r&&r.code==='ALREADY_PAID'){toast(r.message,'warn');return reload().then(closeModal);}
-      toast((r&&r.message)||'پرداخت ناموفق بود.','err');
-    }).catch(function(x){
-      var m=String(x&&x.message||x);
-      if(/نصب نیست|not a function/i.test(m)){
-        toast('سرویس کیف پول نصب نیست؛ روش پرداخت را تغییر دهید.','err');
-        var live=$('#wpLive');
-        if(live)live.innerHTML='<div class="wp-note warn">'+icon('zap','width:16px;height:16px;margin-top:3px')+
-          '<span>پرداخت آنی کیف پول هنوز فعال نشده است. با «تغییر روش پرداخت» پرداخت را ثبت کنید.</span></div>'+
-          '<div class="wp-acts">'+btn('wpay-method','تغییر روش پرداخت','undo','btn-p btn-sm')+'</div>';
-      } else toast(m,'err');
-    }).then(done);
-    return;
-  }
-  var req=(p.kind==='subscription')
-    ? api('custBuySubscription',{levelId:p.levelId,method:p.method,note:p.note},TOKEN)
-    : api('custRequestPayment',{amount:p.amount,method:p.method,note:p.note,invoiceId:p.invoiceId,requestId:p.requestId},TOKEN);
-  req.then(function(r){
-    closeModal();toast((r&&r.message)||'پرداخت ثبت شد و در انتظار تأیید مالی است.','ok');
-    if(p.kind==='subscription')PS.page='loyalty';
-    return reload();
-  }).catch(function(x){toast(x.message,'err');}).then(done);
-});
-/* ── همگام‌سازی موجودی ── */
+var f=e.target,k=f.dataset?f.dataset.form:'';
+if(k!=='wpay'&&k!=='wtopup')return;
+e.preventDefault();e.stopPropagation();
+if(W.busy)return;
+var sub=f.querySelector('[type="submit"]');
+if(k==='wtopup'){
+var a=num(f.elements.amount.value);
+if(a<100000){toast('حداقل مبلغ شارژ ۱۰۰٬۰۰۰ ریال است.','err');return;}
+W.busy=true;if(sub)sub.disabled=true;
+api('custWalletTopupRequest',a,f.elements.method.value,f.elements.note.value,TOKEN)
+.then(function(r){topupDone(r);return reload();})
+.catch(function(x){toast(x.message,'err');if(sub)sub.disabled=false;})
+.then(function(){W.busy=false;});
+return;}
+var p=payloadOf();if(!p)return;
+if(!(p.amount>0)){toast('مبلغ پرداخت معتبر نیست.','err');return;}
+if(p.method==='کیف پول'&&W.q&&p.amount>bal()){paintLive();toast('موجودی کیف پول کافی نیست.','err');return;}
+W.busy=true;if(sub)sub.disabled=true;
+var done=function(){W.busy=false;var s2=$('#wpBtn');if(s2)s2.disabled=false;};
+if(p.method==='کیف پول'){
+api('custPayWithWallet',p,TOKEN).then(function(r){
+if(r&&r.success){
+DB.wallet=r.wallet;
+if(USER&&r.wallet){USER.credit=r.wallet.credit;USER.debit=r.wallet.debit;}
+successCard(r,p.kind);return reload();}
+if(r&&r.code==='INSUFFICIENT_FUNDS'){insufficientCard(r);return;}
+if(r&&r.code==='ALREADY_PAID'){toast(r.message,'warn');return reload().then(closeModal);}
+toast((r&&r.message)||'پرداخت ناموفق بود.','err');
+}).catch(function(x){
+var m=String(x&&x.message||x);
+toast(m,'err');
+var lv=$('#wpLive');
+if(lv)lv.innerHTML='<div class="wp-note warn">'+icon('zap','width:16px;height:16px;margin-top:3px')+
+'<div style="flex:1"><b>پرداخت آنی انجام نشد</b><div style="margin-top:6px">'+esc(m)+'</div>'+
+'<div class="wp-acts">'+BTN('wpay-method','تغییر روش پرداخت','undo','btn-p btn-sm')+'</div></div></div>';
+}).then(done);
+return;}
+var req=(p.kind==='subscription')
+?api('custBuySubscription',{levelId:p.levelId,method:p.method,note:p.note},TOKEN)
+:api('custRequestPayment',{amount:p.amount,method:p.method,note:p.note,invoiceId:p.invoiceId,requestId:p.requestId},TOKEN);
+req.then(function(r){
+closeModal();toast((r&&r.message)||'پرداخت ثبت شد و در انتظار تأیید مالی است.','ok');
+if(p.kind==='subscription')PS.page='loyalty';
+return reload();}).catch(function(x){toast(x.message,'err');}).then(done);
+},true);
+
+/* ═══ 8) همگام‌سازی موجودی ═══ */
 var _load=window.loadData;
 window.loadData=function(){
-  return _load.apply(this,arguments).then(function(r){
-    return api('custWalletBalance',TOKEN).then(function(w){if(w&&w.wallet)DB.wallet=w.wallet;return r;}).catch(function(){return r;});
-  });
-};
+return _load.apply(this,arguments).then(function(r){
+return api('custWalletBalance',TOKEN).then(function(w){if(w&&w.wallet)DB.wallet=w.wallet;return r;}).catch(function(){return r;});});};
+
+/* ═══ 9) بازچینی امن ═══ */
+setTimeout(enhanceAmounts,120);
+if(window.USER&&typeof window.render==='function')render();
+window.ZVCstPay={quote:refreshQuote,open:openPay,topup:openTopup};
 })();
 </script>
 </body>
