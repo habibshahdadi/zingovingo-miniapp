@@ -867,7 +867,7 @@ sec.innerHTML='<div class="wrap">'+
 '<span class="pill p-brand">نظرات و امتیاز کاربران</span>'+
 '<h2 style="margin:14px 0 12px">تجربهٔ واقعی مشتریان <span class="brand-word" style="font-size:.9em">Zingo<span>Vingo</span></span></h2>'+
 '<div class="line" style="margin:0 0 14px"></div>'+
-'<p style="font-size:13px;color:var(--muted);line-height:2">هر نظر پس از بررسی و تأیید تیم مدیریت، به‌صورت خودکار به این کاروسل افزوده می‌شود. نشان «تأییدشده» یعنی نظر از یک درخواست واقعی ثبت شده است.</p>'+
+'<p style="font-size:13px;color:var(--muted);line-height:2">هر نظر پس از بررسی و تأیید تیم پشتیبانی، به‌صورت خودکار به این کاروسل افزوده می‌شود. نشان «تأییدشده» یعنی نظر از یک درخواست واقعی ثبت شده است.</p>'+
 '<div class="acts" style="margin:16px 0 0"><button class="btn btn-p" data-zrv="go-form">'+icon('star','width:16px;height:16px')+' ثبت نظر و امتیاز</button></div>'+
 '</div><div class="zrv-sum" id="zrvSum"></div></div>'+
 '<div class="zrv-stage" id="zrvStage"></div><div class="zrv-cap" id="zrvCap"></div>'+
@@ -925,7 +925,7 @@ if(!items.length){stage.innerHTML='<div class="wrap"><div class="zrv-empty">هن
 var k=Math.floor(items.length/2);
 var rowB=items.length>1?items.slice(k).concat(items.slice(0,k)):items.slice();
 stage.innerHTML=trackHtml(items,false,54,3)+trackHtml(rowB,true,47,11);
-if(cap)cap.textContent=d.demo?'نمونه‌های نمایشی — با تأیید اولین نظر واقعی، به‌صورت خودکار جایگزین می‌شوند':'نظرات تأییدشده به‌صورت خودکار و بدون نیاز به تازه‌سازی صفحه به‌روزرسانی می‌شوند';}
+if(cap)cap.textContent=d.demo?'نمونه‌های نمایشی — با تأیید اولین نظر واقعی، به‌صورت خودکار جایگزین می‌شوند':'برای مشاهده کامل متن، یک نظر را انتخاب کنید.';}
 function sigOf(d){return JSON.stringify((d.items||[]).map(function(r){return [r.id,r.rating,r.reply,r.featured,r.title];}))+'|'+(d.demo?1:0)+'|'+(d.count||0);}
 function apply(d){
 S.data=d;var sec=$('#reviews');
