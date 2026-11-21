@@ -1179,5 +1179,205 @@ api('custCCSession',TOKEN).then(function(r){USER=r.user;return loadData();}).the
 .catch(function(){localStorage.removeItem('zv_cst_token');TOKEN='';USER=null;$('#app').style.display='none';$('#loginView').style.display='grid';});
 })();
 </script>
+  <script>
+/* ═══ ZingoVingo Customer V5 — خوانایی · فرمت مالی · پروفایل · خرید اشتراک ═══ */
+(function(){
+'use strict';
+if(window.__zvCstV5)return;window.__zvCstV5=true;
+
+/* ── ۱) CSS: خوانایی فیلدها در مودال تیره + برچسب‌ها ── */
+var CSS=[
+'.modal.dk{color-scheme:dark}',
+'[data-theme=dark] input,[data-theme=dark] select,[data-theme=dark] textarea{color-scheme:dark}',
+'.modal.dk input,.modal.dk select,.modal.dk textarea{background:rgba(255,255,255,.08)!important;border:1px solid #3A4880!important;color:#fff!important}',
+'.modal.dk input::placeholder,.modal.dk textarea::placeholder{color:#93A3C8!important;opacity:1}',
+'.modal.dk input[readonly],.modal.dk input:disabled{background:rgba(255,107,26,.14)!important;border-color:rgba(255,107,26,.4)!important;color:#FFC79E!important;font-weight:800}',
+'.modal.dk input[type=time]::-webkit-calendar-picker-indicator,.modal.dk input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1) opacity(.75)}',
+'.modal.dk .side-i{border-bottom:1px dashed #2E3A66;color:#E9EEFC}',
+'.modal.dk .side-i span{color:#E9EEFC}.modal.dk .side-i .hint{color:#93A3C8}',
+'.modal.dk .zsel-btn{color:#fff!important}.modal.dk .zsel-opt{color:#fff!important}',
+'.modal.dk .card{background:rgba(255,255,255,.05)!important;border-color:#2E3A66!important;color:#fff!important}',
+'.modal.dk .kvi{background:rgba(255,255,255,.06);border-color:#2E3A66}.modal.dk .kvi b{color:#fff}.modal.dk .kvi small{color:#93A3C8}',
+'.modal.dk .sec-t:after{background:#2E3A66}',
+'.amt-hint{display:flex;flex-direction:column;gap:2px;margin-top:6px;font-size:10.5px;line-height:1.8;color:var(--muted)}',
+'.amt-hint b{color:var(--brandDeep);font-weight:900;font-variant-numeric:tabular-nums}',
+'.modal.dk .amt-hint{color:#93A3C8}.modal.dk .amt-hint b{color:#FFB25E}',
+'.wcard .amt-hint{color:#D3DCF5}.wcard .amt-hint b{color:#FFB25E}',
+'.ftag{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:800;padding:1px 8px;border-radius:20px;margin-inline-start:6px;vertical-align:1px}',
+'.ftag.e{background:rgba(14,159,110,.13);color:var(--green)}',
+'.ftag.r{background:rgba(224,45,60,.12);color:var(--red)}',
+'.ftag.l{background:rgba(100,116,139,.14);color:var(--slate)}',
+'.plegend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);background:var(--surface2);border:1px dashed var(--line2);border-radius:11px;padding:9px 12px;margin-bottom:14px}',
+'.plan-price{font-size:15px;font-weight:900;color:var(--brandDeep);margin-top:6px}',
+'.plan-sub{font-size:10px;color:var(--muted);line-height:1.8}'
+].join('');
+var st=document.createElement('style');st.id='zvCstV5Css';st.textContent=CSS;document.head.appendChild(st);
+
+/* ── ۲) فرمت مالی: کاما + تومان + حروف ── */
+function grp(n){return String(Math.round(Math.abs(num(n)))).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+window.money=function(n){return (num(n)<0?'−':'')+fa(grp(n))+' '+CUR;};
+window.moneyC=function(n){n=num(n);var s=n<0?'−':'';
+  if(Math.abs(n)>=1e9)return s+fa((Math.abs(n)/1e9).toFixed(1))+' میلیارد';
+  if(Math.abs(n)>=1e6)return s+fa((Math.abs(n)/1e6).toFixed(1))+' میلیون';
+  return s+fa(grp(n));};
+function toman(n){return fa(grp(Math.round(num(n)/10)))+' تومان';}
+var W1=['','یک','دو','سه','چهار','پنج','شش','هفت','هشت','نه'],
+W10=['ده','یازده','دوازده','سیزده','چهارده','پانزده','شانزده','هفده','هجده','نوزده'],
+W20=['','','بیست','سی','چهل','پنجاه','شصت','هفتاد','هشتاد','نود'],
+W100=['','یکصد','دویست','سیصد','چهارصد','پانصد','ششصد','هفتصد','هشتصد','نهصد'],
+WS=['','هزار','میلیون','میلیارد','بیلیون'];
+function three(n){var o=[],h=Math.floor(n/100),r=n%100;
+  if(h)o.push(W100[h]);
+  if(r>=10&&r<20)o.push(W10[r-10]);
+  else{var t=Math.floor(r/10),u=r%10;if(t)o.push(W20[t]);if(u)o.push(W1[u]);}
+  return o.join(' و ');}
+function numWords(v){var n=Math.round(Math.abs(num(v)));if(!n)return 'صفر';
+  var g=[],i=0;
+  while(n>0){var c=n%1000;
+    if(c){var s=three(c);if(i===1&&c===1)s='هزار';else if(WS[i])s+=' '+WS[i];g.unshift(s);}
+    n=Math.floor(n/1000);i++;}
+  return g.join(' و ');}
+function amtHint(n){n=num(n);
+  return '<div class="amt-hint"><span>معادل <b>'+toman(n)+'</b></span><span>'+numWords(Math.round(n/10))+' تومان</span></div>';}
+
+/* ── ۳) تزریق راهنمای مبلغ زیر فیلدها و کارت‌ها ── */
+function enhanceAmounts(){
+  $$('input[name="amount"]').forEach(function(inp){
+    var f=inp.closest('.field')||inp.parentNode;
+    if(!f||f._amt)return;f._amt=true;
+    var box=document.createElement('div');box.className='amt-hint';f.appendChild(box);
+    var upd=function(){var v=num(inp.value);
+      box.innerHTML=v>0?'<span>معادل <b>'+toman(v)+'</b></span><span>'+numWords(Math.round(v/10))+' تومان</span>':'<span>مبلغ را وارد کنید</span>';};
+    inp.addEventListener('input',upd);inp.addEventListener('change',upd);upd();
+  });
+  $$('.wcard .bal').forEach(function(el){
+    if(el._amt)return;el._amt=true;
+    var v=num(en(el.textContent).replace(/[^\d]/g,''));
+    el.insertAdjacentHTML('afterend',amtHint(v));
+  });
+}
+var _oi=window.orderInvoice;
+if(typeof _oi==='function'){
+  window.orderInvoice=function(id){
+    return Promise.resolve(_oi(id)).then(function(){
+      var box=$('#invBox');if(!box||box._amt)return;box._amt=true;
+      var o=(DB.orders||[]).filter(function(x){return x.requestId===id;})[0]||{};
+      var inv=(DB.invoices||[]).filter(function(x){return x.requestId===id;})[0];
+      box.insertAdjacentHTML('beforeend',amtHint(inv?inv.total:o.finalPrice));
+    });
+  };
+}
+if(window.MutationObserver){
+  var t=null;
+  new MutationObserver(function(){clearTimeout(t);t=setTimeout(enhanceAmounts,60);})
+    .observe(document.body,{childList:true,subtree:true});
+}
+
+/* ── ۴) پروفایل: فیلدهای قابل تغییر / اجباری / فقط خواندنی ── */
+window.profilePage=function(){
+  var p=USER||{};
+  var photo=p.avatar?'<img src="'+esc(p.avatar)+'" alt="">':esc(String(p.fullName||'؟').trim().charAt(0));
+  var E='<span class="ftag e">قابل ویرایش</span>',R='<span class="ftag r">الزامی</span>',L='<span class="ftag l">فقط خواندنی</span>';
+  function fld(n,l,v,req,ex){
+    return '<div class="field'+(ex&&ex.full?' full':'')+'"><label>'+esc(l)+E+(req?R:'')+'</label>'+
+      (ex&&ex.ta?'<textarea name="'+n+'"'+(req?' required':'')+'>'+esc(v||'')+'</textarea>'
+       :'<input name="'+n+'" value="'+esc(v||'')+'"'+(req?' required':'')+(ex&&ex.attr?' '+ex.attr:'')+'>')+
+      (ex&&ex.hint?'<span class="hint">'+esc(ex.hint)+'</span>':'')+'</div>';
+  }
+  function ro(l,v){return '<div class="field"><label>'+esc(l)+L+'</label><input value="'+esc(v==null||v===''?'—':v)+'" readonly></div>';}
+  return head('پروفایل من','حساب کاربری مشتری')+
+  '<div class="profile-layout"><div class="card profile-photo-card"><div class="av lg" style="margin:0 auto 14px">'+photo+'</div>'+
+  '<h3>'+esc(p.fullName||'—')+'</h3><div class="sub">'+esc(p.level||'عادی')+' · '+esc(p.customerId||'')+'</div>'+
+  '<div style="margin-top:14px">'+btn('photo-edit','تغییر تصویر','cam','btn-p btn-sm')+'</div></div>'+
+  '<div class="card"><div class="plegend"><span>'+E+' قابل تغییر توسط شما</span><span>'+R+' باید پر باشد</span><span>'+L+' توسط سامانه تعیین می‌شود</span></div>'+
+  '<div class="sec-t" style="margin-top:0">اطلاعات سامانه‌ای</div><div class="fgrid">'+
+  ro('کد اشتراک',p.customerId)+ro('نام کاربری',p.username)+
+  ro('سطح اشتراک',(p.level||'عادی')+' · '+fa(p.discountRate||0)+'٪ تخفیف')+ro('تاریخ عضویت',jDisp(p.joinDate))+
+  ro('کل سفارش',fa(p.totalOrders||0))+ro('مجموع خرید',money(p.totalPayments||0))+'</div>'+
+  '<div class="sec-t">اطلاعات قابل ویرایش</div>'+
+  '<form data-form="profile"><div class="fgrid">'+
+  fld('firstName','نام',p.firstName,true)+
+  fld('lastName','نام خانوادگی',p.lastName,true)+
+  fld('phone','موبایل',p.phone,true,{attr:'dir="ltr" style="text-align:right" inputmode="tel"',hint:'۱۱ رقم و با 09 شروع شود؛ برای ورود با کد یکبار مصرف هم استفاده می‌شود.'})+
+  fld('email','ایمیل',p.email,false,{attr:'type="email" dir="ltr" style="text-align:right"'})+
+  fld('province','استان',p.province,false)+
+  fld('city','شهر',p.city,false)+
+  fld('postalCode','کد پستی',p.postalCode,false,{attr:'dir="ltr" style="text-align:right" inputmode="numeric"'})+
+  fld('password','رمز عبور جدید','',false,{attr:'type="password" placeholder="خالی = بدون تغییر"',hint:'حداقل ۴ کاراکتر؛ در صورت خالی‌بودن تغییر نمی‌کند.'})+
+  fld('address','آدرس',p.address,false,{full:true,ta:true})+
+  '</div><br><button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ذخیره تغییرات</button></form></div></div>';
+};
+document.addEventListener('submit',function(e){
+  var f=e.target;if(!f.dataset||f.dataset.form!=='profile')return;
+  var g=function(n){return f.elements[n]?String(f.elements[n].value).trim():'';};
+  var bad='';
+  if(g('firstName').length<2) bad='نام را کامل وارد کنید.';
+  else if(g('lastName').length<2) bad='نام خانوادگی را کامل وارد کنید.';
+  else if(!/^09\d{9}$/.test(en(g('phone')).replace(/[\s-]/g,''))) bad='شماره موبایل باید ۱۱ رقم و با 09 شروع شود.';
+  else if(g('email')&&!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(g('email'))) bad='ایمیل واردشده معتبر نیست.';
+  else if(g('password')&&g('password').length<4) bad='رمز عبور جدید حداقل ۴ کاراکتر باشد.';
+  if(bad){e.preventDefault();e.stopPropagation();toast(bad,'err');}
+},true);
+
+/* ── ۵) اشتراک‌ها: دکمه خرید برای هر سطح ── */
+window.loyaltyPage=function(){
+  var L=DB.loyalty||{},offs=DB.offers||[],red=DB.redemptions||[],lv=L.levels||[];
+  var colors={'عادی':'var(--slate)','نقره‌ای':'var(--blue)','طلایی':'var(--amber)','پلاتینیوم':'var(--violet)'};
+  var h=head('اشتراک و تخفیف‌ها','سطح فعلی: '+esc(USER.level||'عادی')+' · '+fa(USER.discountRate||0)+'٪ تخفیف',
+    btn('refresh','بروزرسانی','undo','btn-s'));
+  h+='<div class="card" style="margin-bottom:16px"><div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">'+
+    '<div style="flex:1;min-width:220px"><b style="font-size:15px">مسیر ارتقای اشتراک</b>'+
+    '<p class="sub" style="margin-top:4px">'+(L.next?('برای رسیدن به سطح <b>'+esc(L.next.name)+'</b>، '+fa(L.remainOrders)+' سفارش دیگر لازم است — یا همین حالا آن را خریداری کنید.'):'شما در بالاترین سطح اشتراک هستید.')+'</p></div>'+
+    '<div style="min-width:220px;flex:1">'+bar(L.progress||0)+'<div class="sub" style="margin-top:6px">'+pct(L.progress||0)+' · '+fa(L.orders||0)+' سفارش · '+money(L.payments||0)+'</div></div></div>'+
+    (L.subEnd?'<div class="sub" style="margin-top:12px">اعتبار اشتراک: '+jDisp(L.subStart)+' تا '+jDisp(L.subEnd)+'</div>':'')+'</div>';
+  h+='<div class="lv-grid" style="margin-bottom:18px">'+(lv.length?lv.map(function(l){
+    var on=l.name===(USER.level||'عادی'),c=colors[l.name]||'var(--brand)',price=num(l.monthly)||num(l.minAmount);
+    return '<div class="lv'+(on?' on':'')+'" style="--lc:'+c+'">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center">'+icon('star','width:18px;height:18px;color:'+c)+(on?'<span class="pill p-brand">اشتراک فعلی</span>':'')+'</div>'+
+      '<h4>'+esc(l.name)+'</h4><div class="pct">'+fa(l.value)+'٪</div>'+
+      '<ul><li>حداقل سفارش: '+fa(l.minOrders)+'</li><li>حداقل خرید: '+moneyC(l.minAmount)+' '+CUR+'</li>'+
+      '<li>اعتبار: '+fa(l.validity||30)+' روز</li></ul>'+
+      '<div class="plan-price">'+(price>0?money(price):'رایگان / توافقی')+'</div>'+
+      '<div class="plan-sub">'+(price>0?'معادل '+toman(price):'برای فعال‌سازی با پشتیبانی هماهنگ شود')+'</div>'+
+      '<div style="margin-top:12px">'+(on
+        ?'<button class="btn btn-s btn-sm" disabled>'+icon('check','width:13px;height:13px')+' فعال است</button>'
+        :btn('buy-plan','خرید اشتراک','wallet','btn-p btn-sm',' data-id="'+esc(l.id)+'" data-name="'+esc(l.name)+'" data-price="'+price+'" data-validity="'+(l.validity||30)+'"'))+
+      '</div></div>';
+  }).join(''):'<div class="card"><p class="sub">سطح اشتراکی تعریف نشده است.</p></div>')+'</div>';
+  h+='<div class="grid charts"><div class="cbox"><h3>'+icon('offer','width:15px;height:15px;color:var(--brand)')+' کدهای تخفیف فعال ('+fa(offs.length)+')</h3>'+
+    (offs.length?offs.map(function(o){return '<div class="code"><b>'+esc(o.code)+'</b><span class="pill p-green">'+fa(o.percent)+'٪</span>'+
+      '<span class="sub" style="flex:1">'+(o.end?'تا '+jDisp(o.end):'بدون انقضا')+' · استفاده شما: '+fa(o.used)+'</span>'+
+      ibtn('copy-code','save','کپی کد',' data-code="'+esc(o.code)+'"')+'</div>';}).join(''):'<p class="sub">کد تخفیف فعالی وجود ندارد.</p>')+'</div>'+
+    '<div class="cbox"><h3>'+icon('receipt','width:15px;height:15px;color:var(--teal)')+' تخفیف‌های استفاده‌شده ('+fa(red.length)+')</h3>'+
+    (red.length?red.slice(0,10).map(function(r){return '<div class="rank"><div class="info"><b>'+esc(r.code)+'</b><small>'+esc(r.requestId)+' · '+jDT(r.at)+'</small></div><span class="v">'+money(r.amount)+'</span></div>';}).join(''):'<p class="sub">هنوز از کد تخفیفی استفاده نکرده‌اید.</p>')+'</div></div>';
+  return h;
+};
+ACT['buy-plan']=function(d){
+  var price=num(d.price);
+  openModal('<div class="mh"><h3>خرید اشتراک '+esc(d.name)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+    '<form data-form="buy-plan" data-id="'+esc(d.id)+'"><div class="mb">'+
+    kv([['سطح فعلی',esc(USER.level||'عادی')],['سطح جدید',esc(d.name)],['مدت اعتبار',fa(d.validity)+' روز'],['وضعیت پس از خرید','در انتظار تأیید مالی']])+
+    '<div class="fgrid" style="margin-top:12px">'+
+    '<div class="field"><label>مبلغ (ریال)</label><input name="amountView" value="'+price+'" readonly></div>'+
+    '<div class="field"><label>روش پرداخت</label><select name="method"><option>درگاه پرداخت</option><option>کارت به کارت</option><option>حواله بانکی</option><option>کیف پول</option></select></div>'+
+    '<div class="field full"><label>توضیح / شماره پیگیری</label><input name="note" placeholder="اختیاری"></div></div>'+
+    '<p class="hint" style="margin-top:10px">پس از تأیید واحد مالی در پنل مدیریت، سطح اشتراک شما به‌صورت خودکار ارتقا می‌یابد و تاریخ اعتبار ثبت می‌شود.</p>'+
+    '</div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ثبت درخواست خرید</button>'+
+    '<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+};
+document.addEventListener('submit',function(e){
+  var f=e.target;if(!f.dataset||f.dataset.form!=='buy-plan')return;
+  e.preventDefault();e.stopPropagation();
+  var sub=f.querySelector('[type="submit"]');if(sub)sub.disabled=true;
+  api('custBuySubscription',{levelId:f.dataset.id,method:f.elements.method.value,note:f.elements.note.value},TOKEN)
+    .then(function(r){closeModal();toast(r.message||'درخواست ثبت شد.','ok');PS.page='loyalty';return reload();})
+    .catch(function(x){if(sub)sub.disabled=false;toast(x.message,'err');});
+},true);
+
+/* ── ۶) بازچینی ── */
+setTimeout(enhanceAmounts,120);
+if(window.PS&&window.render)render();
+})();
+</script>
 </body>
 </html>
