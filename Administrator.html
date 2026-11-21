@@ -3476,5 +3476,87 @@ document.addEventListener('change',function(e){var t=e.target;
 });
 })();
 </script>
+  <script>
+/* ═══ ZingoVingo Admin — عیب‌یابی مالی مشتریان + نمایش خطا به‌جای سکوت ═══ */
+(function(){
+'use strict';
+if(window.__zvCustFinDiag)return;window.__zvCustFinDiag=true;
+var PID='custFinance';
+
+/* ۱) خطای بارگذاری دیگر پنهان نمی‌شود */
+var _load=window.loadData;
+window.loadData=function(){
+  return _load.apply(this,arguments).then(function(r){
+    return api('admCCCustomerFinance',{},TOKEN).then(function(x){
+      DB.custFin=(x&&x.items)||[];DB.custFinStats=(x&&x.stats)||{};DB.custFinError='';return r;
+    }).catch(function(e){
+      DB.custFin=[];DB.custFinStats={};
+      DB.custFinError=String(e&&e.message||e);
+      console.warn('[ZV] custFinance:',DB.custFinError);
+      return r;
+    });
+  });
+};
+
+/* ۲) دکمهٔ عیب‌یابی + کادر خطا روی همان صفحه */
+var _render=window.render;
+window.render=function(){
+  var r=_render.apply(this,arguments);
+  if(!window.PS||PS.page!==PID)return r;
+  return Promise.resolve(r).then(function(){
+    var pg=document.getElementById('page');if(!pg)return;
+    var tb=pg.querySelector('.toolbar');
+    if(tb&&!tb.querySelector('[data-act="cf-diag"]'))
+      tb.insertAdjacentHTML('beforeend',
+        '<button class="btn btn-s btn-sm" data-act="cf-diag">'+icon('search','width:14px;height:14px')+' عیب‌یابی منبع داده</button>');
+    if(DB.custFinError&&!document.getElementById('cfErrBox'))
+      pg.insertAdjacentHTML('afterbegin',
+        '<div class="card" id="cfErrBox" style="border-right:4px solid var(--red);margin-bottom:14px">'+
+        '<b style="font-size:13px;color:var(--red)">بارگذاری مالی مشتریان ناموفق بود</b>'+
+        '<p class="sub" style="margin-top:6px;line-height:1.9;word-break:break-word">'+esc(DB.custFinError)+'</p>'+
+        '<p class="sub" style="margin-top:6px;line-height:1.9">اگر پیام «نصب نیست» است: فایل <b>CustomerPlus.gs</b> را اضافه و سپس <b>Deploy → Manage deployments → New version</b> بزنید. سپس دکمهٔ عیب‌یابی را بزنید.</p></div>');
+    if(!document.getElementById('cfDiagBox'))
+      pg.insertAdjacentHTML('beforeend','<div id="cfDiagBox" style="margin-top:14px"></div>');
+  });
+};
+
+/* ۳) اکشن عیب‌یابی */
+ACT['cf-diag']=function(){
+  return api('admCCCustomerFinanceDiag',TOKEN).then(function(r){
+    var b=document.getElementById('cfDiagBox');if(!b)return;
+    var rows=(r.rows||[]).slice(0,60);
+    var h='<div class="card"><h3 style="margin-bottom:10px;display:flex;gap:8px;align-items:center">'+
+      icon('report','width:15px;height:15px;color:var(--brand)')+' تشخیص منبع داده</h3>'+
+      kv([['شیت',esc(r.sheetUsed||'پیدا نشد')],['کل ردیف',fa(r.total||0)],
+          ['قبول‌شده در فیلتر',fa(r.passed||0)],['رد شده',fa(r.rejected||0)],
+          ['تابع ادمین Deploy شده',r.deployed?'بله':'<b style="color:var(--red)">خیر</b>'],
+          ['توابع غایب',esc((r.missingFunctions||[]).join(', ')||'—')]])+
+      '<p class="sub" style="margin:10px 0;line-height:1.9"><b>نتیجه:</b> '+esc(r.hint||'')+'</p>';
+    if(rows.length){
+      h+='<div class="tw" style="margin-top:10px"><table class="tb"><thead><tr>'+
+        '<th>ردیف</th><th>شناسه</th><th>نوع</th><th>مبلغ</th><th>Counterparty-Type</th>'+
+        '<th>Counterparty-ID</th><th>وضعیت</th><th>فیلتر</th></tr></thead><tbody>'+
+        rows.map(function(x){
+          return '<tr><td class="num">'+fa(x.row)+'</td><td><b class="ltr">'+esc(x.id)+'</b></td>'+
+            '<td>'+esc(x.type||'—')+'</td><td class="num">'+money(x.amount)+'</td>'+
+            '<td>'+esc(x.counterpartyType||'(خالی)')+'</td><td class="ltr">'+esc(x.counterpartyId||'(خالی)')+'</td>'+
+            '<td>'+pill(x.status)+'</td>'+
+            '<td>'+(x.passesFilter?'<span class="pill p-green">قبول</span>':
+              '<span class="pill p-red" title="'+esc(x.rejectReason)+'">رد</span>')+'</td></tr>';
+        }).join('')+'</tbody></table></div>';
+    }
+    h+='<details style="margin-top:10px"><summary class="sub" style="cursor:pointer">خروجی خام JSON</summary>'+
+      '<pre style="white-space:pre-wrap;font-size:11px;background:var(--surface2);padding:11px;border-radius:10px;max-height:300px;overflow:auto">'+
+      esc(JSON.stringify(r,null,1))+'</pre></details></div>';
+    b.innerHTML=h;
+  }).catch(function(e){
+    var b=document.getElementById('cfDiagBox');
+    if(b)b.innerHTML='<div class="card" style="border-right:4px solid var(--red)"><b style="color:var(--red)">تابع تشخیص نصب نیست</b>'+
+      '<p class="sub" style="margin-top:6px;line-height:1.9">'+esc(e.message)+
+      '<br>فایل <b>CustFinDiag.gs</b> را اضافه و <b>New version</b> بگیرید.</p></div>';
+  });
+};
+})();
+</script>
 </body>
 </html>
