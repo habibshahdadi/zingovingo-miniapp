@@ -445,7 +445,7 @@ var FLOW=[['ثبت درخواست','درخواست از فرم عمومی یا �
  ['مسیریابی به شعبه','بر اساس استان و شهر، درخواست به شعبه فعال مربوطه ارسال و اعلان می‌شود.'],
  ['تخصیص نیرو','کارت عملیاتی ساخته شده و به گروه و نیروی متخصص تخصیص می‌یابد.'],
  ['اجرا و گزارش','وضعیت کارت تا تکمیل به‌روزرسانی و در گزارش‌های مالی و عملکردی منعکس می‌شود.']];
-var ROLES=[,['مدیر شعبه','branch'],['کارمند شعبه','users'],['سرپرست','grid'],['متخصص','wrench'],['اپراتور','headset'],['مشتری','user']];
+var ROLES=[['مدیر شعبه','branch'],['کارمند شعبه','users'],['سرپرست','grid'],['متخصص','wrench'],['اپراتور','headset'],['مشتری','user']];
 function renderStatic(){
   $('#featGrid').innerHTML=FEATURES.map(function(f){return '<article class="card hov feat reveal"><span class="sic" style="background:color-mix(in srgb,'+f[1]+' 14%,transparent);color:'+f[1]+'">'+icon(f[0],'width:22px;height:22px')+'</span><h3>'+esc(f[2])+'</h3><p>'+esc(f[3])+'</p></article>';}).join('');
   $('#flowGrid').innerHTML=FLOW.map(function(s){return '<div class="step reveal"><h4>'+esc(s[0])+'</h4><p>'+esc(s[1])+'</p></div>';}).join('');
@@ -674,22 +674,52 @@ loadStats();
 })();
 </script>
   <script>
-<script>
-/* ═══ ZingoVingo Landing V4 — آمار پنج‌گانه · نظرات و امتیاز · کاروسل دو ردیفهٔ هم‌زمان ═══ */
+/* ═══ ZingoVingo Landing V5 — استان/شهر آفلاین · آمار پنج‌گانه · نظرات و کاروسل دو ردیفه ═══ */
 (function(){
 'use strict';
-if(window.__zvLandingV4)return;window.__zvLandingV4=true;
+if(window.__zvLandingV5)return;window.__zvLandingV5=true;
 
+var IR={
+'آذربایجان شرقی':['تبریز','مراغه','مرند','میانه','اهر','بناب','شبستر','اسکو','سراب','عجب‌شیر','ملکان','جلفا','بستان‌آباد','هشترود','ورزقان','چاراویماق','خداآفرین','هوراند'],
+'آذربایجان غربی':['ارومیه','خوی','بوکان','مهاباد','میاندوآب','سلماس','نقده','پیرانشهر','ماکو','تکاب','شاهین‌دژ','سردشت','اشنویه','چالدران','پلدشت','چایپاره','باروق','چهاربرج'],
+'اردبیل':['اردبیل','پارس‌آباد','مشگین‌شهر','خلخال','گرمی','نمین','بیله‌سوار','نیر','کوثر','سرعین','اصلاندوز'],
+'اصفهان':['اصفهان','کاشان','خمینی‌شهر','نجف‌آباد','شاهین‌شهر','فلاورجان','گلپایگان','زرین‌شهر','نائین','آران و بیدگل','مبارکه','لنجان','خوانسار','سمیرم','شهرضا','دهاقان','فریدن','تیران و کرون','چادگان','بوئین میاندشت','برخوار','خور و بیابانک','کوهپایه','اردستان','ورزنه','هرند'],
+'البرز':['کرج','فردیس','نظرآباد','هشتگرد','محمدشهر','ماهدشت','طالقان','ساوجبلاغ','اشتهارد','کمال‌شهر','گرمدره','چهارباغ'],
+'ایلام':['ایلام','دهلران','آبدانان','ایوان','دره‌شهر','مهران','چرداول','ملکشاهی','بدره','سیروان','هلیلان'],
+'بوشهر':['بوشهر','برازجان','گناوه','کنگان','جم','دیر','خورموج','دشتستان','عسلویه','دشتی','تنگستان','دیلم'],
+'تهران':['تهران','ری','اسلامشهر','شهریار','قدس','ملارد','ورامین','پاکدشت','دماوند','پردیس','رباط‌کریم','قرچک','بهارستان','پیشوا','فیروزکوه','شمیرانات','بوستان','گلستان','نصیرشهر','اندیشه','باقرشهر','کهریزک','فشم','لواسان','رودهن','بومهن'],
+'چهارمحال و بختیاری':['شهرکرد','بروجن','فارسان','لردگان','اردل','کوهرنگ','کیار','سامان','بن','فلارد','خانمیرزا'],
+'خراسان جنوبی':['بیرجند','قائن','فردوس','طبس','نهبندان','سربیشه','درمیان','بشرویه','سرایان','خوسف','زیرکوه'],
+'خراسان رضوی':['مشهد','نیشابور','سبزوار','تربت حیدریه','کاشمر','قوچان','تربت جام','چناران','خواف','تایباد','سرخس','فریمان','گناباد','درگز','بردسکن','رشتخوار','مه‌ولات','زاوه','جغتای','جوین','خلیل‌آباد','باخرز','کلات','داورزن','فیروزه','خوشاب','کوهسرخ','ششتمد','صالح‌آباد'],
+'خراسان شمالی':['بجنورد','شیروان','اسفراین','آشخانه','جاجرم','فاروج','مانه و سملقان','گرمه','راز و جرگلان','بام و صفی‌آباد'],
+'خوزستان':['اهواز','دزفول','آبادان','خرمشهر','ماهشهر','بهبهان','ایذه','شوشتر','اندیمشک','شوش','مسجدسلیمان','امیدیه','سوسنگرد','بندر امام','رامشیر','شادگان','هندیجان','رامهرمز','باغ‌ملک','هفتکل','لالی','گتوند','کارون','حمیدیه','باوی','دشت آزادگان','هویزه','آغاجاری'],
+'زنجان':['زنجان','ابهر','خرمدره','قیدار','سلطانیه','طارم','ماهنشان','ایجرود','سجاس'],
+'سمنان':['سمنان','شاهرود','دامغان','گرمسار','مهدی‌شهر','سرخه','آرادان','میامی','بسطام','بیارجمند'],
+'سیستان و بلوچستان':['زاهدان','زابل','چابهار','ایرانشهر','سراوان','خاش','کنارک','نیک‌شهر','سرباز','دلگان','قصرقند','مهرستان','سیب و سوران','زهک','هیرمند','نیمروز','هامون','فنوج','میرجاوه','گلشن','لاشار','بمپور','راسک','دشتیاری','تفتان'],
+'فارس':['شیراز','مرودشت','کازرون','جهرم','فسا','لار','داراب','نی‌ریز','آباده','اقلید','لامرد','استهبان','سپیدان','ممسنی','قیروکارزین','خرامه','سروستان','کوار','خرم‌بید','بوانات','پاسارگاد','ارسنجان','زرین‌دشت','مهر','رستم','فراشبند','گراش','خنج','بختگان','سرچهان','کوه‌چنار','زرقان','بیضا'],
+'قزوین':['قزوین','تاکستان','الوند','آبیک','بوئین‌زهرا','اقبالیه','محمدیه','آوج','کوهین'],
+'قم':['قم','جعفریه','کهک','قنوات','دستجرد','سلفچگان'],
+'کردستان':['سنندج','سقز','مریوان','بانه','قروه','کامیاران','بیجار','دیواندره','دهگلان','سروآباد'],
+'کرمان':['کرمان','سیرجان','رفسنجان','جیرفت','بم','زرند','شهربابک','کهنوج','عنبرآباد','بافت','راور','بردسیر','منوجان','رودبار جنوب','قلعه‌گنج','فهرج','نرماشیر','ریگان','انار','رابر','کوهبنان','ارزوئیه','فاریاب'],
+'کرمانشاه':['کرمانشاه','اسلام‌آباد غرب','هرسین','کنگاور','جوانرود','پاوه','سنقر','سرپل ذهاب','صحنه','قصرشیرین','گیلانغرب','دالاهو','روانسر','ثلاث باباجانی'],
+'کهگیلویه و بویراحمد':['یاسوج','دوگنبدان','دهدشت','لیکک','سی‌سخت','چرام','باشت','لنده','مارگون','دیشموک'],
+'گلستان':['گرگان','گنبدکاووس','علی‌آباد کتول','بندر ترکمن','آق‌قلا','کردکوی','بندر گز','مینودشت','کلاله','گمیشان','رامیان','آزادشهر','گالیکش','مراوه‌تپه'],
+'گیلان':['رشت','بندر انزلی','لاهیجان','لنگرود','آستارا','تالش','رودسر','فومن','صومعه‌سرا','ماسال','سیاهکل','رودبار','املش','رضوانشهر','کوچصفهان','خمام','سنگر','آستانه اشرفیه','کیاشهر','چابکسر','رحیم‌آباد','شفت'],
+'لرستان':['خرم‌آباد','بروجرد','دورود','الیگودرز','کوهدشت','ازنا','نورآباد','الشتر','پلدختر','چگنی','رومشکان','دلفان','سلسله'],
+'مازندران':['ساری','بابل','آمل','قائم‌شهر','بابلسر','نوشهر','چالوس','تنکابن','بهشهر','جویبار','فریدونکنار','محمودآباد','نور','رویان','رامسر','عباس‌آباد','کلاردشت','سوادکوه','سیمرغ','گلوگاه','نکا','بهنام‌میر','میاندرود','سرخ‌رود','امیرکلا','خلیل‌شهر','پل سفید','زیرآب','کیاسر'],
+'مرکزی':['اراک','ساوه','خمین','محلات','دلیجان','شازند','تفرش','آشتیان','زرندیه','کمیجان','فراهان','خنداب'],
+'هرمزگان':['بندرعباس','میناب','قشم','کیش','بندر لنگه','حاجی‌آباد','رودان','جاسک','بستک','پارسیان','خمیر','سیریک','بشاگرد','ابوموسی','کوهستک'],
+'همدان':['همدان','ملایر','نهاوند','تویسرکان','کبودرآهنگ','اسدآباد','بهار','رزن','فامنین','درگزین'],
+'یزد':['یزد','میبد','اردکان','بافق','مهریز','ابرکوه','تفت','اشکذر','هرات','مروست','بهاباد','خاتم','زارچ','شاهدیه','احمدآباد','عقدا','نیر']};
+
+var BR=[],GAP=14,CW=320,CWM=276;
 var S={data:null,sig:'',rating:5,busy:false,timer:null,rep:0,rt:null};
-var PROV=['آذربایجان شرقی','آذربایجان غربی','اردبیل','اصفهان','البرز','ایلام','بوشهر','تهران','چهارمحال و بختیاری','خراسان جنوبی','خراسان رضوی','خراسان شمالی','خوزستان','زنجان','سمنان','سیستان و بلوچستان','فارس','قزوین','قم','کردستان','کرمان','کرمانشاه','کهگیلویه و بویراحمد','گلستان','گیلان','لرستان','مازندران','مرکزی','هرمزگان','همدان','یزد'];
-var GAP=14,CW=320,CWM=276;
 
 /* ───────── CSS ───────── */
 var CSS=[
 '.stats{grid-template-columns:repeat(5,1fr)!important;max-width:880px!important}',
 '@media(max-width:760px){.stats{grid-template-columns:repeat(3,1fr)!important;max-width:none!important}}',
 '@media(max-width:460px){.stats{grid-template-columns:repeat(2,1fr)!important}}',
-'.zrv-ctl,[data-zrv="pause"],#zrvSpeed{display:none!important}',
 '.zrv-head{display:grid;grid-template-columns:1.12fr .88fr;gap:26px;align-items:center;margin-bottom:22px}',
 '.zrv-sum{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--sh);display:flex;gap:18px;align-items:center;flex-wrap:wrap}',
 '.zrv-avg{text-align:center;min-width:100px}',
@@ -740,7 +770,7 @@ var CSS=[
 '.zrv-note.show{display:flex}',
 '.zrv-note.ok{background:rgba(14,159,110,.1);color:var(--green);border-right-color:var(--green)}',
 '.zrv-note.err{background:rgba(224,45,60,.1);color:var(--red);border-right-color:var(--red)}',
-'.zrv-mb{position:fixed;inset:0;z-index:300;background:var(--scrim,rgba(7,13,31,.6));backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px}',
+'.zrv-mb{position:fixed;inset:0;z-index:300;background:rgba(7,13,31,.6);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px}',
 '.zrv-mb.show{display:flex}',
 '.zrv-modal{width:min(560px,100%);max-height:86vh;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:var(--sh2)}',
 '.zrv-modal::-webkit-scrollbar{width:9px}',
@@ -750,55 +780,88 @@ var CSS=[
 '@media(max-width:600px){.zrv-fg{grid-template-columns:1fr}.zrv-card{width:'+CWM+'px;flex-basis:'+CWM+'px}.zrv-stage{margin:0 -16px}}',
 '@media(prefers-reduced-motion:reduce){.zrv-track{animation:none!important;transform:none!important}.zrv-row{overflow-x:auto;-webkit-mask-image:none;mask-image:none}.zrv-row::-webkit-scrollbar{height:8px}.zrv-row::-webkit-scrollbar-track{background:var(--surface2);border-radius:8px}.zrv-row::-webkit-scrollbar-thumb{background:linear-gradient(90deg,var(--brand2),var(--brandDeep));border-radius:8px}}'
 ].join('');
-var st=document.createElement('style');st.id='zvLandingV4Css';st.textContent=CSS;document.head.appendChild(st);
+var st=document.createElement('style');st.id='zvLandingV5Css';st.textContent=CSS;document.head.appendChild(st);
 
 /* ───────── ابزار ───────── */
+function E(v){return esc(String(v==null?'':v));}
 function starSVG(){return '<svg viewBox="0 0 24 24"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>';}
 function stars(n){var h='';for(var i=1;i<=5;i++)h+='<span class="'+(i<=n?'':'off')+'">'+starSVG()+'</span>';return '<span class="zrv-stars">'+h+'</span>';}
 function rc(n){return n>=5?'var(--green)':n===4?'var(--teal)':n===3?'var(--amber)':'var(--red)';}
 function jdate(v){if(!v)return '';var d=new Date(v);if(isNaN(d.getTime()))return '';
 try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}).format(d);}catch(e){return fa(d.getFullYear());}}
-function E(v){return esc(String(v==null?'':v));}
 function cardW(){return (window.innerWidth||1200)<=600?CWM:CW;}
 function needCards(){return Math.max(6,Math.ceil((window.innerWidth||1200)/(cardW()+GAP))+2);}
 
-/* ───────── شمارنده‌ها ───────── */
+/* ───────── آمار پنج‌گانه ───────── */
 function ensureStats(){
 var box=$('.stats');if(!box)return;
 [['jobs','درخواست همکاری',1200,''],['customers','مشتریان ثبت‌شده',3200,' a']].forEach(function(x){
 if(box.querySelector('[data-key="'+x[0]+'"]'))return;
 var d=document.createElement('div');d.className='stat'+x[3];
 d.innerHTML='<b class="num" data-counter="'+x[2]+'" data-key="'+x[0]+'">۰</b><small>'+x[1]+'</small>';
-box.appendChild(d);});
-}
+box.appendChild(d);});}
 function zvAnim(el){
 if(el._zvi)clearInterval(el._zvi);
 var t=num(el.dataset.counter),c=0,s=Math.max(1,Math.ceil(t/58));el._zvs=true;
 if(t<=0){el.textContent=NF.format(0);return;}
 el._zvi=setInterval(function(){c+=s;if(c>=t){c=t;clearInterval(el._zvi);el._zvi=null;}
-el.textContent=NF.format(c)+(t>=100?'+':'');},26);
-}
+el.textContent=NF.format(c)+(t>=100?'+':'');},26);}
 function paintStats(r){$$('[data-counter]').forEach(function(el){var v=num(r&&r[el.dataset.key]);if(v>0)el.dataset.counter=v;zvAnim(el);});}
 window.loadStats=function(){paintStats(null);return api('getPublicStats').then(paintStats).catch(function(){paintStats(null);});};
 
-/* ───────── استان/شهر (تور ایمنی) ───────── */
-function guardLocations(){
-var ps=$('#ctProvince');if(!ps||ps.options.length>1)return;
-ps.innerHTML='<option value="">انتخاب استان</option>'+PROV.map(function(p){return '<option>'+E(p)+'</option>';}).join('');
-ps.disabled=false;
-var cs=$('#ctCity');
-if(cs&&cs.tagName==='SELECT'){var inp=document.createElement('input');inp.id='ctCity';inp.className=cs.className;inp.placeholder='نام شهر';cs.parentNode.replaceChild(inp,cs);}
-var box=$('#ctRoute');if(box){box.className='route show';box.innerHTML='پیام شما در صندوق «پیام‌های سایت» ثبت و پیگیری می‌شود.';}
-}
+/* ───────── استان/شهر آفلاین ───────── */
+window.fillProvinces=function(){
+var ps=$('#ctProvince');if(!ps)return;var keep=ps.value;
+ps.innerHTML='<option value="">انتخاب استان</option>'+Object.keys(IR).map(function(p){
+var served=BR.some(function(b){return b.province===p;});
+return '<option value="'+E(p)+'"'+(p===keep?' selected':'')+'>'+E(p)+(served?' ✓':'')+'</option>';}).join('');
+ps.disabled=false;};
+window.fillCities=function(){
+var ps=$('#ctProvince'),cs=$('#ctCity');if(!ps||!cs||cs.tagName!=='SELECT')return;
+var p=ps.value,list=IR[p]||[],keep=cs.value;
+cs.innerHTML='<option value="">'+(p?'انتخاب شهر':'ابتدا استان را انتخاب کنید')+'</option>'+list.map(function(c){
+var served=BR.some(function(b){return b.province===p&&b.city===c;});
+return '<option value="'+E(c)+'"'+(c===keep?' selected':'')+'>'+E(c)+(served?' ✓':'')+'</option>';}).join('');
+cs.disabled=!list.length;routeHint();};
+window.routeHint=function(){
+var box=$('#ctRoute'),ps=$('#ctProvince'),cs=$('#ctCity');if(!box||!ps)return;
+var p=ps.value,c=cs?cs.value:'';
+if(!p){box.className='route';box.innerHTML='';return;}
+var hit=BR.filter(function(b){return b.province===p&&(!c||b.city===c);});
+if(hit.length){box.className='route show';box.innerHTML='پیام شما به <b>'+E(hit[0].name)+'</b> ('+E(hit[0].branchId)+') مسیریابی می‌شود.';}
+else{box.className='route show';box.innerHTML='پیام شما در صندوق مرکزی «پیام‌های سایت» ثبت و پیگیری می‌شود.';}};
+window.loadLocations=function(){
+fillProvinces();
+return api('getPublicLocations').then(function(r){
+BR=(r&&r.branches)||[];
+var p=$('#ctProvince').value,c=$('#ctCity').value;
+fillProvinces();if(p){$('#ctProvince').value=p;fillCities();if(c)$('#ctCity').value=c;}
+routeHint();}).catch(function(){BR=[];routeHint();});};
+
+/* ───────── نمونه‌های پشتیبان ───────── */
+function samples(){
+var a=[['سارا احمدی','تهران','خدمات نظافتی',5,'کیفیت واقعاً عالی','نیروها سر وقت رسیدند و کار با دقت انجام شد. پیگیری وضعیت از داخل پنل هم خیلی شفاف بود.','سپاس از بازخورد شما؛ کیفیت خدمت برای ما اولویت اول است.'],
+['حسین رضایی','کرج','جابه‌جایی اثاثیه',5,'بسته‌بندی حرفه‌ای','اثاثیه بدون کوچک‌ترین آسیب منتقل شد. تیم بسته‌بندی واقعاً کاربلد بودند.',''],
+['مریم حسینی','اصفهان','خدمات نظافتی',4,'منظم و قابل اتکا','برنامه هفتگی دفتر ما دقیق اجرا می‌شود. فقط زمان‌بندی اولین جلسه کمی جابه‌جا شد.',''],
+['رضا کریمی','مشهد','حمل و نقل',5,'رهگیری آنلاین محموله','اینکه هر لحظه می‌دانستم بار کجاست خیالم را راحت کرد. راننده هم بسیار خوش‌برخورد بود.',''],
+['نگار موسوی','شیراز','تعمیرات و سرویس دوره‌ای',5,'سرویس دوره‌ای بی‌دردسر','سابقه سرویس‌ها در سیستم ثبت می‌شود و دیگر یادم نمی‌رود موعد بعدی کی است.',''],
+['علی محمدی','تبریز','توسعه کسب‌وکار',4,'مشاوره کاربردی','راهکارهای اجرایی دادند، نه حرف کلی. گزارش پیشرفت هم ماهانه به دستم می‌رسد.',''],
+['فاطمه نوری','قم','خدمات نظافتی',5,'پشتیبانی پاسخ‌گو','یک پیام دادم و کمتر از یک ساعت جواب گرفتم. همین باعث شد مشتری ثابت شوم.',''],
+['امیر شریفی','رشت','حمل و نقل',5,'قیمت شفاف از ابتدا','پیش‌فاکتور دقیقاً همان چیزی بود که پرداخت کردم؛ بدون هزینه پنهان.','']];
+return a.map(function(x,i){return {id:'DEMO-'+(i+1),name:x[0],city:x[1],service:x[2],rating:x[3],title:x[4],body:x[5],
+reply:x[6],featured:i<2,status:'تأیید شده',demo:true,
+createdAt:new Date(Date.now()-(i+2)*864e5).toISOString(),publishedAt:new Date(Date.now()-(i+1)*864e5).toISOString()};});}
+function localData(){
+var it=samples(),dist={1:0,2:0,3:0,4:0,5:0},sum=0;
+it.forEach(function(r){dist[r.rating]++;sum+=r.rating;});
+return {enabled:true,demo:true,items:it,count:it.length,average:Math.round(sum/it.length*10)/10,dist:dist};}
 
 /* ───────── بخش نظرات ───────── */
 function buildSection(){
 var sec=$('#reviews');
-if(!sec){
-sec=document.createElement('section');sec.className='sec';sec.id='reviews';
+if(!sec){sec=document.createElement('section');sec.className='sec';sec.id='reviews';
 var anchor=$('#contact')||$('#CTA');
-if(anchor&&anchor.parentNode)anchor.parentNode.insertBefore(sec,anchor);else document.body.appendChild(sec);
-}
+if(anchor&&anchor.parentNode)anchor.parentNode.insertBefore(sec,anchor);else document.body.appendChild(sec);}
 sec.innerHTML='<div class="wrap">'+
 '<div class="zrv-head"><div class="sec-head" style="text-align:right;margin:0;max-width:none">'+
 '<span class="pill p-brand">نظرات و امتیاز کاربران</span>'+
@@ -807,8 +870,7 @@ sec.innerHTML='<div class="wrap">'+
 '<p style="font-size:13px;color:var(--muted);line-height:2">هر نظر پس از بررسی و تأیید تیم مدیریت، به‌صورت خودکار به این کاروسل افزوده می‌شود. نشان «تأییدشده» یعنی نظر از یک درخواست واقعی ثبت شده است.</p>'+
 '<div class="acts" style="margin:16px 0 0"><button class="btn btn-p" data-zrv="go-form">'+icon('star','width:16px;height:16px')+' ثبت نظر و امتیاز</button></div>'+
 '</div><div class="zrv-sum" id="zrvSum"></div></div>'+
-'<div class="zrv-stage" id="zrvStage"></div>'+
-'<div class="zrv-cap" id="zrvCap"></div>'+
+'<div class="zrv-stage" id="zrvStage"></div><div class="zrv-cap" id="zrvCap"></div>'+
 '<form class="zrv-form" id="zrvForm" novalidate>'+
 '<h3 style="font-size:16px;font-weight:900">نظر شما دربارهٔ خدمات ما</h3>'+
 '<div style="font-size:11.5px;color:var(--muted);margin-top:5px">امتیاز و متن نظر الزامی است. شماره تماس فقط برای تأیید اصالت نظر استفاده می‌شود و منتشر نخواهد شد.</div>'+
@@ -821,32 +883,25 @@ sec.innerHTML='<div class="wrap">'+
 '<div class="field"><label>شهر</label><input id="zrvCity" placeholder="مثلاً تهران"></div>'+
 '<div class="field wide"><label>عنوان نظر</label><input id="zrvTitle" maxlength="120" placeholder="مثلاً کیفیت عالی و زمان‌بندی دقیق"></div>'+
 '<div class="field full"><label>متن نظر <span class="req">*</span></label><textarea id="zrvBody" maxlength="1200" placeholder="تجربهٔ خود را از کیفیت خدمت، زمان‌بندی و برخورد تیم بنویسید…"></textarea></div>'+
-'</div><button class="btn btn-p" type="submit" id="zrvBtn" style="width:100%;margin-top:16px">'+icon('send','width:16px;height:16px')+' ثبت نظر</button>'+
-'</form></div>';
-if(!$('#zrvMb')){var mb=document.createElement('div');mb.className='zrv-mb';mb.id='zrvMb';mb.innerHTML='<div class="zrv-modal" id="zrvModal"></div>';document.body.appendChild(mb);}
+'</div><button class="btn btn-p" type="submit" id="zrvBtn" style="width:100%;margin-top:16px">'+icon('send','width:16px;height:16px')+' ثبت نظر</button></form></div>';
+if(!$('#zrvMb')){var mb=document.createElement('div');mb.className='zrv-mb';mb.id='zrvMb';
+mb.innerHTML='<div class="zrv-modal" id="zrvModal"></div>';document.body.appendChild(mb);}
 ['#nav','#mmenu'].forEach(function(s){var n=$(s);if(!n||n.querySelector('a[href="#reviews"]'))return;
 var a=document.createElement('a');a.href='#reviews';a.textContent='نظرات';
 var last=n.querySelector('a[href="#contact"]');
 if(last&&last.parentNode===n)n.insertBefore(a,last);else n.appendChild(a);});
-$$('.zrv-ctl,[data-zrv="pause"],#zrvSpeed').forEach(function(el){if(el&&el.parentNode)el.parentNode.removeChild(el);});
-paintPick();bindForm();
-}
-function paintPick(){
-var p=$('#zrvPick');if(!p)return;
-var h='';for(var i=1;i<=5;i++)h+='<button type="button" data-zrv-rate="'+i+'" class="'+(i<=S.rating?'on':'')+'" aria-label="'+i+' ستاره">'+starSVG()+'</button>';
-p.innerHTML=h+'<span>'+fa(S.rating)+' از ۵</span>';
-}
-function renderSummary(d){
-var box=$('#zrvSum');if(!box)return;
+paintPick();bindForm();}
+function paintPick(){var p=$('#zrvPick');if(!p)return;var h='';
+for(var i=1;i<=5;i++)h+='<button type="button" data-zrv-rate="'+i+'" class="'+(i<=S.rating?'on':'')+'" aria-label="'+i+' ستاره">'+starSVG()+'</button>';
+p.innerHTML=h+'<span>'+fa(S.rating)+' از ۵</span>';}
+function renderSummary(d){var box=$('#zrvSum');if(!box)return;
 var total=0;for(var k=1;k<=5;k++)total+=num(d.dist&&d.dist[k]);
 var h='<div class="zrv-avg"><b>'+fa(d.average||0)+'</b>'+stars(Math.round(d.average||0))+'<small>'+fa(d.count||0)+' نظر تأییدشده</small></div><div class="zrv-bars">';
 for(var i=5;i>=1;i--){var v=num(d.dist&&d.dist[i]),p=total?Math.round(v/total*100):0;
 h+='<div class="zrv-bar"><span>'+fa(i)+'★</span><i><em data-w="'+p+'"></em></i><b>'+fa(v)+'</b></div>';}
 box.innerHTML=h+'</div>';
-setTimeout(function(){$$('#zrvSum em[data-w]').forEach(function(e){e.style.width=e.getAttribute('data-w')+'%';});},60);
-}
-function cardHtml(r){
-var n=String(r.name||'کاربر').trim(),ini=n.charAt(0)||'؟';
+setTimeout(function(){$$('#zrvSum em[data-w]').forEach(function(e){e.style.width=e.getAttribute('data-w')+'%';});},60);}
+function cardHtml(r){var n=String(r.name||'کاربر').trim(),ini=n.charAt(0)||'؟';
 var meta=[r.city,r.service].filter(Boolean).join(' · ');
 return '<article class="zrv-card" tabindex="0" data-zrv-open="'+E(r.id)+'" style="--rc:'+rc(r.rating)+'">'+
 '<div class="zrv-top"><span class="zrv-av">'+E(ini)+'</span>'+
@@ -857,81 +912,64 @@ return '<article class="zrv-card" tabindex="0" data-zrv-open="'+E(r.id)+'" style
 (r.reply?'<div class="zrv-reply"><b>پاسخ ZingoVingo</b>'+E(r.reply)+'</div>':'')+
 '<div class="zrv-foot"><span>'+E(jdate(r.publishedAt||r.createdAt))+'</span>'+
 (r.featured?'<span class="zrv-tag f">ویژه</span>':'')+
-(r.demo?'<span class="zrv-tag d">نمونه</span>':'<span class="zrv-tag">تأییدشده</span>')+'</div></article>';
-}
+(r.demo?'<span class="zrv-tag d">نمونه</span>':'<span class="zrv-tag">تأییدشده</span>')+'</div></article>';}
 function trackHtml(list,rev,pxs,dly){
 var n=list.length,rep=Math.max(1,Math.ceil(needCards()/n));S.rep=rep;
 var unit='';for(var i=0;i<rep;i++)unit+=list.map(cardHtml).join('');
-var w=n*rep*(cardW()+GAP);
-var dur=Math.max(16,Math.round(w/pxs));
-return '<div class="zrv-row'+(rev?' rev':'')+'"><div class="zrv-track" style="--dur:'+dur+'s;--dly:-'+dly+'s">'+unit+unit+'</div></div>';
-}
+var dur=Math.max(16,Math.round(n*rep*(cardW()+GAP)/pxs));
+return '<div class="zrv-row'+(rev?' rev':'')+'"><div class="zrv-track" style="--dur:'+dur+'s;--dly:-'+dly+'s">'+unit+unit+'</div></div>';}
 function renderCarousel(d){
 var stage=$('#zrvStage');if(!stage)return;
-var items=(d&&d.items)||[];
-var cap=$('#zrvCap');
-if(!items.length){
-stage.innerHTML='<div class="wrap"><div class="zrv-empty">هنوز نظری تأیید نشده است — اولین نفر باشید و تجربهٔ خود را ثبت کنید.</div></div>';
-if(cap)cap.textContent='';return;
-}
+var items=(d&&d.items)||[],cap=$('#zrvCap');
+if(!items.length){stage.innerHTML='<div class="wrap"><div class="zrv-empty">هنوز نظری تأیید نشده است — اولین نفر باشید و تجربهٔ خود را ثبت کنید.</div></div>';if(cap)cap.textContent='';return;}
 var k=Math.floor(items.length/2);
-var rowA=items.slice();
 var rowB=items.length>1?items.slice(k).concat(items.slice(0,k)):items.slice();
-stage.innerHTML=trackHtml(rowA,false,54,3)+trackHtml(rowB,true,47,11);
-if(cap)cap.textContent=d.demo?'نمونه‌های نمایشی — با تأیید اولین نظر واقعی، به‌صورت خودکار جایگزین می‌شوند':'نظرات تأییدشده به‌صورت خودکار و بدون نیاز به تازه‌سازی صفحه به‌روزرسانی می‌شوند';
-}
-function sigOf(d){return JSON.stringify((d.items||[]).map(function(r){return [r.id,r.rating,r.reply,r.featured,r.title];}))+ '|' + (d.demo?1:0) + '|' + (d.count||0);}
-function loadReviews(force){
-return api('getPublicReviews',{limit:40}).then(function(d){
-S.data=d;
-var sec=$('#reviews');if(sec)sec.style.display=d.enabled===false?'none':'';
+stage.innerHTML=trackHtml(items,false,54,3)+trackHtml(rowB,true,47,11);
+if(cap)cap.textContent=d.demo?'نمونه‌های نمایشی — با تأیید اولین نظر واقعی، به‌صورت خودکار جایگزین می‌شوند':'نظرات تأییدشده به‌صورت خودکار و بدون نیاز به تازه‌سازی صفحه به‌روزرسانی می‌شوند';}
+function sigOf(d){return JSON.stringify((d.items||[]).map(function(r){return [r.id,r.rating,r.reply,r.featured,r.title];}))+'|'+(d.demo?1:0)+'|'+(d.count||0);}
+function apply(d){
+S.data=d;var sec=$('#reviews');
+if(sec)sec.style.display=d.enabled===false?'none':'';
 if(d.enabled===false)return;
 renderSummary(d);
 var sig=sigOf(d);
-if(force||sig!==S.sig){S.sig=sig;renderCarousel(d);}
-fillServices();
-}).catch(function(){
-var stage=$('#zrvStage');
-if(stage&&!stage.innerHTML)stage.innerHTML='<div class="wrap"><div class="zrv-empty">بارگذاری نظرات ممکن نشد؛ صفحه را تازه‌سازی کنید.</div></div>';
-});
-}
+if(sig!==S.sig){S.sig=sig;renderCarousel(d);}
+fillServices();}
+function loadReviews(force){
+return api('getPublicReviews',{limit:40}).then(function(d){
+if(!d||!d.items||!d.items.length){if(force){apply(localData());}else{apply(d||localData());}return;}
+if(force)S.sig='';apply(d);
+}).catch(function(){if(force||!S.data){S.sig='';apply(localData());}});}
 function fillServices(){
 var sel=$('#zrvSvc');if(!sel||sel.options.length>1)return;
 var list=window.__svc||[];
 if(!list.length){api('getServices').then(function(r){window.__svc=(r&&r.services)||[];fillServices();}).catch(function(){});return;}
-sel.innerHTML='<option value="">انتخاب خدمت</option>'+list.map(function(s){var n=s.name||s.nameFa||s.nameEn;return '<option>'+E(n)+'</option>';}).join('');
-}
-function note(msg,type){
-var n=$('#zrvNote');if(!n)return;
+sel.innerHTML='<option value="">انتخاب خدمت</option>'+list.map(function(s){return '<option>'+E(s.name||s.nameFa||s.nameEn)+'</option>';}).join('');}
+function note(msg,type){var n=$('#zrvNote');if(!n)return;
 n.className='zrv-note show '+(type||'ok');
-n.innerHTML=icon(type==='err'?'zap':'check','width:17px;height:17px;margin-top:3px')+'<span>'+msg+'</span>';
-}
+n.innerHTML=icon(type==='err'?'zap':'check','width:17px;height:17px;margin-top:3px')+'<span>'+msg+'</span>';}
 function bindForm(){
-var f=$('#zrvForm');if(!f||f._zv4)return;f._zv4=true;
+var f=$('#zrvForm');if(!f||f._zv5)return;f._zv5=true;
 f.addEventListener('submit',function(e){
-e.preventDefault();
-if(S.busy)return;
+e.preventDefault();if(S.busy)return;
 var name=$('#zrvName').value.trim(),phone=en($('#zrvPhone').value).replace(/[\s-]/g,''),body=$('#zrvBody').value.trim();
 if(name.length<3)return note('نام و نام خانوادگی را کامل وارد کنید.','err');
 if(!/^09\d{9}$/.test(phone))return note('شماره تماس باید ۱۱ رقم و با 09 شروع شود.','err');
 if(body.length<10)return note('متن نظر باید حداقل ۱۰ کاراکتر باشد.','err');
-var p={name:name,phone:phone,rating:S.rating,city:$('#zrvCity').value.trim(),service:$('#zrvSvc').value,title:$('#zrvTitle').value.trim(),body:body,source:'Landing'};
+var p={name:name,phone:phone,rating:S.rating,city:$('#zrvCity').value.trim(),service:$('#zrvSvc').value,
+title:$('#zrvTitle').value.trim(),body:body,source:'Landing'};
 var b=$('#zrvBtn');b.disabled=true;S.busy=true;
 api('submitPublicReview',p).then(function(r){
 note('نظر شما ثبت شد — کد پیگیری <b class="num">'+E(r.id)+'</b>. '+E(r.message||''),'ok');
-toast('نظر شما ثبت شد.','ok');
-f.reset();S.rating=5;paintPick();
+toast('نظر شما ثبت شد.','ok');f.reset();S.rating=5;paintPick();
 if(r.autoApproved)loadReviews(true);
 }).catch(function(err){
 var m=String(err&&err.message||err);
-note(/نصب نیست|not a function/i.test(m)?'ثبت آنلاین نظر در حال راه‌اندازی است؛ لطفاً بعداً تلاش کنید.':E(m),'err');
-}).then(function(){b.disabled=false;S.busy=false;});
-});
-}
+note(/نصب نیست|not a function|No such/i.test(m)?'ثبت آنلاین نظر در حال راه‌اندازی است؛ لطفاً بعداً تلاش کنید.':E(m),'err');
+}).then(function(){b.disabled=false;S.busy=false;});});}
 function openReview(id){
 var r=((S.data&&S.data.items)||[]).filter(function(x){return String(x.id)===String(id);})[0];if(!r)return;
-var m=$('#zrvModal');
-m.innerHTML='<div style="display:flex;gap:12px;align-items:center;margin-bottom:14px">'+
+$('#zrvModal').innerHTML='<div style="display:flex;gap:12px;align-items:center;margin-bottom:14px">'+
 '<span class="zrv-av" style="width:46px;height:46px;flex:0 0 46px;font-size:18px">'+E(String(r.name||'؟').charAt(0))+'</span>'+
 '<div style="flex:1;min-width:0"><b style="font-size:15px;display:block">'+E(r.name)+'</b>'+
 '<small style="color:var(--muted);font-size:11px">'+E([r.city,r.service].filter(Boolean).join(' · ')||'مشتری ZingoVingo')+'</small></div>'+
@@ -941,9 +979,17 @@ stars(r.rating)+' <b style="color:'+rc(r.rating)+';font-size:13px">'+fa(r.rating
 '<p style="font-size:13px;line-height:2.1;color:var(--ink);white-space:pre-wrap;margin-top:10px">'+E(r.body)+'</p>'+
 (r.reply?'<div class="zrv-reply" style="-webkit-line-clamp:unset;margin-top:14px;font-size:12px"><b>پاسخ ZingoVingo</b>'+E(r.reply)+'</div>':'')+
 '<div style="margin-top:16px;font-size:11px;color:var(--muted)">ثبت: '+E(jdate(r.publishedAt||r.createdAt))+(r.demo?' · نمونهٔ نمایشی':'')+'</div>';
-$('#zrvMb').classList.add('show');document.body.style.overflow='hidden';
-}
+$('#zrvMb').classList.add('show');document.body.style.overflow='hidden';}
 function closeReview(){var b=$('#zrvMb');if(b)b.classList.remove('show');document.body.style.overflow='';}
+
+/* ───────── ترمیم نقش‌ها ───────── */
+function repairRoles(){
+if(!window.ROLES)return;
+var clean=ROLES.filter(function(r){return r&&r.length>=2;});
+window.ROLES=clean;
+var g=$('#roleGrid');if(!g)return;
+g.innerHTML=clean.map(function(r){return '<a class="role reveal" href="Portal.html"><span class="ri">'+icon(r[1],'width:17px;height:17px')+'</span>'+E(r[0])+'</a>';}).join('');
+if(typeof observeReveal==='function')observeReveal();}
 
 /* ───────── رویدادها ───────── */
 document.addEventListener('click',function(e){
@@ -952,38 +998,28 @@ if(r){e.preventDefault();S.rating=+r.dataset.zrvRate;paintPick();return;}
 var a=e.target.closest('[data-zrv]');
 if(a){var k=a.dataset.zrv;
 if(k==='close'){e.preventDefault();closeReview();return;}
-if(k==='go-form'){e.preventDefault();var f=$('#zrvForm');if(f){f.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){var n=$('#zrvName');if(n)n.focus();},500);}return;}}
+if(k==='go-form'){e.preventDefault();var f=$('#zrvForm');
+if(f){f.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){var n=$('#zrvName');if(n)n.focus();},500);}return;}}
 var c=e.target.closest('[data-zrv-open]');
 if(c){e.preventDefault();openReview(c.dataset.zrvOpen);return;}
-if(e.target.id==='zrvMb')closeReview();
-});
+if(e.target.id==='zrvMb')closeReview();});
 document.addEventListener('keydown',function(e){
 if(e.key==='Escape'&&$('#zrvMb')&&$('#zrvMb').classList.contains('show'))closeReview();
-if(e.key==='Enter'){var c=e.target.closest&&e.target.closest('[data-zrv-open]');if(c){e.preventDefault();openReview(c.dataset.zrvOpen);}}
-});
-window.addEventListener('resize',function(){
-clearTimeout(S.rt);
-S.rt=setTimeout(function(){
-if(!S.data)return;
+if(e.key==='Enter'){var c=e.target.closest&&e.target.closest('[data-zrv-open]');if(c){e.preventDefault();openReview(c.dataset.zrvOpen);}}});
+window.addEventListener('resize',function(){clearTimeout(S.rt);
+S.rt=setTimeout(function(){if(!S.data)return;
 var need=Math.max(1,Math.ceil(needCards()/Math.max(1,(S.data.items||[]).length)));
-if(need!==S.rep)renderCarousel(S.data);
-},420);
-});
+if(need!==S.rep)renderCarousel(S.data);},420);});
 document.addEventListener('visibilitychange',function(){
 if(document.hidden){if(S.timer){clearInterval(S.timer);S.timer=null;}}
-else{loadReviews();if(!S.timer)S.timer=setInterval(function(){loadReviews();},45000);}
-});
-if(window.MutationObserver){
-var pg=document.getElementById('reviews');
-if(pg)new MutationObserver(function(){
-$$('.zrv-ctl,[data-zrv="pause"],#zrvSpeed').forEach(function(el){if(el&&el.parentNode)el.parentNode.removeChild(el);});
-}).observe(pg,{childList:true,subtree:true});
-}
+else{loadReviews();if(!S.timer)S.timer=setInterval(function(){loadReviews();},45000);}});
 
 /* ───────── راه‌اندازی ───────── */
+repairRoles();
 ensureStats();
 buildSection();
-guardLocations();
+fillProvinces();
+loadLocations();
 paintStats(null);
 window.loadStats();
 loadReviews(true);
