@@ -3369,5 +3369,112 @@ document.addEventListener('submit',function(e){
 });
 })();
 </script>
+  <script>
+/* ═══ ZingoVingo Admin — مالی مشتریان: شارژ کیف پول · پرداخت فاکتور · خرید اشتراک ═══ */
+(function(){
+'use strict';
+if(window.__zvCustFinance)return;window.__zvCustFinance=true;
+var PID='custFinance';
+var KIND={topup:'شارژ کیف پول',payment:'پرداخت فاکتور',subscription:'خرید اشتراک'};
+STC['پرداخت شده']='green';STC['در انتظار']='amber';STC['رد شده']='red';
+PS.cfq='';PS.cfk='';PS.cfs='';
+TITLES[PID]=['مالی مشتریان','تأیید شارژ کیف پول، پرداخت فاکتور و خرید اشتراک'];
+var item={id:PID,l:'مالی مشتریان',ic:'wallet',bc:'r',badge:function(){return ((DB.custFinStats||{}).pending)||0;}};
+if(!MENU.some(function(m){return m.id===PID;})){
+  var idx=-1;for(var i=0;i<MENU.length;i++){if(MENU[i].id==='customers'){idx=i+1;break;}}
+  if(idx<0)for(var j=0;j<MENU.length;j++){if(MENU[j].sec==='سیستم'){idx=j;break;}}
+  if(idx>=0)MENU.splice(idx,0,item);else MENU.push(item);
+}
+var _load=window.loadData;
+window.loadData=function(){
+  return _load.apply(this,arguments).then(function(r){
+    return api('admCCCustomerFinance',{},TOKEN).then(function(x){
+      DB.custFin=x.items||[];DB.custFinStats=x.stats||{};return r;
+    }).catch(function(){DB.custFin=DB.custFin||[];DB.custFinStats=DB.custFinStats||{};return r;});
+  });
+};
+function cfRows(){
+  var rows=(DB.custFin||[]).slice();
+  if(PS.cfk)rows=rows.filter(function(r){return r.kind===PS.cfk;});
+  if(PS.cfs)rows=rows.filter(function(r){return r.status===PS.cfs;});
+  if(PS.cfq){var q=en(PS.cfq).toLowerCase();
+    rows=rows.filter(function(r){return [r.id,r.customerId,r.customerName,r.desc,r.tracking].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});}
+  return rows;
+}
+function cfPage(){
+  var st=DB.custFinStats||{},rows=cfRows();
+  var h=pageHead('مالی مشتریان',fa(st.total||0)+' تراکنش · '+fa(st.pending||0)+' در انتظار تأیید',
+    btn('refresh','بروزرسانی','undo','btn-s'));
+  h+='<div class="grid kpis" style="margin-bottom:16px">'+
+    [['در انتظار تأیید',fa(st.pending||0),'clock','var(--amber)'],
+     ['مبلغ در انتظار',moneyC(st.amount||0)+' ریال','wallet','var(--brand)'],
+     ['شارژ کیف پول',fa(st.topup||0),'wallet','var(--teal)'],
+     ['پرداخت فاکتور',fa(st.payment||0),'receipt','var(--blue)'],
+     ['خرید اشتراک',fa(st.subscription||0),'star','var(--violet)'],
+     ['تأییدشده',fa(st.approved||0),'check','var(--green)']]
+    .map(function(x){return '<div class="kpi"><div class="top"><span class="chip" style="background:color-mix(in srgb,'+x[3]+' 14%,transparent);color:'+x[3]+'">'+icon(x[2])+'</span></div><div class="l">'+x[0]+'</div><div class="v" style="font-size:19px">'+x[1]+'</div></div>';}).join('')+'</div>';
+  h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-cfq placeholder="جستجو در مشتری، شناسه، شرح…" value="'+esc(PS.cfq||'')+'"></div>'+
+    '<select class="sel" data-cfk><option value="">نوع: همه</option>'+Object.keys(KIND).map(function(k){return '<option value="'+k+'"'+(PS.cfk===k?' selected':'')+'>'+KIND[k]+'</option>';}).join('')+'</select>'+
+    '<select class="sel" data-cfs><option value="">وضعیت: همه</option>'+['در انتظار','پرداخت شده','رد شده'].map(function(s){return '<option'+(PS.cfs===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select></div>';
+  if(!rows.length)return h+'<div class="card"><div class="empty"><div class="ei">'+icon('wallet')+'</div><h4>تراکنشی یافت نشد</h4><p class="sub">درخواست‌های شارژ کیف پول، پرداخت فاکتور و خرید اشتراک از پنل مشتری اینجا ثبت می‌شوند.</p></div></div>';
+  h+='<div class="tw"><table class="tb"><thead><tr><th>شناسه</th><th>تاریخ</th><th>مشتری</th><th>نوع</th><th>مبلغ</th><th>روش</th><th>شرح</th><th>پیگیری</th><th>وضعیت</th><th style="text-align:left">عملیات</th></tr></thead><tbody>'+
+    rows.map(function(r){
+      return '<tr><td><b class="ltr">'+esc(r.id)+'</b></td><td>'+jDisp(r.date)+'</td>'+
+        '<td>'+esc(r.customerName||'—')+'<br><small class="sub ltr">'+esc(r.customerId)+'</small></td>'+
+        '<td>'+pill(KIND[r.kind]||r.type)+'</td><td class="num">'+money(r.amount)+'</td>'+
+        '<td>'+esc(r.method||'—')+'</td><td style="white-space:normal;max-width:260px">'+esc(r.desc||'—')+'</td>'+
+        '<td class="ltr">'+esc(r.tracking||'—')+'</td><td>'+pill(r.status)+'</td>'+
+        '<td><div class="ra">'+(r.status==='در انتظار'
+          ?ibtn('cf-ok','check','تأیید پرداخت',' data-id="'+esc(r.id)+'"')+ibtn('cf-no','x','رد',' data-id="'+esc(r.id)+'"')
+          :'')+'</div></td></tr>';
+    }).join('')+'</tbody></table></div>';
+  return h;
+}
+var _render=window.render;
+window.render=function(){
+  if(PS.page!==PID)return _render.apply(this,arguments);
+  CH.forEach(function(c){try{c.destroy();}catch(e){}});CH=[];
+  $('#tbTitle').textContent=TITLES[PID][0];$('#tbCrumb').textContent='ZingoVingo · '+TITLES[PID][1];
+  $('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
+  $('#page').innerHTML=cfPage();decorate($('#page'));renderNav();paintSideUser();
+  $('#bellDot').hidden=!notifications().some(function(n){return !n.read;});
+};
+var _go=window.go;
+window.go=function(p){if(p===PID){PS.cfq='';PS.cfk='';PS.cfs='';}return _go.apply(this,arguments);};
+function cfFind(id){return (DB.custFin||[]).filter(function(x){return x.id===id;})[0];}
+ACT['cf-ok']=function(d){
+  var r=cfFind(d.id);if(!r)return;
+  var eff=r.kind==='topup'?'افزودن '+money(r.amount)+' به کیف پول مشتری'
+    :r.kind==='subscription'?'ارتقای اشتراک مشتری به «'+esc(r.planName||'سطح خریداری‌شده')+'» به مدت '+fa(r.validity||30)+' روز'
+    :'ثبت پرداخت فاکتور '+esc(r.invoiceId||r.requestId||'');
+  openModal('<div class="mh"><h3>تأیید پرداخت</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
+    '<form data-form="cf-review" data-id="'+esc(d.id)+'" data-status="پرداخت شده"><div class="mb">'+
+    kv([['مشتری',esc(r.customerName)+' · '+esc(r.customerId)],['نوع',KIND[r.kind]||r.type],['مبلغ',money(r.amount)],['اثر تأیید',eff]])+
+    '<div class="field" style="margin-top:12px"><label>شماره پیگیری / رسید</label><input name="tracking" value="'+esc(r.tracking||'')+'" placeholder="اختیاری"></div>'+
+    '<p class="hint" style="margin-top:8px">با تأیید، اثر مالی بالا بلافاصله روی حساب مشتری اعمال می‌شود.</p>'+
+    '</div><div class="mf"><button class="btn btn-p" type="submit">'+icon('check','width:14px;height:14px')+' تأیید و اعمال</button>'+
+    '<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);
+};
+ACT['cf-no']=function(d){
+  confirmBox('رد تراکنش','تراکنش <b>'+esc(d.id)+'</b> رد شود؟ هیچ اثر مالی اعمال نخواهد شد.',function(){
+    api('admCCCustomerFinanceReview',d.id,'رد شده','',TOKEN).then(function(){toast('رد شد.','ok');return reload();});
+  });
+};
+document.addEventListener('submit',function(e){
+  var f=e.target;if(!f.dataset||f.dataset.form!=='cf-review')return;
+  e.preventDefault();e.stopPropagation();
+  var sub=f.querySelector('[type="submit"]');if(sub)sub.disabled=true;
+  api('admCCCustomerFinanceReview',f.dataset.id,f.dataset.status,f.elements.tracking.value,TOKEN)
+    .then(function(){closeModal();toast('تأیید و اعمال شد.','ok');return reload();})
+    .catch(function(x){if(sub)sub.disabled=false;toast(x.message,'err');});
+},true);
+var cfDeb=debounce(function(){render();},280);
+document.addEventListener('input',function(e){if(e.target.matches('[data-cfq]')){PS.cfq=e.target.value;cfDeb();}});
+document.addEventListener('change',function(e){var t=e.target;
+  if(t.matches('[data-cfk]')){PS.cfk=t.value;render();return;}
+  if(t.matches('[data-cfs]')){PS.cfs=t.value;render();return;}
+});
+})();
+</script>
 </body>
 </html>
