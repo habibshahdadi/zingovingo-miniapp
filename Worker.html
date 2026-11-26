@@ -5,24 +5,34 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <base target="_top">
 <title>پنل متخصص | ZingoVingo</title>
+<meta name="zv-api-url" content="https://script.google.com/macros/s/AKfycbwjFAiqfPiLijKT5sF63GQocU7tWvrlfFbZCY9CQ39_R_tMT9xq_dZFVSkR-mCaPhgh/exec">
+<link id="zvFavicon" rel="icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&family=Nunito:wght@900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous" onerror="console.warn('[ZV] chart offline')"></script>
+<script src="zv-compat.js" onerror="console.warn('[ZV] compat')"></script>
+<script src="zv-api.js" onerror="console.warn('[ZV] api')"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous" onerror="console.warn('[ZV] chart')"></script>
 <style>
 :root{--navy:#0B1736;--brand:#FF6B1A;--brand2:#FF8A3D;--brandDeep:#E4570B;--brandSoft:#FFB25E;
---blue:#2E63E7;--violet:#7C4DFF;--teal:#0FA3A3;--green:#0E9F6E;--amber:#D97706;--red:#E02D3C;--pink:#E0447C;--slate:#64748B;--cyan:#22C9E0;
+--blue:#2E63E7;--violet:#7C4DFF;--teal:#0FA3A3;--green:#0E9F6E;--amber:#D97706;--red:#E02D3C;--pink:#E0447C;--slate:#64748B;--cyan:#22C9E0;--acid:#9BE24A;
 --bg:#F3F5FB;--surface:#fff;--surface2:#F6F8FD;--surface3:#EDF1F9;--ink:#101A33;--muted:#5C6784;--line:#E2E7F3;--line2:#D3DAEC;
 --scrim:rgba(7,13,31,.58);--sh:0 6px 22px rgba(11,23,54,.07);--sh2:0 16px 44px rgba(11,23,54,.16);
 --r:16px;--tr:180ms ease;--grad:linear-gradient(135deg,#FF6B1A,#FF8A3D 55%,#FFB25E);
---hero:linear-gradient(120deg,#0B1736,#16295B 40%,#3B2E7E 74%,#7C4DFF 128%);--panBg:#0D1A38}
+--gData:linear-gradient(135deg,#0FA3A3,#2E63E7);
+--hero:linear-gradient(120deg,#0B1736,#16295B 40%,#3B2E7E 74%,#7C4DFF 128%);
+--glass:rgba(148,163,184,.16);--glassBrd:rgba(100,116,139,.28);--panBg:#0D1A38;--rail:78px;--zvtr:240ms cubic-bezier(.3,.9,.3,1)}
 [data-theme=dark]{--bg:#070D1F;--surface:#0E1830;--surface2:#121F3D;--surface3:#0B1730;--ink:#E9EEFC;--muted:#93A0C2;--line:#1D2B4F;--line2:#27375F;
---scrim:rgba(2,6,18,.74);--sh:0 8px 26px rgba(0,0,0,.42);--sh2:0 18px 50px rgba(0,0,0,.58);--brandDeep:#FFB25E}
+--scrim:rgba(2,6,18,.74);--sh:0 8px 26px rgba(0,0,0,.42);--sh2:0 18px 50px rgba(0,0,0,.58);--glass:rgba(203,213,225,.11);--glassBrd:rgba(148,163,184,.26);
+--brandDeep:#FFB25E}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
 *{scrollbar-width:thin;scrollbar-color:var(--brandDeep) var(--surface3)}
-::-webkit-scrollbar{width:11px;height:11px}::-webkit-scrollbar-track{background:var(--surface3)}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:var(--surface3);border-radius:9px}
 ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--brand2),var(--brandDeep));border-radius:9px;border:2.5px solid var(--surface3)}
-::selection{background:rgba(255,107,26,.28)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--brandSoft),var(--brand))}
+::-webkit-scrollbar-corner{background:var(--surface3)}
+::selection{background:rgba(255,107,26,.28);color:var(--ink)}
 body{font-family:'Vazirmatn',Tahoma,sans-serif;background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.8;min-height:100vh;overflow-x:hidden}
 body:before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(700px 420px at 92% -6%,rgba(255,107,26,.14),transparent 60%),radial-gradient(640px 460px at -8% 108%,rgba(46,99,231,.13),transparent 60%),radial-gradient(520px 380px at 55% 118%,rgba(124,77,255,.09),transparent 60%)}
 body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.05;background-image:radial-gradient(rgba(100,116,139,.9) 1px,transparent 1.3px);background-size:26px 26px}
@@ -61,12 +71,13 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
 .lbox{background:var(--surface);border-radius:22px;padding:32px;width:min(430px,100%);box-shadow:0 20px 60px #0004}
 .lbox h1{text-align:center;color:var(--ink);font-size:27px}.lbox .sub{text-align:center;color:var(--muted);font-size:12px;margin:6px 0 20px}
 .errbox{display:none;background:rgba(224,45,60,.1);color:var(--red);padding:10px;border-radius:10px;font-size:12px;margin-bottom:12px}
-.democred{background:rgba(46,99,231,.08);border:1px dashed rgba(46,99,231,.4);border-radius:11px;padding:10px 12px;font-size:11.5px;color:var(--blue);margin-bottom:16px;display:flex;align-items:center;gap:8px;justify-content:space-between}
-.democred b{font-family:monospace;font-size:13px}
-#app{display:none;grid-template-columns:272px minmax(0,1fr);min-height:100vh}
-.sidebar{background:linear-gradient(180deg,#0A1531,#0B1736 40%,#1A1440);color:#C7D1E8;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;z-index:60}
+.zv-login-logo{display:flex;justify-content:center;margin:0 auto 14px;width:82px;height:82px}
+.zv-login-logo img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 20px rgba(11,23,54,.22))}
+#app{display:none;grid-template-columns:272px minmax(0,1fr);min-height:100vh;transition:grid-template-columns var(--zvtr)}
+.sidebar{background:linear-gradient(180deg,#0A1531,#0B1736 40%,#1A1440);color:#C7D1E8;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;z-index:60;transition:width var(--zvtr)}
 .brand{display:flex;gap:11px;align-items:center;padding:20px}
-.mark{width:42px;height:42px;border-radius:14px;background:var(--grad);display:grid;place-items:center;color:#fff;box-shadow:0 6px 18px rgba(255,107,26,.45)}
+.mark{width:42px;height:42px;border-radius:14px;background:var(--grad);display:grid;place-items:center;color:#fff;box-shadow:0 6px 18px rgba(255,107,26,.45);overflow:hidden}
+.mark.zv-logo{background:transparent!important;box-shadow:none!important}.mark img{width:100%;height:100%;object-fit:contain}
 .brand h1{font-size:19px;color:#fff}.brand small{display:block;font-size:10px;color:#8E9BC4}
 .nav{flex:1;padding:6px 12px 12px}.nav-sec{font-size:10px;font-weight:800;color:#7C89B4;margin:15px 10px 6px}
 .nav-item{display:flex;align-items:center;gap:11px;padding:9.5px 12px;margin:2px 0;border-radius:11px;color:#B9C4DE;font-size:12.5px;font-weight:700;cursor:pointer;transition:all var(--tr);position:relative}
@@ -74,7 +85,7 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
 .nav-item.on{background:linear-gradient(90deg,rgba(255,107,26,.22),rgba(124,77,255,.12));color:#fff}
 .nav-item.on:before{content:"";position:absolute;right:-12px;top:8px;bottom:8px;width:3.5px;border-radius:4px;background:var(--grad)}
 .bdg{margin-right:auto;background:var(--brand);color:#fff;font-size:10px;font-weight:900;min-width:20px;height:20px;padding:0 6px;border-radius:12px;display:grid;place-items:center}
-.bdg.r{background:var(--red)}.bdg.t{background:var(--teal)}.bdg.v{background:var(--violet)}
+.bdg.r{background:var(--red)}.bdg.t{background:var(--teal)}.bdg.b{background:var(--blue)}.bdg.v{background:var(--violet)}
 .side-foot{padding:14px;border-top:1px solid rgba(255,255,255,.08)}
 .uchip{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.05)}
 .uchip b{color:#fff;font-size:12.5px;display:block}.uchip small{color:#8E9BC4;font-size:10px}
@@ -86,9 +97,7 @@ svg.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke
 .topbar h2{font-size:17px;font-weight:900}.crumb{font-size:11px;color:var(--muted)}.sp{flex:1}
 .ibtn{width:38px;height:38px;border-radius:11px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--muted);position:relative;transition:all var(--tr)}
 .ibtn:hover{color:var(--brand);border-color:var(--brand)}
-.demo-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;font-size:10.5px;font-weight:900;background:rgba(124,77,255,.14);color:var(--violet);border:1px solid rgba(124,77,255,.4)}
-.demo-badge i{width:7px;height:7px;border-radius:50%;background:var(--violet);animation:blink 1.4s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.ibtn .dot{position:absolute;top:7px;left:8px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--surface)}
 .branch-chip{display:flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:11px;background:var(--surface2);font-size:11.5px;font-weight:800;color:var(--brandDeep)}
 .menu-btn{display:none}
 #page{padding:24px 26px 60px;max-width:1620px;width:100%;margin:0 auto}
@@ -116,14 +125,6 @@ table.tb{width:100%;border-collapse:collapse;font-size:12.5px;min-width:800px}
 .charts{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
 .cbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
 .cbox h3{font-size:13px;font-weight:900;margin-bottom:12px;display:flex;align-items:center;gap:8px}.cwrap{position:relative;height:250px}
-.fbar{display:flex;align-items:flex-end;gap:8px;height:200px;padding:10px 4px 0}
-.fbar .b{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
-.fbar .b i{width:100%;max-width:40px;border-radius:7px 7px 0 0;background:var(--grad);transition:height .8s cubic-bezier(.3,.9,.3,1)}
-.fbar .b span{font-size:9.5px;color:var(--muted)}
-.fdonut{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
-.fdonut .lg{flex:1;min-width:150px}
-.fdonut .lg div{display:flex;align-items:center;gap:8px;font-size:11.5px;padding:5px 0}
-.fdonut .lg i{width:11px;height:11px;border-radius:3px;flex:none}
 .rank{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:11px;background:var(--surface2);margin-bottom:7px;font-size:12px}
 .rank .info{flex:1;min-width:0}.rank b{display:block;font-size:12px}.rank small{color:var(--muted);font-size:10px}.rank .v{font-weight:900;color:var(--brandDeep)}
 .bar{height:8px;border-radius:8px;background:var(--surface2);border:1px solid var(--line);overflow:hidden;min-width:70px}
@@ -147,6 +148,17 @@ table.tb{width:100%;border-collapse:collapse;font-size:12.5px;min-width:800px}
 .modal.w{width:min(1020px,100%)}.modal>form{display:flex;flex-direction:column;min-height:0;flex:1;overflow:hidden}
 .mb{padding:20px 22px;overflow-y:auto;flex:1 1 auto;min-height:0}
 .mf{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:9px;flex-wrap:wrap;flex:0 0 auto;align-items:center}
+.modal.dk{background:linear-gradient(165deg,#0D1830,#1D1A44);border-color:#2E3A66;color:#fff;color-scheme:dark}
+.modal.dk .mh,.modal.dk .mf{border-color:#2E3A66}.modal.dk .mh h3{color:#fff}
+.modal.dk .field label{color:#D3DCF5}
+.modal.dk input,.modal.dk select,.modal.dk textarea{background:rgba(255,255,255,.08)!important;border:1px solid #3A4880!important;color:#fff!important}
+.modal.dk input::placeholder,.modal.dk textarea::placeholder{color:#93A3C8!important;opacity:1}
+.modal.dk input[readonly],modal.dk input:disabled{background:rgba(255,107,26,.14)!important;border-color:rgba(255,107,26,.4)!important;color:#FFC79E!important;font-weight:800}
+.modal.dk .btn-s{background:rgba(255,255,255,.09);border-color:#3A4880;color:#fff}
+.modal.dk .hint,.modal.dk .sub{color:#93A3C8}.modal.dk .sec-t{color:var(--brand2)}.modal.dk .sec-t:after{background:#2E3A66}
+.modal.dk .kvi{background:rgba(255,255,255,.06);border-color:#2E3A66}.modal.dk .kvi b{color:#fff}.modal.dk .kvi small{color:#93A3C8}
+.modal.dk .card{background:rgba(255,255,255,.05)!important;border-color:#2E3A66!important;color:#fff!important}
+.modal.dk .zsel-btn,.modal.dk .zsel-opt{color:#fff!important}
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.fgrid .full{grid-column:1/-1}
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}.field label{font-size:11.5px;font-weight:800;color:var(--muted)}.req{color:var(--red)}
 .field input,.field textarea,.field select{min-height:40px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);font-size:12.5px;width:100%}
@@ -158,7 +170,21 @@ table.tb{width:100%;border-collapse:collapse;font-size:12.5px;min-width:800px}
 .kvi small{display:block;font-size:10px;color:var(--muted)}.kvi b{font-size:12.5px;font-weight:800;word-break:break-word;white-space:pre-wrap}.kvi.full{grid-column:1/-1}
 .sec-t{font-size:12px;font-weight:900;color:var(--brandDeep);margin:16px 0 10px;display:flex;align-items:center;gap:8px}
 .sec-t:after{content:"";flex:1;height:1px;background:var(--line)}
-select{background:var(--surface2);border:1px solid var(--line);color:inherit}
+.amt-hint{display:flex;flex-direction:column;gap:2px;margin-top:6px;font-size:10.5px;line-height:1.8;color:var(--muted)}
+.amt-hint b{color:var(--brandDeep);font-weight:900;font-variant-numeric:tabular-nums}
+.modal.dk .amt-hint{color:#93A3C8}.modal.dk .amt-hint b{color:#FFB25E}
+select{background:var(--glass);border:1px solid var(--glassBrd);color:inherit}select option{background:#111A30;color:#fff}
+.zsel{position:relative;width:100%}
+.zsel>select{position:absolute!important;width:1px!important;height:1px!important;opacity:0;pointer-events:none;padding:0!important;border:0!important;margin:0!important}
+.zsel-btn{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:40px;padding:9px 12px;border:1px solid var(--glassBrd);border-radius:10px;background:var(--glass);backdrop-filter:blur(12px);color:inherit;font-size:12.5px;font-weight:600;cursor:pointer;text-align:right;transition:all var(--tr)}
+.zsel-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.zsel-btn:hover{border-color:var(--brand)}
+.zsel.open .zsel-btn{border-color:var(--brand);box-shadow:0 0 0 3px rgba(255,107,26,.16)}
+.zsel-btn .ic{width:15px;height:15px;opacity:.75;transition:transform var(--tr)}.zsel.open .zsel-btn .ic{transform:rotate(180deg)}
+.zsel-pan{display:none;position:absolute;top:calc(100% + 6px);right:0;left:0;z-index:190;max-height:250px;overflow-y:auto;padding:6px;border-radius:13px;border:1px solid rgba(203,213,225,.22);background:var(--panBg);backdrop-filter:blur(20px);box-shadow:0 20px 48px rgba(3,7,20,.5)}
+.zsel.open .zsel-pan{display:block}
+.zsel-opt{padding:8px 11px;border-radius:9px;color:#F2F6FF;font-size:12.5px;font-weight:600;cursor:pointer}
+.zsel-opt:hover{background:rgba(255,107,26,.24)}.zsel-opt.on{background:rgba(255,107,26,.34);font-weight:800}.zsel-opt.muted{color:#A9B6D4}
+.toolbar .zsel{width:auto;min-width:160px}.toolbar .zsel-btn{min-height:37px;font-size:12px}
 .jdw{position:relative;width:100%}.jdw input{padding-left:42px!important;direction:ltr;text-align:right}
 .jdb{position:absolute;left:6px;top:50%;transform:translateY(-50%);border:0;border-radius:8px;background:rgba(255,107,26,.14);color:var(--brandDeep);padding:6px 8px;cursor:pointer;z-index:2;display:grid;place-items:center}
 .jdb:hover{background:var(--brand);color:#fff}
@@ -188,6 +214,9 @@ select{background:var(--surface2);border:1px solid var(--line);color:inherit}
 .msgb.sys{background:transparent;border:0;text-align:center;color:var(--muted);font-size:10.5px;padding:3px}
 .msgb b{font-size:11.5px}.msgb small{color:var(--muted);font-size:10px;display:block;margin-top:4px}
 .msgb .body{white-space:pre-wrap;margin:5px 0;word-break:break-word}
+.modal.dk .chatbox{background:rgba(255,255,255,.04);border-color:#2E3A66}
+.modal.dk .msgb{background:rgba(255,255,255,.07);border-color:#3A4880;color:#fff}
+.modal.dk .msgb.me{background:rgba(255,107,26,.18)}.modal.dk .msgb.sys{background:transparent;border:0;color:#93A3C8}
 .zv-card-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:16px;margin-top:14px}
 .zv-work-card{background:var(--surface);border:1px solid var(--line);border-radius:17px;overflow:hidden;box-shadow:var(--sh);transition:.2s}
 .zv-work-card:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
@@ -235,6 +264,7 @@ select{background:var(--surface2);border:1px solid var(--line);color:inherit}
 .corr .fill{position:absolute;top:13px;right:0;height:8px;border-radius:99px;background:linear-gradient(90deg,#0FA3A3,#FF6B1A)}
 .corr input[type=range]{position:absolute;top:3px;right:0;left:0;width:100%;height:28px;-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;margin:0}
 .corr input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--grad);border:3px solid var(--surface);box-shadow:0 3px 10px rgba(255,107,26,.5)}
+.corr input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--brand);border:3px solid var(--surface)}
 .corr input[type=range]:disabled{cursor:not-allowed;opacity:.5}
 .pe{display:flex;flex-direction:column;align-items:center;gap:3px}
 .perow{display:flex;align-items:center;gap:6px}
@@ -246,34 +276,59 @@ select{background:var(--surface2);border:1px solid var(--line);color:inherit}
 .g0{background:rgba(100,116,139,.16);color:var(--slate)}.g1{background:rgba(46,99,231,.15);color:var(--blue)}
 .g2{background:rgba(217,119,6,.15);color:var(--amber)}.g3{background:rgba(124,77,255,.16);color:var(--violet)}
 .qring{width:120px;height:120px;border-radius:50%;display:grid;place-items:center;position:relative;flex:0 0 120px}
+.qring b{font-size:28px;font-weight:900}.qring small{position:absolute;bottom:26px;font-size:9px;color:var(--muted)}
+.comp-row{display:flex;align-items:center;gap:10px;margin-bottom:11px;font-size:11.5px}
+.comp-row .cl{min-width:140px;font-weight:700}.comp-row .bar{flex:1}.comp-row .cv{min-width:60px;text-align:left;font-weight:800}
 .ladder{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
 .ladder:last-child{border:0}
 .ladder .ld{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:11px;font-weight:900}
-.plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px}
-.plan-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;position:relative;transition:.2s;display:flex;flex-direction:column;gap:10px}
-.plan-card:hover{transform:translateY(-3px);box-shadow:var(--sh2)}
-.plan-card.cur{border-color:var(--green);box-shadow:0 0 0 3px rgba(14,159,110,.15)}
-.plan-card .mk{font-size:32px;font-weight:900;color:var(--brandDeep)}
-.plan-card h4{font-size:15px;font-weight:900}
-.plan-card .ft{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}
 .profile-layout{display:grid;grid-template-columns:minmax(220px,280px) 1fr;gap:22px;align-items:start}
 .profile-photo-card{text-align:center;padding:22px}
 .pe-frame{position:relative;width:min(300px,100%);aspect-ratio:1;margin:12px auto;border-radius:14px;overflow:hidden;background:#0B1736;touch-action:none;cursor:grab}
 .pe-frame img{position:absolute;max-width:none;user-select:none;pointer-events:none}
+.pe-row{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:12px}
+.pe-row input[type=range]{flex:1;accent-color:var(--brand)}
 .ftag{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:800;padding:1px 8px;border-radius:20px;margin-inline-start:6px}
-.ftag.e{background:rgba(14,159,110,.13);color:var(--green)}.ftag.l{background:rgba(100,116,139,.14);color:var(--slate)}
+.ftag.e{background:rgba(14,159,110,.13);color:var(--green)}.ftag.r{background:rgba(224,45,60,.12);color:var(--red)}.ftag.l{background:rgba(100,116,139,.14);color:var(--slate)}
 .skel{background:linear-gradient(90deg,var(--surface2),var(--surface3),var(--surface2));background-size:200% 100%;animation:sk 1.3s ease-in-out infinite;border-radius:10px}
 @keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .loading{text-align:center;padding:44px;color:var(--muted)}
 .spinner{display:inline-block;width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.rail-btn .ra{transition:transform var(--zvtr)}
+html.zv-rail .rail-btn{color:var(--brandDeep);border-color:rgba(255,107,26,.45);background:rgba(255,107,26,.1)}
+html.zv-rail .rail-btn .ra{transform:scaleX(-1)}
+html.zv-rail #app{grid-template-columns:var(--rail) minmax(0,1fr)}
+html.zv-rail .sidebar{width:var(--rail);overflow-x:hidden}
+html.zv-rail .sidebar .brand{padding:18px 0;justify-content:center;gap:0}
+html.zv-rail .sidebar .brand>div:last-child{display:none}
+html.zv-rail .sidebar .mark{width:40px;height:40px}
+html.zv-rail .sidebar .nav{padding:6px 10px 12px}
+html.zv-rail .sidebar .nav-sec{font-size:0;height:1px;margin:14px 8px 12px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);overflow:hidden}
+html.zv-rail .sidebar .nav-item{justify-content:center;gap:0;padding:11px 0}
+html.zv-rail .sidebar .nav-item>span{display:none}
+html.zv-rail .sidebar .nav-item .bdg{position:absolute;top:5px;left:7px;margin:0;min-width:9px;width:9px;height:9px;padding:0;font-size:0;box-shadow:0 0 0 2px #0B1736}
+html.zv-rail .sidebar .side-foot{padding:12px 8px}
+html.zv-rail .sidebar .uchip{flex-direction:column;gap:9px;padding:10px 4px}
+html.zv-rail .sidebar .uchip>div:not(.av){display:none}
+html.zv-rail .sidebar .av{width:34px;height:34px;font-size:14px}
+#zvTip{position:fixed;z-index:300;pointer-events:none;background:linear-gradient(135deg,#0B1736,#3B2E7E);color:#fff;font-size:11.5px;font-weight:800;padding:7px 12px;border-radius:10px;white-space:nowrap;border:1px solid rgba(255,138,61,.35);box-shadow:0 12px 30px rgba(3,7,20,.45);opacity:0;transition:opacity 140ms}
+#zvTip.on{opacity:1}#zvTip b{color:#FFB25E;margin-right:6px;font-size:10.5px}
 #printArea{display:none}
-@media(max-width:1120px){#app{grid-template-columns:1fr}
-.sidebar{position:fixed;right:0;top:0;width:276px;transform:translateX(105%);transition:transform .28s;z-index:96;box-shadow:var(--sh2)}
+@media(max-width:1120px){#app,html.zv-rail #app{grid-template-columns:1fr}
+.sidebar,html.zv-rail .sidebar{position:fixed;right:0;top:0;width:276px;transform:translateX(105%);transition:transform .28s;z-index:96;box-shadow:var(--sh2)}
 .sidebar.open{transform:none}
-.menu-btn{display:grid}}
+html.zv-rail .sidebar .brand{padding:20px;justify-content:flex-start;gap:11px}
+html.zv-rail .sidebar .brand>div:last-child{display:block}
+html.zv-rail .sidebar .nav-sec{font-size:10px;height:auto;margin:15px 10px 6px;background:none;color:#7C89B4}
+html.zv-rail .sidebar .nav-item{justify-content:flex-start;gap:11px;padding:9.5px 12px}
+html.zv-rail .sidebar .nav-item>span{display:inline}
+html.zv-rail .sidebar .nav-item .bdg{position:static;margin-right:auto;min-width:20px;width:auto;height:20px;padding:0 6px;font-size:10px;box-shadow:none}
+html.zv-rail .sidebar .uchip{flex-direction:row;padding:9px 10px}
+html.zv-rail .sidebar .uchip>div:not(.av){display:block}
+.menu-btn{display:grid}#zvTip{display:none!important}}
 @media(max-width:760px){#page{padding:16px 14px 70px}.topbar{padding:10px 14px}.crumb,.branch-chip{display:none}
-.fgrid,.kv,.profile-layout{grid-template-columns:1fr}.hero .dchip{display:none}
+.fgrid,.kv,.profile-layout{grid-template-columns:1fr}.hero .dchip{display:none}.topbar .btn-p span{display:none}
 .drawer{width:100%}.chatbox{max-height:38vh}.msgb.me{margin-left:8px}.msgb.them{margin-right:8px}
 .corrcell{max-width:none}.zv-work-card-summary{grid-template-columns:1fr 1fr}}
 @media print{body>*{display:none!important}#printArea{display:block!important;font-family:Vazirmatn,Tahoma,sans-serif}}
@@ -283,36 +338,35 @@ select{background:var(--surface2);border:1px solid var(--line);color:inherit}
 <body>
 <div id="loginView" class="login">
 <div class="lbox">
-<div style="display:flex;justify-content:center;margin-bottom:14px"><div class="mark" style="width:64px;height:64px;border-radius:18px"><svg class="ic" viewBox="0 0 24 24" style="width:34px;height:34px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg></div></div>
+<div class="zv-login-logo" id="loginLogo"><img src="LOGO.png" alt="ZingoVingo" onerror="this.parentNode.style.display='none'"></div>
 <h1 class="bw">Zingo<span>Vingo</span></h1>
-<div class="sub">پنل متخصص — کارت‌ها، نرخ‌ها، کیفیت و تسویه</div>
+<div class="sub">پنل متخصص — کارت‌ها، نرخ‌ها و تسویه</div>
 <div id="loginError" class="errbox"></div>
-<div class="democred"><span>اعتبار دمو:</span><b>habib / 1234</b><button class="btn btn-t btn-sm" type="button" data-act="demo-fill">ورود سریع</button></div>
-<div class="field" style="margin-bottom:12px"><label>نام کاربری</label><input id="loginUser" autocomplete="username" value="habib"></div>
-<div class="field" style="margin-bottom:16px"><label>رمز عبور</label><input id="loginPass" type="password" autocomplete="current-password" value="1234"></div>
+<div class="field" style="margin-bottom:12px"><label>نام کاربری</label><input id="loginUser" autocomplete="username"></div>
+<div class="field" style="margin-bottom:16px"><label>رمز عبور</label><input id="loginPass" type="password" autocomplete="current-password"></div>
 <button class="btn btn-p" style="width:100%" id="loginBtn" data-act="login">ورود به پنل</button>
-<div id="loginMode" style="text-align:center;margin-top:14px;font-size:11px;color:var(--muted)"></div>
+<div style="text-align:center;margin-top:16px;font-size:12px"><a href="?page=portal" style="color:var(--brand)">بازگشت به درگاه نقش‌ها</a></div>
 </div>
 </div>
 <div id="app">
 <aside class="sidebar" id="sidebar">
 <div class="brand">
-<div class="mark"><svg class="ic" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg></div>
+<div class="mark" id="sideMark"><svg class="ic" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg></div>
 <div><h1 class="bw">Zingo<span>Vingo</span></h1><small>پنل متخصص</small></div>
 </div>
 <nav class="nav" id="nav"></nav>
 <div class="side-foot"><div class="uchip">
 <div class="av" id="sideAv" data-act="go" data-page="profile"></div>
 <div style="flex:1;min-width:0"><b id="sideName"></b><small id="sideRole"></small></div>
-<button class="ibtn" data-act="logout" title="خروج" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:#C7D1E8"><svg class="ic" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
+<button class="ibtn" data-act="logout" title="خروج"><svg class="ic" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
 </div></div>
 </aside>
 <div class="main">
 <header class="topbar">
+<button class="ibtn rail-btn" data-act="rail" title="جمع کردن منو (Ctrl+B)"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9 4v16"/><path class="ra" d="M16.5 9.5 14 12l2.5 2.5"/></svg></button>
 <button class="ibtn menu-btn" data-act="menu"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 <div><h2 id="tbTitle">داشبورد</h2><div class="crumb" id="tbCrumb"></div></div>
 <div class="branch-chip" id="branchChip"></div>
-<span class="demo-badge" id="demoBadge" style="display:none"><i></i>حالت دمو</span>
 <div class="sp"></div>
 <button class="ibtn" data-act="refresh" title="بروزرسانی داده‌ها"><svg class="ic" viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg></button>
 <button class="ibtn" data-act="theme" id="themeBtn"></button>
@@ -328,10 +382,9 @@ select{background:var(--surface2);border:1px solid var(--line);color:inherit}
 <div id="toasts"></div>
 <div id="printArea"></div>
 <input type="file" id="peFile" accept="image/jpeg,image/png,image/webp" hidden>
-
 <script>
 'use strict';
-/* ═════════════ A) UTIL ═════════════ */
+/* ═════ 1) UTIL ═════ */
 var $=function(s,r){return (r||document).querySelector(s);};
 var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
 function esc(v){var m={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};return String(v==null?'':v).replace(/[&<>"']/g,function(c){return m[c];});}
@@ -350,18 +403,20 @@ function j2g(jy,jm,jd){jy+=1595;var d=-355668+365*jy+Math.floor(jy/33)*8+Math.fl
 function jLeap(y){var g=j2g(y,12,30),j=g2j(g[0],g[1],g[2]);return j[0]===y&&j[1]===12&&j[2]===30;}
 function jDays(y,m){return m<=6?31:(m<=11?30:(jLeap(y)?30:29));}
 function parseJ(s){var m=en(s).trim().replace(/[.\-]/g,'/').match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);if(!m)return null;var y=+m[1],mo=+m[2],d=+m[3];if(mo<1||mo>12||d<1||d>jDays(y,mo))return null;return[y,mo,d];}
-function jDisp(v){if(!v)return '—';var d=new Date(v);if(isNaN(d.getTime()))return esc(v);var j=g2j(d.getFullYear(),d.getMonth()+1,d.getDate());return fa(j[0]+'/'+String(j[1]).padStart(2,'0')+'/'+String(j[2]).padStart(2,'0'));}
-function jInput(v){if(!v)return '';var d=new Date(v);if(isNaN(d.getTime()))return '';var j=g2j(d.getFullYear(),d.getMonth()+1,d.getDate());return j[0]+'/'+String(j[1]).padStart(2,'0')+'/'+String(j[2]).padStart(2,'0');}
-function jDT(v){if(!v)return '—';var d=new Date(v);if(isNaN(d.getTime()))return esc(v);return jDisp(v)+' · '+fa(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));}
-function gKey(v){var d=new Date(v);return isNaN(d.getTime())?'':d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function jStore(s){var p=parseJ(s);if(!p)return '';var g=j2g(p[0],p[1],p[2]);return g[0]+'-'+String(g[1]).padStart(2,'0')+'-'+String(g[2]).padStart(2,'0');}
+function jDisp(v){if(!v)return '—';var p=parseJ(v);if(p)return fa(p[0]+'/'+String(p[1]).padStart(2,'0')+'/'+String(p[2]).padStart(2,'0'));var d=new Date(v);if(isNaN(d.getTime()))return esc(v);var j=g2j(d.getFullYear(),d.getMonth()+1,d.getDate());return fa(j[0]+'/'+String(j[1]).padStart(2,'0')+'/'+String(j[2]).padStart(2,'0'));}
+function jInput(v){if(!v)return '';var p=parseJ(v);if(p)return p[0]+'/'+String(p[1]).padStart(2,'0')+'/'+String(p[2]).padStart(2,'0');var d=new Date(v);if(isNaN(d.getTime()))return '';var j=g2j(d.getFullYear(),d.getMonth()+1,d.getDate());return j[0]+'/'+String(j[1]).padStart(2,'0')+'/'+String(j[2]).padStart(2,'0');}
+function jDT(v){if(!v)return '—';var s=en(v);var m=s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);if(m)return fa(m[1]+'/'+String(+m[2]).padStart(2,'0')+'/'+String(+m[3]).padStart(2,'0'))+(s.match(/(\d{1,2}):(\d{2})/)?' · '+fa(s.match(/(\d{1,2}):(\d{2})/)[0]):'');var d=new Date(v);if(isNaN(d.getTime()))return esc(v);return jDisp(v)+' · '+fa(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));}
+function gKey(v){if(!v)return '';var p=parseJ(v);if(p){var g=j2g(p[0],p[1],p[2]);return g[0]+'-'+String(g[1]).padStart(2,'0')+'-'+String(g[2]).padStart(2,'0');}var d=new Date(v);return isNaN(d.getTime())?'':d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 var JM=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
-function lastMonths(n){var o=[],d=new Date();for(var i=n-1;i>=0;i--){var x=new Date(d.getFullYear(),d.getMonth()-i,1);var j=g2j(x.getFullYear(),x.getMonth()+1,1);o.push({key:j[0]+'-'+String(j[1]).padStart(2,'0'),label:JM[j[1]-1]});}return o;}
 function jMonthKeyDisp(v){var m=en(v).match(/^(\d{4})[\/\-](\d{1,2})/);return m?m[1]+'-'+String(+m[2]).padStart(2,'0'):'';}
-/* ═════════════ B) ICONS ═════════════ */
+function lastMonths(n){var o=[],d=new Date();for(var i=n-1;i>=0;i--){var x=new Date(d.getFullYear(),d.getMonth()-i,1);var j=g2j(x.getFullYear(),x.getMonth()+1,1);o.push({key:j[0]+'-'+String(j[1]).padStart(2,'0'),label:JM[j[1]-1]});}return o;}
+/* ═════ 2) ICONS ═════ */
 var IC={dash:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
 cards:'<rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 10h20M6 15h4"/>',
 cal:'<rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/>',
 tag:'<path d="M12 2H2v10l9.3 9.3a2 2 0 0 0 2.8 0l7.2-7.2a2 2 0 0 0 0-2.8z"/><circle cx="7" cy="7" r="1.5"/>',
+star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
 shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
 msg:'<path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.86L3 21l1.9-5.2A8.4 8.4 0 1 1 21 11.5z"/>',
 send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
@@ -379,7 +434,8 @@ undo:'<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/>',
 print:'<path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
 sun:'<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22"/>',
 moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
-chevD:'<path d="m6 9 6 6 6-6"/>',lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+chevD:'<path d="m6 9 6 6 6-6"/>',chevL:'<path d="m15 18-6-6 6-6"/>',chevR:'<path d="m9 18 6-6-6-6"/>',
+lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
 unlock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>',
 cam:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
 save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',
@@ -391,371 +447,39 @@ alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2
 percent:'<path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>',
 trend:'<path d="m3 17 6-6 4 4 7-8"/><path d="M14 7h6v6"/>',
 award:'<circle cx="12" cy="8" r="6"/><path d="M8.2 13.9 7 22l5-3 5 3-1.2-8.1"/>',
+target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+dl:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
+up:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
 crown:'<path d="M3 18h18l-1.5-9-4.5 3.5L12 5l-3 7.5L4.5 9 3 18z"/>',
-bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',dl:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',up:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>'};
+bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>'};
 function icon(n,s){return '<svg class="ic" viewBox="0 0 24 24"'+(s?' style="'+s+'"':'')+'>'+(IC[n]||IC.grid)+'</svg>';}
-/* ═════════════ C) شبیه‌ساز واقعی (ZVDemo) ═════════════ */
-var ZVDemo=(function(){
-var LSKEY='zv_demo_db_v3';
-function rnd(a,b){return Math.floor(a+Math.random()*(b-a+1));}
-function uid(p){return p+'-'+Math.random().toString(36).slice(2,8).toUpperCase();}
-function iso(d){return d instanceof Date?d.toISOString():new Date(d).toISOString();}
-function daysFromNow(n,h){var d=new Date();d.setDate(d.getDate()+n);if(h!=null)d.setHours(h,rnd(0,59),0,0);return d;}
-function monthKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
-function seed(){
-var now=new Date(), db={};
-db.settings={'PRICING_ENABLED':'بله','CURRENCY_LABEL':'ریال','PRICING_BETA_MAX':'60','PRICING_RATE_COOLDOWN_H':'72','PRICING_RATE_STEP_MAX_PCT':'20','PRICING_RATE_CHANGES_PER_MONTH':'2','TEAM_MGMT_SHARE_PCT':'15','TEAM_SPLIT_BASIS':'hours','TEAM_SETTLE_CYCLE':'monthly','QUALITY_REVIEW_WINDOW':'20','LOGO_URL':'','FAVICON_URL':''};
-db.branches=[{branchId:'BR-02',branchName:'شعبه غرب تهران',isCityHub:'بله',province:'تهران',city:'تهران'}];
-db.workers=[
-{workerId:'W-101',username:'habib',password:'1234',firstName:'حبیب',lastName:'کریمی',branchId:'BR-02',groupId:'G-10',operations:'worker',specialization:'برق و تأسیسات ساختمان',city:'تهران',province:'تهران',photo:'',description:'متخصص برق با ۱۲ سال سابقه',status:'فعال'},
-{workerId:'W-100',username:'amir.sup',password:'1234',firstName:'امیر',lastName:'رضایی',branchId:'BR-02',groupId:'G-10',operations:'supervisor',specialization:'سرپرست تیم فنی',city:'تهران',province:'تهران',photo:'',description:'',status:'فعال'},
-{workerId:'W-102',username:'reza',password:'1234',firstName:'رضا',lastName:'محمدی',branchId:'BR-02',groupId:'G-10',operations:'worker',specialization:'کولر گازی',city:'تهران',province:'تهران',photo:'',description:'',status:'فعال'},
-{workerId:'W-103',username:'sara',password:'1234',firstName:'سارا',lastName:'نوری',branchId:'BR-02',groupId:'G-10',operations:'worker',specialization:'روشنایی',city:'تهران',province:'تهران',photo:'',description:'',status:'فعال'}];
-db.groups=[{groupId:'G-10',branchId:'BR-02',workerId:'W-100',groupName:'تیم فنی غرب تهران',province:'تهران',city:'تهران',status:'فعال'}];
-db.groupMembers=[{groupId:'G-10',workerId:'W-100',username:'amir.sup',role:'supervisor',status:'فعال'},{groupId:'G-10',workerId:'W-101',username:'habib',role:'member',status:'فعال'},{groupId:'G-10',workerId:'W-102',username:'reza',role:'member',status:'فعال'},{groupId:'G-10',workerId:'W-103',username:'sara',role:'member',status:'فعال'}];
-db.services=[
-{id:'SVC-01',nameFa:'رفع اتصالی و عیب‌یابی برق',nameEn:'electrical',rate:4500000,unit:'هر مورد',minOrder:1,unionCode:'UN-101',qualityGateEnabled:'بله'},
-{id:'SVC-02',nameFa:'سیم‌کشی ساختمان',nameEn:'wiring',rate:380000,unit:'هر متر',minOrder:10,unionCode:'UN-102',qualityGateEnabled:'بله'},
-{id:'SVC-03',nameFa:'نصب آیفون تصویری',nameEn:'iphone',rate:6500000,unit:'هر دستگاه',minOrder:1,unionCode:'UN-103',qualityGateEnabled:'بله'},
-{id:'SVC-04',nameFa:'نصب لوستر و روشنایی',nameEn:'lighting',rate:3200000,unit:'هر عدد',minOrder:1,unionCode:'UN-104',qualityGateEnabled:'بله'},
-{id:'SVC-05',nameFa:'نصب و راه‌اندازی کولر گازی',nameEn:'ac',rate:18500000,unit:'هر دستگاه',minOrder:1,unionCode:'UN-105',qualityGateEnabled:'بله'},
-{id:'SVC-06',nameFa:'تعمیر و سرویس تابلو برق',nameEn:'panel',rate:9800000,unit:'هر تابلو',minOrder:1,unionCode:'UN-106',qualityGateEnabled:'بله'},
-{id:'SVC-07',nameFa:'نصب کلید و پریز',nameEn:'outlet',rate:950000,unit:'هر عدد',minOrder:1,unionCode:'UN-107',qualityGateEnabled:'بله'}];
-db.cityRates=[
-{rateId:'CR-01',province:'تهران',city:'تهران',serviceId:'SVC-01',floorRate:4800000,version:'v3',status:'فعال',effectiveFrom:iso(daysFromNow(-90)),effectiveTo:''},
-{rateId:'CR-02',province:'تهران',city:'تهران',serviceId:'SVC-02',floorRate:400000,version:'v3',status:'فعال',effectiveFrom:iso(daysFromNow(-90)),effectiveTo:''},
-{rateId:'CR-03',province:'تهران',city:'تهران',serviceId:'SVC-03',floorRate:7000000,version:'v3',status:'فعال',effectiveFrom:iso(daysFromNow(-90)),effectiveTo:''},
-{rateId:'CR-04',province:'تهران',city:'تهران',serviceId:'SVC-04',floorRate:3500000,version:'v3',status:'فعال',effectiveFrom:iso(daysFromNow(-90)),effectiveTo:''},
-{rateId:'CR-05',province:'تهران',city:'تهران',serviceId:'SVC-05',floorRate:19000000,version:'v3',status:'فعال',effectiveFrom:iso(daysFromNow(-90)),effectiveTo:''},
-{rateId:'CR-06',province:'تهران',city:'تهران',serviceId:'SVC-06',floorRate:10500000,version:'v3',status:'فعال',effectiveFrom:iso(daysFromNow(-90)),effectiveTo:''},
-{rateId:'CR-07',province:'تهران',city:'تهران',serviceId:'SVC-07',floorRate:1000000,version:'v3',status:'فعال',effectiveFrom:iso(daysFromNow(-90)),effectiveTo:''}];
-db.qualityGates=[
-{gateId:'QG-0',serviceId:'*',tierName:'تازه‌وارد',tierRank:0,markupPct:0,minCompleted:0,minRating:0,maxCancelPct:100,maxDisputePct:100,minOnTimePct:0,requireInsurance:'خیر',status:'فعال'},
-{gateId:'QG-1',serviceId:'*',tierName:'تثبیت‌شده',tierRank:1,markupPct:15,minCompleted:20,minRating:4.2,maxCancelPct:15,maxDisputePct:10,minOnTimePct:70,requireInsurance:'خیر',status:'فعال'},
-{gateId:'QG-2',serviceId:'*',tierName:'حرفه‌ای',tierRank:2,markupPct:30,minCompleted:60,minRating:4.5,maxCancelPct:10,maxDisputePct:6,minOnTimePct:80,requireInsurance:'خیر',status:'فعال'},
-{gateId:'QG-3',serviceId:'*',tierName:'برتر',tierRank:3,markupPct:50,minCompleted:150,minRating:4.7,maxCancelPct:5,maxDisputePct:3,minOnTimePct:90,requireInsurance:'بله',status:'فعال'}];
-db.specialistPlans=[
-{planId:'PL-0',planName:'پایه',scope:'worker',markupPct:0,priceMonthly:0,price6:0,priceAnnual:0,bands:'',minMembers:0,maxMembers:0,features:'نرخ مصوب پایه',status:'فعال',sort:0},
-{planId:'PL-1',planName:'نقره‌ای',scope:'worker',markupPct:15,priceMonthly:4900000,price6:26000000,priceAnnual:47000000,bands:'',minMembers:0,maxMembers:0,features:'تا ۱۵٪ افزایش نرخ · پشتیبانی عادی',status:'فعال',sort:1},
-{planId:'PL-2',planName:'طلایی',scope:'worker',markupPct:30,priceMonthly:9800000,price6:52000000,priceAnnual:94000000,bands:'',minMembers:0,maxMembers:0,features:'تا ۳۰٪ افزایش نرخ · پشتیبانی ویژه',status:'فعال',sort:2},
-{planId:'PL-3',planName:'الماس',scope:'worker',markupPct:50,priceMonthly:18500000,price6:98000000,priceAnnual:177000000,bands:'',minMembers:0,maxMembers:0,features:'تا ۵۰٪ افزایش نرخ · اولویت تخصیص',status:'فعال',sort:3}];
-var entExp=daysFromNow(45);
-db.principalEntitlements=[{entitlementId:'ENT-01',principalType:'worker',principalId:'W-101',principalName:'حبیب کریمی',planId:'PL-1',planName:'نقره‌ای',markupPct:15,memberCount:1,pricePaid:4900000,paymentRef:'TX-OLD1',startsAt:iso(daysFromNow(-15)),expiresAt:iso(entExp),status:'فعال',purchasedBy:'habib',createdAt:iso(daysFromNow(-15))}];
-db.principalQuality=[];db.rateCards=[];db.rateEvents=[];
-db.cards=[];db.cardHistory=[];db.cardAssignments=[];
-var names=['مریم صادقی','امیرحسین توکلی','نگار موسوی','کاوه رستمی','فرشته احمدی','بابک شریفی','سپیده قاسمی','رحمان نجفی','الهه برزگر','مجید کاویانی','حسین ملکی','رضا فرهمند'];
-var areas=['سعادت‌آباد','پونک','شهرک غرب','جنت‌آباد','مرزداران','اکباتان','صادقیه','گیشا'];
-// کارت‌های انجام‌شده تاریخی (برای سطح کیفیت)
-for(var i=0;i<62;i++){
-var sv=db.services[i%db.services.length];
-var dt=daysFromNow(-rnd(3,90),rnd(8,18));
-var fl=db.cityRates.find(function(c){return c.serviceId===sv.id;}).floorRate;
-var mk=rnd(0,15);
-var amt=Math.round(fl*(1+mk/100)/1000)*1000;
-db.cards.push({cardId:'C-'+(2000+i),requestId:'R-'+(5000+i),workerId:'W-101',branchId:'BR-02',groupId:'G-10',serviceId:sv.id,city:'تهران',customerName:names[i%names.length],serviceType:sv.nameFa,actionType:'نصب',duration:2,executionDate:dt,executionTime:String(rnd(9,17)).padStart(2,'0')+':00',contactNumber:'0912'+rnd(1000000,9999999),address:areas[i%areas.length]+'، تهران',requestDetails:sv.nameFa,total:amt,creationTime:iso(new Date(dt.getTime()-864e5)),updatedAt:iso(new Date(dt.getTime()+(i%7===0?-864e5:36e5))),status:(i%29===0?'لغو شده':(i%31===0?'ارجاع به سرپرست':'انجام شده')),rateOwnerType:'worker',rateOwnerId:'W-101',baseRateUsed:fl,markupPct:mk,rateVersion:'v'+i,rateSource:'CityRates',customerPayable:amt});
-}
-// کارت‌های فعال این هفته
-var wk=new Date();wk.setHours(12,0,0,0);wk.setDate(wk.getDate()-((wk.getDay()+1)%7));
-var act=[{off:0,h:10,st:'درحال اجرا',sv:0},{off:0,h:15,st:'جدید',sv:3},{off:1,h:9,st:'درحال اجرا',sv:4},{off:2,h:11,st:'جدید',sv:2},{off:3,h:16,st:'درحال بررسی',sv:6},{off:4,h:10,st:'جدید',sv:1}];
-act.forEach(function(a,idx){
-var sv=db.services[a.sv];var d=new Date(wk);d.setDate(wk.getDate()+a.off);d.setHours(a.h,0,0,0);
-var fl=db.cityRates.find(function(c){return c.serviceId===sv.id;}).floorRate;var amt=Math.round(fl*1.12/1000)*1000;
-db.cards.push({cardId:'C-'+(3000+idx),requestId:'R-'+(6000+idx),workerId:'W-101',branchId:'BR-02',groupId:'G-10',serviceId:sv.id,city:'تهران',customerName:names[(idx+3)%names.length],serviceType:sv.nameFa,actionType:'نصب',duration:2,executionDate:d,executionTime:String(a.h).padStart(2,'0')+':00',contactNumber:'0912'+rnd(1000000,9999999),address:areas[(idx+2)%areas.length]+'، تهران',requestDetails:sv.nameFa+' — '+areas[(idx+2)%areas.length],total:amt,creationTime:iso(daysFromNow(-rnd(0,2))),updatedAt:iso(daysFromNow(0)),status:a.st,rateOwnerType:'worker',rateOwnerId:'W-101',baseRateUsed:fl,markupPct:12,rateVersion:'v1',rateSource:'CityRates',customerPayable:amt});
-});
-db.siteReviews=[];
-for(var r=0;r<14;r++){db.siteReviews.push({reviewId:'RV-'+r,createdAt:iso(daysFromNow(-rnd(1,60))),customerId:'CU-'+r,workerId:'W-101',serviceId:db.services[r%7].id,verifiedPurchase:'بله',rating:(r%5===0?4:5),status:'تأیید شده'});}
-db.threads=[
-{threadId:'THR-SUP1',cardId:'C-3001',workerId:'W-101',workerUsername:'habib',supervisorId:'W-100',supervisorUsername:'amir.sup',groupId:'G-10',branchId:'BR-02',subject:'پیگیری کارت نصب لوستر',status:'OPEN',lastMessageAt:iso(daysFromNow(0,9)),lastMessageBy:'amir.sup',createdAt:iso(daysFromNow(-1,10)),updatedAt:iso(daysFromNow(0,9)),channel:'INTERNAL',ticketNo:'TI-000001',ownerRole:'worker',ownerId:'W-101',ownerUsername:'habib',ownerName:'حبیب کریمی',peerRole:'supervisor',peerId:'W-100',peerUsername:'amir.sup',messageCount:2,unreadOwner:1,unreadPeer:0,lastMessagePreview:'لطفاً قبل از اجرا، عکس محل نصب را بفرستید.'},
-{threadId:'THR-SUP2',cardId:'',workerId:'W-101',workerUsername:'habib',supervisorId:'W-100',supervisorUsername:'amir.sup',groupId:'G-10',branchId:'BR-02',subject:'درخواست افزایش نرخ کولر گازی',status:'OPEN',lastMessageAt:iso(daysFromNow(-2,14)),lastMessageBy:'habib',createdAt:iso(daysFromNow(-2,13)),updatedAt:iso(daysFromNow(-2,14)),channel:'INTERNAL',ticketNo:'TI-000002',ownerRole:'worker',ownerId:'W-101',ownerUsername:'habib',ownerName:'حبیب کریمی',peerRole:'supervisor',peerId:'W-100',peerUsername:'amir.sup',messageCount:1,unreadOwner:0,unreadPeer:1,lastMessagePreview:'با سلام، باتوجه به نرخ بازار...'},
-{threadId:'THR-EMP1',cardId:'',workerId:'',workerUsername:'',supervisorId:'',supervisorUsername:'',groupId:'',branchId:'BR-02',subject:'مشکل در ثبت ساعت اجرا',status:'OPEN',lastMessageAt:iso(daysFromNow(-3,11)),lastMessageBy:'habib',createdAt:iso(daysFromNow(-3,11)),updatedAt:iso(daysFromNow(-3,11)),channel:'EMPLOYEE_SUPPORT',ticketNo:'TE-000001',ownerRole:'worker',ownerId:'W-101',ownerUsername:'habib',ownerName:'حبیب کریمی',peerRole:'admin',peerId:'',peerUsername:'',messageCount:1,unreadOwner:0,unreadPeer:1,lastMessagePreview:'در ثبت ساعت اجرا به مشکل خوردم.'}];
-db.messages=[
-{messageId:'M-1',threadId:'THR-SUP1',senderRole:'worker',senderId:'W-101',senderUsername:'habib',senderName:'حبیب کریمی',body:'سلام، برای کارت نصب لوستر مشتری هماهنگ کردم.',createdAt:iso(daysFromNow(-1,10)),readAt:iso(daysFromNow(-1,11)),messageType:'TEXT',channel:'INTERNAL',visibility:'ALL'},
-{messageId:'M-2',threadId:'THR-SUP1',senderRole:'supervisor',senderId:'W-100',senderUsername:'amir.sup',senderName:'امیر رضایی',body:'لطفاً قبل از اجرا، عکس محل نصب را بفرستید.',createdAt:iso(daysFromNow(0,9)),readAt:'',messageType:'TEXT',channel:'INTERNAL',visibility:'ALL'},
-{messageId:'M-3',threadId:'THR-SUP2',senderRole:'worker',senderId:'W-101',senderUsername:'habib',senderName:'حبیب کریمی',body:'با سلام، باتوجه به نرخ بازار، درخواست افزایش نرخ نصب کولر گازی را دارم.',createdAt:iso(daysFromNow(-2,14)),readAt:'',messageType:'TEXT',channel:'INTERNAL',visibility:'ALL'},
-{messageId:'M-4',threadId:'THR-EMP1',senderRole:'worker',senderId:'W-101',senderUsername:'habib',senderName:'حبیب کریمی',body:'در ثبت ساعت اجرا به مشکل خوردم.',createdAt:iso(daysFromNow(-3,11)),readAt:'',messageType:'TEXT',channel:'EMPLOYEE_SUPPORT',visibility:'ALL'}];
-db.devRequests=[
-{requestId:'DEV-A1B2C3',createdAt:iso(daysFromNow(-5)),module:'rates',moduleName:'خدمات و نرخ‌ها',kind:'feature',priority:'مهم',status:'در بررسی',note:'امکان کپی نرخ از یک خدمت به خدمت مشابه',createdBy:'W-101',createdByName:'حبیب کریمی',createdByRole:'Worker',branchId:'BR-02'},
-{requestId:'DEV-D4E5F6',createdAt:iso(daysFromNow(-9)),module:'cards',moduleName:'کارت‌های من',kind:'bug',priority:'عادی',status:'جدید',note:'فیلتر وضعیت در نمای جدول گاهی اعمال نمی‌شود',createdBy:'W-102',createdByName:'رضا محمدی',createdByRole:'Worker',branchId:'BR-02'}];
-db.teamPayoutRules=[{ruleId:'TPR-01',groupId:'G-10',groupName:'تیم فنی غرب تهران',model:'ترکیبی',mgmtSharePct:15,splitBasis:'hours',settleCycle:'monthly',minMemberQuality:'',supervisorWorkerId:'W-100',status:'فعال'}];
-db.settlements=[];db.settlementLines=[];db.finTransactions=[{transactionId:'TX-OLD1',transactionDate:iso(daysFromNow(-15)),transactionType:'خرید اشتراک',amount:4900000,paymentMethod:'درگاه پرداخت',counterpartyType:'Worker',counterpartyId:'W-101',transactionStatus:'پرداخت شده',description:'خرید پلن نقره‌ای',createdAt:iso(daysFromNow(-15))}];
-return db;
-}
-var DB=null;
-function load(){if(DB)return DB;try{var r=localStorage.getItem(LSKEY);if(r){DB=JSON.parse(r);return DB;}}catch(e){}DB=seed();persist();return DB;}
-function persist(){try{localStorage.setItem(LSKEY,JSON.stringify(DB));}catch(e){}}
-function reset(){DB=seed();persist();}
-function setting(k,d){var v=DB.settings[k];return v==null||v===''?d:v;}
-function yes(v){return /^(بله|true|1|yes|فعال)$/i.test(String(v==null?'':v).trim());}
-function done_(s){return /انجام شده|تکمیل|completed/i.test(String(s||''));}
-function prog_(s){return /درحال|در حال|اجرا|بررسی|progress/i.test(String(s||''));}
-function new_(s){return /جدید|new/i.test(String(s||''));}
-function cancel_(s){return /لغو|cancel/i.test(String(s||''));}
-function refer_(s){return /ارجاع|مرجوع|تعلیق/.test(String(s||''));}
-function name_(w){return w?[w.firstName,w.lastName].filter(Boolean).join(' '):'';}
-function todayISO(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-function dateISO(v){if(!v)return '';var d=new Date(v);return isNaN(d.getTime())?'':d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-function round1000(n){return Math.round(num(n)/1000)*1000;}
-var onEvent=null;
-function emit(type,payload){if(onEvent)setTimeout(function(){onEvent({type:type,payload:payload});},50);}
-/* --- محاسبات کریدور --- */
-function activeEnt(ptype,pid){var t=todayISO();var list=DB.principalEntitlements.filter(function(e){return e.principalType===ptype&&e.principalId===pid&&yes(e.status)&&dateISO(e.startsAt)<=t&&(!e.expiresAt||dateISO(e.expiresAt)>=t);});return list[0]||null;}
-function pendingEnt(ptype,pid){return DB.principalEntitlements.filter(function(e){return e.principalType===ptype&&e.principalId===pid&&/در انتظار/.test(e.status);});}
-function floors(city,prov){var out={},src={};DB.services.forEach(function(s){out[s.id]=num(s.rate);src[s.id]='service';});
-DB.cityRates.filter(function(r){return yes(r.status)&&(!r.effectiveTo||dateISO(r.effectiveTo)>=todayISO());}).forEach(function(r){
-if(r.city===city){out[r.serviceId]=num(r.floorRate);src[r.serviceId]='city';}
-else if(r.province===prov&&src[r.serviceId]!=='city'){out[r.serviceId]=num(r.floorRate);src[r.serviceId]='province';}});
-return {floors:out,source:src};}
-function gatesFor(sid){var all=DB.qualityGates.filter(function(g){return yes(g.status);});var spec=all.filter(function(g){return g.serviceId===sid;});var list=spec.length?spec:all.filter(function(g){return g.serviceId==='*';});return list.sort(function(a,b){return num(a.tierRank)-num(b.tierRank);});}
-function statsFor(ptype,pid,sid){
-var cards=DB.cards.filter(function(c){if(ptype==='team')return c.groupId===pid;return c.workerId===pid;});
-if(sid&&sid!=='*')cards=cards.filter(function(c){return c.serviceId===sid;});
-var total=cards.length,done=0,cancel=0,refer=0,onTime=0,dated=0;
-cards.forEach(function(c){var st=c.status;if(done_(st)){done++;var ex=dateISO(c.executionDate),up=dateISO(c.updatedAt);if(ex&&up){dated++;if(up<=ex)onTime++;}}if(cancel_(st))cancel++;if(refer_(st))refer++;});
-var revs=DB.siteReviews.filter(function(r){return yes(r.verifiedPurchase)&&r.workerId===pid&&(!sid||sid==='*'||r.serviceId===sid);}).sort(function(a,b){return String(b.createdAt).localeCompare(String(a.createdAt));});
-var win=num(setting('QUALITY_REVIEW_WINDOW','20'))||20;var use=revs.slice(0,win);
-var rating=use.length?use.reduce(function(a,r){return a+num(r.rating);},0)/use.length:null;
-return {total:total,completed:done,cancelPct:total?Math.round(cancel/total*1000)/10:0,disputePct:total?Math.round(refer/total*1000)/10:0,onTimePct:dated?Math.round(onTime/dated*1000)/10:100,rating:rating,ratingCount:use.length};}
-function gateMatch(gates,st){var picked=gates[0];gates.forEach(function(g){var ok=st.completed>=num(g.minCompleted)&&(st.rating==null||st.rating>=num(g.minRating))&&st.cancelPct<=num(g.maxCancelPct)&&st.disputePct<=num(g.maxDisputePct)&&st.onTimePct>=num(g.minOnTimePct);if(ok)picked=g;});return picked;}
-function qualityOf(ptype,pid,sid,planPct){var st=statsFor(ptype,pid,sid);var gates=gatesFor(sid);var g=gateMatch(gates,st);var earned=num(g.markupPct);var cap=num(setting('PRICING_BETA_MAX','60'))||60;var eff=Math.min(planPct,earned,cap);
-var score=Math.round(Math.min(100,(st.rating==null?0:st.rating/5*35)+Math.min(1,st.completed/150)*30+st.onTimePct*.2+(100-st.disputePct)*.15));
-var next=gates.filter(function(x){return num(x.tierRank)>num(g.tierRank);})[0]||null;
-return {serviceId:sid,completed:st.completed,total:st.total,rating:st.rating,ratingCount:st.ratingCount,cancelPct:st.cancelPct,disputePct:st.disputePct,onTimePct:st.onTimePct,tier:g.tierName,rank:num(g.tierRank),earned:earned,effective:eff,planPct:planPct,score:score,next:next};}
-function ceilOf(floor,pct){return round1000(floor*(1+pct/100));}
-function principalOf(sess){var w=DB.workers.find(function(x){return x.workerId===sess.workerId;});var g=DB.groups.find(function(x){return x.groupId===(w?w.groupId:'');});
-var isSup=!!(g&&g.workerId===sess.workerId);
-if(isSup&&g)return{type:'team',id:g.groupId,name:g.groupName,isSup:true};
-return{type:'worker',id:sess.workerId,name:name_(w)||sess.username,isSup:false};}
-function svcName(s){return s.nameFa||s.nameEn||s.id;}
-/* --- نشست --- */
-var sessions={};
-function auth(token){var s=sessions[token]||(function(){try{var r=localStorage.getItem('zv_demo_session');if(r){var o=JSON.parse(r);if(o.token===token)return o.sess;}}catch(e){}return null;})();
-if(!s)throw new Error('نشست منقضی شده است؛ دوباره وارد شوید.');return s;}
-/* --- توابع عمومی (هم‌امضا با بک‌اند) --- */
-var F={};
-F.workerLogin=function(u,p){
-u=String(u||'').trim().toLowerCase();p=String(p||'').trim();
-if(!u||!p)throw new Error('نام کاربری و رمز عبور را وارد کنید.');
-var w=DB.workers.find(function(x){return x.username.toLowerCase()===u&&x.password===p&&yes(x.status)&&/worker|کارگر|متخصص|supervisor|سرپرست/i.test(x.operations);});
-if(!w)throw new Error('نام کاربری یا رمز عبور اشتباه است.');
-var token=uid('TKN');var br=DB.branches.find(function(b){return b.branchId===w.branchId;})||{};
-var sess={token:token,role:'worker',workerId:w.workerId,username:w.username,name:name_(w),branchId:w.branchId,branchName:br.branchName||'',groupId:w.groupId,province:w.province,city:w.city,avatar:w.photo};
-sessions[token]=sess;try{localStorage.setItem('zv_demo_session',JSON.stringify({token:token,sess:sess}));}catch(e){}
-return {success:true,token:token,user:{name:sess.name,workerId:sess.workerId,username:sess.username,branchId:sess.branchId,branchName:sess.branchName,groupId:sess.groupId,province:sess.province,city:sess.city,avatar:sess.avatar}};};
-F.workerLogout=function(token){delete sessions[token];try{localStorage.removeItem('zv_demo_session');}catch(e){}return {success:true};};
-F.checkWorkerAuth=function(token){return auth(token);};
-F.getWorkerProfile=function(token){var s=auth(token);var w=DB.workers.find(function(x){return x.workerId===s.workerId;});var g=DB.groups.find(function(x){return x.groupId===w.groupId;})||{};var br=DB.branches.find(function(b){return b.branchId===w.branchId;})||{};
-var sup=g.workerId?DB.workers.find(function(x){return x.workerId===g.workerId;}):null;
-return {workerId:s.workerId,name:name_(w),username:w.username,role:'متخصص',branchId:w.branchId,branchName:br.branchName||'',groupId:w.groupId,groupName:g.groupName||'',province:w.province,city:w.city,isSupervisor:g.workerId===w.workerId,supervisorName:sup?name_(sup):'',avatar:w.photo,description:w.description||'',specialization:w.specialization||''};};
-function cardView(c){var ed=new Date(c.executionDate);return {cardId:c.cardId,requestId:c.requestId,customer:c.customerName,details:c.requestDetails||c.serviceType,serviceType:c.serviceType,serviceId:c.serviceId,groupId:c.groupId,city:c.city,unit:'',amount:num(c.total),baseRateUsed:num(c.baseRateUsed),markupPct:num(c.markupPct),rateVersion:c.rateVersion||'',rateSource:c.rateSource||'',rateOwnerType:c.rateOwnerType||'',rateOwnerId:c.rateOwnerId||'',subsidy:0,payable:num(c.customerPayable),campaignId:'',frozenAt:'',settlementId:'',executeDateTime:(isNaN(ed.getTime())?'':jInput(ed)+' '+(c.executionTime||'')),execDateKey:dateISO(c.executionDate),execTimeKey:c.executionTime||'',duration:num(c.duration),status:c.status,branchId:c.branchId,actionType:c.actionType||'',description:c.requestDetails||'',updatedAt:iso(c.updatedAt)};}
-F.getWorkerCards=function(filters,token){var s=auth(token);var f=filters||{};
-var cards=DB.cards.filter(function(c){return c.workerId===s.workerId;});
-if(f.status&&f.status!=='همه')cards=cards.filter(function(c){return c.status===f.status;});
-if(f.search){var q=en(f.search).toLowerCase();cards=cards.filter(function(c){return [c.customerName,c.cardId,c.requestId,c.requestDetails,c.serviceType].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});}
-return cards.map(cardView).reverse();};
-F.getWorkerCardDetails=function(cardId,token){var s=auth(token);var c=DB.cards.find(function(x){return x.cardId===cardId;});if(!c)throw new Error('کارت یافت نشد.');
-var v=cardView(c);v.phone=c.contactNumber;v.createdAt=iso(c.creationTime);v.service=c.serviceType;v.quantity=1;v.executeDate=jInput(c.executionDate);v.executeTime=c.executionTime;v.address=c.address;v.sideServices='';v.notes=c.requestDetails;v.basePrice=num(c.baseRateUsed);v.discount=0;v.tax=0;v.finalPrice=num(c.total);
-v.assignments=DB.cardAssignments.filter(function(a){return a.cardId===cardId;}).map(function(a){return {workerId:a.workerId,role:a.role,hours:num(a.hours),status:'فعال'};});
-v.history=DB.cardHistory.filter(function(h){return h.cardId===cardId;}).map(function(h){return {from:h.from,to:h.to,by:h.by,at:jDT(h.date),desc:h.desc};});
-return v;};
-F.getWorkerCardStatuses=function(token){auth(token);return ['درحال اجرا','انجام شده','تعلیق','ارجاع به سرپرست'];};
-F.updateWorkerCardStatus=function(cardId,newStatus,notes,token){var s=auth(token);
-var allowed=['درحال اجرا','انجام شده','تعلیق','ارجاع به سرپرست'];if(allowed.indexOf(newStatus)<0)throw new Error('وضعیت مجاز نیست.');
-if(newStatus==='ارجاع به سرپرست'&&!(notes||'').trim())throw new Error('برای ارجاع، دلیل الزامی است.');
-var c=DB.cards.find(function(x){return x.cardId===cardId;});if(!c)throw new Error('کارت یافت نشد.');if(c.workerId!==s.workerId)throw new Error('این کارت به شما تخصیص ندارد.');
-var old=c.status;c.status=newStatus;c.updatedAt=iso(new Date());
-DB.cardHistory.push({cardId:cardId,from:old,to:newStatus,by:s.username,date:iso(new Date()),desc:notes||'تغییر وضعیت توسط نیرو'});
-persist();return {success:true,from:old,to:newStatus};};
-F.referCardToSupervisor=function(cardId,reason,token){return F.updateWorkerCardStatus(cardId,'ارجاع به سرپرست',reason,token);};
-F.getWorkerPlannerCards=function(token){var s=auth(token);return DB.cards.filter(function(c){return c.workerId===s.workerId;}).map(function(c){var v=cardView(c);v.workerId=s.workerId;v.workerName=s.name;return v;});};
-F.getWorkerDashboard=function(token){var s=auth(token);var cards=DB.cards.filter(function(c){return c.workerId===s.workerId;});
-var st=cards.map(function(c){return c.status;});var cnt=function(fn){return st.filter(fn).length;};
-var today=todayISO();var todayCards=cards.filter(function(c){return dateISO(c.executionDate)===today;}).map(function(c){return {cardId:c.cardId,customer:c.customerName,time:c.executionTime,status:c.status,details:c.requestDetails};});
-var wk={};for(var i=0;i<7;i++){var d=new Date();d.setDate(d.getDate()-((d.getDay()+1)%7)+i);wk[dateISO(d)]=1;}
-var g=DB.groups.find(function(x){return x.groupId===s.groupId;})||{};var sup=g.workerId?DB.workers.find(function(x){return x.workerId===g.workerId;}):null;
-var pr=principalOf(s);var ent=activeEnt(pr.type,pr.id);
-return {total:cards.length,newCards:cnt(new_),inProgress:cnt(prog_),done:cnt(done_),referred:cnt(refer_),suspended:0,cancelled:cnt(cancel_),weekCount:cards.filter(function(c){return wk[dateISO(c.executionDate)];}).length,revenue:cards.filter(function(c){return done_(c.status);}).reduce(function(a,c){return a+num(c.total);},0),unread:F.workerGetUnreadTotal(token),groupName:g.groupName||'',supervisorName:sup?name_(sup):'',supervisorId:sup?sup.workerId:'',branchName:s.branchName,todayCards:todayCards,principal:{type:pr.type,name:pr.name,planPct:ent?num(ent.markupPct):0,planName:ent?ent.planName:'پایه'}};};
-F.getWorkerReports=function(token,from,to){var s=auth(token);var cards=DB.cards.filter(function(c){return c.workerId===s.workerId;});
-var f=dateISO(from),t=dateISO(to);if(f)cards=cards.filter(function(c){var k=dateISO(c.creationTime);return k&&k>=f;});if(t)cards=cards.filter(function(c){var k=dateISO(c.creationTime);return k&&k<=t;});
-var byStatus={},byService={};cards.forEach(function(c){byStatus[c.status]=(byStatus[c.status]||0)+1;byService[c.serviceType]=(byService[c.serviceType]||0)+1;});
-return {totalCards:cards.length,completedCards:cards.filter(function(c){return done_(c.status);}).length,inProgressCards:cards.filter(function(c){return prog_(c.status);}).length,totalRevenue:cards.reduce(function(a,c){return a+num(c.total);},0),byStatus:byStatus,byService:byService,transactions:cards.map(function(c){return {date:iso(c.creationTime),cardId:c.cardId,customer:c.customerName,amount:num(c.total),status:c.status};}).reverse()};};
-F.updateWorkerProfile=function(updates,token){var s=auth(token);var u=updates||{};var w=DB.workers.find(function(x){return x.workerId===s.workerId;});if(!w)throw new Error('کاربر یافت نشد.');
-if(u.username)w.username=u.username;if(u.password)w.password=u.password;if(u.avatar!==undefined)w.photo=u.avatar;if(u.description!==undefined)w.description=u.description;
-s.username=w.username;s.avatar=w.photo;persist();return {success:true};};
-F.uploadWorkerProfilePhotoV2=function(dataUrl,token){var s=auth(token);if(String(dataUrl).indexOf('data:image')!==0)throw new Error('فرمت تصویر نامعتبر است.');
-var w=DB.workers.find(function(x){return x.workerId===s.workerId;});w.photo=dataUrl;s.avatar=dataUrl;persist();return {success:true,url:dataUrl};};
-F.getWorkerBrandSettings=function(){return {logoUrl:'',faviconUrl:'',currency:setting('CURRENCY_LABEL','ریال')};};
-F.getServices=function(){return {services:DB.services.map(function(s){return {id:s.id,nameFa:s.nameFa,nameEn:s.nameEn,rate:num(s.rate),unit:s.unit,minOrder:num(s.minOrder),unionCode:s.unionCode};})};};
-/* --- گفتگو --- */
-function chOf(t){return t.channel||'INTERNAL';}
-function viewThread(t){var msgs=DB.messages.filter(function(m){return m.threadId===t.threadId;}).sort(function(a,b){return String(a.createdAt).localeCompare(String(b.createdAt));});
-var unread=msgs.filter(function(m){return m.senderId!==t.ownerId&&!m.readAt;}).length;
-var st=String(t.status||'OPEN').toUpperCase();var state=/CLOSED|بسته/.test(st)?'CLOSED':(/ANSWERED/.test(st)?'ANSWERED':'OPEN');
-var support=chOf(t)==='EMPLOYEE_SUPPORT';var last=msgs[msgs.length-1];
-return {threadId:t.threadId,ticketNo:t.ticketNo,channel:support?'SUPPORT':'SUP',subject:t.subject||'بدون موضوع',state:state,status:state==='CLOSED'?'بسته':(state==='ANSWERED'?'پاسخ داده شده':'در انتظار پاسخ'),cardId:t.cardId,groupId:t.groupId,branchId:t.branchId,peerName:support?'پشتیبانی سامانه':(t.supervisorUsername||'سرپرست'),messageCount:msgs.length,unread:unread,preview:t.lastMessagePreview||(last?String(last.body).slice(0,140):''),lastMessageAt:t.lastMessageAt||t.createdAt,createdAt:t.createdAt};}
-F.workerGetInbox=function(token){var s=auth(token);return DB.threads.filter(function(t){return t.ownerId===s.workerId;}).map(viewThread).sort(function(a,b){return String(b.lastMessageAt).localeCompare(String(a.lastMessageAt));});};
-F.workerGetThread=function(id,token){var s=auth(token);var t=DB.threads.find(function(x){return x.threadId===id;});if(!t)throw new Error('گفتگو یافت نشد.');if(t.ownerId!==s.workerId)throw new Error('دسترسی ندارید.');
-DB.messages.forEach(function(m){if(m.threadId===id&&m.senderId!==s.workerId&&!m.readAt){m.readAt=iso(new Date());m.readBy=s.username;}});t.unreadOwner=0;persist();
-var msgs=DB.messages.filter(function(m){return m.threadId===id;}).sort(function(a,b){return String(a.createdAt).localeCompare(String(b.createdAt);});
-return {thread:viewThread(t),messages:msgs.map(function(m){return {messageId:m.messageId,senderRole:m.senderRole,senderId:m.senderId,senderUsername:m.senderUsername,senderName:m.senderName,body:m.body,createdAt:m.createdAt,readAt:m.readAt,messageType:m.messageType};})};};
-function schedulePeerReply(threadId){var t=DB.threads.find(function(x){return x.threadId===threadId;});if(!t)return;
-var delay=rnd(9000,16000);setTimeout(function(){
-var support=chOf(t)==='EMPLOYEE_SUPPORT';
-var body=support?'سلام، درخواست شما بررسی شد. نتیجه تا پایان امروز اعلام می‌شود.':'ممنون از پیامت. بررسی کردم؛ هماهنگی لازم انجام شد. لطفاً قبل از اجرا گزارش بده.';
-var sender=support?'admin':(t.supervisorId||'W-100');
-var sname=support?'پشتیبانی سامانه':name_(DB.workers.find(function(w){return w.workerId===sender;})||{});
-DB.messages.push({messageId:uid('M'),threadId:threadId,senderRole:support?'admin':'supervisor',senderId:sender,senderUsername:support?'support':'amir.sup',senderName:sname,body:body,createdAt:iso(new Date()),readAt:'',messageType:'TEXT',channel:chOf(t),visibility:'ALL'});
-t.lastMessageAt=iso(new Date());t.lastMessageBy=support?'support':'amir.sup';t.lastMessagePreview=body.slice(0,140);t.messageCount=(t.messageCount||0)+1;t.unreadOwner=(t.unreadOwner||0)+1;if(t.status==='CLOSED')t.status='OPEN';
-persist();emit('msg',{threadId:threadId,subject:t.subject,from:sname});},delay);}
-F.workerReplyThread=function(id,body,token){var s=auth(token);var b=(body||'').trim();if(!b)throw new Error('متن پیام الزامی است.');
-var t=DB.threads.find(function(x){return x.threadId===id;});if(!t)throw new Error('گفتگو یافت نشد.');if(t.ownerId!==s.workerId)throw new Error('دسترسی ندارید.');
-if(/CLOSED|بسته/.test(String(t.status).toUpperCase()))throw new Error('گفتگو بسته است؛ ابتدا بازگشایی کنید.');
-DB.messages.push({messageId:uid('M'),threadId:id,senderRole:'worker',senderId:s.workerId,senderUsername:s.username,senderName:s.name,body:b,createdAt:iso(new Date()),messageType:'TEXT',channel:chOf(t),visibility:'ALL'});
-t.lastMessageAt=iso(new Date());t.lastMessageBy=s.username;t.lastMessagePreview=b.slice(0,140);t.messageCount=(t.messageCount||0)+1;t.unreadPeer=(t.unreadPeer||0)+1;t.status='OPEN';persist();schedulePeerReply(id);return {success:true,threadId:id};};
-F.workerCreateThread=function(payload,token){var s=auth(token);var p=payload||{};var b=(p.body||'').trim();if(!b)throw new Error('متن پیام الزامی است.');
-var support=String(p.channel)==='SUPPORT';var ch=support?'EMPLOYEE_SUPPORT':'INTERNAL';
-if(!support&&!p.cardId)throw new Error('برای گفتگو با سرپرست، کارت مرتبط را انتخاب کنید.');
-var id=uid('THR');var ticket=(support?'TE-':'TI-')+String(DB.threads.length+1).padStart(6,'0');
-var g=DB.groups.find(function(x){return x.groupId===s.groupId;})||{};
-DB.threads.push({threadId:id,cardId:support?'':(p.cardId||''),workerId:s.workerId,workerUsername:s.username,supervisorId:support?'':(g.workerId||''),supervisorUsername:support?'':'amir.sup',groupId:s.groupId,branchId:s.branchId,subject:(p.subject||'').slice(0,160)||(support?'پیام به پشتیبانی':'پیگیری کارت'),status:'OPEN',lastMessageAt:iso(new Date()),lastMessageBy:s.username,createdAt:iso(new Date()),updatedAt:iso(new Date()),channel:ch,ticketNo:ticket,ownerRole:'worker',ownerId:s.workerId,ownerUsername:s.username,ownerName:s.name,peerRole:support?'admin':'supervisor',peerId:support?'':(g.workerId||''),peerUsername:support?'':'amir.sup',messageCount:1,unreadOwner:0,unreadPeer:1,lastMessagePreview:b.slice(0,140)});
-DB.messages.push({messageId:uid('M'),threadId:id,senderRole:'worker',senderId:s.workerId,senderUsername:s.username,senderName:s.name,body:b,createdAt:iso(new Date()),messageType:'TEXT',channel:ch,visibility:'ALL'});
-persist();schedulePeerReply(id);return {success:true,threadId:id,ticketNo:ticket};};
-F.workerSetThreadStatus=function(id,status,token){var s=auth(token);var t=DB.threads.find(function(x){return x.threadId===id;});if(!t)throw new Error('گفتگو یافت نشد.');
-t.status=/CLOSED/i.test(status)?'CLOSED':'OPEN';persist();return {success:true,state:t.status};};
-F.workerGetUnreadTotal=function(token){var s=auth(token);return DB.threads.filter(function(t){return t.ownerId===s.workerId&&t.status!=='CLOSED';}).reduce(function(a,t){return a+DB.messages.filter(function(m){return m.threadId===t.threadId&&m.senderId!==s.workerId&&!m.readAt;}).length;},0);};
-/* --- درخواست توسعه --- */
-F.workerGetDevRequests=function(token){var s=auth(token);return {items:DB.devRequests.map(function(r){return {id:r.requestId,module:r.module,moduleName:r.moduleName,kind:r.kind,priority:r.priority,status:r.status,note:r.note,createdBy:r.createdBy,createdByName:r.createdByName,createdAt:r.createdAt,mine:r.createdBy===s.workerId};}).sort(function(a,b){return String(b.createdAt).localeCompare(String(a.createdAt));})};};
-F.workerSubmitDevRequest=function(payload,token){var s=auth(token);var p=payload||{};var note=(p.note||'').trim();if(note.length<10)throw new Error('شرح درخواست حداقل ۱۰ کاراکتر باشد.');
-var id=uid('DEV');DB.devRequests.push({requestId:id,createdAt:iso(new Date()),module:p.module||'general',moduleName:p.moduleName||'پیشنهاد عمومی',kind:p.kind||'feature',priority:p.priority||'عادی',status:'جدید',note:note,createdBy:s.workerId,createdByName:s.name,createdByRole:'Worker',branchId:s.branchId});
-persist();return {success:true,id:id};};
-F.workerDeleteDevRequest=function(id,token){var s=auth(token);var i=DB.devRequests.findIndex(function(r){return r.requestId===id;});if(i<0)throw new Error('یافت نشد.');
-if(DB.devRequests[i].createdBy!==s.workerId)throw new Error('فقط درخواست‌های خودتان قابل حذف است.');DB.devRequests.splice(i,1);persist();return {success:true};};
-/* --- کریدور قیمت --- */
-F.workerGetRateContext=function(token){var s=auth(token);var pr=principalOf(s);var city=s.city||'تهران',prov=s.province||'تهران';
-var F_=floors(city,prov);var ent=activeEnt(pr.type,pr.id);var planPct=ent?num(ent.markupPct):0;
-var services=DB.services.map(function(sv){
-var q=qualityOf(pr.type,pr.id,sv.id,planPct);var fl=F_.floors[sv.id]||num(sv.rate);var ce=ceilOf(fl,q.effective);
-var rc=DB.rateCards.find(function(r){return r.principalType===pr.type&&r.principalId===pr.id&&r.serviceId===sv.id;});
-var cur=rc?num(rc.finalRate):fl;cur=Math.max(fl,Math.min(cur,Math.max(ce,fl)));
-return {id:sv.id,name:sv.nameFa,nameEn:sv.nameEn,unit:sv.unit,minimum:num(sv.minOrder),unionCode:sv.unionCode,gateEnabled:yes(sv.qualityGateEnabled),floor:fl,ceiling:ce,rate:cur,markup:q.effective,earned:q.earned,planPct:planPct,floorSource:F_.source[sv.id]||'service',rateId:rc?rc.rateId:'',rateVersion:rc?rc.rateVersion:'',updatedAt:rc?rc.updatedAt:'',quality:q};});
-return {success:true,pricingEnabled:yes(setting('PRICING_ENABLED','بله')),city:city,province:prov,principal:{type:pr.type,id:pr.id,name:pr.name,isSupervisor:pr.isSup,members:[]},entitlement:ent?{id:ent.entitlementId,planId:ent.planId,planName:ent.planName,markup:num(ent.markupPct),expiresAt:dateISO(ent.expiresAt),status:ent.status}:null,pending:pendingEnt(pr.type,pr.id).map(function(e){return {id:e.entitlementId,planName:e.planName,markup:num(e.markupPct),amount:num(e.pricePaid),status:e.status};}),limits:{cooldownH:num(setting('PRICING_RATE_COOLDOWN_H','72')),stepMaxPct:num(setting('PRICING_RATE_STEP_MAX_PCT','20')),changesPerMonth:num(setting('PRICING_RATE_CHANGES_PER_MONTH','2')),betaMax:num(setting('PRICING_BETA_MAX','60'))},services:services};};
-F.workerSaveRate=function(payload,token){var s=auth(token);var p=principalOf(s);var pl=payload||{};var sid=pl.serviceId;if(!sid)throw new Error('کد خدمت الزامی است.');
-var sv=DB.services.find(function(x){return x.id===sid;});if(!sv)throw new Error('خدمت یافت نشد.');
-var city=pl.city||s.city||'تهران';var F_=floors(city,s.province);var ent=activeEnt(p.type,p.id);var planPct=ent?num(ent.markupPct):0;
-var q=qualityOf(p.type,p.id,sid,planPct);var fl=F_.floors[sid]||num(sv.rate);var ce=ceilOf(fl,q.effective);
-var rate=round1000(pl.rate);if(!(rate>0))throw new Error('نرخ معتبر نیست.');
-if(rate<fl)throw new Error('نرخ کمتر از کف مصوب ('+fl+' ریال) است.');
-if(rate>ce){if(planPct===0)throw new Error('پلن فعال ندارید؛ سقف شما نرخ مصوب است. ابتدا اشتراک بخرید.');throw new Error('نرخ از سقف مجاز ('+ce+' ریال · '+q.effective+'٪) بیشتر است.');}
-var ex=DB.rateCards.find(function(r){return r.principalType===p.type&&r.principalId===p.id&&r.serviceId===sid;});
-var now=new Date();
-if(ex){var last=new Date(ex.updatedAt).getTime();var cool=num(setting('PRICING_RATE_COOLDOWN_H','72'))*3600000;
-if(isFinite(last)&&cool>0&&now.getTime()-last<cool)throw new Error('فاصلهٔ مجاز بین دو تغییر نرخ رعایت نشده؛ '+Math.ceil((cool-(now.getTime()-last))/3600000)+' ساعت دیگر تلاش کنید.');
-var prev=num(ex.finalRate);var step=num(setting('PRICING_RATE_STEP_MAX_PCT','20'));
-if(prev>0&&Math.abs(rate-prev)/prev*100>step+0.001)throw new Error('حداکثر تغییر نرخ در هر بار '+step+'٪ است.');}
-var rid=ex?ex.rateId:uid('RCD');var ver='v'+now.getTime().toString(36).toUpperCase();
-var obj={rateId:rid,principalType:p.type,principalId:p.id,principalName:p.name,serviceId:sid,serviceName:sv.nameFa,province:s.province,city:city,unit:sv.unit,floorRate:fl,ceilingRate:ce,markupPct:q.effective,finalRate:rate,rateVersion:ver,qualityTier:q.tier,status:'فعال',effectiveFrom:todayISO(),updatedAt:iso(now),updatedBy:s.username};
-if(ex)Object.assign(ex,obj);else DB.rateCards.push(obj);
-DB.rateEvents.push({eventId:uid('REV'),eventType:'RATE_CHANGE',principalType:p.type,principalId:p.id,entity:'RateCards',entityId:rid,beforeValue:ex?num(ex.finalRate):'',afterValue:rate,actorId:s.workerId,actorName:s.name,reason:'تغییر نرخ '+sid,createdAt:iso(now)});
-persist();return {success:true,rateId:rid,rate:rate,floor:fl,ceiling:ce,markup:q.effective,version:ver,message:'نرخ «'+sv.nameFa+'» ثبت شد.'};};
-F.workerGetQuality=function(token){var s=auth(token);var p=principalOf(s);var ent=activeEnt(p.type,p.id);var planPct=ent?num(ent.markupPct):0;
-var overall=qualityOf(p.type,p.id,'*',planPct);
-var per=DB.services.map(function(sv){var q=qualityOf(p.type,p.id,sv.id,planPct);return {serviceId:sv.id,name:sv.nameFa,completed:q.completed,rating:q.rating,tier:q.tier,rank:q.rank,earned:q.earned,effective:q.effective,score:q.score,next:q.next?{tier:q.next.tierName,jobs:num(q.next.minCompleted),rating:num(q.next.minRating),remainJobs:Math.max(0,num(q.next.minCompleted)-q.completed)}:null};});
-return {success:true,principal:{type:p.type,id:p.id,name:p.name},planPct:planPct,overall:{score:overall.score,completed:overall.completed,total:overall.total,rating:overall.rating,onTimePct:overall.onTimePct,cancelPct:overall.cancelPct,disputePct:overall.disputePct,tier:overall.tier,earned:overall.earned,effective:overall.effective},services:per,gates:DB.qualityGates.map(function(g){return {tier:g.tierName,rank:num(g.tierRank),markup:num(g.markupPct),jobs:num(g.minCompleted),rating:num(g.minRating)};}),insured:true};};
-F.workerGetPlans=function(token){var s=auth(token);var p=principalOf(s);var ent=activeEnt(p.type,p.id);
-return {success:true,principalType:p.type,members:1,current:ent?{planId:ent.planId,planName:ent.planName,markup:num(ent.markupPct),expiresAt:dateISO(ent.expiresAt)}:null,pending:pendingEnt(p.type,p.id).length,
-plans:DB.specialistPlans.filter(function(x){return yes(x.status);}).map(function(x){return {id:x.planId,name:x.planName,scope:x.scope,markup:num(x.markupPct),monthly:num(x.priceMonthly),semi:num(x.price6),annual:num(x.priceAnnual),features:x.features,current:ent&&ent.planId===x.planId};}),
-methods:['درگاه پرداخت','کارت به کارت','حواله بانکی'],note:'پس از خرید، واحد مالی اشتراک را تأیید و سقف نرخ فعال می‌شود.'};};
-F.workerBuyPlan=function(payload,token){var s=auth(token);var p=principalOf(s);var pl=payload||{};var pid=pl.planId;if(!pid)throw new Error('پلن انتخاب نشده است.');
-var plan=DB.specialistPlans.find(function(x){return x.planId===pid&&yes(x.status);});if(!plan)throw new Error('پلن یافت نشد.');
-var cycle=[1,6,12].indexOf(num(pl.cycle))>=0?num(pl.cycle):1;
-var total=num(cycle===1?plan.priceMonthly:(cycle===6?plan.price6:plan.priceAnnual));
-if(!(total>0))throw new Error('این پلن رایگان است و نیازی به خرید ندارد.');
-if(pendingEnt(p.type,p.id).length)throw new Error('یک خرید در انتظار تأیید دارید.');
-var entId=uid('ENT'),txId=uid('TX');
-DB.principalEntitlements.push({entitlementId:entId,principalType:p.type,principalId:p.id,principalName:p.name,planId:pid,planName:plan.planName,markupPct:num(plan.markupPct),memberCount:1,pricePaid:total,paymentRef:txId,startsAt:'',expiresAt:'',status:'در انتظار',purchasedBy:s.username,createdAt:iso(new Date())});
-DB.finTransactions.push({transactionId:txId,transactionDate:iso(new Date()),transactionType:'خرید اشتراک',amount:total,paymentMethod:'درگاه پرداخت',counterpartyType:'Worker',counterpartyId:p.id,transactionStatus:'در انتظار',description:'خرید پلن '+plan.planName,createdAt:iso(new Date())});
-DB.rateEvents.push({eventId:uid('REV'),eventType:'PLAN_PURCHASE',principalType:p.type,principalId:p.id,entity:'PrincipalEntitlements',entityId:entId,beforeValue:'',afterValue:total,actorId:s.workerId,actorName:s.name,reason:'خرید پلن '+plan.planName,createdAt:iso(new Date())});
-persist();
-setTimeout(function(){
-var e=DB.principalEntitlements.find(function(x){return x.entitlementId===entId;});if(!e||e.status!=='در انتظار')return;
-var now=new Date();var days=cycle===1?30:(cycle===6?180:365);
-var cur=activeEnt(p.type,p.id);var base=cur?new Date(cur.expiresAt).getTime():now.getTime();if(!isFinite(base)||base<now.getTime())base=now.getTime();
-e.status='فعال';e.startsAt=iso(now);e.expiresAt=iso(new Date(base+days*864e5));
-var tx=DB.finTransactions.find(function(t){return t.transactionId===txId;});if(tx)tx.transactionStatus='پرداخت شده';
-DB.rateEvents.push({eventId:uid('REV'),eventType:'PLAN_ACTIVATE',principalType:p.type,principalId:p.id,entity:'PrincipalEntitlements',entityId:entId,beforeValue:'در انتظار',afterValue:'فعال',actorId:'finance',actorName:'واحد مالی',reason:'تأیید مالی',createdAt:iso(new Date())});
-persist();emit('plan',{entitlementId:entId,planName:e.planName,markup:num(e.markupPct),expiresAt:e.expiresAt});},rnd(12000,18000));
-return {success:true,entitlementId:entId,transactionId:txId,amount:total,cycle:cycle,markup:num(plan.markupPct),status:'در انتظار',message:'درخواست خرید ثبت شد. پس از تأیید واحد مالی، سقف افزایش نرخ فعال می‌شود.'};};
-/* --- تسویه --- */
-function payoutRule(gid){var r=DB.teamPayoutRules.find(function(x){return x.groupId===gid&&yes(x.status);});
-if(r)return{ruleId:r.ruleId,model:r.model,mgmt:num(r.mgmtSharePct),basis:r.splitBasis,cycle:r.settleCycle,supervisorId:r.supervisorWorkerId,source:'sheet'};
-return{ruleId:'',model:'ترکیبی',mgmt:num(setting('TEAM_MGMT_SHARE_PCT','15')),basis:setting('TEAM_SPLIT_BASIS','hours'),cycle:setting('TEAM_SETTLE_CYCLE','monthly'),supervisorId:'',source:'settings'};}
-F.workerGetPayout=function(token){var s=auth(token);var w=DB.workers.find(function(x){return x.workerId===s.workerId;});var g=DB.groups.find(function(x){return x.groupId===w.groupId;});
-if(!g)return{success:true,hasGroup:false,rule:null,members:[]};
-var isSup=g.workerId===s.workerId;var rule=payoutRule(g.groupId);
-return {success:true,hasGroup:true,isSupervisor:isSup,groupId:g.groupId,groupName:g.groupName,rule:rule,members:DB.groupMembers.filter(function(m){return m.groupId===g.groupId&&yes(m.status);}).map(function(m){var mw=DB.workers.find(function(x){return x.workerId===m.workerId;});return {workerId:m.workerId,username:m.username,name:mw?name_(mw):m.username,role:m.role,self:m.workerId===s.workerId};})};};
-F.workerSetPayout=function(payload,token){var s=auth(token);var w=DB.workers.find(function(x){return x.workerId===s.workerId;});var g=DB.groups.find(function(x){return x.groupId===w.groupId;});
-if(!g||g.workerId!==s.workerId)throw new Error('فقط سرپرست تیم می‌تواند قواعد تسویه را تغییر دهد.');
-var p=payload||{};var mgmt=num(p.mgmt);if(mgmt<0||mgmt>50)throw new Error('سهم مدیریت باید بین ۰ تا ۵۰ باشد.');
-var r=DB.teamPayoutRules.find(function(x){return x.groupId===g.groupId;});
-var obj={groupId:g.groupId,groupName:g.groupName,model:'ترکیبی',mgmtSharePct:mgmt,splitBasis:p.basis||'hours',settleCycle:p.cycle||'monthly',supervisorWorkerId:s.workerId,status:'فعال'};
-if(r)Object.assign(r,obj);else DB.teamPayoutRules.push(Object.assign({ruleId:uid('TPR')},obj));
-persist();return {success:true,message:'قواعد تسویه ذخیره شد.'};};
-F.workerLogHours=function(payload,token){var s=auth(token);var w=DB.workers.find(function(x){return x.workerId===s.workerId;});var g=DB.groups.find(function(x){return x.groupId===w.groupId;});
-if(!g||g.workerId!==s.workerId)throw new Error('فقط سرپرست می‌تواند ساعت ثبت کند.');
-var p=payload||{};if(!p.cardId||!p.workerId)throw new Error('کارت و نیرو الزامی است.');var hrs=num(p.hours);if(hrs<0||hrs>24)throw new Error('ساعت بین ۰ تا ۲۴ باشد.');
-var ex=DB.cardAssignments.find(function(a){return a.cardId===p.cardId&&a.workerId===p.workerId;});
-if(ex)ex.hours=hrs;else DB.cardAssignments.push({cardId:p.cardId,workerId:p.workerId,role:'member',hours:hrs,settlementId:'',shareAmount:0,date:todayISO(),status:'فعال',note:''});
-persist();return {success:true,message:'ساعت اجرا ثبت شد.'};};
-F.workerSettlementPreview=function(token,periodKey){var s=auth(token);var p=principalOf(s);
-var now=new Date();var key=periodKey||monthKey(now);var m=key.match(/^(\d{4})-(\d{2})$/);
-var from=m?m[1]+'-'+m[2]+'-01':monthKey(now)+'-01';var per={key:key,from:from,to:key+'-31'};
-var cards=DB.cards.filter(function(c){if(!done_(c.status))return false;var k=dateISO(c.updatedAt||c.executionDate);return k&&k>=per.from&&k<=per.to&&(p.type==='team'?c.groupId===p.id:c.workerId===p.id);});
-var gross=cards.reduce(function(a,c){return a+num(c.total);},0);
-if(p.type!=='team')return {success:true,mode:'solo',period:per,cardsCount:cards.length,gross:gross,net:gross,cards:cards.map(function(c){return {cardId:c.cardId,customer:c.customerName,amount:num(c.total),at:dateISO(c.updatedAt)};})};
-var rule=payoutRule(p.id);var mgmt=round1000(gross*rule.mgmt/100);var pool=gross-mgmt;
-var members=DB.groupMembers.filter(function(x){return x.groupId===p.id&&yes(x.status);});
-var basis={},totalBasis=0;
-members.forEach(function(mm){var val=0;cards.forEach(function(c){if(c.workerId===mm.workerId)val+=(rule.basis==='cards'?1:num(c.duration)||1);});
-DB.cardAssignments.forEach(function(a){if(cards.some(function(c){return c.cardId===a.cardId;})&&a.workerId===mm.workerId&&rule.basis==='hours')val+=num(a.hours);});
-basis[mm.workerId]=val;totalBasis+=val;});
-var acc=0;var lines=members.map(function(mm){var b=basis[mm.workerId]||0;var share=totalBasis>0?Math.floor(pool*b/totalBasis):0;acc+=share;
-var mw=DB.workers.find(function(x){return x.workerId===mm.workerId;});
-return {workerId:mm.workerId,name:mw?name_(mw):mm.username,role:mm.role,basisValue:b,sharePct:totalBasis?Math.round(b/totalBasis*1000)/10:0,share:share,mgmt:mm.workerId===rule.supervisorId?mgmt:0,total:share+(mm.workerId===rule.supervisorId?mgmt:0),self:mm.workerId===s.workerId};});
-var rem=pool-acc;if(rem>0&&lines.length){lines[0].share+=rem;lines[0].total+=rem;}
-return {success:true,mode:'team',period:per,rule:rule,cardsCount:cards.length,gross:gross,mgmtPct:rule.mgmt,mgmtAmount:mgmt,pool:pool,net:gross,basisTotal:totalBasis,lines:lines,supervisorId:rule.supervisorId,cards:cards.map(function(c){return {cardId:c.cardId,customer:c.customerName,amount:num(c.total),at:dateISO(c.updatedAt)};})};};
-F.workerGetSettlements=function(token,periodKey){var s=auth(token);return {success:true,principalId:s.workerId,items:DB.settlements,myLines:DB.settlementLines.filter(function(l){return l.workerId===s.workerId;}),preview:F.workerSettlementPreview(token,periodKey)};};
-/* --- رویدادهای زنده دمو --- */
-function startLive(){
-setTimeout(function(){
-var sv=DB.services[rnd(0,DB.services.length-1)];var fl=DB.cityRates.find(function(c){return c.serviceId===sv.id;}).floorRate;
-var amt=Math.round(fl*1.1/1000)*1000;var cid='C-'+rnd(4000,4999);
-DB.cards.push({cardId:cid,requestId:'R-'+rnd(7000,7999),workerId:'W-101',branchId:'BR-02',groupId:'G-10',serviceId:sv.id,city:'تهران',customerName:'مشتری جدید',serviceType:sv.nameFa,actionType:'نصب',duration:2,executionDate:new Date(),executionTime:'',contactNumber:'0912'+rnd(1000000,9999999),address:'تهران',requestDetails:sv.nameFa+' (سفارش جدید)',total:amt,creationTime:iso(new Date()),updatedAt:iso(new Date()),status:'جدید',rateOwnerType:'worker',rateOwnerId:'W-101',baseRateUsed:fl,markupPct:10,rateVersion:'v1',rateSource:'CityRates',customerPayable:amt});
-persist();emit('card',{cardId:cid,title:sv.nameFa});},30000);}
-function call(fn,args){load();return new Promise(function(res,rej){setTimeout(function(){try{var f=F[fn];if(typeof f!=='function'){rej(new Error('تابع '+fn+' در شبیه‌ساز تعریف نشده است.'));return;}res(f.apply(null,args));}catch(e){rej(e);}},rnd(120,420));});}
-return {call:call,reset:reset,set onEvent(fn){onEvent=fn;},get isDemo(){return !(window.google&&window.google.script&&window.google.script.run);},startLive:startLive};
-})();
-/* ═════════════ D) STATE + API ROUTER ═════════════ */
+/* ═════ 3) STATE ═════ */
+var STC={'جدید':'blue','ثبت اولیه':'violet','در حال بررسی':'amber','در حال انجام':'amber','درحال اجرا':'amber','تکمیل شده':'green','انجام شده':'green','لغو شده':'red','تعلیق':'gray','تبدیل به کارت':'teal','تخصیص به شعبه':'teal','تخصیص به گروه':'pink','تخصیص به کارگر':'violet','ارجاع به سرپرست':'pink','ارجاع به شعبه':'teal','فعال':'green','غیرفعال':'gray','OPEN':'blue','ANSWERED':'green','CLOSED':'gray','SUP':'teal','SUPPORT':'violet','جدید ':'blue','پرداخت شده':'green','در انتظار':'amber','عادی':'gray','مهم':'violet','فوری':'red','feature':'blue','bug':'red','notify':'violet','در بررسی':'violet','پذیرفته شده':'teal','در حال ساخت':'amber','منتشر شد':'green','رد شده':'red'};
+function pill(s){return '<span class="pill p-'+(STC[s]||'gray')+'">'+esc(s||'—')+'</span>';}
+function av(n,u,cls){return '<span class="av '+(cls||'')+'">'+(u?'<img src="'+esc(u)+'" alt="">':esc(String(n||'؟').trim().charAt(0)))+'</span>';}
 var TOKEN=localStorage.getItem('zv_worker_token')||'';
-var DEMO=ZVDemo.isDemo;
-var USER=null,DB={cards:[],rep:null,serv:[],inbox:[],dev:[],rc:null,statuses:[],err:{}};
-var PS={page:'dashboard',q:'',st:'همه',view:'cards',week:new Date(),mq:'',mst:'',mch:'',rq:'',from:'',to:'',rep:null,settlePeriod:''};
+var USER=null,RKEY='zv_worker_rail';
+var DB={cards:[],rep:null,serv:[],inbox:[],dev:[],rc:null,statuses:[],brand:{},err:{},loaded:{}};
+var PS={page:'dashboard',q:'',st:'همه',view:'cards',week:new Date(),mq:'',mst:'',mch:'',rq:'',from:'',to:'',rep:null};
 var CH=[];
-function api(fn){var a=Array.prototype.slice.call(arguments,1);
-if(!DEMO&&window.google&&window.google.script&&window.google.script.run){
-return new Promise(function(res,rej){var r=google.script.run.withSuccessHandler(res).withFailureHandler(function(e){rej(new Error(e&&e.message?e.message:String(e)));});
-if(typeof r[fn]!=='function'){rej(new Error('تابع '+fn+' در بک‌اند نصب نیست.'));return;}r[fn].apply(r,a);});}
-return ZVDemo.call(fn,a);}
+var GATES=[{rank:0,name:'تازه‌وارد',pct:0,jobs:0,rating:0},{rank:1,name:'تثبیت‌شده',pct:15,jobs:20,rating:4.2},{rank:2,name:'حرفه‌ای',pct:30,jobs:60,rating:4.5},{rank:3,name:'برتر',pct:50,jobs:150,rating:4.7}];
+function api(fn){var a=Array.prototype.slice.call(arguments,1);return new Promise(function(res,rej){
+if(!window.google||!google.script||!google.script.run){rej(new Error('پل ارتباطی zv-api.js بارگذاری نشده است.'));return;}
+var r=google.script.run.withSuccessHandler(res).withFailureHandler(function(e){rej(new Error(e&&e.message?e.message:String(e)));});
+if(typeof r[fn]!=='function'){rej(new Error('تابع '+fn+' در بک‌اند نصب نیست.'));return;}
+r[fn].apply(r,a);});}
 function apiOpt(fn){var a=Array.prototype.slice.call(arguments,1);return api.apply(null,[fn].concat(a)).catch(function(){return null;});}
-/* ═════════════ E) UI UTIL ═════════════ */
+/* ═════ 4) UI ═════ */
 function toast(m,t,a){var d=document.createElement('div');d.className='toast '+(t||'');
 d.innerHTML=icon(t==='ok'?'check':t==='err'?'x':t==='warn'?'undo':'zap','width:16px;height:16px')+'<span>'+esc(m)+'</span>'+(a?'<button type="button">'+esc(a.label)+'</button>':'');
 if(a)d.querySelector('button').onclick=function(){a.fn();d.remove();};
 $('#toasts').appendChild(d);setTimeout(function(){d.remove();},a?8000:4200);}
-function openModal(h,w){var m=$('#modal');m.className='modal'+(w?' w':'');m.innerHTML=h;$('#mback').classList.add('show');document.body.style.overflow='hidden';decorate(m);jdInit(m);}
+function openModal(h,w,d){var m=$('#modal');m.className='modal'+(w?' w':'')+(d?' dk':'');m.innerHTML=h;$('#mback').classList.add('show');document.body.style.overflow='hidden';decorate(m);jdInit(m);}
 function closeModal(){$('#mback').classList.remove('show');document.body.style.overflow='';jdClose();}
 function openDrawer(h){$('#drawer').innerHTML=h;$('#drawer').classList.add('show');$('#scrim').classList.add('show');document.body.style.overflow='hidden';decorate($('#drawer'));jdInit($('#drawer'));}
 function closeDrawer(){$('#drawer').classList.remove('show');$('#scrim').classList.remove('show');document.body.style.overflow='';}
 function closeAll(){closeDrawer();$('#sidebar').classList.remove('open');$('#scrim').classList.remove('show');}
-function confirmBox(t,b,fn,y){openModal('<div class="mh"><h3>'+esc(t)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><div class="mb"><p style="font-size:13px;line-height:2">'+b+'</p></div><div class="mf"><button class="btn btn-d" id="cfY">'+esc(y||'بله')+'</button><button class="btn btn-s" data-act="mclose">انصراف</button></div>');$('#cfY').onclick=function(){closeModal();fn();};}
+function confirmBox(t,b,fn,y,dg){openModal('<div class="mh"><h3>'+esc(t)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div><div class="mb"><p style="font-size:13px;line-height:2">'+b+'</p></div><div class="mf"><button class="btn '+(dg===false?'btn-p':'btn-d')+'" id="cfY">'+esc(y||'بله')+'</button><button class="btn btn-s" data-act="mclose">انصراف</button></div>');$('#cfY').onclick=function(){closeModal();fn();};}
 function kv(p){return '<div class="kv">'+p.map(function(x){return '<div class="kvi'+(x[2]?' full':'')+'"><small>'+esc(x[0])+'</small><b>'+(x[1]==null||x[1]===''?'—':x[1])+'</b></div>';}).join('')+'</div>';}
 function head(t,s,a){return '<div class="ph"><div><h1>'+esc(t)+'</h1><div class="sub">'+esc(s)+'</div></div><div style="display:flex;gap:8px;flex-wrap:wrap">'+(a||'')+'</div></div>';}
 function btn(act,l,ic,cls,ex){return '<button class="btn '+(cls||'btn-s')+'" data-act="'+act+'"'+(ex||'')+'>'+(ic?icon(ic,'width:15px;height:15px'):'')+' '+esc(l)+'</button>';}
@@ -764,14 +488,25 @@ function kpi(l,v,ic,c,s,act,ex){return '<div class="kpi'+(act?' click':'')+'"'+(
 function bar(p,c){return '<span class="bar"><i data-w="'+Math.max(0,Math.min(100,num(p)))+'"'+(c?' style="background:'+c+'"':'')+'></i></span>';}
 function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
 function pal(){return ['--brand','--violet','--blue','--teal','--pink','--amber','--green','--slate'].map(cssVar);}
-var STC={'جدید':'blue','در حال بررسی':'amber','درحال بررسی':'amber','درحال اجرا':'amber','در حال انجام':'amber','انجام شده':'green','تکمیل شده':'green','لغو شده':'red','تعلیق':'gray','ارجاع به سرپرست':'pink','ارجاع به شعبه':'teal','فعال':'green','غیرفعال':'gray','پرداخت شده':'green','در انتظار':'amber','عادی':'gray','مهم':'violet','فوری':'red','feature':'blue','bug':'red','notify':'violet','در بررسی':'violet','OPEN':'blue','ANSWERED':'green','CLOSED':'gray','SUP':'teal','SUPPORT':'violet'};
-function pill(s){return '<span class="pill p-'+(STC[s]||'gray')+'">'+esc(s||'—')+'</span>';}
-function av(n,u,cls){return '<span class="av '+(cls||'')+'">'+(u?'<img src="'+esc(u)+'" alt="">':esc(String(n||'؟').trim().charAt(0)))+'</span>';}
 function errCard(e,retry){return '<div class="card"><div class="empty"><div class="ei">'+icon('alert')+'</div><h4>دریافت داده ناموفق بود</h4><p class="sub">'+esc(e||'خطای نامشخص')+'</p>'+(retry?'<div style="margin-top:12px">'+btn(retry,'تلاش مجدد','undo','btn-p btn-sm')+'</div>':'')+'</div></div>';}
 function emptyCard(ic,t,s,actHtml){return '<div class="card"><div class="empty"><div class="ei">'+icon(ic)+'</div><h4>'+esc(t)+'</h4><p class="sub">'+esc(s)+'</p>'+(actHtml?'<div style="margin-top:12px">'+actHtml+'</div>':'')+'</div></div>';}
 function skel(n){var h='';for(var i=0;i<(n||4);i++)h+='<div class="skel" style="height:'+(58+i*6)+'px;margin-bottom:12px"></div>';return '<div class="card">'+h+'</div>';}
-/* ═════════════ F) SELECT + DATEPICKER ═════════════ */
-function decorate(root){$$('select',root||document).forEach(function(sel){if(sel._zv)return;sel._zv=true;sel.className+=' sel';});}
+function needInstall(fns,what){return '<div class="banner warn">'+icon('alert',17)+'<div class="sp"><b>'+esc(what)+'</b> نیازمند توابع بک‌اند است که هنوز نصب نشده‌اند:<div class="ltr" style="margin-top:5px;font-size:11px;font-weight:800">'+fns.map(esc).join(' · ')+'</div></div></div>';}
+/* ═════ 5) SELECT + DATE ═════ */
+function zClose(ex){$$('.zsel.open').forEach(function(w){if(w!==ex)w.classList.remove('open');});}
+function decorate(root){$$('select',root||document).forEach(function(sel){
+if(sel._zv)return;sel._zv=true;
+var w=document.createElement('div');w.className='zsel';sel.parentNode.insertBefore(w,sel);w.appendChild(sel);
+var b=document.createElement('button');b.type='button';b.className='zsel-btn';
+var p=document.createElement('div');p.className='zsel-pan';w.appendChild(b);w.appendChild(p);
+function lab(){var o=sel.options[sel.selectedIndex];b.innerHTML='<span>'+esc(o?(o.text||o.value||'—'):'—')+'</span>'+icon('chevD');}
+function build(){p.innerHTML=Array.prototype.map.call(sel.options,function(o,i){var t=(o.text||o.value||'').trim();if(!t&&i>0)return '';
+return '<div class="zsel-opt'+(i===sel.selectedIndex?' on':'')+(o.value?'':' muted')+'" data-i="'+i+'">'+esc(t||'انتخاب کنید')+'</div>';}).join('');}
+b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();var op=w.classList.contains('open');zClose();
+if(!op){build();w.classList.add('open');var c=p.querySelector('.zsel-opt.on');if(c)p.scrollTop=Math.max(0,c.offsetTop-90);}});
+p.addEventListener('click',function(e){var o=e.target.closest('.zsel-opt');if(!o)return;e.stopPropagation();
+sel.selectedIndex=+o.dataset.i;sel.dispatchEvent(new Event('input',{bubbles:true}));sel.dispatchEvent(new Event('change',{bubbles:true}));lab();w.classList.remove('open');});
+sel._sync=lab;lab();});}
 var JD={inp:null,y:0,m:0};
 function jdInit(root){$$('input[data-jd]',root||document).forEach(function(inp){
 if(inp._jd)return;inp._jd=true;inp.autocomplete='off';if(!inp.placeholder)inp.placeholder='۱۴۰۵/۰۹/۰۱';
@@ -781,14 +516,14 @@ b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();jd
 inp.addEventListener('input',function(){var v=en(inp.value).replace(/\D/g,'').slice(0,8);if(v.length>4)v=v.slice(0,4)+'/'+v.slice(4);if(v.length>7)v=v.slice(0,7)+'/'+v.slice(7);inp.value=v;});});}
 function jdOpen(inp){JD.inp=inp;var p=parseJ(inp.value),n=new Date(),j=g2j(n.getFullYear(),n.getMonth()+1,n.getDate());
 JD.y=p?p[0]:j[0];JD.m=p?p[1]:j[1];jdRender();
-var pop=$('#jpop');pop.classList.add('open');var r=inp.getBoundingClientRect();
-pop.style.left=Math.min(Math.max(8,r.left),window.innerWidth-328)+'px';
-var t=r.bottom+6;pop.style.top=Math.max(8,t)+'px';}
-function jdClose(){$('#jpop').classList.remove('open');JD.inp=null;}
+var pop=$('#jpop');pop.classList.add('open');var r=inp.getBoundingClientRect(),pw=320,ph=pop.offsetHeight||330;
+pop.style.left=Math.min(Math.max(8,r.left),window.innerWidth-pw-8)+'px';
+var t=r.bottom+6;if(t+ph>window.innerHeight-8)t=Math.max(8,r.top-ph-6);pop.style.top=t+'px';}
+function jdClose(){var p=$('#jpop');if(p)p.classList.remove('open');JD.inp=null;}
 function jdRender(){var pop=$('#jpop');if(!pop)return;
 var n=new Date(),t=g2j(n.getFullYear(),n.getMonth()+1,n.getDate()),mx=jDays(JD.y,JD.m),f=j2g(JD.y,JD.m,1);
 var wd=(new Date(f[0],f[1]-1,f[2]).getDay()+1)%7,sel=JD.inp?parseJ(JD.inp.value):null;
-var h='<div class="jh"><button type="button" data-j="py">«</button><button type="button" data-j="pm">‹</button><span class="yr">'+JM[JD.m-1]+' '+fa(JD.y)+'</span><button type="button" data-j="nm">›</button><button type="button" data-j="ny">»</button></div><div class="jg">';
+var h='<div class="jh"><button type="button" data-j="py">«</button><button type="button" data-j="pm">‹</button><span class="yr" data-j="yr">'+JM[JD.m-1]+' '+fa(JD.y)+'</span><button type="button" data-j="nm">›</button><button type="button" data-j="ny">»</button></div><div class="jg">';
 ['ش','ی','د','س','چ','پ','ج'].forEach(function(x){h+='<button type="button" class="dl" disabled>'+x+'</button>';});
 for(var i=0;i<wd;i++)h+='<span></span>';
 for(var d=1;d<=mx;d++){var isT=t[0]===JD.y&&t[1]===JD.m&&t[2]===d,isS=sel&&sel[0]===JD.y&&sel[1]===JD.m&&sel[2]===d;
@@ -801,33 +536,76 @@ if(nav){e.preventDefault();var k=nav.dataset.j;
 if(k==='py')JD.y--;else if(k==='ny')JD.y++;
 else if(k==='pm'){JD.m--;if(JD.m<1){JD.m=12;JD.y--;}}
 else if(k==='nm'){JD.m++;if(JD.m>12){JD.m=1;JD.y++;}}
+else if(k==='yr'){var inp=document.createElement('input');inp.type='number';inp.min=1300;inp.max=1500;inp.value=JD.y;
+inp.style.cssText='width:74px;text-align:center;font-weight:800;border:1px solid var(--brand);border-radius:6px;padding:2px;font-size:12px';
+nav.replaceWith(inp);inp.focus();inp.select();
+var done=function(){var v=parseInt(inp.value,10);if(v>=1300&&v<=1500)JD.y=v;jdRender();};
+inp.addEventListener('blur',done);inp.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();done();}if(ev.key==='Escape')jdRender();});return;}
 jdRender();return;}
 var day=e.target.closest('[data-day]');
 if(day&&JD.inp){e.preventDefault();JD.inp.value=JD.y+'/'+String(JD.m).padStart(2,'0')+'/'+String(day.dataset.day).padStart(2,'0');
 JD.inp.dispatchEvent(new Event('change',{bubbles:true}));jdClose();}});})();
-/* ═════════════ G) DATA LOADERS ═════════════ */
+/* ═════ 6) DATA LOADERS (همه واقعی) ═════ */
 function loadCards(){return api('getWorkerCards',{search:'',status:'همه'},TOKEN).then(function(r){DB.cards=Array.isArray(r)?r:[];DB.err.cards=null;}).catch(function(e){DB.err.cards=e.message;});}
 function loadRep(){return api('getWorkerReports',TOKEN,'','').then(function(r){DB.rep=r||null;DB.err.rep=null;}).catch(function(e){DB.err.rep=e.message;});}
 function loadServices(){return api('getServices').then(function(d){DB.serv=(d&&d.services)||[];DB.err.serv=null;}).catch(function(e){DB.err.serv=e.message;});}
-function loadStatuses(){return apiOpt('getWorkerCardStatuses',TOKEN).then(function(r){DB.statuses=(Array.isArray(r)&&r.length)?r:['جدید','درحال اجرا','انجام شده','لغو شده','ارجاع به سرپرست'];});}
-function loadInbox(){return apiOpt('workerGetInbox',TOKEN).then(function(r){DB.inbox=Array.isArray(r)?r:[];DB.err.inbox=null;}).catch(function(e){DB.err.inbox=e.message;});}
+function loadStatuses(){return apiOpt('getWorkerCardStatuses',TOKEN).then(function(r){
+var seen={};(DB.cards||[]).forEach(function(c){if(c.status)seen[c.status]=1;});
+var base=['جدید','در حال انجام','تکمیل شده','لغو شده','ارجاع به سرپرست'];
+base.forEach(function(s){seen[s]=1;});
+DB.statuses=(Array.isArray(r)&&r.length)?r:Object.keys(seen);});}
+function normInbox(rows){return (rows||[]).map(function(t){
+return {threadId:t.threadId||t.id||'',ticketNo:t.ticketNo||'',subject:t.subject||'بدون موضوع',
+channel:t.channel||(t.supervisorUsername?'SUP':'SUP'),state:(t.state||t.status||'OPEN').toUpperCase(),
+status:t.status||'',unread:num(t.unread!=null?t.unread:t.unreadCount),messageCount:num(t.messageCount),
+lastMessageAt:t.lastMessageAt||t.createdAt||'',createdAt:t.createdAt||'',preview:t.preview||'',
+peerName:t.peerName||t.supervisorUsername||t.workerUsername||'',cardId:t.cardId||''};});}
+function loadInbox(){return apiOpt('workerGetInbox',TOKEN).then(function(r){
+if(r)return r;return apiOpt('workerGetConversations',TOKEN);}).then(function(r){
+DB.inbox=normInbox(r);DB.err.inbox=r?null:'توابع گفتگو در بک‌اند نصب نیستند.';}).catch(function(e){DB.err.inbox=e.message;});}
 function loadRateCtx(){return apiOpt('workerGetRateContext',TOKEN).then(function(r){DB.rc=r||null;});}
-function loadDev(){return apiOpt('workerGetDevRequests',TOKEN).then(function(r){DB.dev=(r&&r.items)||[];DB.err.dev=null;}).catch(function(e){DB.err.dev=e.message;});}
-function loadBrand(){return apiOpt('getWorkerBrandSettings',TOKEN).then(function(r){if(r&&r.currency)CUR=r.currency;});}
-function bootstrap(){return api('getWorkerProfile',TOKEN).then(function(p){USER=p||{};paintUser();})
+function loadDev(){return apiOpt('workerGetDevRequests',TOKEN).then(function(r){DB.dev=(r&&r.items)||[];DB.err.dev=r?null:'تابع workerGetDevRequests نصب نیست.';});}
+function loadBrand(){return apiOpt('getWorkerBrandSettings',TOKEN).then(function(r){
+if(r&&r.logoUrl)return r;return apiOpt('getPublicBranding');}).then(function(r){
+DB.brand=r||{};if(r&&r.CURRENCY_LABEL)CUR=r.CURRENCY_LABEL;applyBrand();});}
+function bootstrap(){
+return api('getWorkerProfile',TOKEN).then(function(p){USER=p||{};paintUser();})
 .then(function(){return loadCards();})
 .then(function(){return Promise.all([loadRep(),loadServices(),loadStatuses(),loadInbox(),loadRateCtx(),loadDev()]);});}
 function reloadAll(){return Promise.all([loadCards(),loadRep(),loadServices(),loadInbox(),loadRateCtx(),loadDev()]).then(function(){return loadStatuses();});}
-/* ═════════════ H) DERIVED (rates) ═════════════ */
-function rcSvc(sid){return (DB.rc&&DB.rc.services||[]).filter(function(x){return x.id===sid;})[0]||null;}
+/* ═════ 7) DERIVED ═════ */
+function cardKeys(c){var s=en(c.executeDateTime||'');var m=s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+var k='',t='';if(m){var g=j2g(+m[1],+m[2],+m[3]);k=g[0]+'-'+String(g[1]).padStart(2,'0')+'-'+String(g[2]).padStart(2,'0');}
+var tm=s.match(/(\d{1,2}):(\d{2})/);if(tm)t=String(+tm[1]).padStart(2,'0')+':'+tm[2];return {_k:k,_t:t};}
+function isDone(s){return /تکمیل|انجام شده|completed/i.test(String(s||''));}
+function isCancel(s){return /لغو|مرجوع|cancel/i.test(String(s||''));}
+function isActive(s){return !isDone(s)&&!isCancel(s);}
+function newCards(){return (DB.cards||[]).filter(function(c){return /^جدید/.test(String(c.status||''));});}
+function unreadTotal(){return (DB.inbox||[]).reduce(function(a,t){return a+(t.state!=='CLOSED'?t.unread:0);},0);}
+function svcName(s){return s.name||s.nameFa||s.nameEn||s.id;}
 function svcById(id){return DB.serv.filter(function(s){return s.id===id;})[0];}
-function svcName(s){return s.nameFa||s.nameEn||s.name||s.id;}
-function floorOf(s){var r=rcSvc(s.id);return r?num(r.floor):num(s.rate);}
-function ceilOf(s){var r=rcSvc(s.id);return r?num(r.ceiling):floorOf(s);}
-function myRate(s){var r=rcSvc(s.id);return r?num(r.rate):floorOf(s);}
-function effPct(sid){var r=rcSvc(sid);return r?num(r.markup):0;}
-function planPct(){return DB.rc?num((DB.rc.entitlement||{}).markup):0;}
-/* ═════════════ I) AUTH ═════════════ */
+function rcOf(sid){var rc=DB.rc||{};var m=(rc.rates||{})[sid];return m||null;}
+function floorOf(s){var rc=DB.rc||{};var f=(rc.floors||{})[s.id];return num(f)>0?num(f):num(s.rate);}
+function floorSrc(){return (DB.rc&&DB.rc.floors)?'نرخ مصوب شهر (CityRates)':'نرخ پایه خدمت (Services.Base-Rate)';}
+function planPct(){var rc=DB.rc||{};return num((rc.entitlement||{}).markup);}
+function doneCount(){var r=DB.rep;if(r&&num(r.completedCards)>=0)return num(r.completedCards);
+return (DB.cards||[]).filter(function(c){return isDone(c.status);}).length;}
+function gateFor(jobs,rating){var g=GATES[0];GATES.forEach(function(x){
+if(jobs>=x.jobs&&(rating==null||rating>=x.rating))g=x;});return g;}
+function effPct(sid){var rc=DB.rc||{};var q=(rc.quality||{})[sid];
+var jobs=q?num(q.completed):doneCount(),rating=q?num(q.rating):null;
+return Math.min(planPct(),gateFor(jobs,rating).pct);}
+function ceilOf(s){return Math.round(floorOf(s)*(1+effPct(s.id)/100)/1000)*1000;}
+function myRate(s){var m=rcOf(s.id);var v=m?num(m.rate):floorOf(s);
+return Math.max(floorOf(s),Math.min(v,Math.max(ceilOf(s),floorOf(s))));}
+/* ═════ 8) AUTH / BRAND ═════ */
+var MARK='<svg class="ic" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" fill="currentColor" stroke="none"/></svg>';
+function applyBrand(){var b=DB.brand||{},url=b.logoUrl||b.LOGO_URL||'LOGO.png';
+var f=$('#zvFavicon');if(f&&(b.faviconUrl||b.FAVICON_URL))f.setAttribute('href',b.faviconUrl||b.FAVICON_URL);
+var im=new Image();
+im.onload=function(){var m=$('#sideMark');if(m){m.classList.add('zv-logo');m.innerHTML='<img src="'+esc(url)+'" alt="">';}
+var l=$('#loginLogo');if(l){l.style.display='flex';l.innerHTML='<img src="'+esc(url)+'" alt="">';}};
+im.onerror=function(){var m=$('#sideMark');if(m){m.classList.remove('zv-logo');m.innerHTML=MARK;}};im.src=url;}
 function setErr(m){var e=$('#loginError');e.textContent=m;e.style.display='block';}
 function doLogin(){var u=$('#loginUser').value.trim(),p=$('#loginPass').value;
 if(!u||!p){setErr('نام کاربری و رمز عبور را وارد کنید.');return;}
@@ -836,33 +614,27 @@ api('workerLogin',u,p).then(function(r){
 if(!r||!r.success)throw new Error((r&&r.message)||'ورود ناموفق بود.');
 TOKEN=r.token;localStorage.setItem('zv_worker_token',TOKEN);USER=r.user||{};
 return loadBrand().then(bootstrap);})
-.then(function(){showApp();if(DEMO)ZVDemo.startLive();})
-.catch(function(e){setErr(e.message);}).then(function(){b.disabled=false;b.textContent='ورود به پنل';});}
+.then(showApp).catch(function(e){setErr(e.message);}).then(function(){b.disabled=false;b.textContent='ورود به پنل';});}
 function doLogout(){confirmBox('خروج از پنل','آیا برای خروج مطمئن هستید؟',function(){
-apiOpt('workerLogout',TOKEN).then(function(){localStorage.removeItem('zv_worker_token');TOKEN='';USER=null;location.reload();});},'بله، خروج');}
-function showApp(){$('#loginView').style.display='none';$('#app').style.display='grid';
-if(DEMO)$('#demoBadge').style.display='inline-flex';
-paintUser();go('dashboard');}
+api('workerLogout',TOKEN).catch(function(){}).then(function(){localStorage.removeItem('zv_worker_token');TOKEN='';USER=null;location.reload();});},'بله، خروج');}
+function showApp(){$('#loginView').style.display='none';$('#app').style.display='grid';paintUser();go('dashboard');}
 function paintUser(){if(!USER)return;$('#sideName').textContent=USER.name||USER.username||'—';
 $('#sideRole').textContent='متخصص · '+(USER.workerId||'');
 $('#sideAv').innerHTML=USER.avatar?'<img src="'+esc(USER.avatar)+'" alt="">':esc(String(USER.name||'؟').trim().charAt(0));
 $('#branchChip').innerHTML=icon('branch','width:14px;height:14px')+' '+esc(USER.branchName||USER.branchId||'—');}
-/* ═════════════ J) NAV / SHELL ═════════════ */
+/* ═════ 9) NAV / SHELL ═════ */
 var MENU=[{sec:'نمای کلی'},{id:'dashboard',l:'داشبورد',ic:'dash'},
-{sec:'عملیات من'},{id:'cards',l:'کارت‌های من',ic:'cards',badge:function(){return (DB.cards||[]).filter(function(c){return /^جدید/.test(c.status);}).length;}},
+{sec:'عملیات من'},{id:'cards',l:'کارت‌های من',ic:'cards',badge:function(){return newCards().length;}},
 {id:'planner',l:'برنامه کاری',ic:'cal'},
-{sec:'درآمد و رشد'},{id:'rates',l:'خدمات و نرخ‌ها',ic:'tag'},{id:'plans',l:'پلن‌ها و اشتراک',ic:'crown'},
-{id:'quality',l:'کیفیت و اعتبار',ic:'shield'},{id:'settle',l:'تسویه حساب‌ها',ic:'wallet'},
+{sec:'درآمد و رشد'},{id:'rates',l:'خدمات و نرخ‌ها',ic:'tag'},{id:'quality',l:'کیفیت و اعتبار',ic:'shield'},
 {id:'reports',l:'گزارش عملکرد',ic:'report'},
 {sec:'ارتباطات'},{id:'messages',l:'گفتگوها',ic:'msg',bc:'r',badge:function(){return unreadTotal();}},
 {id:'devRequests',l:'درخواست‌های توسعه',ic:'zap'},
 {sec:'حساب'},{id:'profile',l:'پروفایل من',ic:'user'}];
 var TITLES={dashboard:['داشبورد','نمای زنده کارت‌ها و عملکرد شما'],cards:['کارت‌های من','کارت‌های تخصیص‌یافته از سوی سرپرست'],
-planner:['برنامه کاری','تقویم هفتگی اجرا'],rates:['خدمات و نرخ‌ها','کریدور نرخ شما بر اساس نرخ مصوب شهر'],
-plans:['پلن‌ها و اشتراک','ارتقای سقف افزایش نرخ'],quality:['کیفیت و اعتبار','سطح کیفیت و سقف مجاز'],
-settle:['تسویه حساب‌ها','تسویه تیمی و سهم شما'],reports:['گزارش عملکرد','تحلیل کارکرد در بازه انتخابی'],
+planner:['برنامه کاری','تقویم هفتگی اجرا'],rates:['خدمات و نرخ‌ها','کاتالوگ خدمات سامانه و کریدور نرخ شما'],
+quality:['کیفیت و اعتبار','سطح کیفیت و سقف افزایش نرخ'],reports:['گزارش عملکرد','تحلیل کارکرد در بازه انتخابی'],
 messages:['گفتگوها','سرپرست و پشتیبانی سامانه'],devRequests:['درخواست‌های توسعه','پیشنهادها و نیازمندی‌ها'],profile:['پروفایل من','حساب کاربری متخصص']};
-function unreadTotal(){return (DB.inbox||[]).reduce(function(a,t){return a+(t.state!=='CLOSED'?(t.unread||0):0);},0);}
 function renderNav(){$('#nav').innerHTML=MENU.map(function(m){
 if(m.sec)return '<div class="nav-sec">'+esc(m.sec)+'</div>';
 var b=m.badge?m.badge():0;
@@ -879,71 +651,64 @@ $('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'s
 var out;
 try{
 if(p==='dashboard')out=dashboard();else if(p==='cards')out=cardsPage();else if(p==='planner')out=plannerPage();
-else if(p==='rates')out=ratesPage();else if(p==='plans')out=plansPage();else if(p==='quality')out=qualityPage();
-else if(p==='settle')out=settlePage();else if(p==='reports')out=reportsPage();
+else if(p==='rates')out=ratesPage();else if(p==='quality')out=qualityPage();else if(p==='reports')out=reportsPage();
 else if(p==='messages')out=messagesPage();else if(p==='devRequests')out=devPage();else if(p==='profile')out=profilePage();
 else out=dashboard();}catch(e){out=errCard(e.message);}
 Promise.resolve(out).then(function(h){$('#page').innerHTML=h;decorate($('#page'));jdInit($('#page'));renderNav();paintUser();
 $$('[data-w]').forEach(function(el){var w=el.getAttribute('data-w');el.removeAttribute('data-w');setTimeout(function(){el.style.width=w+'%';},50);});
 if(p==='dashboard')chartsDash();if(p==='quality')chartsQuality();
 }).catch(function(e){$('#page').innerHTML=errCard(e.message);});}
-/* ═════════════ K) DASHBOARD ═════════════ */
+/* ═════ 10) DASHBOARD ═════ */
 function dashboard(){
 if(DB.err.cards&&!DB.cards.length)return head('داشبورد','')+errCard(DB.err.cards,'retry-cards');
 var cs=DB.cards||[],r=DB.rep||{},n=new Date();
-var act=cs.filter(function(c){return !/انجام شده|تکمیل|لغو/.test(c.status);}).length;
-var done=cs.filter(function(c){return /انجام شده|تکمیل/.test(c.status);}).length;
-var inprog=cs.filter(function(c){return /درحال|در حال/.test(c.status);}).length;
-var rev=cs.filter(function(c){return /انجام شده|تکمیل/.test(c.status);}).reduce(function(a,c){return a+num(c.amount);},0);
-var today=cs.filter(function(c){return c.execDateKey===gKey(n);});
+var act=cs.filter(function(c){return isActive(c.status);}).length;
+var done=r.completedCards!=null?num(r.completedCards):cs.filter(function(c){return isDone(c.status);}).length;
+var inprog=r.inProgressCards!=null?num(r.inProgressCards):cs.filter(function(c){return /در حال|درحال/.test(String(c.status||''));}).length;
+var rev=num(r.totalRevenue)||cs.reduce(function(a,c){return a+num(c.amount);},0);
+var today=cs.filter(function(c){return cardKeys(c)._k===gKey(n);});
+var months=lastMonths(6),tx=(r.transactions)||[];
+var revM=months.map(function(m){return tx.filter(function(t){return jMonthKeyDisp(t.date)===m.key&&!isCancel(t.status);}).reduce(function(a,t){return a+num(t.amount);},0);});
+window._dash={months:months,revM:revM,byStatus:r.byStatus||null,cards:cs};
 var hr=n.getHours(),greet=hr<12?'صبح بخیر':hr<17?'ظهر بخیر':'عصر بخیر';
-var pr=DB.rc?DB.rc.principal:null,ent=DB.rc?DB.rc.entitlement:null;
 var h='<div class="hero"><span class="dchip">'+icon('cal','width:14px;height:14px')+' '+jDisp(n)+'</span>'+
 '<h2>'+greet+'، '+esc(String(USER.name||'').split(' ')[0])+'</h2>'+
-'<p>شناسه '+esc(USER.workerId||'—')+' · '+fa(cs.length)+' کارت · '+fa(cs.filter(function(c){return /^جدید/.test(c.status);}).length)+' جدید · '+fa(today.length)+' کارت امروز'+(ent?' · پلن '+esc(ent.planName)+' ('+fa(ent.markup)+'٪)':'')+'</p>'+
+'<p>شناسه '+esc(USER.workerId||'—')+' · '+fa(cs.length)+' کارت تخصیص‌یافته · '+fa(newCards().length)+' کارت جدید · '+fa(today.length)+' کارت امروز</p>'+
 '<div class="acts">'+btn('go','کارت‌های من','cards','btn-p',' data-page="cards"')+
 '<button class="btn btn-s" data-act="go" data-page="planner">'+icon('cal','width:15px;height:15px')+' برنامه کاری</button>'+
 '<button class="btn btn-s" data-act="go" data-page="rates">'+icon('tag','width:15px;height:15px')+' خدمات و نرخ‌ها</button>'+
-'<button class="btn btn-s" data-act="go" data-page="settle">'+icon('wallet','width:15px;height:15px')+' تسویه</button>'+
 '<button class="btn btn-s" data-act="go" data-page="messages">'+icon('msg','width:15px;height:15px')+' گفتگوها'+(unreadTotal()?' ('+fa(unreadTotal())+')':'')+'</button></div></div>';
 h+='<div class="grid kpis" style="margin-bottom:18px">'+
 kpi('کل کارت‌ها',fa(cs.length),'cards','var(--blue)','تخصیص‌یافته به شما','go',' data-page="cards"')+
-kpi('جدید',fa(cs.filter(function(c){return /^جدید/.test(c.status);}).length),'zap','var(--violet)','در انتظار شروع','go',' data-page="cards"')+
+kpi('جدید',fa(newCards().length),'zap','var(--violet)','در انتظار شروع','go',' data-page="cards"')+
 kpi('در حال اجرا',fa(inprog),'clock','var(--amber)','جاری')+
-kpi('انجام شده',fa(done),'check','var(--green)','تکمیل‌شده')+
-kpi('ارزش سفارش‌ها',moneyC(rev),'wallet','var(--brand)',CUR)+
+kpi('تکمیل شده',fa(done),'check','var(--green)','از گزارش سامانه')+
+kpi('ارزش سفارش‌ها',moneyC(rev),'wallet','var(--brand)',CUR+' · نه دستمزد')+
 kpi('گفتگوی خوانده‌نشده',fa(unreadTotal()),'msg','var(--red)','پیام جدید','go',' data-page="messages"')+'</div>';
 h+='<div class="grid charts" style="margin-bottom:18px">'+
-'<div class="cbox"><h3>'+icon('report','width:15px;height:15px;color:var(--brand)')+' ارزش کارهای انجام‌شده (۶ ماه شمسی)</h3><div class="cwrap" id="dRevWrap"><canvas id="dRev"></canvas></div></div>'+
-'<div class="cbox"><h3>'+icon('cards','width:15px;height:15px;color:var(--blue)')+' توزیع وضعیت کارت‌ها</h3><div class="cwrap" id="dStWrap"><canvas id="dSt"></canvas></div></div></div>';
-var soon=cs.filter(function(c){return c.execDateKey&&c.execDateKey>=gKey(n)&&!/انجام شده|تکمیل|لغو/.test(c.status);})
-.sort(function(a,b){return a.execDateKey.localeCompare(b.execDateKey);}).slice(0,6);
+'<div class="cbox"><h3>'+icon('report','width:15px;height:15px;color:var(--brand)')+' ارزش سفارش‌ها (۶ ماه شمسی)</h3><div class="cwrap"><canvas id="dRev"></canvas></div></div>'+
+'<div class="cbox"><h3>'+icon('cards','width:15px;height:15px;color:var(--blue)')+' توزیع وضعیت کارت‌ها</h3><div class="cwrap"><canvas id="dSt"></canvas></div></div></div>';
+var soon=cs.filter(function(c){var k=cardKeys(c)._k;return k&&k>=gKey(n)&&isActive(c.status);})
+.sort(function(a,b){return cardKeys(a)._k.localeCompare(cardKeys(b)._k);}).slice(0,6);
 h+='<div class="grid charts"><div class="cbox"><h3>'+icon('cal','width:15px;height:15px;color:var(--teal)')+' کارت‌های پیش رو</h3>'+
-(soon.length?soon.map(function(c){return '<div class="rank" data-act="card-detail" data-id="'+esc(c.cardId)+'" style="cursor:pointer"><div class="info"><b>'+esc(c.details||c.cardId)+'</b><small>'+esc(c.customer||'—')+' · '+jDisp(c.execDateKey)+(c.execTimeKey?' · '+fa(c.execTimeKey):'')+'</small></div>'+pill(c.status)+'</div>';}).join(''):'<p class="sub">کارت زمان‌بندی‌شده‌ای برای روزهای آینده نیست.</p>')+
+(soon.length?soon.map(function(c){var k=cardKeys(c);return '<div class="rank" data-act="card-detail" data-id="'+esc(c.cardId)+'" style="cursor:pointer"><div class="info"><b>'+esc(c.details||c.cardId)+'</b><small>'+esc(c.customer||'—')+' · '+jDisp(k._k)+(k._t?' · '+fa(k._t):'')+'</small></div>'+pill(c.status)+'</div>';}).join(''):'<p class="sub">کارت زمان‌بندی‌شده‌ای برای روزهای آینده ثبت نشده است.</p>')+
 '<div style="margin-top:10px">'+btn('go','تقویم کامل','cal','btn-s btn-sm',' data-page="planner"')+'</div></div>'+
-'<div class="cbox"><h3>'+icon('branch','width:15px;height:15px;color:var(--violet)')+' شعبه و پلن</h3>'+
+'<div class="cbox"><h3>'+icon('branch','width:15px;height:15px;color:var(--violet)')+' شعبه و گروه</h3>'+
 kv([['شناسه متخصص','<span class="ltr">'+esc(USER.workerId||'—')+'</span>'],['نام کاربری',esc(USER.username||'—')],
-['شعبه',esc(USER.branchName||USER.branchId||'—')],['پلن فعال',ent?esc(ent.planName)+' · '+fa(ent.markup)+'٪':'پایه (رایگان)'],
-['انقضای پلن',ent?jDisp(ent.expiresAt):'—'],['سقف افزایش نرخ',fa(planPct())+'٪']])+
-'<div style="margin-top:12px;display:flex;gap:7px">'+btn('go','پلن‌ها','crown','btn-s btn-sm',' data-page="plans"')+btn('go','کیفیت','shield','btn-s btn-sm',' data-page="quality"')+'</div></div></div>';
-window._dash={cs:cs};
+['شعبه',esc(USER.branchName||USER.branchId||'—')],['گروه',esc(USER.groupName||USER.groupId||'—')],
+['سقف افزایش نرخ',fa(planPct())+'٪'],['منبع کف قیمت',esc(floorSrc())]])+
+'<div style="margin-top:12px">'+btn('go','کیفیت و اعتبار','shield','btn-s btn-sm',' data-page="quality"')+'</div></div></div>';
 return h;}
-function chartsDash(){var d=window._dash;if(!d)return;var cs=d.cs;
-var months=lastMonths(6);
-var revM=months.map(function(m){return cs.filter(function(c){return /انجام شده|تکمیل/.test(c.status)&&jMonthKeyDisp(c.updatedAt)===m.key;}).reduce(function(a,c){return a+num(c.amount);},0);});
-var st={};cs.forEach(function(c){var k=c.status||'نامشخص';st[k]=(st[k]||0)+1;});
-if(window.Chart){var P=pal(),g=cssVar('--line');Chart.defaults.font.family='Vazirmatn';Chart.defaults.color=cssVar('--muted');
-var e1=$('#dRev');if(e1)CH.push(new Chart(e1,{type:'bar',data:{labels:months.map(function(m){return m.label;}),datasets:[{data:revM,backgroundColor:P[0],borderRadius:8}]},
-options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return money(c.parsed.y);}}}},scales:{x:{grid:{display:false}},y:{grid:{color:g},ticks:{callback:function(v){return moneyC(v);}}}}}}));
-var k=Object.keys(st);var e2=$('#dSt');
-if(e2)CH.push(new Chart(e2,{type:'doughnut',data:{labels:k.length?k:['بدون داده'],datasets:[{data:k.length?k.map(function(x){return st[x];}):[1],backgroundColor:P,borderWidth:2,borderColor:cssVar('--surface')}]},
-options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}}}}));
-}else{
-var mx=Math.max.apply(null,revM.concat([1]));
-$('#dRevWrap').innerHTML='<div class="fbar">'+months.map(function(m,i){return '<div class="b"><i style="height:'+Math.round(revM[i]/mx*100)+'%"></i><span>'+m.label+'</span></div>';}).join('')+'</div>';
-var P2=pal();var kk=Object.keys(st);
-$('#dStWrap').innerHTML='<div class="fdonut"><div class="lg">'+kk.map(function(x,i){return '<div><i style="background:'+P2[i%P2.length]+'"></i>'+esc(x)+' · '+fa(st[x])+'</div>';}).join('')+'</div></div>';}}
-/* ═════════════ L) CARDS ═════════════ */
+function chartsDash(){if(!window.Chart||!window._dash)return;var d=window._dash,P=pal(),g=cssVar('--line');
+Chart.defaults.font.family='Vazirmatn';Chart.defaults.color=cssVar('--muted');
+var mk=function(id,c){var e=$('#'+id);if(e)CH.push(new Chart(e,c));};
+mk('dRev',{type:'bar',data:{labels:d.months.map(function(m){return m.label;}),datasets:[{data:d.revM,backgroundColor:P[0],borderRadius:8}]},
+options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return money(c.parsed.y);}}}},scales:{x:{grid:{display:false}},y:{grid:{color:g},ticks:{callback:function(v){return moneyC(v);}}}}}});
+var st=d.byStatus||{};if(!Object.keys(st).length){st={};d.cards.forEach(function(c){var k=c.status||'نامشخص';st[k]=(st[k]||0)+1;});}
+var k=Object.keys(st);
+mk('dSt',{type:'doughnut',data:{labels:k.length?k:['بدون داده'],datasets:[{data:k.length?k.map(function(x){return st[x];}):[1],backgroundColor:P,borderWidth:2,borderColor:cssVar('--surface')}]},
+options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}}}});}
+/* ═════ 11) CARDS ═════ */
 function cardRows(){var rows=(DB.cards||[]).slice();
 if(PS.st&&PS.st!=='همه')rows=rows.filter(function(c){return c.status===PS.st;});
 if(PS.q){var q=en(PS.q).toLowerCase();rows=rows.filter(function(c){return [c.cardId,c.requestId,c.customer,c.details,c.status].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});}
@@ -957,24 +722,25 @@ var h=head('کارت‌های من',fa(rows.length)+' کارت از '+fa((DB.car
 btn('refresh','بروزرسانی','undo','btn-s'));
 h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-search placeholder="جستجو در کارت، مشتری، شرح…" value="'+esc(PS.q)+'"></div>'+
 '<select class="sel" data-cst><option value="همه">وضعیت: همه</option>'+Object.keys(sts).map(function(s){return '<option'+(PS.st===s?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select></div>';
-if(!rows.length)return h+emptyCard('cards','کارتی یافت نشد',(DB.cards||[]).length?'فیلترها را تغییر دهید.':'هنوز کارتی تخصیص داده نشده است.',(DB.cards||[]).length?btn('cards-clear','پاک کردن فیلتر','undo','btn-s btn-sm'):'');
+if(!rows.length)return h+emptyCard('cards','کارتی یافت نشد',(DB.cards||[]).length?'فیلترها را تغییر دهید.':'هنوز کارتی از سوی سرپرست به شما تخصیص داده نشده است.',(DB.cards||[]).length?btn('cards-clear','پاک کردن فیلتر','undo','btn-s btn-sm'):'');
 if(PS.view==='table'){
 h+='<div class="tw"><table class="tb"><thead><tr><th>کارت</th><th>مشتری</th><th>شرح</th><th>اجرا</th><th>مبلغ</th><th>وضعیت</th><th style="text-align:left">عملیات</th></tr></thead><tbody>'+
-rows.map(function(c){return '<tr><td><b class="ltr">'+esc(c.cardId)+'</b></td><td>'+esc(c.customer||'—')+'</td>'+
+rows.map(function(c){var k=cardKeys(c);
+return '<tr><td><b class="ltr">'+esc(c.cardId)+'</b></td><td>'+esc(c.customer||'—')+'</td>'+
 '<td style="white-space:normal;max-width:280px">'+esc(String(c.details||'—').slice(0,90))+'</td>'+
-'<td>'+(c.execDateKey?jDisp(c.execDateKey)+(c.execTimeKey?' · '+fa(c.execTimeKey):''):'—')+'</td><td class="num">'+money(c.amount)+'</td><td>'+pill(c.status)+'</td>'+
+'<td>'+(k._k?jDisp(k._k)+(k._t?' · '+fa(k._t):''):'—')+'</td><td class="num">'+money(c.amount)+'</td><td>'+pill(c.status)+'</td>'+
 '<td><div class="ra">'+ibtn('card-detail','eye','جزئیات',' data-id="'+esc(c.cardId)+'"')+
 ibtn('card-status','edit','تغییر وضعیت',' data-id="'+esc(c.cardId)+'"')+
 ibtn('card-msg','msg','گفتگو',' data-id="'+esc(c.cardId)+'"')+'</div></td></tr>';}).join('')+'</tbody></table></div>';
 return h;}
-h+='<div class="zv-card-list">'+rows.map(function(c){
+h+='<div class="zv-card-list">'+rows.map(function(c){var k=cardKeys(c);
 return '<article class="zv-work-card"><div class="zv-work-card-head"><h3 class="zv-work-card-title">'+esc(c.details||'کارت خدمت')+'</h3>'+
 '<div class="zv-work-card-id">'+esc(c.cardId)+(c.requestId?' · '+esc(c.requestId):'')+'</div>'+
 '<div class="zv-work-card-tags">'+pill(c.status)+'</div></div>'+
 '<div class="zv-work-card-summary">'+
 '<div class="zv-work-card-stat"><small>مشتری</small><b>'+esc(c.customer||'—')+'</b></div>'+
 '<div class="zv-work-card-stat"><small>مبلغ سفارش</small><b>'+money(c.amount)+'</b></div>'+
-'<div class="zv-work-card-stat"><small>زمان اجرا</small><b>'+(c.execDateKey?jDisp(c.execDateKey)+(c.execTimeKey?' · '+fa(c.execTimeKey):''):'ثبت نشده')+'</b></div>'+
+'<div class="zv-work-card-stat"><small>زمان اجرا</small><b>'+(k._k?jDisp(k._k)+(k._t?' · '+fa(k._t):''):'ثبت نشده')+'</b></div>'+
 '<div class="zv-work-card-stat"><small>آخرین تغییر</small><b>'+jDT(c.updatedAt)+'</b></div></div>'+
 '<div class="zv-work-card-acts">'+btn('card-detail','جزئیات','eye','btn-s btn-sm',' data-id="'+esc(c.cardId)+'"')+
 btn('card-status','تغییر وضعیت','check','btn-p btn-sm',' data-id="'+esc(c.cardId)+'"')+
@@ -982,52 +748,59 @@ btn('card-msg','گفتگو','msg','btn-s btn-sm',' data-id="'+esc(c.cardId)+'"')
 return h;}
 function cardDetail(id){
 var c=(DB.cards||[]).filter(function(x){return x.cardId===id;})[0];if(!c){toast('کارت یافت نشد.','err');return;}
+var k=cardKeys(c);
 var body=kv([['کارت','<span class="ltr">'+esc(c.cardId)+'</span>'],['وضعیت',pill(c.status)],
 ['سفارش','<span class="ltr">'+esc(c.requestId||'—')+'</span>'],['مشتری',esc(c.customer||'—')],
-['اجرا',c.execDateKey?jDisp(c.execDateKey)+(c.execTimeKey?' · '+fa(c.execTimeKey):''):'—'],['مبلغ سفارش',money(c.amount)],
-['آخرین تغییر',jDT(c.updatedAt)],['شرح',esc(c.details||'—'),1]]);
+['اجرا',k._k?jDisp(k._k)+(k._t?' · '+fa(k._t):''):'—'],['مبلغ سفارش',money(c.amount)],
+['آخرین تغییر',jDT(c.updatedAt)],['شرح',esc(c.details||'—'),1],['توضیحات',esc(c.description||'—'),1]]);
 openDrawer('<div class="dh"><h3>کارت '+esc(c.cardId)+'</h3><button class="ibtn" data-act="dclose">'+icon('x')+'</button></div>'+
 '<div class="db"><div id="cdExtra"><div class="loading" style="padding:20px"><div class="spinner"></div></div></div>'+body+
-'<div class="sec-t">اقدامات</div><p class="sub">تغییر وضعیت مستقیماً ثبت و به سرپرست اطلاع داده می‌شود.</p></div>'+
+'<div class="sec-t">اقدامات</div><p class="sub">تغییر وضعیت مستقیماً در شیت Cards ثبت و به سرپرست اطلاع داده می‌شود.</p></div>'+
 '<div class="df">'+btn('card-status','تغییر وضعیت','check','btn-p',' data-id="'+esc(id)+'"')+
 btn('card-refer','ارجاع به سرپرست','undo','btn-s',' data-id="'+esc(id)+'"')+
 btn('card-msg','گفتگو','msg','btn-s',' data-id="'+esc(id)+'"')+
 btn('card-print','چاپ','print','btn-s',' data-id="'+esc(id)+'"')+'</div>');
 apiOpt('getWorkerCardDetails',id,TOKEN).then(function(d){
-var box=$('#cdExtra');if(!box)return;if(!d){box.innerHTML='';return;}
+var box=$('#cdExtra');if(!box)return;
+if(!d){box.innerHTML='';return;}
 box.innerHTML='<div class="sec-t" style="margin-top:0">مشخصات تکمیلی</div>'+kv([
-['خدمت',esc(d.service||'—')],['نوع اقدام',pill(d.actionType||'—')],['مدت اجرا',d.duration?fa(d.duration)+' ساعت':'—'],
-['تاریخ اجرا',jDisp(d.executeDate)],['ساعت',fa(d.executeTime||'—')],['تماس',esc(d.phone?fa(d.phone):'—')],
-['آدرس',esc(d.address||'—'),1],['قیمت پایه',d.basePrice?money(d.basePrice):'—'],['مبلغ نهایی',money(d.finalPrice||c.amount)]])+
-(d.history&&d.history.length?'<div class="sec-t">تاریخچه</div>'+d.history.map(function(h){return '<div class="rank"><div class="info"><b>'+esc(h.from)+' ← '+esc(h.to)+'</b><small>'+esc(h.by)+' · '+jDT(h.at)+(h.desc?' · '+esc(h.desc):'')+'</small></div></div>';}).join(''):'');});}
+['خدمت',esc(d.service||'—')],['نوع اقدام',pill(d.actionType||'—')],['تعداد',fa(d.quantity||'—')],
+['مدت اجرا',d.duration?fa(d.duration)+' ساعت':'—'],['تاریخ اجرا',jDisp(d.executeDate)],['ساعت',fa(d.executeTime||'—')],
+['تماس',esc(d.phone?fa(d.phone):'—')],['تاریخ ثبت',jDT(d.createdAt)],
+['آدرس',esc(d.address||'—'),1],['خدمات جانبی',esc(d.sideServices||'—'),1],
+['قیمت پایه',d.basePrice?money(d.basePrice):'—'],['تخفیف',d.discount?money(d.discount):'—'],
+['مالیات',d.tax?money(d.tax):'—'],['مبلغ نهایی',money(d.finalPrice||c.amount)]]);});}
 function cardStatusModal(id,pre){
 var c=(DB.cards||[]).filter(function(x){return x.cardId===id;})[0];if(!c)return;
-var list=DB.statuses.length?DB.statuses:['درحال اجرا','انجام شده','تعلیق','ارجاع به سرپرست'];
+var list=DB.statuses.length?DB.statuses:['جدید','در حال انجام','تکمیل شده','لغو شده','ارجاع به سرپرست'];
 var sel=pre||c.status;
 openModal('<div class="mh"><h3>تغییر وضعیت '+esc(id)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
 '<form data-form="card-status" data-id="'+esc(id)+'"><div class="mb">'+
-kv([['وضعیت فعلی',pill(c.status)],['مشتری',esc(c.customer||'—')],['مبلغ',money(c.amount)]])+
+kv([['وضعیت فعلی',pill(c.status)],['مشتری',esc(c.customer||'—')],['مبلغ',money(c.amount)],['اجرا',cardKeys(c)._k?jDisp(cardKeys(c)._k):'—']])+
 '<div class="fgrid" style="margin-top:13px">'+
 '<div class="field full"><label>وضعیت جدید <span class="req">*</span></label><select name="status">'+
-list.map(function(s){return '<option'+(s===sel?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select></div>'+
+list.map(function(s){return '<option'+(s===sel?' selected':'')+'>'+esc(s)+'</option>';}).join('')+'</select>'+
+'<span class="hint">فهرست از وضعیت‌های مجاز سامانه خوانده شده است.</span></div>'+
 '<div class="field full"><label>توضیح / دلیل ارجاع</label><textarea name="note" placeholder="برای «ارجاع به سرپرست» دلیل الزامی است…"></textarea></div>'+
 '</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('check','width:15px;height:15px')+' ثبت وضعیت</button>'+
-'<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>');}
+'<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);}
 function printCard(id){var c=(DB.cards||[]).filter(function(x){return x.cardId===id;})[0];if(!c)return;
+var k=cardKeys(c);
 $('#printArea').innerHTML='<div style="padding:24px;color:#17213B"><div style="text-align:center;border-bottom:2px solid #0B1736;padding-bottom:12px;margin-bottom:16px">'+
 '<h2 style="color:#0B1736;font-family:Nunito,sans-serif">Zingo<span style="color:#FF6B1A">Vingo</span></h2>'+
 '<div style="font-size:11px;color:#5C6784">کارت عملیاتی '+esc(c.cardId)+'</div></div>'+
-[['مشتری',c.customer],['سفارش',c.requestId],['وضعیت',c.status],['اجرا',c.execDateKey?jDisp(c.execDateKey)+' '+(c.execTimeKey||''):'—'],['مبلغ',money(c.amount)],['متخصص',USER.name],['شرح',c.details]]
+[['مشتری',c.customer],['سفارش',c.requestId],['وضعیت',c.status],['اجرا',k._k?jDisp(k._k)+' '+(k._t||''):'—'],['مبلغ',money(c.amount)],['متخصص',USER.name],['شناسه متخصص',USER.workerId],['شرح',c.details],['توضیحات',c.description]]
 .map(function(x){return '<div style="display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed #ddd;font-size:12px"><span>'+esc(x[0])+'</span><b style="text-align:left">'+esc(x[1]||'—')+'</b></div>';}).join('')+'</div>';
 window.print();}
-/* ═════════════ M) PLANNER ═════════════ */
+/* ═════ 12) PLANNER ═════ */
 function plannerPage(){
 if(DB.err.cards)return head('برنامه کاری','')+errCard(DB.err.cards,'retry-cards');
 var start=new Date(PS.week||new Date());start.setHours(12,0,0,0);start.setDate(start.getDate()-((start.getDay()+1)%7));
 var days=[];for(var i=0;i<7;i++){var d=new Date(start);d.setDate(start.getDate()+i);days.push(d);}
 var keys=days.map(gKey),tk=gKey(new Date());
-var list=(DB.cards||[]).filter(function(c){return c.execDateKey&&keys.indexOf(c.execDateKey)>=0;});
-var noTime=list.filter(function(c){return !c.execTimeKey;});
+var list=(DB.cards||[]).map(function(c){var k=cardKeys(c);return Object.assign({},c,{_k:k._k,_t:k._t});})
+.filter(function(c){return c._k&&keys.indexOf(c._k)>=0;});
+var noTime=list.filter(function(c){return !c._t;});
 var acts='<button class="btn btn-s btn-sm" data-act="week" data-d="-7">هفته قبل</button>'+
 '<button class="btn btn-p btn-sm" data-act="week" data-d="0">هفته جاری</button>'+
 '<button class="btn btn-s btn-sm" data-act="week" data-d="7">هفته بعد</button>';
@@ -1041,44 +814,45 @@ if(noTime.length)h+='<div class="zv-planner-unscheduled"><span style="font-size:
 h+='<div class="zv-planner-grid"><div class="zv-planner-head">ساعت</div>';
 days.forEach(function(d){h+='<div class="zv-planner-head'+(gKey(d)===tk?' today':'')+'"><strong>'+new Intl.DateTimeFormat('fa-IR',{weekday:'short'}).format(d)+'</strong><small>'+jDisp(d)+'</small></div>';});
 for(var hr=6;hr<23;hr++){h+='<div class="zv-planner-time">'+fa(String(hr).padStart(2,'0'))+':۰۰</div>';
-days.forEach(function(d){var dl=list.filter(function(c){return c.execDateKey===gKey(d)&&c.execTimeKey&&+c.execTimeKey.slice(0,2)===hr;});
+days.forEach(function(d){var dl=list.filter(function(c){return c._k===gKey(d)&&c._t&&+c._t.slice(0,2)===hr;});
 h+='<div class="zv-planner-cell'+(gKey(d)===tk?' today':'')+'">'+dl.map(plEvent).join('')+'</div>';});}
 h+='</div></div>';
 if(!list.length)h+='<p class="sub" style="margin-top:12px">در این هفته کارتی با تاریخ اجرا ثبت نشده است.</p>';
 return h;}
-function plEvent(c){var s=String(c.status||''),cls=/انجام شده|تکمیل/.test(s)?'status-done':/لغو|ارجاع/.test(s)?'status-cancel':/^جدید/.test(s)?'status-new':'status-progress';
-return '<button class="zv-planner-event '+cls+'" data-act="card-detail" data-id="'+esc(c.cardId)+'"><strong>'+fa(c.execTimeKey?c.execTimeKey+' · ':'')+esc(c.cardId)+'</strong><small>'+esc(c.customer||'')+'</small><small>'+esc(s)+'</small></button>';}
-/* ═════════════ N) RATES ═════════════ */
+function plEvent(c){var s=String(c.status||''),cls=isDone(s)?'status-done':isCancel(s)||/ارجاع/.test(s)?'status-cancel':/^جدید/.test(s)?'status-new':'status-progress';
+return '<button class="zv-planner-event '+cls+'" data-act="card-detail" data-id="'+esc(c.cardId)+'"><strong>'+fa(c._t?c._t+' · ':'')+esc(c.cardId)+'</strong><small>'+esc(c.customer||'')+'</small><small>'+esc(s)+'</small></button>';}
+/* ═════ 13) RATES — کاتالوگ واقعی خدمات ═════ */
 function ratesPage(){
-if(DB.err.serv&&!DB.serv.length)return head('خدمات و نرخ‌ها','')+errCard(DB.err.serv||'خطا','retry-serv');
-if(!DB.rc&&!DB.serv.length)return head('خدمات و نرخ‌ها','')+emptyCard('tag','خدمتی ثبت نشده','شیت Services خالی است.');
+if(DB.err.serv)return head('خدمات و نرخ‌ها','')+errCard(DB.err.serv,'retry-serv');
+if(!DB.serv.length)return head('خدمات و نرخ‌ها','')+emptyCard('tag','خدمتی در سامانه ثبت نشده است','شیت Services خالی است. پس از تعریف خدمات، اینجا نمایش داده می‌شوند.',btn('retry-serv','تلاش مجدد','undo','btn-s btn-sm'));
 var q=en(PS.rq).toLowerCase();
-var list=DB.serv.filter(function(s){return !q||[s.id,svcName(s),s.unit].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});
+var list=DB.serv.filter(function(s){return !q||[s.id,svcName(s),s.nameEn,s.unit].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});
 var avg=DB.serv.length?Math.round(DB.serv.reduce(function(a,s){return a+floorOf(s);},0)/DB.serv.length):0;
 var headroom=DB.serv.reduce(function(a,s){return a+Math.max(0,ceilOf(s)-myRate(s));},0);
-var ent=DB.rc?DB.rc.entitlement:null;
-var h=head('خدمات و نرخ‌ها','کف = نرخ مصوب شهر · سقف = کف × (۱ + کمینهٔ پلن و کیفیت)',
+var h=head('خدمات و نرخ‌ها','کف = '+floorSrc()+' · سقف = کف × (۱ + کمینهٔ پلن و کیفیت)',
 btn('rate-ceil','رساندن به سقف','trend','btn-s')+btn('rate-bulk','افزایش ۱۰٪','percent','btn-s',' data-p="10"')+
 btn('rate-bulk','کاهش ۱۰٪','percent','btn-s',' data-p="-10"')+btn('refresh','بروزرسانی','undo','btn-s'));
-h+='<div class="svcsum"><span class="sumchip">'+icon('tag',16)+' <b>'+fa(DB.serv.length)+'</b> خدمت</span>'+
+h+='<div class="svcsum"><span class="sumchip">'+icon('tag',16)+' <b>'+fa(DB.serv.length)+'</b> خدمت در سامانه</span>'+
 '<span class="sumchip">'+icon('wallet',16)+' میانگین کف: <b>'+money(avg)+'</b></span>'+
-'<span class="sumchip">'+icon('crown',16)+' پلن: <b>'+(ent?esc(ent.planName)+' ('+fa(ent.markup)+'٪)':'پایه')+'</b></span>'+
+'<span class="sumchip">'+icon('crown',16)+' سقف پلن: <b>'+fa(planPct())+'٪</b></span>'+
 '<span class="sumchip">'+icon('trend',16)+' ظرفیت استفاده‌نشده: <b>'+money(headroom)+'</b></span></div>';
-if(planPct()===0)h+='<div class="banner vio">'+icon('crown',17)+'<div class="sp"><b>هیچ امتیاز افزایش نرخی فعال نیست.</b> تا خرید پلن، نرخ شما برابر نرخ مصوب است.</div>'+btn('go','خرید پلن','crown','btn-v btn-sm',' data-page="plans"')+'</div>';
+if(!DB.rc)h+=needInstall(['workerGetRateContext','workerSaveRate'],'ثبت و ذخیرهٔ نرخ شخصی');
+if(planPct()===0)h+='<div class="banner vio">'+icon('crown',17)+'<div class="sp"><b>هیچ امتیاز افزایش نرخی برای شما فعال نیست.</b> تا زمان خرید پلن، نرخ شما دقیقاً برابر نرخ پایه سامانه است. سقف کیفیت کسب‌شده از کارکردهای واقعی شما در نوار راه‌راه نمایش داده شده است.</div>'+btn('go','کیفیت و اعتبار','shield','btn-v btn-sm',' data-page="quality"')+'</div>';
 h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-rsearch placeholder="جستجو در کد، نام، واحد…" value="'+esc(PS.rq)+'"></div></div>';
-if(!list.length)return h+emptyCard('search','خدمتی مطابق جستجو نیست','عبارت دیگری امتحان کنید.');
+if(!list.length)return h+emptyCard('search','خدمتی مطابق جستجو نیست','عبارت دیگری را امتحان کنید.');
 h+='<div class="svclist">'+list.map(svcRow).join('')+'</div>';
 return h;}
 function svcRow(s){
 var fl=floorOf(s),ce=ceilOf(s),cur=myRate(s),ep=effPct(s.id);
-var q=rcSvc(s.id)?rcSvc(s.id).quality:null;
-var tier=q?q.tier:'—',gp=q?q.earned:0;
+var q=(DB.rc&&DB.rc.quality||{})[s.id];
+var jobs=q?num(q.completed):doneCount(),rating=q?num(q.rating):null;
+var g=gateFor(jobs,rating),gp=g.pct;
 var span=Math.max(ce-fl,1),pos=Math.round((cur-fl)/span*100);
 var ghost=Math.round((Math.round(fl*(1+gp/100)/1000)*1000-fl)/span*100);
 var locked=ce<=fl;
 return '<div class="card svc" data-row="'+esc(s.id)+'">'+
-'<div class="svci"><b>'+esc(svcName(s))+'</b><span class="ltr">'+esc(s.id)+' · واحد: '+esc(s.unit||'—')+' · حداقل: '+fa(s.minOrder||0)+'</span>'+
-'<span class="rel">سطح کیفیت: '+esc(tier)+' · سقف کیفیت '+fa(gp)+'٪ · سقف مؤثر '+fa(ep)+'٪</span></div>'+
+'<div class="svci"><b>'+esc(svcName(s))+'</b><span class="ltr">'+esc(s.id)+' · واحد: '+esc(s.unit||'—')+' · حداقل سفارش: '+fa(s.minimum||0)+'</span>'+
+'<span class="rel"><span class="gate g'+g.rank+'">'+g.name+'</span> سقف کیفیت '+fa(gp)+'٪ · سقف مؤثر '+fa(ep)+'٪'+(rating==null?' · امتیاز مشتری متصل نشده':' · امتیاز '+fa(rating.toFixed(1)))+'</span></div>'+
 '<div class="corrcell"><div class="corrlbl"><span>کف <b>'+fa(grp(fl))+'</b></span><span class="ce">سقف '+fa(grp(ce))+'</span></div>'+
 '<div class="corr"><div class="track"></div>'+(ghost>pos?'<div class="ghost" style="width:'+Math.min(100,ghost)+'%"></div>':'')+
 '<div class="fill" data-fill="'+esc(s.id)+'" style="width:'+pos+'%"></div>'+
@@ -1106,131 +880,71 @@ function rateSave(sid){
 var s=svcById(sid);if(!s)return;
 var row=$('[data-row="'+sid+'"]'),inp=row?row.querySelector('[data-ratein]'):null;
 var v=rateSet(sid,inp?inp.value:myRate(s),true);
-return api('workerSaveRate',{serviceId:sid,city:(DB.rc&&DB.rc.city)||USER.city||'',rate:v},TOKEN)
+return api('workerSaveRate',{serviceId:sid,city:(DB.rc&&DB.rc.city)||USER.city||'',rate:v,markup:effPct(sid)},TOKEN)
 .then(function(){toast('نرخ «'+svcName(s)+'» ذخیره شد.','ok');return loadRateCtx().then(render);})
 .catch(function(e){toast(e.message,'err');});}
 function rateBulk(p){
 if(!DB.serv.length)return;
-if(planPct()===0){toast('سقف افزایش نرخ شما ۰٪ است؛ ابتدا پلن بخرید.','warn');return;}
-var jobs=DB.serv.map(function(s){var row=$('[data-row="'+s.id+'"]');var inp=row?row.querySelector('[data-ratein]'):null;
+if(planPct()===0){toast('سقف افزایش نرخ شما ۰٪ است؛ ابتدا پلن لازم است.','warn');return;}
+var jobsList=DB.serv.map(function(s){var row=$('[data-row="'+s.id+'"]');var inp=row?row.querySelector('[data-ratein]'):null;
 return {id:s.id,v:inp?num(inp.value):myRate(s)};});
-var snap=jobs.slice();
-jobs.forEach(function(x){rateSet(x.id,Math.round(x.v*(1+p/100)/1000)*1000,true);});
-toast('نرخ '+fa(jobs.length)+' خدمت '+fa(Math.abs(p))+'٪ '+(p>0?'افزایش':'کاهش')+' یافت (ذخیره نشده).','ok',
+var snap=jobsList.slice();
+jobsList.forEach(function(x){var s=svcById(x.id);rateSet(x.id,Math.round(x.v*(1+p/100)/1000)*1000,true);});
+toast('نرخ '+fa(jobsList.length)+' خدمت '+fa(Math.abs(p))+'٪ '+(p>0?'افزایش':'کاهش')+' یافت (ذخیره نشده).','ok',
 {label:'بازگردانی',fn:function(){snap.forEach(function(x){rateSet(x.id,x.v,true);});}});}
 function rateCeil(){
-if(planPct()===0){toast('سقف افزایش نرخ شما ۰٪ است؛ ابتدا پلن بخرید.','warn');return;}
+if(planPct()===0){toast('سقف افزایش نرخ شما ۰٪ است؛ ابتدا پلن لازم است.','warn');return;}
 var snap=DB.serv.map(function(s){var row=$('[data-row="'+s.id+'"]');var inp=row?row.querySelector('[data-ratein]'):null;
 return {id:s.id,v:inp?num(inp.value):myRate(s)};});
 DB.serv.forEach(function(s){rateSet(s.id,ceilOf(s),true);});
 toast('همه نرخ‌ها به سقف مجاز رسید (ذخیره نشده).','ok',{label:'بازگردانی',fn:function(){snap.forEach(function(x){rateSet(x.id,x.v,true);});}});}
-/* ═════════════ O) PLANS ═════════════ */
-var PLANS=null;
-function plansPage(){
-return api('workerGetPlans',TOKEN).then(function(r){PLANS=r;
-var h=head('پلن‌ها و اشتراک','پلن فعال، سقف افزایش نرخ شما را تعیین می‌کند',btn('refresh','بروزرسانی','undo','btn-s'));
-if(!r)return h+errCard('دریافت پلن‌ها ناموفق بود.','go-plans');
-h+='<div class="banner info">'+icon('crown',17)+'<div class="sp">سقف مؤثر افزایش نرخ = کمینهٔ <b>پلن خریداری‌شده</b> و <b>سطح کیفیت</b>. برای باز شدن سقف بالاتر، هم پلن و هم کیفیت لازم است.</div></div>';
-if(r.current)h+='<div class="banner ok">'+icon('check',17)+'<div class="sp"><b>پلن فعال: '+esc(r.current.planName)+'</b> · افزایش نرخ تا '+fa(r.current.markup)+'٪ · انقضا: '+jDisp(r.current.expiresAt)+'</div></div>';
-if(r.pending)h+='<div class="banner warn">'+icon('clock',17)+'<div class="sp"><b>'+fa(r.pending)+' خرید در انتظار تأیید واحد مالی</b> — پس از تأیید، سقف نرخ به‌صورت خودکار فعال می‌شود.</div></div>';
-h+='<div class="plan-grid">'+r.plans.map(function(p){
-var cur=p.current;
-return '<div class="plan-card'+(cur?' cur':'')+'">'+(cur?'<span class="pill p-green" style="position:absolute;top:14px;left:14px"><i></i>فعال</span>':'')+
-'<h4>'+esc(p.name)+'</h4><div class="mk">'+fa(p.markup)+'٪</div>'+
-'<div class="ft">'+icon('check','width:13px;height:13px')+' افزایش نرخ تا '+fa(p.markup)+'٪</div>'+
-'<div class="ft">'+icon('check','width:13px;height:13px')+' '+esc(p.features)+'</div>'+
-'<div style="font-size:12px;color:var(--muted);margin-top:4px">'+(p.monthly>0?'ماهانه '+money(p.monthly):'رایگان')+'</div>'+
-(cur?'<button class="btn btn-s" disabled>پلن فعلی شما</button>':
-(p.monthly>0?'<button class="btn btn-p" data-act="plan-buy" data-id="'+esc(p.id)+'">'+icon('wallet','width:14px;height:14px')+' خرید اشتراک</button>':
-'<button class="btn btn-s" disabledپ>پایه پیش‌فرض</button>'))+'</div>';}).join('')+'</div>';
-h+='<p class="sub" style="margin-top:14px">روش‌های پرداخت: '+r.methods.map(esc).join(' · ')+' — '+esc(r.note)+'</p>';
-return h;});}
-function planBuyModal(pid){var p=(PLANS&&PLANS.plans||[]).filter(function(x){return x.id===pid;})[0];if(!p)return;
-openModal('<div class="mh"><h3>خرید پلن '+esc(p.name)+'</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-'<form data-form="plan-buy" data-id="'+esc(pid)+'"><div class="mb">'+
-kv([['پلن',esc(p.name)],['افزایش نرخ',fa(p.markup)+'٪'],['قیمت ماهانه',p.monthly>0?money(p.monthly):'رایگان']])+
-'<div class="fgrid" style="margin-top:13px">'+
-'<div class="field"><label>دوره اشتراک</label><select name="cycle">'+
-'<option value="1">ماهانه — '+money(p.monthly)+'</option>'+
-'<option value="6">۶ ماهه — '+money(p.semi)+'</option>'+
-'<option value="12">سالانه — '+money(p.annual)+'</option></select></div>'+
-'<div class="field"><label>روش پرداخت</label><select name="method">'+(PLANS?PLANS.methods:[]).map(function(m){return '<option>'+esc(m)+'</option>';}).join('')+'</select></div>'+
-'</div><p class="hint" style="margin-top:10px">در حالت دمو، چند ثانیه پس از خرید، واحد مالی اشتراک را تأیید و سقف نرخ فعال می‌شود.</p>'+
-'</div><div class="mf"><button class="btn btn-p" type="submit">'+icon('wallet','width:14px;height:14px')+' پرداخت و خرید</button>'+
-'<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>');}
-/* ═════════════ P) QUALITY ═════════════ */
+/* ═════ 14) QUALITY ═════ */
 function qualityPage(){
-return api('workerGetQuality',TOKEN).then(function(q){
-if(!q)return errCard('دریافت کیفیت ناموفق بود.','go-quality');
-var o=q.overall;
-var h=head('کیفیت و اعتبار','محاسبه‌شده از کارها و نظرات واقعی',btn('refresh','بروزرسانی','undo','btn-s'));
+var r=DB.rep||{},jobs=doneCount();
+var g=gateFor(jobs,null),nx=GATES.filter(function(x){return x.rank===g.rank+1;})[0];
+var total=num(r.totalCards)||(DB.cards||[]).length;
+var inprog=num(r.inProgressCards)||(DB.cards||[]).filter(function(c){return /در حال|درحال/.test(String(c.status||''));}).length;
+var cancel=(DB.cards||[]).filter(function(c){return isCancel(c.status);}).length;
+var onTime=total?Math.round(jobs/total*100):0;
+var score=Math.round(Math.min(100,jobs/150*45+onTime*.35+(1-Math.min(1,cancel/Math.max(total,1)))*20));
+window._q={jobs:jobs,total:total,inprog:inprog,cancel:cancel};
+var h=head('کیفیت و اعتبار','محاسبه‌شده از کارت‌های واقعی شما در سامانه',btn('refresh','بروزرسانی','undo','btn-s'));
 h+='<div class="card" style="margin-bottom:16px;display:flex;gap:20px;align-items:center;flex-wrap:wrap">'+
-'<div class="qring" style="background:conic-gradient(var(--brand) '+(o.score*3.6)+'deg,var(--surface2) 0)"><span style="position:absolute;inset:12px;border-radius:50%;background:var(--surface);display:grid;place-items:center"><b style="font-size:28px;font-weight:900">'+fa(o.score)+'</b><small style="font-size:9px;color:var(--muted)">از ۱۰۰</small></span></div>'+
-'<div style="flex:1;min-width:220px"><b style="font-size:16px">سطح فعلی: '+esc(o.tier)+' · سقف کیفیت '+fa(o.earned)+'٪</b>'+
-'<p class="sub" style="margin-top:4px">سقف مؤثر افزایش نرخ = کمینهٔ پلن ('+fa(q.planPct)+'٪) و کیفیت ('+fa(o.earned)+'٪) = <b>'+fa(o.effective)+'٪</b>. '+
-(o.effective<o.earned?'برای استفاده از سقف کامل کیفیت، پلن بالاتر بخرید.':(o.effective<q.gates[q.gates.length-1].markup?'با ارتقای کیفیت، سقف بالاتر می‌رود':'شما در بالاترین سطح هستید.'))+'</p></div></div>';
+'<div class="qring" style="background:conic-gradient(var(--brand) '+(score*3.6)+'deg,var(--surface2) 0)"><span style="position:absolute;inset:12px;border-radius:50%;background:var(--surface);display:grid;place-items:center"><b>'+fa(score)+'</b><small>از ۱۰۰</small></span></div>'+
+'<div style="flex:1;min-width:220px"><b style="font-size:16px">سطح فعلی: '+esc(g.name)+' · سقف کیفیت '+fa(g.pct)+'٪</b>'+
+'<p class="sub" style="margin-top:4px">'+(nx?('برای رسیدن به «'+nx.name+'» و سقف '+fa(nx.pct)+'٪، '+fa(Math.max(0,nx.jobs-jobs))+' کارت تکمیل‌شدهٔ دیگر لازم است.'):'شما در بالاترین سطح کیفیت هستید.')+
+' سقف مؤثر افزایش نرخ = کمینهٔ پلن ('+fa(planPct())+'٪) و کیفیت ('+fa(g.pct)+'٪).</p>'+
+'<div style="margin-top:10px">'+bar(nx?Math.round(jobs/nx.jobs*100):100,'var(--violet)')+'</div></div></div>';
 h+='<div class="grid kpis" style="margin-bottom:16px">'+
-kpi('کار تکمیل‌شده',fa(o.completed),'check','var(--green)','مبنای سطح کیفیت')+
-kpi('کل کارت‌ها',fa(o.total),'cards','var(--blue)','تخصیص‌یافته')+
-kpi('امتیاز مشتری',o.rating==null?'—':fa(o.rating.toFixed(1)),'award','var(--amber)','از نظرات تأییدشده')+
-kpi('نرخ به‌موقع',pct(o.onTimePct),'clock','var(--teal)','تحویل در موعد')+
-kpi('لغو',pct(o.cancelPct),'x','var(--red)','کیفیت پذیرش')+
-kpi('اختلاف / ارجاع',pct(o.disputePct),'alert','var(--pink)','کیفیت اجرا')+'</div>';
-h+='<div class="grid charts"><div class="cbox"><h3>'+icon('award','width:15px;height:15px;color:var(--violet)')+' نردبان کیفیت</h3>'+
-q.gates.map(function(g,i){var on=g.tier===o.tier;
-return '<div class="ladder"><span class="ld" style="background:'+(on?'var(--grad)':'var(--surface2)')+';color:'+(on?'#fff':'var(--muted)')+'">'+fa(i+1)+'</span>'+
-'<div style="flex:1"><b style="font-size:12.5px">'+esc(g.tier)+'</b> · سقف '+fa(g.markup)+'٪<br><small class="sub">'+fa(g.jobs)+' کار تکمیل‌شده'+(g.rating?' · امتیاز '+fa(g.rating.toFixed(1)):'')+'</small></div>'+
-(on?pill('فعال'):'')+'</div>';}).join('')+'</div>'+
-'<div class="cbox"><h3>'+icon('tag','width:15px;height:15px;color:var(--teal)')+' کیفیت به تفکیک خدمت</h3>'+
-(q.services||[]).map(function(s){return '<div class="rank"><div class="info"><b>'+esc(s.name)+'</b><small>'+fa(s.completed)+' کار · '+esc(s.tier)+'</small></div>'+bar(s.effective/Math.max(50,1)*100)+'<span class="v">'+fa(s.effective)+'٪</span></div>';}).join('')+
-'</div></div>';
-return h;});}
-function chartsQuality(){}
-/* ═════════════ Q) SETTLE ═════════════ */
-function settlePage(){
-return api('workerGetPayout',TOKEN).then(function(pay){
-return api('workerGetSettlements',TOKEN,PS.settlePeriod).then(function(stl){
-var h=head('تسویه حساب‌ها','سهم شما از کارهای تیمی و تاریخچه تسویه',btn('refresh','بروزرسانی','undo','btn-s'));
-if(!pay||!pay.hasGroup)return h+'<div class="banner info">'+icon('branch',17)+'<div class="sp">شما عضو گروهی نیستید؛ تسویه به‌صورت انفرادی و بر اساس کارت‌های خودتان انجام می‌شود.</div></div>';
-var pv=stl?stl.preview:null;var rule=pay.rule;
-h+='<div class="grid kpis" style="margin-bottom:16px">'+
-kpi('مدل تسویه',esc(rule.model),'wallet','var(--blue)','مبنای تقسیم: '+(rule.basis==='hours'?'ساعت اجرا':rule.basis==='cards'?'تعداد کارت':'ارزش کار'))+
-kpi('سهم مدیریت',fa(rule.mgmt)+'٪','percent','var(--violet)','کسر از ناخالص تیم')+
-kpi('دوره تسویه',rule.cycle==='weekly'?'هفتگی':'ماهانه','cal','var(--teal)','')+
-kpi('اعضای تیم',fa(pay.members.length),'user','var(--amber)','نیروهای فعال')+'</div>';
-if(pv&&pv.mode==='team'){
-h+='<div class="card" style="margin-bottom:16px"><div class="cardHead">'+icon('report',17)+'<h3>پیش‌نمایش تسویه دوره جاری ('+esc(pv.period.key)+')</h3></div>'+
-'<div class="grid kpis" style="margin-bottom:14px">'+
-kpi('کارت‌های انجام‌شده',fa(pv.cardsCount),'cards','var(--blue)','در این دوره')+
-kpi('ناخالص',moneyC(pv.gross),'wallet','var(--brand)',CUR)+
-kpi('سهم مدیریت',moneyC(pv.mgmtAmount),'percent','var(--violet)',fa(pv.mgmtPct)+'٪')+
-kpi('قابل تقسیم',moneyC(pv.pool),'trend','var(--teal)','بین اعضا')+'</div>'+
-'<div class="tw"><table class="tb"><thead><tr><th>عضو</th><th>نقش</th><th>مبنا</th><th>سهم ٪</th><th>سهم '+CUR+'</th><th>مدیریت</th><th>جمع</th></tr></thead><tbody>'+
-pv.lines.map(function(l){return '<tr'+(l.self?' style="background:rgba(255,107,26,.06)"':'')+'><td><b>'+esc(l.name)+'</b>'+(l.self?' <span class="pill p-brand">شما</span>':'')+'</td><td>'+esc(l.role==='supervisor'?'سرپرست':'عضو')+'</td><td class="num">'+fa(l.basisValue)+'</td><td class="num">'+pct(l.sharePct)+'</td><td class="num">'+money(l.share)+'</td><td class="num">'+(l.mgmt?money(l.mgmt):'—')+'</td><td class="num" style="font-weight:900;color:var(--brandDeep)">'+money(l.total)+'</td></tr>';}).join('')+
-'</tbody></table></div>'+
-'<p class="hint" style="margin-top:10px">مبنای تقسیم: '+(rule.basis==='hours'?'ساعت اجرا (ثبت‌شده توسط سرپرست)':rule.basis==='cards'?'تعداد کارت انجام‌شده':'ارزش ریالی کارها')+' · این پیش‌نمایش پس از تأیید سرپرست و واحد مالی به تسویه قطعی تبدیل می‌شود.</p></div>';
-} else if(pv&&pv.mode==='solo'){
-h+='<div class="card" style="margin-bottom:16px"><div class="cardHead">'+icon('report',17)+'<h3>عملکرد انفرادی دوره جاری</h3></div>'+
-kv([['کارت‌های انجام‌شده',fa(pv.cardsCount)],['ارزش کل',money(pv.gross)],['خالص شما',money(pv.net)],['دوره',esc(pv.period.key)]])+'</div>';}
-if(pay.isSupervisor){
-h+='<div class="card"><div class="cardHead">'+icon('edit',17)+'<h3>ابزار سرپرست — ثبت ساعت اجرا</h3></div>'+
-'<form data-form="log-hours"><div class="fgrid">'+
-'<div class="field"><label>کارت</label><select name="cardId" required><option value="">انتخاب…</option>'+
-(DB.cards||[]).filter(function(c){return /انجام شده|درحال/.test(c.status);}).map(function(c){return '<option value="'+esc(c.cardId)+'">'+esc(c.cardId)+' — '+esc(c.customer||'')+'</option>';}).join('')+'</select></div>'+
-'<div class="field"><label>نیرو</label><select name="workerId" required><option value="">انتخاب…</option>'+pay.members.map(function(m){return '<option value="'+esc(m.workerId)+'">'+esc(m.name)+'</option>';}).join('')+'</select></div>'+
-'<div class="field"><label>ساعت اجرا</label><input name="hours" inputmode="numeric" placeholder="مثلاً 2.5"></div>'+
-'<div class="field" style="justify-content:flex-end"><button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ثبت ساعت</button></div>'+
-'</div></form></div>';
-}
-return h;});});}
-/* ═════════════ R) REPORTS ═════════════ */
+kpi('کارت تکمیل‌شده',fa(jobs),'check','var(--green)','مبنای سطح کیفیت')+
+kpi('کل کارت‌ها',fa(total),'cards','var(--blue)','تخصیص‌یافته')+
+kpi('در حال اجرا',fa(inprog),'clock','var(--amber)','جاری')+
+kpi('لغو / مرجوع',fa(cancel),'x','var(--red)','کیفیت پذیرش')+
+kpi('نرخ تکمیل',pct(onTime),'trend','var(--teal)','تکمیل از کل')+
+kpi('سقف پلن فعال',fa(planPct())+'٪','crown','var(--violet)','خریداری‌شده')+'</div>';
+if(!DB.rc)h+=needInstall(['workerGetRateContext'],'اتصال امتیاز مشتری به هر خدمت');
+h+='<div class="grid charts"><div class="cbox"><h3>'+icon('report','width:15px;height:15px;color:var(--brand)')+' ترکیب کارکرد</h3><div class="cwrap"><canvas id="qCh"></canvas></div></div>'+
+'<div class="cbox"><h3>'+icon('award','width:15px;height:15px;color:var(--violet)')+' نردبان کیفیت</h3>'+
+GATES.map(function(x,i){var on=x.rank===g.rank,pass=x.rank<g.rank;
+return '<div class="ladder"><span class="ld" style="background:'+(on?'var(--grad)':pass?'var(--teal)':'var(--surface2)')+';color:'+(on?'#fff':pass?'#04211C':'var(--muted)')+'">'+(pass?icon('check',13):fa(i+1))+'</span>'+
+'<div style="flex:1"><b style="font-size:12.5px">'+esc(x.name)+'</b> · سقف '+fa(x.pct)+'٪<br><small class="sub">'+fa(x.jobs)+' کارت تکمیل‌شده'+(x.rating?' · امتیاز '+fa(x.rating.toFixed(1)):'')+'</small></div>'+
+(on?pill('فعال'):'')+'</div>';}).join('')+
+'<p class="hint" style="margin-top:10px">آستانه‌ها سیاست مصوب سامانه‌اند. امتیاز مشتری پس از اتصال نظرات به کارت‌ها (SiteReviews.Card-ID) در محاسبه وارد می‌شود.</p></div></div>';
+return h;}
+function chartsQuality(){if(!window.Chart||!window._q)return;var d=window._q,P=pal();
+var e=$('#qCh');if(!e)return;
+CH.push(new Chart(e,{type:'doughnut',data:{labels:['تکمیل شده','در حال اجرا','لغو / مرجوع','سایر'],
+datasets:[{data:[d.jobs,d.inprog,d.cancel,Math.max(0,d.total-d.jobs-d.inprog-d.cancel)],backgroundColor:[P[6],P[5],P[4],P[7]],borderWidth:2,borderColor:cssVar('--surface')}]},
+options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',rtl:true,labels:{usePointStyle:true,boxWidth:8,font:{size:10}}}}}}));}
+/* ═════ 15) REPORTS ═════ */
 function reportsPage(){
-var h=head('گزارش عملکرد','بازه را انتخاب و گزارش را دریافت کنید',btn('rep-run','نمایش گزارش','report','btn-p')+btn('rep-csv','خروجی CSV','dl','btn-s'));
+var h=head('گزارش عملکرد','بازه را انتخاب و گزارش را از سامانه دریافت کنید',btn('rep-run','نمایش گزارش','report','btn-p')+btn('rep-csv','خروجی CSV','dl','btn-s'));
 h+='<div class="toolbar"><input class="inp" data-rep="from" data-jd placeholder="از تاریخ" value="'+esc(PS.from)+'" style="width:150px">'+
 '<input class="inp" data-rep="to" data-jd placeholder="تا تاریخ" value="'+esc(PS.to)+'" style="width:150px">'+
 btn('rep-clear','پاک کردن','undo','btn-s btn-sm')+'</div><div id="repOut">';
 var r=PS.rep||DB.rep;
-if(!r)h+=emptyCard('report','گزارشی دریافت نشده','بازه را انتخاب کنید و «نمایش گزارش» را بزنید.',btn('rep-run','نمایش گزارش','report','btn-p btn-sm'));
+if(DB.err.rep&&!r)h+=errCard(DB.err.rep,'rep-run');
+else if(!r)h+=emptyCard('report','گزارشی دریافت نشده است','بازه را انتخاب کنید و «نمایش گزارش» را بزنید.',btn('rep-run','نمایش گزارش','report','btn-p btn-sm'));
 else{
 var bs=r.byStatus||{},ks=Object.keys(bs),tx=r.transactions||[];
 h+='<div class="grid kpis" style="margin-bottom:16px">'+
@@ -1243,29 +957,29 @@ h+='<div class="cbox" style="margin-bottom:16px"><h3>'+icon('report','width:15px
 return '<div class="rank"><div class="info"><b>'+esc(k)+'</b></div>'+bar(bs[k]/mx*100)+'<span class="v">'+fa(bs[k])+'</span></div>';}).join(''):'<p class="sub">داده‌ای نیست.</p>')+'</div>';
 h+='<div class="card"><h3 style="margin-bottom:12px">ریز کارت‌ها ('+fa(tx.length)+')</h3>'+
 (tx.length?'<div class="tw"><table class="tb"><thead><tr><th>تاریخ</th><th>کارت</th><th>مشتری</th><th>مبلغ</th><th>وضعیت</th></tr></thead><tbody>'+
-tx.slice(0,150).map(function(t){return '<tr><td>'+jDT(t.date)+'</td><td><b class="ltr">'+esc(t.cardId)+'</b></td><td>'+esc(t.customer||'—')+'</td><td class="num">'+money(t.amount)+'</td><td>'+pill(t.status)+'</td></tr>';}).join('')+'</tbody></table></div>':'<p class="sub">کارتی در این بازه نیست.</p>')+'</div>';}
+tx.slice(0,150).map(function(t){return '<tr><td>'+jDT(t.date)+'</td><td><b class="ltr">'+esc(t.cardId)+'</b></td><td>'+esc(t.customer||'—')+'</td><td class="num">'+money(t.amount)+'</td><td>'+pill(t.status)+'</td></tr>';}).join('')+'</tbody></table></div>':'<p class="sub">کارتی در این بازه ثبت نشده است.</p>')+'</div>';}
 return h+'</div>';}
 function runReports(){
 var f=$('[data-rep="from"]'),t=$('[data-rep="to"]');
 PS.from=f?f.value:'';PS.to=t?t.value:'';
 var box=$('#repOut');if(box)box.innerHTML=skel(3);
 return api('getWorkerReports',TOKEN,PS.from,PS.to).then(function(r){PS.rep=r;DB.err.rep=null;render();toast('گزارش دریافت شد.','ok');})
-.catch(function(e){render();toast(e.message,'err');});}
+.catch(function(e){DB.err.rep=e.message;render();toast(e.message,'err');});}
 function repCsv(){var r=PS.rep||DB.rep,tx=(r&&r.transactions)||[];
 if(!tx.length){toast('داده‌ای برای خروجی نیست.','warn');return;}
 var q=function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';};
 var lines=[['تاریخ','کارت','مشتری','مبلغ','وضعیت'].map(q).join(',')];
 tx.forEach(function(t){lines.push([en(t.date),t.cardId,t.customer,t.amount,t.status].map(q).join(','));});
 var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8'}));
-a.download='worker-report.csv';a.click();toast('CSV دانلود شد.','ok');}
-/* ═════════════ S) MESSAGES ═════════════ */
+a.download='worker-report.csv';a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1500);toast('CSV دانلود شد.','ok');}
+/* ═════ 16) MESSAGES ═════ */
 function msgRows(){var rows=(DB.inbox||[]).slice();
 if(PS.mch)rows=rows.filter(function(t){return t.channel===PS.mch;});
 if(PS.mst)rows=rows.filter(function(t){return t.state===PS.mst;});
 if(PS.mq){var q=en(PS.mq).toLowerCase();rows=rows.filter(function(t){return [t.subject,t.ticketNo,t.peerName,t.preview,t.cardId].some(function(v){return en(String(v||'')).toLowerCase().indexOf(q)>=0;});});}
 return rows;}
 function messagesPage(){
-if(DB.err.inbox)return head('گفتگوها','')+errCard(DB.err.inbox,'retry-inbox');
+if(DB.err.inbox)return head('گفتگوها','')+needInstall(['workerGetInbox / workerGetConversations','workerGetThread / workerGetConversation','workerReplyThread / workerReplyConversation'],'گفتگوها')+errCard(DB.err.inbox,'retry-inbox');
 var all=DB.inbox||[],rows=msgRows();
 var open=all.filter(function(t){return t.state==='OPEN';}).length,closed=all.filter(function(t){return t.state==='CLOSED';}).length;
 var sup=all.filter(function(t){return t.channel==='SUP';}).length,spt=all.filter(function(t){return t.channel==='SUPPORT';}).length;
@@ -1279,7 +993,7 @@ kpi('بسته‌شده',fa(closed),'lock','var(--slate)','CLOSED')+'</div>';
 h+='<div class="toolbar"><div class="sw">'+icon('search')+'<input class="inp" data-msearch placeholder="جستجو در موضوع، شماره تیکت…" value="'+esc(PS.mq)+'"></div>'+
 '<select class="sel" data-mch><option value="">کانال: همه</option><option value="SUP"'+(PS.mch==='SUP'?' selected':'')+'>سرپرست ('+fa(sup)+')</option><option value="SUPPORT"'+(PS.mch==='SUPPORT'?' selected':'')+'>پشتیبانی ('+fa(spt)+')</option></select>'+
 '<select class="sel" data-mst><option value="">وضعیت: همه</option>'+[['OPEN','در انتظار پاسخ'],['ANSWERED','پاسخ داده شده'],['CLOSED','بسته']].map(function(s){return '<option value="'+s[0]+'"'+(PS.mst===s[0]?' selected':'')+'>'+s[1]+'</option>';}).join('')+'</select></div>';
-if(!rows.length)return h+emptyCard('msg','گفتگویی یافت نشد',all.length?'فیلترها را تغییر دهید.':'از «گفتگو با سرپرست» شروع کنید.',btn('msg-sup','گفتگو با سرپرست','send','btn-p btn-sm'));
+if(!rows.length)return h+emptyCard('msg','گفتگویی یافت نشد',all.length?'فیلترها را تغییر دهید.':'از کارت‌های خود «گفتگو با سرپرست» آغاز کنید.',btn('msg-sup','گفتگو با سرپرست','send','btn-p btn-sm'));
 h+='<div class="card">'+rows.map(function(t){
 return '<div class="thread'+(t.unread>0?' unread':'')+'"><div style="flex:1;min-width:0">'+
 '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>'+esc(t.subject)+'</b>'+
@@ -1295,26 +1009,28 @@ btn('chat-open','گفتگو','msg','btn-p btn-sm',' data-id="'+esc(t.threadId)+'
 '</div></div>';}).join('')+'</div>';
 return h;}
 function chatOpen(id){
-return api('workerGetThread',id,TOKEN).then(function(d){
-if(!d)throw new Error('گفتگو یافت نشد.');
-var t=d.thread||{},msgs=d.messages||[],closed=t.state==='CLOSED';
+return apiOpt('workerGetThread',id,TOKEN).then(function(d){
+if(d)return d;return apiOpt('workerGetConversation',id,TOKEN);})
+.then(function(d){
+if(!d)throw new Error('تابع دریافت گفتگو در بک‌اند نصب نیست.');
+var t=d.thread||{},msgs=d.messages||[],state=String(t.state||t.status||'OPEN').toUpperCase(),closed=state==='CLOSED';
 var bubbles=msgs.map(function(m){
-if(m.messageType==='SYSTEM')return '<div class="msgb sys">'+esc(m.body)+' · '+jDT(m.createdAt)+'</div>';
+if(m.messageType==='SYSTEM'||m.senderRole==='system')return '<div class="msgb sys">'+esc(m.body)+' · '+jDT(m.createdAt)+'</div>';
 var me=m.senderRole==='worker';
 return '<div class="msgb '+(me?'me':'them')+'"><b>'+esc(m.senderName||m.senderUsername||'—')+'</b><div class="body">'+esc(m.body)+'</div><small>'+jDT(m.createdAt)+(m.readAt?' · دیده شد':'')+'</small></div>';}).join('');
-openModal('<div class="mh"><h3>'+esc(t.subject||'گفتگو')+'</h3>'+(t.ticketNo?'<span class="tno">'+esc(t.ticketNo)+'</span>':'')+pill(t.state)+
+openModal('<div class="mh"><h3>'+esc(t.subject||'گفتگو')+'</h3>'+(t.ticketNo?'<span class="tno">'+esc(t.ticketNo)+'</span>':'')+pill(state)+
 '<button class="ibtn" data-act="chat-open" data-id="'+esc(id)+'" title="بروزرسانی">'+icon('undo')+'</button><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
 '<form data-form="chat-reply" data-id="'+esc(id)+'"><div class="mb">'+
 '<div class="chatbox" id="chatBox">'+(bubbles||'<p class="hint" style="text-align:center;padding:14px">پیامی ثبت نشده است.</p>')+'</div>'+
-(closed?'<p class="hint" style="color:var(--amber)">این گفتگو بسته است؛ برای ارسال ابتدا بازگشایی کنید.</p>':'<div class="field"><label>پاسخ شما <span class="req">*</span></label><textarea name="body" required placeholder="متن پاسخ…"></textarea></div>')+
+(closed?'<p class="hint" style="color:var(--amber)">این گفتگو بسته است؛ برای ارسال پاسخ ابتدا بازگشایی کنید.</p>':'<div class="field"><label>پاسخ شما <span class="req">*</span></label><textarea name="body" required placeholder="متن پاسخ…"></textarea></div>')+
 '</div><div class="mf">'+(closed?'':'<button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ارسال</button>')+
 (closed?btn('chat-status','بازکردن','unlock','btn-s',' data-id="'+esc(id)+'" data-state="OPEN"'):btn('chat-status','بستن','lock','btn-s',' data-id="'+esc(id)+'" data-state="CLOSED"'))+
-'<button type="button" class="btn btn-s" data-act="mclose">بستن</button></div></form>');
+'<button type="button" class="btn btn-s" data-act="mclose">بستن</button></div></form>',false,true);
 var box=$('#chatBox');if(box)box.scrollTop=box.scrollHeight;
 }).catch(function(e){toast(e.message,'err');});}
 function msgSupModal(preCard){
 var cs=DB.cards||[];
-if(!cs.length){toast('کارتی به شما تخصیص نیافته است.','warn');return;}
+if(!cs.length){toast('کارتی به شما تخصیص نیافته است؛ گفتگو با سرپرست از طریق کارت انجام می‌شود.','warn');return;}
 openModal('<div class="mh"><h3>گفتگو با سرپرست</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
 '<form data-form="msg-sup"><div class="mb"><div class="fgrid">'+
 '<div class="field full"><label>کارت مرتبط <span class="req">*</span></label><select name="cardId" required><option value="">انتخاب کارت…</option>'+
@@ -1322,20 +1038,20 @@ cs.map(function(c){return '<option value="'+esc(c.cardId)+'"'+(c.cardId===preCar
 '<div class="field full"><label>موضوع</label><input name="subject" placeholder="مثلاً پیگیری اجرای کارت"></div>'+
 '<div class="field full"><label>متن پیام <span class="req">*</span></label><textarea name="body" required style="min-height:120px"></textarea></div>'+
 '</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ارسال</button>'+
-'<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>');}
+'<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);}
 function msgSupportModal(){
 openModal('<div class="mh"><h3>پیام به پشتیبانی سامانه</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
-'<form data-form="msg-support"><div class="mb"><p class="hint" style="margin-bottom:12px">این پیام به‌عنوان تیکت در پشتیبانی کارکنان ثبت می‌شود.</p><div class="fgrid">'+
+'<form data-form="msg-support"><div class="mb"><p class="hint" style="margin-bottom:12px">این پیام به‌عنوان تیکت در «پشتیبانی کارکنان» پنل مدیریت ثبت می‌شود.</p><div class="fgrid">'+
 '<div class="field full"><label>موضوع <span class="req">*</span></label><input name="subject" required></div>'+
 '<div class="field full"><label>شرح پیام <span class="req">*</span></label><textarea name="body" required style="min-height:130px"></textarea></div>'+
 '</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ارسال</button>'+
-'<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>');}
-/* ═════════════ T) DEV REQUESTS ═════════════ */
+'<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);}
+/* ═════ 17) DEV REQUESTS ═════ */
 function devPage(){
-if(DB.err.dev)return head('درخواست‌های توسعه','')+errCard(DB.err.dev,'retry-dev');
+if(DB.err.dev)return head('درخواست‌های توسعه','')+needInstall(['workerGetDevRequests','workerSubmitDevRequest','workerDeleteDevRequest'],'درخواست‌های توسعه')+errCard(DB.err.dev,'retry-dev');
 var rows=DB.dev||[],mine=rows.filter(function(r){return r.mine;});
 var h=head('درخواست‌های توسعه',fa(rows.length)+' درخواست · '+fa(mine.length)+' از شما',btn('dev-new','درخواست جدید','plus','btn-p')+btn('refresh','بروزرسانی','undo','btn-s'));
-if(!rows.length)return h+emptyCard('zap','درخواستی ثبت نشده','اولین پیشنهاد خود را ثبت کنید.',btn('dev-new','درخواست جدید','plus','btn-p btn-sm'));
+if(!rows.length)return h+emptyCard('zap','درخواستی ثبت نشده است','اولین پیشنهاد خود را برای بهبود سامانه ثبت کنید.',btn('dev-new','درخواست جدید','plus','btn-p btn-sm'));
 h+='<div class="tw"><table class="tb"><thead><tr><th>شناسه</th><th>ماژول</th><th>نوع</th><th>شرح</th><th>اولویت</th><th>وضعیت</th><th>تاریخ</th><th style="text-align:left">عملیات</th></tr></thead><tbody>'+
 rows.map(function(r){return '<tr><td><b class="ltr">'+esc(r.id)+'</b></td><td>'+esc(r.moduleName||r.module)+'</td><td>'+pill(r.kind)+'</td>'+
 '<td style="white-space:normal;max-width:320px">'+esc(String(r.note||'').slice(0,160))+'</td><td>'+pill(r.priority)+'</td><td>'+pill(r.status)+'</td>'+
@@ -1350,15 +1066,15 @@ openModal('<div class="mh"><h3>ثبت درخواست توسعه</h3><button clas
 '<div class="field"><label>اولویت</label><select name="priority"><option>عادی</option><option>مهم</option><option>فوری</option></select></div>'+
 '<div class="field full"><label>شرح درخواست <span class="req">*</span></label><textarea name="note" required style="min-height:130px" placeholder="دقیق بنویسید چه کاری الان سخت یا ناممکن است…"></textarea></div>'+
 '</div></div><div class="mf"><button class="btn btn-p" type="submit">'+icon('send','width:14px;height:14px')+' ثبت</button>'+
-'<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>');}
-/* ═════════════ U) PROFILE ═════════════ */
+'<button type="button" class="btn btn-s" data-act="mclose">انصراف</button></div></form>',false,true);}
+/* ═════ 18) PROFILE ═════ */
 function profilePage(){
 var p=USER||{};
 var E='<span class="ftag e">قابل ویرایش</span>',L='<span class="ftag l">فقط خواندنی</span>';
 return head('پروفایل من','حساب کاربری متخصص')+
 '<div class="profile-layout"><div class="card profile-photo-card">'+
 '<div class="av lg" style="margin:0 auto 14px">'+(p.avatar?'<img src="'+esc(p.avatar)+'" alt="">':esc(String(p.name||'؟').trim().charAt(0)))+'</div>'+
-'<h3>'+esc(p.name||'—')+'</h3><div class="sub">'+esc(p.specialization||'متخصص')+' · '+esc(p.workerId||'')+'</div>'+
+'<h3>'+esc(p.name||'—')+'</h3><div class="sub">'+esc(p.role||'متخصص')+' · '+esc(p.workerId||'')+'</div>'+
 '<div style="margin-top:14px">'+btn('photo-edit','تغییر تصویر','cam','btn-p btn-sm')+'</div></div>'+
 '<div class="card"><div class="sec-t" style="margin-top:0">اطلاعات سامانه‌ای</div><div class="fgrid">'+
 '<div class="field"><label>شناسه متخصص'+L+'</label><input value="'+esc(p.workerId||'')+'" readonly></div>'+
@@ -1370,54 +1086,65 @@ return head('پروفایل من','حساب کاربری متخصص')+
 '<div class="field"><label>نام کاربری'+E+' <span class="req">*</span></label><input name="username" value="'+esc(p.username||'')+'" required></div>'+
 '<div class="field"><label>رمز عبور جدید'+E+'</label><input name="password" type="password" placeholder="خالی = بدون تغییر"><span class="hint">حداقل ۴ کاراکتر</span></div>'+
 '<div class="field full"><label>توضیحات / مهارت‌ها'+E+'</label><textarea name="description">'+esc(p.description||'')+'</textarea></div>'+
-'</div><br><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ذخیره تغییرات</button>'+
-(DEMO?'<button type="button" class="btn btn-d" data-act="demo-reset">'+icon('undo','width:14px;height:14px')+' بازنشانی داده‌های دمو</button>':'')+
-'</div></form></div></div>';}
+'</div><br><button class="btn btn-p" type="submit">'+icon('save','width:14px;height:14px')+' ذخیره تغییرات</button></form></div></div>';}
 var PE={x:0,y:0,z:1,w:0,h:0,ready:false,drag:false,sx:0,sy:0};
 function photoModal(){
 PE={x:0,y:0,z:1,w:0,h:0,ready:false,drag:false,sx:0,sy:0};
 openModal('<div class="mh"><h3>تغییر تصویر پروفایل</h3><button class="ibtn" data-act="mclose">'+icon('x')+'</button></div>'+
 '<div class="mb"><div class="pe-frame" id="peFrame"><img id="peImg" alt=""></div>'+
-'<div style="display:flex;align-items:center;gap:10px;margin-top:12px"><span style="font-size:12px">زوم</span><input type="range" id="peZoom" min="1" max="5" step="0.01" value="1" style="flex:1;accent-color:var(--brand)"><span id="peZV" style="font-size:12px">۱۰۰٪</span></div>'+
+'<div class="pe-row"><span>زوم</span><input type="range" id="peZoom" min="1" max="5" step="0.01" value="1"><span id="peZV">۱۰۰٪</span></div>'+
 '<div style="margin-top:12px">'+btn('photo-pick','انتخاب تصویر','up','btn-s')+'</div>'+
 '<p class="hint" style="margin-top:8px">تصویر را بکشید و زوم کنید؛ خروجی مربعی ۴۸۰×۴۸۰ ذخیره می‌شود.</p></div>'+
 '<div class="mf"><button class="btn btn-p" id="peSave" data-act="photo-save">'+icon('check','width:14px;height:14px')+' ذخیره</button>'+
-'<button class="btn btn-s" data-act="mclose">انصراف</button></div>');
+'<button class="btn btn-s" data-act="mclose">انصراف</button></div>',false,true);
 var fr=$('#peFrame');
 fr.addEventListener('pointerdown',function(e){if(!PE.ready)return;PE.drag=true;PE.sx=e.clientX-PE.x;PE.sy=e.clientY-PE.y;fr.setPointerCapture(e.pointerId);});
 fr.addEventListener('pointermove',function(e){if(!PE.drag)return;PE.x=e.clientX-PE.sx;PE.y=e.clientY-PE.sy;peLayout();});
 ['pointerup','pointercancel'].forEach(function(n){fr.addEventListener(n,function(){PE.drag=false;});});
 fr.addEventListener('wheel',function(e){if(!PE.ready)return;e.preventDefault();PE.z=Math.min(5,Math.max(1,PE.z*(e.deltaY<0?1.08:0.92)));$('#peZoom').value=PE.z;peLayout();},{passive:false});
 $('#peZoom').addEventListener('input',function(e){PE.z=num(e.target.value);peLayout();});}
-function peLayout(){var i=$('#peImg');if(!i||!PE.ready)return;var F=$('#peFrame').clientWidth||300,w=PE.w*PE.z,h=PE.h*PE.z;
+function peLayout(){var i=$('#peImg');if(!i||!PE.ready)return;var F=300,w=PE.w*PE.z,h=PE.h*PE.z;
 i.style.width=w+'px';i.style.height=h+'px';i.style.left=((F-w)/2+PE.x)+'px';i.style.top=((F-h)/2+PE.y)+'px';
 $('#peZV').textContent=fa(Math.round(PE.z*100))+'٪';}
 function peLoad(f){
 if(!f||!/^image\/(jpeg|png|webp)$/i.test(f.type)){toast('فرمت تصویر معتبر نیست.','err');return;}
+if(f.size>8*1024*1024){toast('حجم باید کمتر از ۸ مگابایت باشد.','err');return;}
 var rd=new FileReader();
-rd.onload=function(e){var im=new Image();im.onload=function(){var a=im.naturalWidth/im.naturalHeight;var F=$('#peFrame').clientWidth||300;
-PE.w=a>=1?F*a:F;PE.h=PE.w/a;PE.x=0;PE.y=0;PE.z=1;PE.ready=true;$('#peImg').src=im.src;$('#peZoom').value=1;peLayout();};
+rd.onload=function(e){var im=new Image();im.onload=function(){var a=im.naturalWidth/im.naturalHeight;
+PE.w=a>=1?300*a:300;PE.h=PE.w/a;PE.x=0;PE.y=0;PE.z=1;PE.ready=true;$('#peImg').src=im.src;$('#peZoom').value=1;peLayout();};
 im.onerror=function(){toast('خواندن تصویر ناموفق بود.','err');};im.src=e.target.result;};
 rd.readAsDataURL(f);}
 function peSave(){
 if(!PE.ready){toast('ابتدا تصویر انتخاب کنید.','err');return;}
-var F=$('#peFrame').clientWidth||300,O=480,s=O/F,w=PE.w*PE.z,h=PE.h*PE.z;
+var F=300,O=480,s=O/F,w=PE.w*PE.z,h=PE.h*PE.z;
 var c=document.createElement('canvas');c.width=c.height=O;var x=c.getContext('2d');
 x.fillStyle='#fff';x.fillRect(0,0,O,O);x.drawImage($('#peImg'),((F-w)/2+PE.x)*s,((F-h)/2+PE.y)*s,w*s,h*s);
 var b=$('#peSave');b.disabled=true;
 api('uploadWorkerProfilePhotoV2',c.toDataURL('image/jpeg',0.9),TOKEN).then(function(r){
 USER.avatar=r.url;closeModal();paintUser();toast('تصویر پروفایل ذخیره شد.','ok');render();})
 .catch(function(e){b.disabled=false;toast(e.message,'err');});}
-/* ═════════════ V) ACTIONS ═════════════ */
+/* ═════ 19) RAIL / TIP ═════ */
+var TIP=null,TIPT=null;
+function isMobile(){return window.matchMedia&&window.matchMedia('(max-width:1120px)').matches;}
+function applyRail(on){document.documentElement.classList.toggle('zv-rail',!!on);try{localStorage.setItem(RKEY,on?'1':'0');}catch(e){}if(!on)hideTip();}
+function toggleRail(){if(isMobile()){var s=$('#sidebar'),sc=$('#scrim'),o=!s.classList.contains('open');s.classList.toggle('open',o);sc.classList.toggle('show',o);return;}
+applyRail(!document.documentElement.classList.contains('zv-rail'));}
+function showTip(el){if(!document.documentElement.classList.contains('zv-rail')||isMobile()||!el)return;
+var sp=el.querySelector('span'),l=sp?sp.textContent:'';l=String(l||'').trim();if(!l)return;
+if(!TIP){TIP=document.createElement('div');TIP.id='zvTip';document.body.appendChild(TIP);}
+var b=el.querySelector('.bdg'),ex=b&&b.textContent.trim()?'<b>'+esc(b.textContent.trim())+'</b>':'';
+TIP.innerHTML=esc(l)+ex;TIP.classList.add('on');
+var r=el.getBoundingClientRect(),w=TIP.offsetWidth,h=TIP.offsetHeight,left=r.left-w-12;if(left<8)left=r.right+12;
+TIP.style.left=left+'px';TIP.style.top=Math.max(8,Math.min(r.top+(r.height-h)/2,window.innerHeight-h-8))+'px';}
+function hideTip(){if(TIP)TIP.classList.remove('on');}
+/* ═════ 20) ACTIONS ═════ */
 var ACT={
-'login':doLogin,'logout':doLogout,'theme':toggleTheme,
-'demo-fill':function(){$('#loginUser').value='habib';$('#loginPass').value='1234';doLogin();},
-'demo-reset':function(){confirmBox('بازنشانی دمو','همه داده‌های شبیه‌ساز به حالت اولیه برمی‌گردد و از پنل خارج می‌شوید.',function(){ZVDemo.reset();localStorage.removeItem('zv_worker_token');location.reload();});},
+'login':doLogin,'logout':doLogout,'rail':toggleRail,'theme':toggleTheme,
 'menu':function(){var s=$('#sidebar'),sc=$('#scrim'),o=!s.classList.contains('open');s.classList.toggle('open',o);sc.classList.toggle('show',o);},
 'scrim':closeAll,'mclose':closeModal,'dclose':closeDrawer,
-'go':function(d){go(d.page);},'go-plans':function(){go('plans');},'go-quality':function(){go('quality');},
-'refresh':function(){return reloadAll().then(function(){render();toast('داده‌ها بروزرسانی شد.','ok');});},
-'retry-cards':function(){return loadCards().then(render);},
+'go':function(d){go(d.page);},
+'refresh':function(){return reloadAll().then(function(){render();toast('داده‌ها از سامانه بروزرسانی شد.','ok');});},
+'retry-cards':function(){return loadCards().then(function(){return loadStatuses();}).then(render);},
 'retry-serv':function(){return loadServices().then(render);},
 'retry-inbox':function(){return loadInbox().then(render);},
 'retry-dev':function(){return loadDev().then(render);},
@@ -1434,7 +1161,6 @@ var v=num(inp?inp.value:myRate(s)),st=v<2000000?10000:v<10000000?50000:100000;ra
 'rate-save':function(d){return rateSave(d.id);},
 'rate-bulk':function(d){rateBulk(+d.p);},
 'rate-ceil':rateCeil,
-'plan-buy':function(d){planBuyModal(d.id);},
 'rep-run':runReports,'rep-csv':repCsv,
 'rep-clear':function(){PS.from='';PS.to='';PS.rep=null;render();},
 'msg-sup':function(){msgSupModal('');},'msg-support':msgSupportModal,
@@ -1445,7 +1171,7 @@ var open=$('#mback').classList.contains('show');
 return (open?chatOpen(d.id):Promise.resolve()).then(loadInbox).then(function(){if(PS.page==='messages')render();});})
 .catch(function(e){toast(e.message,'err');});},
 'dev-new':devNewModal,
-'dev-del':function(d){confirmBox('حذف درخواست','این درخواست حذف شود؟',function(){
+'dev-del':function(d){confirmBox('حذف درخواست','درخواست <b>'+esc(d.id)+'</b> حذف شود؟',function(){
 api('workerDeleteDevRequest',d.id,TOKEN).then(function(){toast('حذف شد.','ok');return loadDev().then(render);}).catch(function(e){toast(e.message,'err');});});},
 'photo-edit':photoModal,'photo-pick':function(){$('#peFile').click();},'photo-save':peSave};
 document.addEventListener('click',function(e){
@@ -1455,6 +1181,7 @@ if(el){var fn=ACT[el.dataset.act];
 if(fn){e.preventDefault();e.stopPropagation();
 try{var r=fn(el.dataset,el,e);if(r&&typeof r.catch==='function')r.catch(function(x){toast(x.message||String(x),'err');});}
 catch(x){toast(x.message||String(x),'err');}return;}}
+if(!e.target.closest('.zsel'))zClose();
 if(e.target.id==='mback')closeModal();});
 var sDeb=debounce(function(){render();},280),mDeb=debounce(function(){render();},260),rDeb=debounce(function(){render();},260);
 document.addEventListener('input',function(e){var t=e.target;
@@ -1462,8 +1189,9 @@ if(t.matches('[data-search]')){PS.q=t.value;sDeb();return;}
 if(t.matches('[data-msearch]')){PS.mq=t.value;mDeb();return;}
 if(t.matches('[data-rsearch]')){PS.rq=t.value;rDeb();return;}
 if(t.matches('[data-rate]')){rateSet(t.dataset.rate,t.value,true);return;}
-if(t.matches('[data-ratein]')){var f=t.closest('[data-row]');var fm=f?f.querySelector('[data-fmt]'):null;
-if(fm)fm.textContent=money(num(t.value));return;}});
+if(t.matches('[data-ratein]')){var s=svcById(t.dataset.ratein);if(!s)return;
+var row=t.closest('[data-row]'),f=row?row.querySelector('[data-fmt]'):null;
+if(f)f.textContent=money(num(t.value));return;}});
 document.addEventListener('change',function(e){var t=e.target;
 if(t.matches('[data-cst]')){PS.st=t.value;render();return;}
 if(t.matches('[data-mch]')){PS.mch=t.value;render();return;}
@@ -1481,12 +1209,13 @@ if(/ارجاع/.test(st)&&!note){toast('برای ارجاع، دلیل الزا�
 if(sub)sub.disabled=true;
 var p=/ارجاع به سرپرست/.test(st)?api('referCardToSupervisor',f.dataset.id,note,TOKEN):api('updateWorkerCardStatus',f.dataset.id,st,note,TOKEN);
 return p.then(function(){closeModal();closeDrawer();toast('وضعیت ثبت شد.','ok');
-return Promise.all([loadCards(),loadRep()]).then(render);})
+return Promise.all([loadCards(),loadRep()]).then(function(){return loadStatuses();}).then(render);})
 .catch(function(x){if(sub)sub.disabled=false;throw x;});}
 if(k==='chat-reply'){
 var b=f.elements.body.value.trim();if(!b){toast('متن پاسخ الزامی است.','err');return;}
 if(sub)sub.disabled=true;
-return api('workerReplyThread',f.dataset.id,b,TOKEN)
+return apiOpt('workerReplyThread',f.dataset.id,b,TOKEN).then(function(r){
+if(r)return r;return api('workerReplyConversation',f.dataset.id,b,TOKEN);})
 .then(function(){toast('ارسال شد.','ok');return chatOpen(f.dataset.id).then(loadInbox).then(function(){if(PS.page==='messages')render();});})
 .catch(function(x){if(sub)sub.disabled=false;throw x;});}
 if(k==='msg-sup'){
@@ -1494,7 +1223,8 @@ var cid=f.elements.cardId.value,body=f.elements.body.value.trim(),sj=f.elements.
 if(!cid){toast('کارت مرتبط را انتخاب کنید.','err');return;}
 if(!body){toast('متن پیام الزامی است.','err');return;}
 if(sub)sub.disabled=true;
-return api('workerCreateThread',{channel:'SUP',cardId:cid,subject:sj,body:body},TOKEN)
+return apiOpt('workerCreateThread',{channel:'SUP',cardId:cid,subject:sj,body:body},TOKEN).then(function(r){
+if(r)return r;return api('workerCreateConversation',cid,sj,body,TOKEN);})
 .then(function(r){closeModal();toast('گفتگو ایجاد شد.','ok');go('messages');
 return loadInbox().then(function(){render();if(r&&r.threadId)return chatOpen(r.threadId);});})
 .catch(function(x){if(sub)sub.disabled=false;throw x;});}
@@ -1511,53 +1241,40 @@ if(sub)sub.disabled=true;
 return api('workerSubmitDevRequest',{module:f.elements.module.value,kind:f.elements.kind.value,priority:f.elements.priority.value,note:note},TOKEN)
 .then(function(r){closeModal();toast('درخواست ثبت شد · '+(r&&r.id||''),'ok');return loadDev().then(render);})
 .catch(function(x){if(sub)sub.disabled=false;throw x;});}
-if(k==='plan-buy'){
-var cyc=num(f.elements.cycle.value),method=f.elements.method.value;
-if(sub)sub.disabled=true;
-return api('workerBuyPlan',{planId:f.dataset.id,cycle:cyc,method:method},TOKEN)
-.then(function(r){closeModal();toast(r.message,'ok');return render();})
-.catch(function(x){if(sub)sub.disabled=false;throw x;});}
-if(k==='log-hours'){
-var cid2=f.elements.cardId.value,wid=f.elements.workerId.value,hv=num(f.elements.hours.value);
-if(!cid2||!wid){toast('کارت و نیرو را انتخاب کنید.','err');return;}
-if(!(hv>0)){toast('ساعت اجرا را وارد کنید.','err');return;}
-if(sub)sub.disabled=true;
-return api('workerLogHours',{cardId:cid2,workerId:wid,hours:hv},TOKEN)
-.then(function(r){toast(r.message||'ثبت شد.','ok');f.reset();if(sub)sub.disabled=false;return render();})
-.catch(function(x){if(sub)sub.disabled=false;throw x;});}
 if(k==='profile'){
 var u=f.elements.username.value.trim(),pw=f.elements.password.value;
 if(!u){toast('نام کاربری الزامی است.','err');return;}
 if(pw&&pw.length<4){toast('رمز عبور جدید حداقل ۴ کاراکتر باشد.','err');return;}
-var pp={username:u,description:f.elements.description.value};if(pw)pp.password=pw;
+var p={username:u,description:f.elements.description.value};if(pw)p.password=pw;
 if(sub)sub.disabled=true;
-return api('updateWorkerProfile',pp,TOKEN).then(function(){
-USER.username=u;USER.description=pp.description;toast('پروفایل ذخیره شد.','ok');
+return api('updateWorkerProfile',p,TOKEN).then(function(){
+USER.username=u;USER.description=p.description;toast('پروفایل ذخیره شد.','ok');
 return api('getWorkerProfile',TOKEN).then(function(np){USER=np;paintUser();render();});})
 .catch(function(x){if(sub)sub.disabled=false;throw x;});}};
 try{var r=run();if(r&&typeof r.catch==='function')r.catch(function(x){toast(x.message||String(x),'err');});}
 catch(x){toast(x.message||String(x),'err');}});
 document.addEventListener('keydown',function(e){
-if(e.key==='Escape'){if($('#jpop').classList.contains('open')){jdClose();return;}closeModal();closeDrawer();return;}
+if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==='b'){var tg=(e.target&&e.target.tagName||'').toLowerCase();
+if(tg==='input'||tg==='textarea'||e.target.isContentEditable)return;e.preventDefault();toggleRail();return;}
+if(e.key==='Escape'){if($('#jpop').classList.contains('open')){jdClose();return;}
+if($$('.zsel.open').length){zClose();return;}closeModal();closeDrawer();hideTip();return;}
 if(e.key==='Enter'&&$('#loginView').style.display!=='none'&&(e.target.id==='loginUser'||e.target.id==='loginPass'))doLogin();});
-window.addEventListener('scroll',function(){if($('#jpop').classList.contains('open')&&JD.inp)jdOpen(JD.inp);},true);
-/* رویدادهای زنده شبیه‌ساز */
-ZVDemo.onEvent=function(ev){
-if(ev.type==='msg'){toast('پیام جدید در گفتگو: '+ev.payload.subject,'info',{label:'مشاهده',fn:function(){if(PS.page==='messages'){loadInbox().then(render);}}});loadInbox().then(function(){renderNav();});}
-if(ev.type==='card'){toast('کارت جدید به شما تخصیص یافت: '+ev.payload.title,'ok',{label:'مشاهده',fn:function(){go('cards');}});loadCards().then(function(){renderNav();});}
-if(ev.type==='plan'){toast('✅ واحد مالی پلن «'+ev.payload.planName+'» را تأیید کرد. سقف افزایش نرخ '+fa(ev.payload.markup)+'٪ فعال شد.','ok',{label:'مشاهده نرخ‌ها',fn:function(){go('rates');}});loadRateCtx();}
-};
-/* ═════════════ W) INIT ═════════════ */
+document.addEventListener('mouseover',function(e){var el=e.target.closest?e.target.closest('.sidebar .nav-item'):null;
+if(!el)return;clearTimeout(TIPT);TIPT=setTimeout(function(){showTip(el);},90);});
+document.addEventListener('mouseout',function(e){var el=e.target.closest?e.target.closest('.sidebar .nav-item'):null;if(!el)return;clearTimeout(TIPT);hideTip();});
+window.addEventListener('scroll',function(){hideTip();if($('#jpop').classList.contains('open')&&JD.inp)jdOpen(JD.inp);},true);
+window.addEventListener('resize',function(){hideTip();if($('#jpop').classList.contains('open')&&JD.inp)jdOpen(JD.inp);});
+/* ═════ 21) INIT ═════ */
 (function init(){
 var th=localStorage.getItem('zv_worker_theme');if(th)document.documentElement.dataset.theme=th;
 $('#themeBtn').innerHTML=icon(document.documentElement.dataset.theme==='dark'?'sun':'moon');
-$('#loginMode').innerHTML=DEMO?'<span style="color:var(--violet);font-weight:800">● حالت دمو فعال است</span> — داده‌ها شبیه‌سازی و در مرورگر ذخیره می‌شوند':'اتصال به سرور ZingoVingo';
+try{if(localStorage.getItem(RKEY)==='1')document.documentElement.classList.add('zv-rail');}catch(e){}
+applyBrand();
 if(!TOKEN){$('#loginView').style.display='grid';return;}
 $('#loginView').style.display='none';$('#app').style.display='grid';
-if(DEMO)$('#demoBadge').style.display='inline-flex';
-$('#page').innerHTML='<div class="loading"><div class="spinner"></div><p style="margin-top:12px">در حال دریافت داده‌ها…</p></div>';
+$('#page').innerHTML='<div class="loading"><div class="spinner"></div><p style="margin-top:12px">در حال دریافت داده‌های واقعی از سامانه…</p></div>';
 loadBrand();
-bootstrap().then(function(){showApp();if(DEMO)ZVDemo.startLive();}).catch(function(){
+bootstrap().then(showApp).catch(function(){
 localStorage.removeItem('zv_worker_token');TOKEN='';USER=null;
 $('#app').style.display='none';$('#loginView').style.display='grid';});
 })();
