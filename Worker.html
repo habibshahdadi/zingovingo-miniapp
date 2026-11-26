@@ -241,4 +241,1499 @@ select.inp option{background:#0E1830;color:#E9EEFC}
 .bar i{display:block;height:100%;border-radius:99px;background:var(--gradData);transition:width .85s cubic-bezier(.2,.9,.25,1)}
 .stars{display:inline-flex;gap:1px;color:var(--brandSoft)}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(198px,1fr));gap:14px;margin-bottom:18px}
-.kpi{padding:15px 16px;display:flex;flex-direction:column;gap:8px;positio
+.kpi{padding:15px 16px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;transition:var(--tr)}
+.kpi.click{cursor:pointer}
+.kpi.click:hover{transform:translateY(-3px);border-color:rgba(255,107,26,.5)}
+.kpi .top{display:flex;align-items:center;gap:10px}
+.kpi .lbl{font-size:11.5px;color:var(--mut);font-weight:700}
+.kpi .val{font-size:21px;font-weight:900;line-height:1.3;font-variant-numeric:tabular-nums}
+.kpi .val small{font-size:11px;font-weight:600;color:var(--mut)}
+.kpi .sub{font-size:10.5px;color:var(--mut)}
+.up{color:var(--greenL);font-weight:800}
+.dn{color:var(--redL);font-weight:800}
+.grid2{display:grid;grid-template-columns:1.85fr 1fr;gap:16px;align-items:start}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.cwrap{position:relative}
+#chartSvg{width:100%;height:auto;display:block}
+#chartSvg .bar-g{transform-box:fill-box;transform-origin:50% 100%;animation:grow .7s cubic-bezier(.2,.9,.25,1) both}
+@keyframes grow{from{transform:scaleY(0)}}
+#chartSvg .hit{cursor:pointer}
+#ctip{position:absolute;background:var(--surf);border:1px solid var(--line2);border-radius:10px;padding:6px 11px;font-size:11px;
+pointer-events:none;transform:translate(-50%,-100%);white-space:nowrap;box-shadow:var(--sh2);opacity:0;transition:opacity .12s;z-index:5}
+#ctip b{color:var(--brandSoft);display:block;font-size:12.5px}
+.cnote{font-size:10px;color:var(--mut2);text-align:left;margin-top:2px}
+.ctotal{font-size:13px;font-weight:900;color:var(--brandSoft)}
+.sched{display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surf3);flex-wrap:wrap}
+.sched+.sched{margin-top:9px}
+.sched .si{flex:1;min-width:150px}
+.sched .si b{display:block;font-size:12.5px}
+.sched .si span{font-size:10.5px;color:var(--mut)}
+.tchip{font-size:10.5px;font-weight:800;color:var(--cyan);background:rgba(34,201,224,.11);border:1px solid rgba(34,201,224,.32);padding:3px 9px;border-radius:8px;white-space:nowrap}
+.ringw{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.ringw .rt{flex:1;min-width:150px}
+.ringw .rt b{font-size:13.5px;display:block}
+.ringw .rt p{font-size:11.5px;color:var(--mut);margin:3px 0 9px}
+.leg{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:9px;font-size:11.5px;transition:var(--tr)}
+.leg:hover{background:var(--surf2)}
+.leg .dot{width:10px;height:10px;border-radius:3px;flex:none}
+.leg .nm{flex:1}
+.leg .pc{color:var(--mut);font-size:10.5px}
+#donut [data-seg]{transition:.2s}
+#donut [data-seg].dim{opacity:.22}
+.act{display:flex;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.act:last-child{border-bottom:none}
+.act .at{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none;border:1px solid var(--line)}
+.act p{font-size:11.5px;line-height:1.75;flex:1}
+.act time{font-size:10px;color:var(--mut2);white-space:nowrap}
+/* toolbar / orders */
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:13px;align-items:center}
+.swrap{position:relative;flex:1;min-width:220px}
+.swrap .ic{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--mut)}
+.swrap .inp{padding-right:38px;padding-left:36px}
+.sclear{position:absolute;left:7px;top:50%;transform:translateY(-50%);width:27px;height:27px;border-radius:8px;display:grid;place-items:center;color:var(--mut)}
+.sclear:hover{color:var(--redL);background:rgba(224,45,60,.1)}
+.hidden{display:none!important}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:13px}
+.bulk{position:sticky;top:76px;z-index:20;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 14px;margin-bottom:13px;
+border-radius:12px;background:color-mix(in srgb,var(--surf2) 92%,transparent);border:1px solid rgba(255,174,26,.42);backdrop-filter:blur(8px);animation:up .25s both}
+.bulk b{font-size:12px;color:var(--brandSoft)}
+.bulk .sp{flex:1}
+.lhead{display:flex;align-items:center;gap:10px;margin-bottom:11px;font-size:11.5px;color:var(--mut)}
+.ogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(336px,1fr));gap:14px}
+.oc{padding:15px;display:flex;flex-direction:column;gap:10px;cursor:pointer;transition:var(--tr);position:relative;animation:up .4s both;animation-delay:calc(var(--d,0)*42ms)}
+.oc:hover{transform:translateY(-3px);border-color:rgba(255,107,26,.55);box-shadow:var(--sh2)}
+.oc.sel{border-color:rgba(255,174,26,.65);box-shadow:0 0 0 3px rgba(255,174,26,.14)}
+.oc.fresh{animation:up .4s both,fresh 1.5s ease 2}
+@keyframes fresh{0%,100%{box-shadow:var(--sh)}50%{box-shadow:0 0 0 4px rgba(255,174,26,.32)}}
+.octop{display:flex;align-items:flex-start;gap:10px}
+.octop .tt{flex:1;min-width:0}
+.octop .tt b{display:block;font-size:13.5px;font-weight:800;line-height:1.5}
+.octop .tt .code{font-size:9.5px;color:var(--mut2);font-weight:700}
+.occust{display:flex;align-items:center;gap:8px;font-size:11.5px}
+.occust .nm{font-weight:800}
+.occust .cr{color:var(--brandSoft);display:inline-flex}
+.occust .rate{margin-inline-start:auto;display:inline-flex;align-items:center;gap:4px;color:var(--mut);font-size:10.5px}
+.ocdesc{font-size:11.5px;color:var(--mut);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.9}
+.ocmeta{display:flex;gap:7px;flex-wrap:wrap}
+.ocfoot{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:4px}
+.ocfoot .ago{font-size:10px;color:var(--mut2)}
+.ocfoot .qs{font-size:10px;color:var(--mut);display:inline-flex;align-items:center;gap:4px}
+.ocfoot .sp{flex:1}
+/* drawer */
+#dscrim{position:fixed;inset:0;z-index:70;background:var(--scrim);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.3s}
+#drawer{position:fixed;top:0;bottom:0;left:0;width:500px;max-width:100vw;z-index:71;display:flex;flex-direction:column;
+background:linear-gradient(180deg,var(--surf2),var(--surf));border-right:1px solid var(--line2);box-shadow:var(--sh2);
+transform:translateX(-103%);transition:transform .34s cubic-bezier(.2,.9,.25,1)}
+#dwrap.open #dscrim{opacity:1;pointer-events:auto}
+#dwrap.open #drawer{transform:none}
+.dhead{display:flex;align-items:center;gap:11px;padding:15px 18px;border-bottom:1px solid var(--line);flex:none}
+.dhead .tt{flex:1;min-width:0}
+.dhead .tt h3{font-size:14.5px;font-weight:900;line-height:1.5}
+.dhead .tt span{font-size:10px;color:var(--mut)}
+.dbody{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.dfoot{flex:none;padding:13px 18px;border-top:1px solid var(--line);background:var(--surf3);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dfoot .net{flex:1;min-width:120px}
+.dfoot .net small{display:block;font-size:10px;color:var(--mut)}
+.dfoot .net b{font-size:16px;color:var(--brandSoft);font-variant-numeric:tabular-nums}
+.steps{display:flex;position:relative;padding:4px 2px 0}
+.steps::before{content:"";position:absolute;top:13px;right:11%;left:11%;height:2px;background:var(--surf4);border-radius:2px}
+.steps .prog{position:absolute;top:13px;right:11%;height:2px;background:var(--grad);border-radius:2px;transition:width .5s}
+.step{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;z-index:1}
+.step .sd{width:20px;height:20px;border-radius:50%;background:var(--surf4);border:2px solid var(--line2);display:grid;place-items:center;color:#221503}
+.step span{font-size:9.5px;color:var(--mut2);font-weight:700}
+.step.pass .sd{background:var(--teal);border-color:var(--teal);color:#04211C}
+.step.pass span{color:var(--mut)}
+.step.cur .sd{background:var(--grad);border-color:var(--brand);animation:pulse 1.9s infinite}
+.step.cur span{color:var(--brandSoft);font-weight:900}
+.step.fail .sd{background:var(--red);border-color:var(--red);color:#fff}
+.step.fail span{color:var(--redL)}
+.dcust{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--surf3);flex-wrap:wrap}
+.dcust .who{flex:1;min-width:130px}
+.dcust .who b{font-size:13px;display:flex;align-items:center;gap:6px}
+.dcust .who span{font-size:10.5px;color:var(--mut);display:flex;align-items:center;gap:5px}
+.phone{display:flex;align-items:center;gap:7px;font-size:12px;width:100%;padding-top:8px;border-top:1px dashed var(--line)}
+.phone .ic{color:var(--mut)}
+.phone .mn{font-size:9.5px;color:var(--mut2)}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.mtile{padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surf3)}
+.mtile .ml{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--mut);margin-bottom:3px}
+.mtile .ml .ic{width:14px;height:14px;color:var(--tealL)}
+.mtile b{font-size:11.5px;font-weight:800;line-height:1.6;display:block}
+.dsec h4{font-size:11.5px;font-weight:900;color:var(--mut);margin-bottom:7px;display:flex;align-items:center;gap:7px}
+.dsec h4 .ic{width:15px;height:15px;color:var(--tealL)}
+.ddesc{font-size:12.5px;line-height:2.05;color:var(--ink2);background:var(--surf3);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.attrow{display:flex;gap:10px;flex-wrap:wrap}
+.att{width:94px}
+.att .th{width:94px;height:66px;border-radius:10px;overflow:hidden;border:1px solid var(--line2);cursor:zoom-in;transition:var(--tr);padding:0;display:block}
+.att .th:hover{border-color:var(--cyan);transform:scale(1.05)}
+.att .th svg{width:100%;height:100%;display:block}
+.att small{display:block;font-size:9px;color:var(--mut2);text-align:center;margin-top:3px}
+.frow{display:flex;flex-direction:column;gap:6px}
+.frow>label{font-size:11px;font-weight:800;color:var(--mut)}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.fgrid .full{grid-column:1/-1}
+.pwrap{position:relative}
+.pwrap .inp{height:52px;font-size:18px;text-align:center;padding-left:96px;padding-right:52px;font-weight:800}
+.pwrap .unit{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:10.5px;color:var(--mut)}
+.pwrap .stp{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:9px;border:1px solid var(--line2);
+display:grid;place-items:center;color:var(--tealL);background:var(--surf)}
+.pwrap .stp:hover{border-color:var(--tealL);background:rgba(15,163,163,.13)}
+.pwrap .stp.minus{right:9px}
+.pwrap .stp.plus{left:56px}
+.pfmt{text-align:center;font-size:11.5px;color:var(--brandSoft);font-weight:800;min-height:18px}
+.qchips{display:flex;gap:7px;flex-wrap:wrap}
+.qchip{height:28px;padding:0 11px;border-radius:99px;font-size:10px;font-weight:800;border:1px dashed var(--line2);color:var(--mut);transition:var(--tr)}
+.qchip:hover{color:var(--brandSoft);border-color:var(--brandSoft);background:rgba(255,174,26,.09)}
+.qchip.lock{opacity:.55;border-style:solid}
+.war{display:flex;align-items:center;gap:9px}
+.war .selw{flex:1}
+.fee{border:1.5px dashed var(--line2);border-radius:12px;padding:11px 13px;background:var(--surf3);display:flex;flex-direction:column;gap:5px}
+.feer{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mut);gap:10px}
+.feer.net{border-top:1px dashed var(--line);padding-top:6px;margin-top:2px;color:var(--ink);font-weight:900;font-size:13.5px}
+.feer.net b{color:var(--brandSoft)}
+.feer .neg{color:var(--redL)}
+.feer .pos{color:var(--greenL)}
+.err{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--redL);font-weight:800}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(5px)}75%{transform:translateX(-5px)}}
+.qcard{border:1px solid rgba(46,99,231,.38);background:rgba(46,99,231,.07);border-radius:13px;padding:13px 14px;display:flex;flex-direction:column;gap:7px}
+.qcard .qp{font-size:19px;font-weight:900;color:var(--brandSoft)}
+.qcard .qp small{font-size:10.5px;color:var(--mut);font-weight:600}
+.qmeta{display:flex;gap:8px;flex-wrap:wrap}
+.qmsg{border-inline-start:3px solid var(--tealL);background:var(--surf2);border-radius:8px;padding:8px 12px;font-size:11.5px;line-height:1.95;color:var(--ink2)}
+.wait{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:800}
+.wd{display:inline-flex;gap:4px}
+.wd i{width:6px;height:6px;border-radius:50%;background:currentColor;animation:wb 1.2s infinite}
+.wd i:nth-child(2){animation-delay:.15s}.wd i:nth-child(3){animation-delay:.3s}
+@keyframes wb{0%,100%{transform:none;opacity:.4}50%{transform:translateY(-4px);opacity:1}}
+.paidtag{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:900;color:var(--greenL)}
+/* corridor */
+.corr{position:relative;height:42px;margin:6px 0 2px}
+.corr .track{position:absolute;top:17px;right:0;left:0;height:8px;border-radius:99px;background:var(--surf4);border:1px solid var(--line)}
+.corr .fill{position:absolute;top:17px;right:0;height:8px;border-radius:99px;background:linear-gradient(90deg,#0FA3A3,#FF6B1A)}
+.corr .tick{position:absolute;top:9px;width:2px;height:24px;background:var(--mut2);border-radius:2px}
+.corr input[type=range]{position:absolute;top:7px;right:0;left:0;width:100%;height:28px;-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;margin:0}
+.corr input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--grad);border:3px solid var(--surf);box-shadow:0 3px 12px rgba(255,107,26,.55);cursor:grab}
+.corr input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--brand);border:3px solid var(--surf);box-shadow:0 3px 12px rgba(255,107,26,.55);cursor:grab}
+.corrlbl{display:flex;justify-content:space-between;font-size:9.5px;color:var(--mut);font-weight:800}
+.gate{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:900;padding:2px 8px;border-radius:99px}
+.g0{background:rgba(110,125,163,.18);color:var(--mut)}
+.g1{background:rgba(46,99,231,.16);color:var(--blueL)}
+.g2{background:rgba(255,174,26,.16);color:var(--brandSoft)}
+.g3{background:rgba(124,77,255,.18);color:var(--violetL)}
+/* rates */
+.svcsum{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}
+.sumchip{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:11px;border:1px solid var(--line);background:var(--surf);font-size:11.5px;font-weight:800}
+.sumchip .ic{color:var(--tealL);width:16px;height:16px}
+.sumchip b{color:var(--brandSoft)}
+.svclist{display:flex;flex-direction:column;gap:11px}
+.svc{display:flex;align-items:center;gap:13px;padding:13px 15px;flex-wrap:wrap;transition:var(--tr);position:relative}
+.svc.over{border-color:var(--brandSoft);box-shadow:0 0 0 3px rgba(255,174,26,.16)}
+.svc.off{opacity:.55}
+.grip{cursor:grab;color:var(--mut2);padding:4px;border-radius:6px;flex:none}
+.grip:hover{color:var(--brandSoft);background:rgba(255,174,26,.1)}
+.grip:active{cursor:grabbing}
+.svci{flex:1;min-width:180px}
+.svci b{font-size:13.5px;display:block}
+.svci span{font-size:10.5px;color:var(--mut);display:block}
+.svci .rel{font-size:9.5px;color:var(--mut2)}
+.corrcell{min-width:210px;flex:1;max-width:280px}
+.corrcell .cr1{display:flex;justify-content:space-between;font-size:9.5px;color:var(--mut);font-weight:800;margin-bottom:2px}
+.corrcell .cr1 b{color:var(--tealL)}
+.corrcell .cr1 .ceil{color:var(--brandSoft);cursor:pointer;border-bottom:1px dashed currentColor}
+.pe{display:flex;flex-direction:column;align-items:center;gap:3px}
+.perow{display:flex;align-items:center;gap:6px}
+.peb{width:31px;height:31px;border-radius:9px;border:1px solid var(--line2);display:grid;place-items:center;color:var(--tealL);background:var(--surf3);transition:var(--tr);flex:none}
+.peb:hover{border-color:var(--tealL);background:rgba(15,163,163,.13)}
+.pe .inp{width:116px;height:38px;text-align:center;font-size:14px;font-weight:800}
+.pefmt{font-size:10px;color:var(--brandSoft);font-weight:800;position:relative}
+.pefmt .tick2{position:absolute;right:-17px;top:0;color:var(--greenL);opacity:0}
+.pefmt.saved .tick2{animation:tk 1.3s ease}
+@keyframes tk{0%{opacity:0;transform:translateY(4px)}20%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0}}
+.svcct{display:flex;align-items:center;gap:11px}
+.delb{width:33px;height:33px;border-radius:9px;display:grid;place-items:center;color:var(--mut2);border:1px solid transparent;transition:var(--tr)}
+.delb:hover{color:var(--redL);border-color:rgba(224,45,60,.4);background:rgba(224,45,60,.08)}
+/* plans */
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:14px}
+.plan{padding:18px;display:flex;flex-direction:column;gap:9px;position:relative;overflow:hidden;transition:var(--tr)}
+.plan::before{content:"";position:absolute;top:0;right:0;left:0;height:5px;background:var(--pc)}
+.plan.on{border-color:var(--pc);box-shadow:0 12px 34px color-mix(in srgb,var(--pc) 22%,transparent)}
+.plan:hover{transform:translateY(-3px)}
+.plan .pct{font-size:32px;font-weight:900;color:var(--pc);line-height:1.1}
+.plan h4{font-size:15px;font-weight:900}
+.plan ul{list-style:none;font-size:11px;color:var(--mut);display:flex;flex-direction:column;gap:5px;flex:1}
+.plan ul li{display:flex;gap:6px;align-items:flex-start}
+.plan ul li .ic{width:13px;height:13px;flex:none;margin-top:4px;color:var(--greenL)}
+.plan .price{font-size:16px;font-weight:900;font-variant-numeric:tabular-nums}
+.plan .price small{font-size:10px;color:var(--mut);font-weight:600}
+.plan .req{font-size:10px;color:var(--mut2);border-top:1px dashed var(--line);padding-top:8px}
+.ptable{width:100%;border-collapse:collapse;font-size:11.5px}
+.ptable th{background:var(--surf3);color:var(--mut);font-size:10px;font-weight:900;text-align:right;padding:9px 11px;border-bottom:1px solid var(--line);white-space:nowrap}
+.ptable td{padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:middle}
+.ptable tbody tr:hover{background:var(--surf2)}
+.tw{overflow:auto;border:1px solid var(--line);border-radius:13px;background:var(--surf)}
+/* profile */
+.phero{overflow:hidden;margin-bottom:16px}
+.pcover{height:124px;position:relative;background:var(--hero);overflow:hidden}
+.pcover .ic{position:absolute;color:rgba(255,255,255,.11)}
+.pcover .c1{width:112px;height:112px;top:-24px;right:8%;transform:rotate(14deg)}
+.pcover .c2{width:72px;height:72px;bottom:-14px;right:34%;transform:rotate(-12deg)}
+.pcover .c3{width:92px;height:92px;top:-10px;left:12%;transform:rotate(22deg)}
+.pcover .avail{position:absolute;top:13px;left:14px;display:flex;align-items:center;gap:8px;background:rgba(4,10,26,.55);backdrop-filter:blur(6px);
+padding:6px 11px;border-radius:99px;font-size:10.5px;font-weight:800;border:1px solid rgba(255,255,255,.16);color:#fff}
+.pbody{padding:0 20px 18px;display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-top:-46px;position:relative}
+.pav{position:relative;flex:none}
+.pav .imgb{width:106px;height:106px;border-radius:28px;border:4px solid var(--surf);overflow:hidden;background:var(--surf2);box-shadow:var(--sh)}
+.pav .imgb svg,.pav .imgb img{width:100%;height:100%;display:block;object-fit:cover}
+.camb{position:absolute;bottom:-4px;left:-4px;width:34px;height:34px;border-radius:11px;background:var(--grad);color:#221503;
+display:grid;place-items:center;border:3px solid var(--surf);transition:var(--tr)}
+.camb:hover{transform:scale(1.1)}
+.pwho{flex:1;min-width:210px;padding-bottom:4px}
+.pwho h3{font-size:19px;font-weight:900;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.verif{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:900;color:var(--tealL);background:rgba(15,163,163,.13);
+border:1px solid rgba(15,163,163,.38);padding:2px 9px;border-radius:99px}
+.pwho .pt{font-size:12.5px;color:var(--mut);font-weight:700}
+.pmeta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.skill{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:99px;font-size:11.5px;font-weight:800;
+background:rgba(15,163,163,.11);border:1px solid rgba(15,163,163,.32);color:var(--tealL)}
+.skill button{display:grid;place-items:center;color:var(--mut);width:16px;height:16px;border-radius:50%}
+.skill button:hover{color:var(--redL)}
+.pstat{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px dashed var(--line);font-size:12px;gap:10px}
+.pstat:last-child{border:none}
+.pstat b{font-size:13px}
+.pref{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.pref:last-child{border:none}
+.pref .pl{flex:1}
+.pref .pl b{font-size:12px;display:block}
+.pref .pl span{font-size:10px;color:var(--mut)}
+/* modal */
+#mwrap{position:fixed;inset:0;z-index:90;display:none;align-items:flex-start;justify-content:center;padding:5vh 14px;overflow-y:auto}
+#mwrap.open{display:flex}
+.mscrim{position:fixed;inset:0;background:var(--scrim);backdrop-filter:blur(4px);animation:fade .25s both}
+@keyframes fade{from{opacity:0}}
+.modal{position:relative;width:620px;max-width:100%;display:flex;flex-direction:column;border-radius:20px;
+background:linear-gradient(180deg,var(--surf2),var(--surf));border:1px solid var(--line2);box-shadow:var(--sh2);
+animation:pop .3s cubic-bezier(.2,.9,.3,1.15) both;max-height:90vh}
+.modal.wide{width:880px}
+.modal.lb{width:auto}
+@keyframes pop{from{transform:scale(.95) translateY(14px);opacity:0}to{transform:none;opacity:1}}
+.mhead{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line);flex:none}
+.mhead h3{font-size:15.5px;font-weight:900;flex:1}
+.mhead .ic{color:var(--brandSoft)}
+.mbody{padding:18px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:15px}
+.mfoot{padding:13px 20px;border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap;align-items:center;flex:none}
+.mfoot .sp{flex:1}
+.avpick{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.avprev{width:88px;height:88px;border-radius:24px;overflow:hidden;border:2px solid var(--line2);flex:none;background:var(--surf2)}
+.avprev svg,.avprev img{width:100%;height:100%;display:block;object-fit:cover}
+.avopts{flex:1;min-width:210px;display:flex;flex-direction:column;gap:9px}
+.presets{display:flex;gap:9px;flex-wrap:wrap}
+.preb{width:52px;height:52px;border-radius:16px;overflow:hidden;border:2px solid transparent;padding:0;transition:var(--tr);background:var(--surf2)}
+.preb:hover{transform:scale(1.07)}
+.preb.on{border-color:var(--brandSoft);box-shadow:0 0 0 3px rgba(255,174,26,.2)}
+.preb svg{width:100%;height:100%;display:block}
+.avhint{font-size:10px;color:var(--mut2)}
+.counter{font-size:9.5px;color:var(--mut2);text-align:left}
+.skedit{display:flex;gap:8px}
+.skedit .inp{flex:1}
+.lbcap{text-align:center;font-size:11.5px;color:var(--mut);padding:10px 0 14px}
+.lbsvg{padding:16px 16px 0}
+.lbsvg svg{width:min(540px,82vw);height:auto;display:block;border-radius:14px;border:1px solid var(--line2)}
+.buyrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);font-size:12px;gap:10px}
+.buyrow:last-child{border:none}
+.buyrow.total{border-top:1.5px solid var(--line2);border-bottom:none;padding-top:11px;margin-top:4px;font-size:15px;font-weight:900}
+.buyrow.total b{color:var(--brandSoft);font-size:18px}
+.seg{display:flex;gap:5px;background:var(--surf3);border:1px solid var(--line);padding:4px;border-radius:12px}
+.seg button{flex:1;padding:8px 10px;border-radius:9px;font-size:11.5px;font-weight:800;color:var(--mut);transition:var(--tr)}
+.seg button.on{background:var(--grad);color:#221503}
+/* notif */
+#np{position:fixed;top:74px;left:16px;width:372px;max-width:calc(100vw - 24px);max-height:452px;overflow-y:auto;z-index:65;
+border-radius:16px;background:linear-gradient(180deg,var(--surf2),var(--surf));border:1px solid var(--line2);box-shadow:var(--sh2);
+opacity:0;pointer-events:none;transform:translateY(-8px) scale(.97);transform-origin:top left;transition:.22s}
+#np.open{opacity:1;pointer-events:auto;transform:none}
+.nphead{display:flex;align-items:center;gap:8px;padding:13px 15px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surf2);z-index:1}
+.nphead b{font-size:13.5px;flex:1}
+.nphead .ic{color:var(--brandSoft)}
+.ni2{display:flex;gap:10px;padding:12px 15px;border-bottom:1px solid var(--line);cursor:pointer;transition:var(--tr);align-items:flex-start}
+.ni2:hover{background:rgba(255,107,26,.07)}
+.ni2.unread{background:rgba(255,107,26,.05)}
+.ni2 .ni{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:none;border:1px solid var(--line)}
+.ni2 p{font-size:11.5px;line-height:1.75;flex:1}
+.ni2 time{font-size:9.5px;color:var(--mut2);white-space:nowrap}
+.ni2 .ud{width:7px;height:7px;border-radius:50%;background:var(--brandSoft);flex:none;margin-top:6px}
+/* toasts */
+#toasts{position:fixed;bottom:18px;left:18px;z-index:100;display:flex;flex-direction:column-reverse;gap:10px;max-width:min(380px,calc(100vw - 24px))}
+.toast{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:14px;background:linear-gradient(180deg,var(--surf2),var(--surf));
+border:1px solid var(--line2);box-shadow:var(--sh2);position:relative;overflow:hidden;animation:tin .35s cubic-bezier(.2,.9,.3,1.15) both}
+@keyframes tin{from{transform:translateX(-30px);opacity:0}to{transform:none;opacity:1}}
+.toast.out{animation:tout .3s both}
+@keyframes tout{to{transform:translateX(-30px);opacity:0}}
+.toast .ti{flex:none;margin-top:2px}
+.toast.success .ti{color:var(--greenL)}.toast.info .ti{color:var(--blueL)}.toast.warn .ti{color:var(--brandSoft)}.toast.danger .ti{color:var(--redL)}
+.toast .tx{flex:1;font-size:11.5px;line-height:1.85}
+.toast .tx b{color:var(--brandSoft)}
+.toast .tact{font-size:11px;font-weight:900;color:var(--tealL);padding:4px 9px;border-radius:8px;border:1px solid rgba(15,163,163,.42);white-space:nowrap;margin-top:2px}
+.toast .tact:hover{background:rgba(15,163,163,.13)}
+.toast .tx2{color:var(--mut2);flex:none;padding:2px}
+.toast .tx2:hover{color:var(--ink)}
+.toast .tp{position:absolute;bottom:0;right:0;height:2.5px;background:var(--gradData);animation:tprog linear both}
+@keyframes tprog{from{width:100%}to{width:0}}
+#fx{position:fixed;inset:0;z-index:110;pointer-events:none}
+.conf{position:absolute;border-radius:2px}
+#nscrim{position:fixed;inset:0;z-index:59;background:var(--scrim);opacity:0;pointer-events:none;transition:.25s}
+@media(max-width:1180px){.grid2{grid-template-columns:1fr}}
+@media(max-width:960px){
+#sidebar{transform:translateX(105%);transition:transform .3s cubic-bezier(.2,.9,.25,1);z-index:80;width:280px}
+html.rail{--sbw:280px}
+html.rail .sbrand{justify-content:flex-start;padding:4px 6px}
+html.rail .sbrand>div:last-child{display:block}
+html.rail .navsec{font-size:9.5px;height:auto;margin:13px 10px 5px;background:none}
+html.rail .navi{justify-content:flex-start;gap:11px;padding:9.5px 12px}
+html.rail .navi>span{display:inline}
+html.rail .navi .nbdg{position:static;margin-inline-start:auto;min-width:21px;width:auto;height:21px;padding:0 6px;font-size:10.5px;box-shadow:none}
+html.rail .srow .lbl,html.rail .wchip .wl,html.rail .wchip .wv,html.rail .pchip .pt,html.rail .pchip .pv,html.rail .sme .who,html.rail .sme .ibtn,html.rail .sfoot{display:block}
+html.rail .srow,html.rail .wchip,html.rail .pchip{padding:9px 12px;justify-content:flex-start}
+html.rail .sme{justify-content:flex-start;padding:9px 10px}
+body.nav #sidebar{transform:none}
+body.nav #nscrim{opacity:1;pointer-events:auto}
+#main{margin-right:0}
+#menuBtn{display:grid}
+#railBtn{display:none}
+.bmini{display:flex}
+.tbt{display:none}
+#content{padding:16px}
+#tip{display:none!important}
+}
+@media(max-width:660px){
+.avbtn b,.avbtn .ic:last-child{display:none}
+.ogrid{grid-template-columns:1fr}
+#drawer{width:100vw}
+.fgrid,.mgrid{grid-template-columns:1fr}
+.kpis{grid-template-columns:1fr 1fr;gap:10px}
+.kpi .val{font-size:17px}
+.vhead h2{font-size:18px}
+.pbody{align-items:flex-start}
+.bulk{top:70px}
+.dfoot .btn{flex:1}
+.corrcell{max-width:none}
+}
+@media(max-width:410px){.kpis{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div id="bgfx"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i></div>
+<div id="app">
+<aside id="sidebar" aria-label="ناوبری پنل متخصص"></aside>
+<div id="nscrim" data-act="closeNav"></div>
+<main id="main">
+<header id="topbar"></header>
+<div id="content"></div>
+</main>
+</div>
+<div id="dwrap"><div id="dscrim" data-act="closeDrawer"></div><aside id="drawer" role="dialog" aria-modal="true" aria-label="جزئیات سفارش"></aside></div>
+<div id="mwrap"></div>
+<div id="np"></div>
+<div id="toasts" aria-live="polite"></div>
+<div id="fx"></div>
+<div id="tip"></div>
+<input type="file" id="avFile" accept="image/*" hidden>
+<noscript><div style="padding:44px;text-align:center;font-family:Tahoma">برای استفاده از پنل، جاوااسکریپت را فعال کنید.</div></noscript>
+<script>
+"use strict";
+/* ═══════════ 1. UTIL ═══════════ */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const FA="۰۱۲۳۴۵۶۷۸۹";
+const faStr=s=>String(s).replace(/\d/g,d=>FA[d]);
+const fmt=n=>new Intl.NumberFormat("fa-IR").format(Math.round(Number(n)||0));
+const fmtD=n=>new Intl.NumberFormat("fa-IR",{maximumFractionDigits:1}).format(Number(n)||0);
+const money=n=>fmt(n)+" تومان";
+const shortM=n=>n>=1e6?fmtD(n/1e6)+" میلیون":fmt(Math.round(n/1e3))+" هزار";
+const parseNum=v=>{const s=String(v??"").replace(/[۰-۹]/g,d=>FA.indexOf(d)).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[^\d]/g,"");return s?parseInt(s,10):0};
+const norm=s=>String(s??"").replace(/ي/g,"ی").replace(/ك/g,"ک").replace(/[۰-۹]/g,d=>FA.indexOf(d)).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).toLowerCase().trim();
+const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
+const now=()=>Date.now(),MIN=6e4,HOUR=36e5,DAY=864e5;
+function ago(ts){if(!ts)return"—";const d=now()-ts;if(d<MIN)return"لحظاتی پیش";if(d<HOUR)return fmt(Math.floor(d/MIN))+" دقیقه پیش";if(d<DAY)return fmt(Math.floor(d/HOUR))+" ساعت پیش";if(d<2*DAY)return"دیروز";return fmt(Math.floor(d/DAY))+" روز پیش"}
+function rangeTxt(b){if(!b)return"توافقی";const[a,c]=b;if(a>=1e6&&c>=1e6)return fmtD(a/1e6)+" تا "+fmtD(c/1e6)+" میلیون";if(a<1e6&&c<1e6)return fmt(Math.round(a/1e3))+" تا "+fmt(Math.round(c/1e3))+" هزار";return shortM(a)+" تا "+shortM(c)}
+function faDate(){try{return new Intl.DateTimeFormat("fa-IR",{weekday:"long",day:"numeric",month:"long"}).format(new Date())}catch(e){return""}}
+function jalali(d){try{return new Intl.DateTimeFormat("fa-IR-u-ca-persian",{year:"numeric",month:"2-digit",day:"2-digit"}).format(d)}catch(e){return d.toLocaleDateString("fa-IR")}}
+function addDays(n){return new Date(now()+n*DAY)}
+/* ═══════════ 2. ICONS ═══════════ */
+const IC={
+bolt:'<path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/>',
+plug:'<path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0V8zM12 17v5"/>',
+video:'<rect x="3" y="6" width="13" height="12" rx="2.5"/><path d="m16 10 5-3v10l-5-3"/>',
+lamp:'<path d="M12 2v4M7 12a5 5 0 0 1 10 0v1H7v-1zM12 13v3M9 19h6"/>',
+snow:'<path d="M12 2v20M4 6l16 12M20 6 4 18"/><circle cx="12" cy="12" r="2.5"/>',
+panel:'<rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 7h8M8 11h3M13 11h3M8 16h3M13 16h3"/>',
+outlet:'<rect x="5" y="3" width="14" height="18" rx="3.5"/><path d="M10 8v3M14 8v3"/><circle cx="12" cy="15.5" r="1.4"/>',
+flame:'<path d="M12 3s5 4.5 5 9a5 5 0 0 1-10 0c0-2 1-3.8 2.2-5.2C10.2 5.6 12 6 12 3z"/>',
+chart:'<path d="M4 20v-6M9 20V8M14 20V10M19 20V5M3 21h18"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-5.5 8-5.5s6.5 1.5 8 5.5"/>',
+users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.5 3.5-5 6.5-5s5.5 1.5 6.5 5"/><circle cx="17" cy="9" r="3"/><path d="M17.5 15c2.3.4 3.6 1.8 4 4.5"/>',
+bell:'<path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6zM10 19a2.2 2.2 0 0 0 4 0"/>',
+search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>',
+x:'<path d="M6 6l12 12M18 6 6 18"/>',check:'<path d="m4.5 12.5 5 5L19.5 7"/>',
+checkC:'<circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/>',
+xC:'<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+pin:'<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+phone:'<path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+star:'<path fill="currentColor" stroke="none" d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-3-5.4 3 1.1-6L3.2 9.4l6.1-.8L12 3z"/>',
+edit:'<path d="m4 20 1-4L16.5 4.5a2.12 2.12 0 0 1 3 3L8 19l-4 1zM13.5 6.5l3 3"/>',
+trash:'<path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6"/>',
+upload:'<path d="M12 16V4M6 10l6-6 6 6M4 20h16"/>',
+camera:'<rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13" r="4"/><path d="m8 7 1.5-3h5L16 7"/>',
+vol:'<path d="M4 9v6h4l6 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a9 9 0 0 1 0 12"/>',
+volX:'<path d="M4 9v6h4l6 5V4L8 9H4z"/><path d="m17 9 5 5M22 9l-5 5"/>',
+menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',chevD:'<path d="m6 9 6 6 6-6"/>',
+wallet:'<rect x="2.5" y="6" width="19" height="13" rx="3"/><path d="M16 12.5h3M6 6V4.5A1.5 1.5 0 0 1 7.5 3H18"/>',
+shield:'<path d="m12 2 8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"/><path d="m8.5 12 2.5 2.5 4.5-4.5"/>',
+cal:'<rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+send:'<path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/>',
+undo:'<path d="M3 7v6h6"/><path d="M3 13a9 9 0 1 0 3-7.7L3 7"/>',
+case:'<rect x="3" y="8" width="18" height="12" rx="2.5"/><path d="M9 8V5h6v3M3 13h18"/>',
+tag:'<path d="M12 2H2v10l9.3 9.3a1.7 1.7 0 0 0 2.4 0l7.6-7.6a1.7 1.7 0 0 0 0-2.4L12 2z"/><circle cx="7" cy="7" r="1.5"/>',
+info:'<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/>',
+alert:'<path d="M12 3 22 21H2L12 3z"/><path d="M12 10v4M12 17h.01"/>',
+msg:'<path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/>',
+refresh:'<path d="M21 2v6h-6M3 22v-6h6"/><path d="M21 8a9 9 0 0 0-15-4.5L3 8M3 16a9 9 0 0 0 15 4.5l3-4.5"/>',
+trend:'<path d="m3 17 6-6 4 4 7-8"/><path d="M14 7h6v6"/>',
+crown:'<path fill="currentColor" stroke="none" d="M3 18h18l-1.5-9-4.5 3.5L12 5l-3 7.5L4.5 9 3 18z"/>',
+play:'<path fill="currentColor" stroke="none" d="M8 5v14l11-7-11-7z"/>',
+lock:'<rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+percent:'<path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>',
+grip:'<circle cx="9" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="18" r="1.3" fill="currentColor" stroke="none"/>',
+eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+sun:'<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>',
+moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+rail:'<rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M15 4v16"/><path class="ra" d="M9.5 9.5 12 12l-2.5 2.5"/>',
+crown2:'<path d="M3 18h18l-1.5-9-4.5 3.5L12 5l-3 7.5L4.5 9 3 18z"/>',
+receipt:'<path d="M5 2v20l2-1.5L9 22l2-1.5L13 22l2-1.5L17 22l2-1.5V2l-2 1.5L15 2l-2 1.5L11 2 9 3.5 7 2 5 3.5z"/><path d="M9 8h6M9 12h6M9 16h4"/>',
+target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+award:'<circle cx="12" cy="8" r="6"/><path d="M8.2 13.9 7 22l5-3 5 3-1.2-8.1"/>',
+dl:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
+grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+zap2:'<path d="M12 2v20M2 12h20"/>'
+};
+const ICON=(n,s=20,cls="")=>`<svg class="ic ${cls}" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]||IC.grid}</svg>`;
+/* ═══════════ 3. CATEGORIES / PLANS / GATES ═══════════ */
+const CATS={
+electrical:{label:"برق‌کاری",icon:"bolt",hue:"#FFAE1A"},
+wiring:{label:"سیم‌کشی",icon:"plug",hue:"#9BE24A"},
+iphone:{label:"آیفون تصویری",icon:"video",hue:"#3E9BFF"},
+lighting:{label:"روشنایی",icon:"lamp",hue:"#A78BFA"},
+ac:{label:"کولر گازی",icon:"snow",hue:"#22C9E0"},
+panel:{label:"تابلو برق",icon:"panel",hue:"#F26D9D"},
+outlet:{label:"کلید و پریز",icon:"outlet",hue:"#19C6AD"},
+gas:{label:"شارژ گاز",icon:"flame",hue:"#FF6257"}
+};
+const tile=(c,s=42)=>{const x=CATS[c]||CATS.electrical;return `<span class="tile" style="width:${s}px;height:${s}px;color:${x.hue};background:${x.hue}1f;border-color:${x.hue}55">${ICON(x.icon,Math.round(s*.5))}</span>`};
+const PLANS=[
+{id:"free",name:"پایه",pct:0,monthly:0,c:"#8592B0",gate:"ثبت‌نام فعال",
+ feat:["دسترسی به کارتابل سفارش‌ها","نرخ‌گذاری فقط روی مصوبه اتحادیه","پروفایل عمومی و امتیاز مشتری","پشتیبانی از طریق تیکت"]},
+{id:"pro",name:"حرفه‌ای",pct:15,monthly:490000,c:"#3E9BFF",gate:"۲۰ کار · امتیاز ۴٫۲",
+ feat:["افزایش نرخ تا ۱۵٪ روی خدمات واجد کیفیت","اولویت نمایش در فهرست متخصصان","گزارش درآمد و تحلیل عملکرد","پشتیبانی سریع (زیر ۴ ساعت)"]},
+{id:"prime",name:"ممتاز",pct:30,monthly:980000,c:"#FFAE1A",gate:"۶۰ کار · امتیاز ۴٫۵",
+ feat:["افزایش نرخ تا ۳۰٪ روی خدمات واجد کیفیت","تقویم پیشرفته و رزرو خودکار","نشان «متخصص ممتاز» در پروفایل","تحلیل بازار محلی و قیمت رقبا"]},
+{id:"elite",name:"ویژه",pct:50,monthly:1960000,c:"#A78BFA",gate:"۱۵۰ کار · امتیاز ۴٫۷",
+ feat:["افزایش نرخ تا ۵۰٪ روی خدمات واجد کیفیت","ظرفیت اختصاصی و قرارداد سازمانی","مدیریت تیم و تسویه ترکیبی","مشاور اختصاصی رشد کسب‌وکار"]}
+];
+const GATES=[
+{rank:0,name:"تازه‌وارد",pct:0,jobs:0,rating:0},
+{rank:1,name:"تثبیت‌شده",pct:15,jobs:20,rating:4.2},
+{rank:2,name:"حرفه‌ای",pct:30,jobs:60,rating:4.5},
+{rank:3,name:"برتر",pct:50,jobs:150,rating:4.7}
+];
+const CYCLES=[{id:1,label:"ماهانه",mult:1,days:30},{id:6,label:"۶ ماهه",mult:5.4,days:180},{id:12,label:"سالانه",mult:9.6,days:365}];
+const TEAM_BANDS=[[1,3,1],[4,6,1.6],[7,10,2.2],[11,20,3]];
+function bandMult(n){const b=TEAM_BANDS.find(([a,c])=>n>=a&&n<=c);return b?b[2]:3.6}
+function bandLabel(n){const b=TEAM_BANDS.find(([a,c])=>n>=a&&n<=c);return b?`${faStr(b[0])}–${faStr(b[1])} نفر`:"بیش از ۲۰ نفر"}
+const HRS=["کمتر از ۱ ساعت","۱ تا ۲ ساعت","۲ تا ۴ ساعت","نیم روز","۱ روز کامل","بیش از ۱ روز"];
+const TPL=["سلام؛ بازدید و عیب‌یابی اولیه رایگان است. قیمت اعلام‌شده شامل اجرت کامل و تست نهایی می‌شود.","با درود؛ امکان انجام کار در بازه زمانی مدنظر شما وجود دارد. اجرای کار با ضمانت کتبی و فاکتور رسمی ارائه می‌شود."];
+const ATT_CAP={panel:"تابلو برق محل",wiring:"مسیر سیم‌کشی",ac:"محل نصب کولر",iphone:"پنل ورودی",lamp:"سقف پذیرایی",outlet:"کلید و پریز"};
+/* ═══════════ 4. AVATARS / SKETCHES ═══════════ */
+const AV=[
+{skin:"#EDBE96",shade:"#D9A06B",hair:"#2E2A26",jacket:"#FF8A3D",collar:"#E4570B",bg:["#FF6B1A","#7C4DFF"]},
+{skin:"#D9A06B",shade:"#C08A52",hair:"#1F1B18",jacket:"#2E63E7",collar:"#1B47B8",bg:["#0FA3A3","#2E63E7"]},
+{skin:"#F0C9A6",shade:"#DCAE85",hair:"#5B4632",jacket:"#0FA3A3",collar:"#0B7E7E",bg:["#FFAE1A","#E02D3C"]},
+{skin:"#C98F63",shade:"#B07A4E",hair:"#141210",jacket:"#E0447C",collar:"#B82E60",bg:["#22C9E0","#7C4DFF"],glasses:true}
+];
+function avatarSVG(i){const v=AV[i]||AV[0];return `<svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ag${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${v.bg[0]}"/><stop offset="1" stop-color="${v.bg[1]}"/></linearGradient></defs><circle cx="48" cy="48" r="48" fill="url(#ag${i})"/><circle cx="48" cy="48" r="45" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="2"/><path d="M14 96C16 74 32 66 48 66C64 66 80 74 82 96Z" fill="${v.jacket}"/><path d="M40 68 48 80 56 68 52 66 48 72 44 66Z" fill="${v.collar}"/><rect x="42" y="54" width="12" height="14" rx="5" fill="${v.shade}"/><circle cx="31" cy="44" r="3.5" fill="${v.skin}"/><circle cx="65" cy="44" r="3.5" fill="${v.skin}"/><ellipse cx="48" cy="42" rx="16" ry="18" fill="${v.skin}"/><path d="M32 44Q32 62 48 62Q64 62 64 44Q64 56 48 57Q32 56 32 44Z" fill="${v.hair}"/><path d="M31 40Q31 22 48 22Q65 22 65 40Q65 32 58 30Q50 28 44 30Q33 32 31 40Z" fill="${v.hair}"/><path d="M37 37Q41 34.5 45 37M51 37Q55 34.5 59 37" stroke="${v.hair}" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="41" cy="42" r="2.2" fill="#26221F"/><circle cx="55" cy="42" r="2.2" fill="#26221F"/><path d="M48 44Q46.5 48 48.5 49" stroke="${v.shade}" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M43 52Q48 55.5 53 52" stroke="#C98E6B" stroke-width="2" fill="none" stroke-linecap="round"/>${v.glasses?'<circle cx="41" cy="42" r="5.5" fill="none" stroke="#1B2B33" stroke-width="2"/><circle cx="55" cy="42" r="5.5" fill="none" stroke="#1B2B33" stroke-width="2"/><path d="M46.5 42h3" stroke="#1B2B33" stroke-width="2"/>':""}</svg>`}
+const avInner=a=>a&&a.type==="upload"&&a.data?`<img src="${a.data}" alt="تصویر پروفایل">`:avatarSVG(a&&a.type==="preset"?a.id:0);
+const avBox=(a,s,r=12)=>`<span class="avb" style="width:${s}px;height:${s}px;border-radius:${r}px;overflow:hidden;display:inline-block;flex:none;background:var(--surf2)">${avInner(a)}</span>`;
+const CH=[["#FF6B1A","#7C4DFF"],["#0FA3A3","#2E63E7"],["#FFAE1A","#E02D3C"],["#22C9E0","#2E63E7"],["#9BE24A","#0FA3A3"],["#E0447C","#7C4DFF"],["#2E63E7","#22C9E0"],["#FF8A00","#E0447C"]];
+function custAv(c,s=36){const h=(c.hue||0)%CH.length,[a,b]=CH[h],L=esc((c.name||"؟").trim()[0]);
+return `<span class="avb" style="width:${s}px;height:${s}px;border-radius:${Math.round(s*.32)}px;overflow:hidden;display:inline-block;flex:none"><svg viewBox="0 0 40 40"><defs><linearGradient id="cg${h}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="40" height="40" fill="url(#cg${h})"/><text x="20" y="21" text-anchor="middle" dominant-baseline="central" font-family="Vazirmatn,Tahoma" font-size="17" font-weight="800" fill="#0B1736">${L}</text></svg></span>`}
+function sketch(kind){
+const grid='<defs><pattern id="sg" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M12 0H0V12" fill="none" stroke="rgba(43,217,232,.15)" stroke-width="1"/></pattern></defs><rect width="120" height="84" fill="#0E2F3A"/><rect width="120" height="84" fill="url(#sg)"/>';
+const st='fill="none" stroke="#7FE8DC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"',am='fill="none" stroke="#FFC24D" stroke-width="2" stroke-linecap="round"';
+let d="";
+if(kind==="panel")d=`<rect x="34" y="10" width="52" height="60" rx="4" ${st}/><path d="M40 20h40" ${st}/><rect x="40" y="26" width="16" height="10" rx="2" ${st}/><rect x="64" y="26" width="16" height="10" rx="2" ${st}/><rect x="40" y="42" width="16" height="10" rx="2" ${st}/><rect x="64" y="42" width="16" height="10" rx="2" ${am}/><path d="M48 70v8M60 70v8M72 70v8" ${st}/>`;
+else if(kind==="wiring")d=`<path d="M10 60h30V30h40v30h30" ${st}/><circle cx="40" cy="30" r="4" ${am}/><circle cx="80" cy="30" r="4" ${am}/><rect x="52" y="52" width="16" height="14" rx="3" ${st}/><path d="M57 56v4M63 56v4" ${st}/>`;
+else if(kind==="ac")d=`<rect x="18" y="16" width="70" height="24" rx="6" ${st}/><path d="M24 32h58M24 26h58" ${st}/><path d="M30 48q4 6 0 12M48 48q4 6 0 12M66 48q4 6 0 12" ${am}/><path d="M88 28h14v34" ${st}/>`;
+else if(kind==="iphone")d=`<rect x="44" y="12" width="32" height="56" rx="5" ${st}/><circle cx="60" cy="26" r="6" ${am}/><path d="M50 40h20M50 48h20M50 56h12" ${st}/>`;
+else if(kind==="lamp")d=`<path d="M20 12h80M60 12v14" ${st}/><path d="M60 26q-22 4-26 22M60 26q22 4 26 22M60 26v20" ${st}/><circle cx="34" cy="52" r="5" ${am}/><circle cx="86" cy="52" r="5" ${am}/><circle cx="60" cy="50" r="5" ${am}/>`;
+else d=`<rect x="40" y="18" width="40" height="48" rx="8" ${st}/><path d="M52 32v8M68 32v8" ${st}/><circle cx="60" cy="52" r="4" ${am}/>`;
+return `<svg viewBox="0 0 120 84" xmlns="http://www.w3.org/2000/svg">${grid}${d}</svg>`}
+/* ═══════════ 5. SEED ═══════════ */
+function seed(){
+const t=now(),C=(name,hue,phone,rating,jobs)=>({name,hue,phone,rating,jobs});
+const profile={name:"حبیب کریمی",title:"متخصص برق و تأسیسات ساختمان",phone:"09121478596",
+area:"تهران · سعادت‌آباد و مناطق ۲ و ۵",city:"تهران",
+bio:"با ۱۲ سال سابقه اجرای سیم‌کشی ساختمان، عیب‌یابی تابلو برق و نصب سیستم‌های روشنایی و سرمایشی. دارای مدرک فنی‌وحرفه‌ای درجه ۱ و بیمه حوادث حین کار. بازدید و عیب‌یابی اولیه رایگان؛ اجرای کار با ضمانت کتبی و فاکتور رسمی.",
+skills:["سیم‌کشی ساختمان","رفع اتصالی","تابلو برق","آیفون تصویری","نورپردازی","نصب کولر گازی"],
+rating:4.9,reviews:127,jobsDone:342,memberYear:1401,hours:["08:00","20:00"],avatar:{type:"preset",id:0},verified:true};
+const services=[
+{id:"s1",name:"رفع اتصالی و عیب‌یابی برق",cat:"electrical",unit:"هر مورد",floor:450000,myRate:517000,active:true,jobs:168,rating:4.9},
+{id:"s2",name:"سیم‌کشی ساختمان",cat:"wiring",unit:"هر متر",floor:38000,myRate:43000,active:true,jobs:214,rating:4.8},
+{id:"s3",name:"نصب آیفون تصویری",cat:"iphone",unit:"هر دستگاه",floor:650000,myRate:747000,active:true,jobs:96,rating:4.7},
+{id:"s4",name:"نصب لوستر و روشنایی",cat:"lighting",unit:"هر عدد",floor:320000,myRate:368000,active:true,jobs:74,rating:4.6},
+{id:"s5",name:"نصب و راه‌اندازی کولر گازی",cat:"ac",unit:"هر دستگاه",floor:1850000,myRate:2127000,active:true,jobs:41,rating:4.4},
+{id:"s6",name:"تعمیر و سرویس تابلو برق",cat:"panel",unit:"هر تابلو",floor:980000,myRate:1127000,active:true,jobs:58,rating:4.5},
+{id:"s7",name:"نصب کلید و پریز",cat:"outlet",unit:"هر عدد",floor:95000,myRate:109000,active:true,jobs:22,rating:4.3},
+{id:"s8",name:"شارژ گاز کولر گازی",cat:"gas",unit:"هر دستگاه",floor:1200000,myRate:1200000,active:false,jobs:9,rating:4.1}
+];
+const orders=[
+{id:"ZV-2431",cat:"electrical",title:"رفع اتصالی برق آشپزخانه",desc:"به‌محض روشن‌کردن مایکروویو، فیوز آشپزخانه می‌پرد. دیروز پریز کنار سینک هم جرقه زد و بوی سوختگی می‌آمد. ساختمان ۱۲ سال ساخت است و سیم‌کشی تعویض نشده.",customer:C("مریم صادقی",0,"09123384571",4.8,9),area:"سعادت‌آباد، بلوار دریا",dist:1.8,budget:[400000,700000],urgent:true,when:"امروز، هرچه سریع‌تر",created:t-14*MIN,quotes:2,status:"new",att:["panel","wiring"]},
+{id:"ZV-2430",cat:"ac",title:"نصب کولر گازی ۲۴۰۰۰ اسپلیت",desc:"دستگاه گری ۲۴۰۰۰ نو خریداری شده. یونیت داخلی در پذیرایی و کندانسور در بالکن نصب شود؛ لوله‌کشی حدود ۴ متر و پایه دیواری لازم دارد.",customer:C("امیرحسین توکلی",3,"09127745821",4.7,6),area:"پونک، خیابان میرزابابایی",dist:3.4,budget:[1600000,2400000],urgent:false,when:"فردا، ۱۰ تا ۱۳",created:t-42*MIN,quotes:5,status:"new",att:["ac"]},
+{id:"ZV-2429",cat:"iphone",title:"نصب آیفون تصویری ۷ اینچ",desc:"مانیتور سیماران ۷ اینچ و پنل تک‌واحدی خریداری شده. سیم‌کشی قدیمی موجود است؛ در صورت نیاز تعویض شود. درب حیاط برقی هم به رله آیفون وصل شود.",customer:C("نگار موسوی",1,"09358812467",4.9,12),area:"شهرک غرب، فاز ۲",dist:4.2,budget:[500000,900000],urgent:false,when:"پنجشنبه، ۱۵ تا ۱۸",created:t-2*HOUR,quotes:3,status:"new",att:["iphone"]},
+{id:"ZV-2428",cat:"wiring",title:"سیم‌کشی کامل واحد ۶۵ متری",desc:"بازسازی کامل واحد مسکونی؛ سیم‌کشی روشنایی، پریز، کولر و آشپزخانه با سیم افشان نمره استاندارد. نقشه برق توسط مهندس ناظر آماده است. مصالح با کارفرما.",customer:C("کاوه رستمی · شرکت بازسازی آرا",6,"09193357842",4.6,18),area:"جنت‌آباد جنوبی",dist:5.6,budget:[2200000,3400000],urgent:false,when:"شنبه، بازدید ۹ صبح",created:t-3*HOUR,quotes:7,status:"new",att:["wiring","panel"]},
+{id:"ZV-2427",cat:"lighting",title:"نصب لوستر کریستال و هالوژن سقف",desc:"یک لوستر کریستال ۱۲ شاخه سنگین برای پذیرایی و ۸ هالوژن توکار برای آشپزخانه. سقف کاذب کناف است و قلاب تقویتی لازم دارد.",customer:C("فرشته احمدی",5,"09124468735",4.8,4),area:"مرزداران غربی",dist:2.9,budget:[350000,620000],urgent:true,when:"امروز، ۱۷ تا ۲۰",created:t-5*HOUR,quotes:1,status:"new",att:["lamp"]},
+{id:"ZV-2426",cat:"panel",title:"سرویس تابلو برق سه‌فاز کارگاه",desc:"تابلو برق سه‌فاز کارگاه نجاری؛ کنتاکتور اصلی داغ می‌کند و یکی از کلیدها عمل نمی‌کند. سرویس کامل، آچارکشی ترمینال‌ها و تعویض قطعات معیوب.",customer:C("استاد رحمان نجفی",2,"09106623948",4.5,15),area:"اکباتان، فاز ۱",dist:6.8,budget:[900000,1500000],urgent:false,when:"دیروز هماهنگ شد",created:t-26*HOUR,quotes:4,status:"quoted",quote:{price:1150000,hrs:"۲ تا ۴ ساعت",warOn:true,warDays:30,note:"سلام استاد نجفی؛ بازدید و عیب‌یابی رایگان انجام می‌شود. قیمت شامل سرویس کامل و آچارکشی است؛ قطعات معیوب با فاکتور جداگانه.",at:t-3*HOUR},att:["panel"]},
+{id:"ZV-2425",cat:"outlet",title:"تعویض ۱۲ کلید و پریز قدیمی",desc:"تعویض کلید و پریزهای فرسوده واحد با مدل لگراند؛ ارت‌کشی پریزهای آشپزخانه هم بررسی شود.",customer:C("سپیده قاسمی",4,"09121114589",4.9,11),area:"سعادت‌آباد، سرو شرقی",dist:1.2,budget:[250000,430000],urgent:false,when:"امروز، ۱۴ تا ۱۶",created:t-30*HOUR,quotes:6,status:"accepted",acceptedAt:t-2*HOUR,quote:{price:340000,hrs:"۱ تا ۲ ساعت",warOn:true,warDays:90,note:"با درود؛ قیمت شامل اجرت تعویض ۱۲ عدد و تست ارت است.",at:t-20*HOUR},att:["outlet"]},
+{id:"ZV-2424",cat:"ac",title:"سرویس و شست‌وشوی کولر گازی",desc:"سرویس کامل اسپلیت ۱۸۰۰۰ شامل شست‌وشوی پنل، چک گاز و رفع آبریزش از یونیت داخلی.",customer:C("بابک شریفی",7,"09127789654",4.7,8),area:"فلکه دوم صادقیه",dist:3.1,budget:[700000,1100000],urgent:false,when:"امروز، ۱۱ تا ۱۳",created:t-2*DAY,quotes:3,status:"doing",acceptedAt:t-DAY,startedAt:t-HOUR,quote:{price:850000,hrs:"۲ تا ۴ ساعت",warOn:true,warDays:30,note:"سرویس کامل با شست‌وشوی پنل و تست گاز انجام می‌شود.",at:t-2*DAY},att:["ac"]},
+{id:"ZV-2421",cat:"electrical",title:"عیب‌یابی و رفع قطعی برق واحدها",desc:"قطعی مکرر برق چند واحد در ساعات اوج مصرف؛ بررسی تابلو اصلی و رفع اتصالی خط روشنایی راهرو.",customer:C("مدیر ساختمان یاس",3,"09123336655",4.8,22),area:"سعادت‌آباد، بلوار فرحزادی",dist:2.2,budget:[450000,750000],urgent:false,when:"امروز، ۸ تا ۱۰",created:t-3*DAY,quotes:5,status:"done",acceptedAt:t-2*DAY,startedAt:t-2*DAY,paidAt:t-4*HOUR,paidNet:457600,quote:{price:520000,hrs:"۲ تا ۴ ساعت",warOn:true,warDays:90,note:"عیب‌یابی کامل و رفع اتصالی با ضمانت کتبی.",at:t-3*DAY},att:["panel"]},
+{id:"ZV-2419",cat:"lighting",title:"نورپردازی نمای ساختمان",desc:"نصب پروژکتورهای خطی و وال‌واشر برای نمای سنگی ساختمان چهار طبقه؛ سیم‌کشی ضدآب و فتوسل.",customer:C("هیئت‌مدیره برج آفتاب",1,"09129998877",4.6,30),area:"شهرک غرب، بلوار دادمان",dist:4.8,budget:[2000000,3200000],urgent:false,when:"سه‌شنبه گذشته",created:t-5*DAY,quotes:8,status:"done",acceptedAt:t-4*DAY,startedAt:t-4*DAY,paidAt:t-3*DAY,paidNet:2112000,quote:{price:2400000,hrs:"بیش از ۱ روز",warOn:true,warDays:180,note:"اجرای کامل نورپردازی نما با تجهیزات ضدآب و ضمانت ۶ ماهه.",at:t-5*DAY},att:["lamp","wiring"]},
+{id:"ZV-2416",cat:"iphone",title:"نصب آیفون تصویری دو واحدی",desc:"نصب پنل دو واحدی و دو مانیتور؛ سیم‌کشی موجود نیاز به بازبینی دارد.",customer:C("رضا فرهمند",5,"09125557788",4.4,5),area:"جنت‌آباد شمالی",dist:6.1,budget:[600000,950000],urgent:false,when:"چهارشنبه گذشته",created:t-4*DAY,quotes:6,status:"declined",declineNote:"مشتری پیشنهاد پایین‌تری از متخصص دیگری پذیرفت.",quote:{price:720000,hrs:"۲ تا ۴ ساعت",warOn:true,warDays:30,note:"نصب کامل با تست تصویر و صدا.",at:t-4*DAY},att:["iphone"]}
+];
+const pool=[
+{id:"ZV-2432",cat:"electrical",title:"جرقه‌زدن پریز اتاق کودک",desc:"پریز کنار تخت هنگام اتصال شارژر جرقه می‌زند و قاب آن کمی ذوب شده است. کلید محافظ جان هم گاهی می‌پرد.",customer:C("سارا نعمتی",3,"09127745821",4.7,4),area:"شهرک اکباتان، فاز ۲",dist:6.2,budget:[300000,560000],urgent:true,when:"امروز، ۱۸ تا ۲۰",quotes:1,att:["outlet"]},
+{id:"ZV-2433",cat:"lighting",title:"نصب ۶ هالوژن راهرو",desc:"شش هالوژن توکار ۷ وات برای راهرو خریداری شده؛ برش سقف کناف انجام شده و فقط نصب و سیم‌کشی باقی است.",customer:C("الهام برزگر",5,"09358812467",4.9,7),area:"پونک، بلوار عدل",dist:3.8,budget:[280000,460000],urgent:false,when:"فردا، ۹ تا ۱۱",quotes:2,att:["lamp"]},
+{id:"ZV-2434",cat:"ac",title:"جابجایی کندانسور کولر گازی",desc:"کندانسور اسپلیت ۱۸۰۰۰ باید از لبه پنجره به پایه دیواری بالکن منتقل شود؛ حدود ۲ متر لوله‌کشی اضافه لازم دارد.",customer:C("مجید کاویانی",1,"09193357842",4.6,11),area:"مرزداران شرقی",dist:2.4,budget:[900000,1450000],urgent:false,when:"پس‌فردا، ۱۰ تا ۱۳",quotes:3,att:["ac"]},
+{id:"ZV-2435",cat:"iphone",title:"نصب آیفون و دوربین ورودی",desc:"یک پنل آیفون تصویری و یک دوربین مداربسته بالای درب ورودی دفتر نصب شود؛ تصویر دوربین روی مانیتور آیفون بیاید.",customer:C("دفتر وکالت شمس",6,"09124468735",4.8,14),area:"سعادت‌آباد، میدان کاج",dist:1.5,budget:[800000,1350000],urgent:false,when:"شنبه، ۱۴ تا ۱۷",quotes:4,att:["iphone"]},
+{id:"ZV-2436",cat:"panel",title:"تعویض فیوز مینیاتوری سوخته",desc:"فیوز مینیاتوری ۲۵ آمپر کولر سوخته و تعویض لازم دارد؛ تابلو داخل واحد است و برق کل واحد قطع شده.",customer:C("حسین ملکی",2,"09106623948",4.5,3),area:"جنت‌آباد مرکزی",dist:5.1,budget:[250000,470000],urgent:true,when:"امروز، هرچه سریع‌تر",quotes:0,att:["panel"]}
+];
+return{v:3,profile,services,orders,pool,poolIdx:0,wallet:2340000,earnToday:457600,
+weekBase:[980000,1450000,620000,1980000,1120000,2350000,860000],monthBase:[5800000,7240000,6410000],prevSameDay:380000,
+plan:"pro",planStart:t-12*DAY,planEnd:t+18*DAY,planScope:"individual",teamSize:4,commission:0,
+team:{name:"تیم برق و تأسیسات کریمی",supervisor:"حبیب کریمی",isSupervisor:true,mgmt:15,
+ members:[{name:"حبیب کریمی",hours:62,self:true},{name:"سارا احمدی",hours:48},{name:"رضا نوری",hours:34},{name:"مهدی صادقی",hours:26}]},
+payments:[{id:"PAY-1041",plan:"pro",planName:"حرفه‌ای",cycle:1,scope:"individual",members:1,amount:490000,method:"کیف پول",at:t-12*DAY,status:"پرداخت شده",days:30}],
+settings:{sound:true,available:true,smsNew:true,weekly:false},
+notifications:[
+{id:"n1",type:"pay",txt:"مبلغ ۴۵۷٬۶۰۰ تومان بابت سفارش ZV-2421 به کیف پول شما واریز شد.",ts:t-4*HOUR,read:true,orderId:"ZV-2421"},
+{id:"n2",type:"accept",txt:"سپیده قاسمی پیشنهاد شما برای تعویض کلید و پریز را پذیرفت.",ts:t-2*HOUR,read:false,orderId:"ZV-2425"},
+{id:"n3",type:"plan",txt:"اشتراک «حرفه‌ای» شما ۱۸ روز دیگر منقضی می‌شود؛ برای حفظ سقف ۱۵٪ تمدید کنید.",ts:t-6*HOUR,read:false},
+{id:"n4",type:"system",txt:"پروفایل شما ۸۶٪ تکمیل است؛ با بارگذاری عکس واقعی به ۱۰۰٪ برسانید.",ts:t-9*HOUR,read:false}],
+activity:[
+{icon:"play",hue:"#A78BFA",txt:"کار «سرویس کولر گازی» آغاز شد",ts:t-HOUR},
+{icon:"checkC",hue:"#19C6AD",txt:"پیشنهاد «تعویض کلید و پریز» پذیرفته شد",ts:t-2*HOUR},
+{icon:"send",hue:"#3E9BFF",txt:"پیشنهاد ۱٬۱۵۰٬۰۰۰ تومان برای «سرویس تابلو برق» ثبت شد",ts:t-3*HOUR},
+{icon:"wallet",hue:"#46D07C",txt:"سفارش «عیب‌یابی برق واحدها» تکمیل و ۴۵۷٬۶۰۰ تومان تسویه شد",ts:t-4*HOUR},
+{icon:"crown2",hue:"#A78BFA",txt:"اشتراک «حرفه‌ای» فعال شد — سقف افزایش ۱۵٪",ts:t-12*DAY}]};
+}
+/* ═══════════ 6. STATE ═══════════ */
+const LS="zv_specialist_panel_v3";
+let S=null,saveT=null;
+function persist(){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}}
+function save(){clearTimeout(saveT);saveT=setTimeout(persist,220)}
+function load(){try{const r=localStorage.getItem(LS);if(r){const d=JSON.parse(r);if(d&&d.v===3&&d.profile&&Array.isArray(d.orders)&&Array.isArray(d.services))return d}}catch(e){}return seed()}
+const U={view:"dashboard",filter:"all",q:"",sort:"new",urgent:false,preset:"",sel:new Set(),
+drawerId:null,editing:false,draft:null,freshId:null,chartMode:"week",pTmp:null,confirmCb:null,dragSvc:null,
+notifOpen:false,settleMode:"team",buy:null,rateQ:""};
+/* ═══════════ 7. DERIVED ═══════════ */
+const planOf=id=>PLANS.find(p=>p.id===id)||PLANS[0];
+const curPlan=()=>planOf(S.plan);
+const planActive=()=>S.plan!=="free"&&S.planEnd>now();
+const planPct=()=>planActive()?curPlan().pct:0;
+function gateOf(s){let g=GATES[0];GATES.forEach(x=>{if(s.jobs>=x.jobs&&s.rating>=x.rating)g=x});return g}
+function effPct(s){return Math.min(planPct(),gateOf(s).pct)}
+function ceilOf(s){return Math.round(s.floor*(1+effPct(s)/100)/1000)*1000}
+function svcByCat(c){return S.services.find(s=>s.cat===c&&s.active)||S.services.find(s=>s.cat===c)}
+function newCount(){return S.orders.filter(o=>o.status==="new").length}
+function unread(){return S.notifications.filter(n=>!n.read).length}
+function planDaysLeft(){return Math.max(0,Math.ceil((S.planEnd-now())/DAY))}
+function completeness(){const p=S.profile,c=[!!p.name,!!p.title,/^09\d{9}$/.test(p.phone),!!p.area,(p.bio||"").length>=60,p.skills.length>=4,p.avatar&&p.avatar.type==="upload"];return Math.round(c.filter(Boolean).length/c.length*100)}
+function missingHint(){const p=S.profile;if(!(p.avatar&&p.avatar.type==="upload"))return"برای اعتماد بیشتر مشتری، عکس واقعی خود را بارگذاری کنید.";if((p.bio||"").length<60)return"درباره خودتان کمی بیشتر بنویسید.";if(p.skills.length<4)return"مهارت‌های بیشتری اضافه کنید.";return"پروفایل شما کامل است؛ عالی!"}
+function acceptance(){const d=S.orders.filter(o=>["accepted","doing","done","declined"].includes(o.status)),ok=d.filter(o=>o.status!=="declined").length;return{pct:d.length?Math.round(ok/d.length*100):0,total:d.length}}
+function weekVals(){const i=(new Date().getDay()+1)%7;return S.weekBase.map((v,k)=>k<i?v:k===i?S.earnToday:0)}
+function monthVals(){return[...S.monthBase,weekVals().reduce((a,b)=>a+b,0)]}
+function netOf(p){return Math.round(p*(1-S.commission/100))}
+function overallScore(){const sv=S.services.filter(s=>s.active);if(!sv.length)return 0;
+const jobs=sv.reduce((a,s)=>a+s.jobs,0),rt=sv.reduce((a,s)=>a+s.rating,0)/sv.length;
+const acc=acceptance().pct,comp=completeness();
+return Math.round(clamp(rt/5*40+Math.min(1,jobs/600)*25+acc*.2+comp*.15,0,100))}
+/* ═══════════ 8. SOUND ═══════════ */
+let AC=null,master=null;
+function beep(seq){if(!S.settings.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume();
+if(!master){master=AC.createGain();master.gain.value=.15;master.connect(AC.destination)}
+const t0=AC.currentTime;seq.forEach(([f,d,dl,ty,g])=>{const o=AC.createOscillator(),gn=AC.createGain();o.type=ty||"sine";o.frequency.value=f;
+const s=t0+(dl||0);gn.gain.setValueAtTime(0,s);gn.gain.linearRampToValueAtTime(g||1,s+.012);gn.gain.exponentialRampToValueAtTime(.001,s+d);
+o.connect(gn);gn.connect(master);o.start(s);o.stop(s+d+.05)})}catch(e){}}
+const SND={send:[[660,.14,0,"triangle",.9],[880,.18,.09,"triangle",.9]],accept:[[523,.12,0],[659,.12,.08],[784,.2,.16]],
+pay:[[880,.09,0],[1175,.09,.07],[1568,.22,.14,"triangle"]],new:[[740,.12,0],[590,.16,.1]],tick:[[1500,.05,0,"sine",.32]],
+err:[[180,.16,0,"square",.45]],pop:[[900,.07,0,"sine",.5]],decline:[[520,.12,0],[392,.18,.1]],
+upgrade:[[523,.1,0],[659,.1,.07],[784,.1,.14],[1046,.28,.21,"triangle"]]};
+/* ═══════════ 9. TOAST / CONFETTI ═══════════ */
+let toastId=0;const toastActs={};
+function toast(type,msg,action){
+const box=$("#toasts");if(!box)return;while(box.children.length>=4)box.firstChild.remove();
+const id="t"+(++toastId),ic={success:"checkC",info:"info",warn:"alert",danger:"xC"}[type]||"info",dur=action?7000:4800;
+const el=document.createElement("div");el.className="toast "+type;el.id=id;el.setAttribute("role","status");
+el.innerHTML=`<span class="ti">${ICON(ic,19)}</span><div class="tx">${msg}</div>${action?`<button class="tact" data-act="toastAct" data-tid="${id}">${esc(action.label)}</button>`:""}<button class="tx2" data-act="toastClose" data-tid="${id}" aria-label="بستن">${ICON("x",14)}</button><i class="tp" style="animation-duration:${dur}ms"></i>`;
+if(action)toastActs[id]=action.fn;box.appendChild(el);el._t=setTimeout(()=>dismissToast(id),dur);return id}
+function dismissToast(id){const el=document.getElementById(id);if(!el)return;clearTimeout(el._t);delete toastActs[id];el.classList.add("out");setTimeout(()=>el.remove(),300)}
+function confetti(x,y){if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;const fx=$("#fx");if(!fx)return;
+const cols=["#FF6B1A","#FFB25E","#0FA3A3","#2E63E7","#7C4DFF","#E0447C","#9BE24A"];
+for(let i=0;i<20;i++){const p=document.createElement("i");p.className="conf";const s=5+Math.random()*7;
+p.style.cssText=`left:${x}px;top:${y}px;width:${s}px;height:${s*(.5+Math.random())}px;background:${cols[i%cols.length]}`;fx.appendChild(p);
+const a=(-Math.PI/2)+(Math.random()-.5)*2.3,v=100+Math.random()*170,dx=Math.cos(a)*v,dy=Math.sin(a)*v;
+p.animate([{transform:"translate(0,0) rotate(0deg)",opacity:1},{transform:`translate(${dx}px,${dy+180}px) rotate(${(Math.random()-.5)*760}deg)`,opacity:0}],
+{duration:950+Math.random()*550,easing:"cubic-bezier(.15,.6,.4,1)"}).onfinish=()=>p.remove()}}
+/* ═══════════ 10. MODAL / LOCK ═══════════ */
+function lock(){document.body.classList.toggle("lock",$("#dwrap").classList.contains("open")||$("#mwrap").classList.contains("open")||document.body.classList.contains("nav"))}
+function openModal(html,cls=""){const w=$("#mwrap");w.innerHTML=`<div class="mscrim" data-act="closeModal"></div><div class="modal ${cls}" role="dialog" aria-modal="true">${html}</div>`;w.classList.add("open");lock()}
+function closeModal(){const w=$("#mwrap");if(!w.classList.contains("open"))return;w.classList.remove("open");w.innerHTML="";U.pTmp=null;U.confirmCb=null;U.buy=null;lock()}
+function confirmModal(title,msg,yes,cb,danger=true){U.confirmCb=cb;openModal(`<div class="mhead">${ICON("alert",20)}<h3>${esc(title)}</h3></div><div class="mbody"><p style="font-size:13px;line-height:2;color:var(--mut)">${msg}</p></div><div class="mfoot"><button class="btn ${danger?"d":"p"}" data-act="confirmYes">${esc(yes)}</button><button class="btn gh" data-act="closeModal">انصراف</button></div>`)}
+/* ═══════════ 11. CHROME ═══════════ */
+const VIEWS={dashboard:{t:"پیشخوان",ic:"chart"},orders:{t:"کارتابل سفارش‌ها",ic:"case"},rates:{t:"نرخ‌های من",ic:"tag"},
+plans:{t:"اشتراک و پلن",ic:"crown2"},settle:{t:"تسویه و درآمد",ic:"wallet"},quality:{t:"کیفیت و اعتبار",ic:"shield"},profile:{t:"پروفایل من",ic:"user"}};
+const NAVGROUPS=[{sec:"نمای کلی",items:["dashboard"]},{sec:"کار و درآمد",items:["orders","rates","settle"]},{sec:"رشد و اعتبار",items:["plans","quality"]},{sec:"حساب",items:["profile"]}];
+const NIC={order:["bolt","#FFAE1A"],accept:["checkC","#19C6AD"],pay:["wallet","#46D07C"],decline:["xC","#FF6257"],system:["info","#3E9BFF"],plan:["crown2","#A78BFA"]};
+function renderNP(){const el=$("#np");el.classList.toggle("open",U.notifOpen);
+el.innerHTML=`<div class="nphead">${ICON("bell",17)}<b>اعلان‌ها</b>${unread()?`<button class="btn gh sm" data-act="notifAll">خواندن همه</button>`:""}</div>${S.notifications.length?S.notifications.slice(0,14).map(n=>{const[i,h]=NIC[n.type]||NIC.system;return `<div class="ni2 ${n.read?"":"unread"}" data-act="notifItem" data-nid="${n.id}"><span class="ni" style="color:${h}">${ICON(i,16)}</span><p>${esc(n.txt)}</p><time>${ago(n.ts)}</time>${n.read?"":'<span class="ud"></span>'}</div>`}).join(""):`<div class="empty" style="padding:26px">${ICON("bell",30)}<p>اعلانی ندارید.</p></div>`}`}
+function renderChrome(){
+const p=S.profile,cp=curPlan(),pa=planActive(),dl=planDaysLeft();
+$("#sidebar").innerHTML=`
+<div class="sbrand"><span class="smark">${ICON("bolt",23)}</span><div><b class="brand-word">Zingo<span>Vingo</span></b><small>پنل متخصصان خدمات</small></div></div>
+<nav class="nav" aria-label="بخش‌ها">${NAVGROUPS.map(g=>`<div class="navsec">${g.sec}</div>`+g.items.map(k=>{const v=VIEWS[k];
+let bd="";if(k==="orders"&&newCount())bd=`<span class="nbdg">${fmt(newCount())}</span>`;
+if(k==="plans")bd=pa&&dl<=20?`<span class="nbdg r">${fmt(dl)}</span>`:`<span class="nbdg v">${faStr(cp.pct)}٪</span>`;
+if(k==="profile"&&completeness()<100)bd='<span class="ndot" title="پروفایل ناقص"></span>';
+return `<button class="navi ${U.view===k?"on":""}" data-act="nav" data-view="${k}">${ICON(v.ic,19)}<span>${v.t}</span>${bd}</button>`}).join("")).join("")}</nav>
+<div class="sspace"></div>
+<div class="srow"><span class="pdot ${S.settings.available?"":"off"}"></span><span class="lbl">دریافت سفارش جدید<small>${S.settings.available?"آنلاین — در دسترس":"آفلاین — موقتاً غیرفعال"}</small></span><button class="sw" role="switch" aria-checked="${S.settings.available}" data-act="avail" aria-label="دریافت سفارش جدید"><span class="knob"></span></button></div>
+<div class="pchip" data-act="nav" data-view="plans" role="button" tabindex="0" style="cursor:pointer"><span style="color:${cp.c}">${ICON("crown2",18)}</span><span class="pt"><b>${pa?cp.name:"پلن پایه"}</b><small>${pa?fmt(dl)+" روز اعتبار":"سقف افزایش ۰٪"}</small></span><span class="pv">${faStr(planPct())}٪</span></div>
+<div class="wchip"><span class="wl">${ICON("wallet",15)} موجودی کیف پول</span><div class="wv"><span id="walletVal">${fmt(S.wallet)}</span> <small>تومان</small></div></div>
+<div class="sme"><span class="avw">${avBox(p.avatar,44,13)}<span class="pdot ${S.settings.available?"":"off"}"></span></span><div class="who"><b>${esc(p.name)}</b><span>${esc(p.title)}</span></div><button class="ibtn" style="width:32px;height:32px" data-act="editProfile" title="ویرایش پروفایل" aria-label="ویرایش پروفایل">${ICON("edit",15)}</button></div>
+<div class="sfoot">ZingoVingo · نسخه ۳٫۰</div>`;
+const subs={dashboard:faDate(),orders:fmt(newCount())+" سفارش جدید در انتظار پیشنهاد",rates:"کف اتحادیه · سقف پلن · نرخ شما",
+plans:planActive()?`پلن ${cp.name} · ${fmt(dl)} روز اعتبار`:"پلن پایه — سقف افزایش ۰٪",
+settle:"تسویه فردی و تیمی",quality:"امتیاز، سطح و مسیر ارتقا",profile:"نمایش عمومی شما در ZingoVingo"};
+$("#topbar").innerHTML=`
+<button class="ibtn" id="menuBtn" data-act="menu" aria-label="منو">${ICON("menu",19)}</button>
+<button class="ibtn" id="railBtn" data-act="rail" title="جمع کردن منو (Ctrl+B)" aria-label="جمع کردن منو">${ICON("rail",19)}</button>
+<span class="bmini"><span class="smark">${ICON("bolt",17)}</span><span class="brand-word">Zingo<span>Vingo</span></span></span>
+<div class="tbt"><h2>${VIEWS[U.view].t}</h2><p>${subs[U.view]}</p></div><div class="tbsp"></div>
+<button class="ibtn ${S.settings.sound?"on":""}" data-act="sound" title="${S.settings.sound?"صدا روشن — خاموش کردن":"صدا خاموش — روشن کردن"}" aria-label="صدا">${ICON(S.settings.sound?"vol":"volX",18)}</button>
+<button class="ibtn" data-act="theme" title="تغییر تم" aria-label="تغییر تم">${ICON(document.documentElement.dataset.theme==="dark"?"sun":"moon",18)}</button>
+<button class="ibtn" id="bellBtn" data-act="bell" aria-label="اعلان‌ها">${ICON("bell",18)}${unread()?`<span class="bbell">${unread()>9?"۹+":fmt(unread())}</span>`:""}</button>
+<span class="vr"></span>
+<button class="avbtn" data-act="nav" data-view="profile">${avBox(p.avatar,30,9)}<b>${esc(p.name.split(" ")[0])}</b>${ICON("chevD",14)}</button>`;
+renderNP()}
+function setView(v){U.view=v;closeDrawer();U.notifOpen=false;document.body.classList.remove("nav");lock();renderChrome();renderView();window.scrollTo({top:0,behavior:"smooth"})}
+function renderView(){const c=$("#content");
+if(U.view==="dashboard")c.innerHTML=dashHTML();
+else if(U.view==="orders"){c.innerHTML=ordersHTML();renderOrders()}
+else if(U.view==="rates")c.innerHTML=ratesHTML();
+else if(U.view==="plans")c.innerHTML=plansHTML();
+else if(U.view==="settle")c.innerHTML=settleHTML();
+else if(U.view==="quality")c.innerHTML=qualityHTML();
+else c.innerHTML=profileHTML();
+if(U.view==="dashboard")bindChart();
+$$("[data-w]").forEach(el=>{const w=el.getAttribute("data-w");el.removeAttribute("data-w");setTimeout(()=>el.style.width=w+"%",50)})}
+function refresh(){if(U.view==="orders")renderOrders();else renderView();renderChrome()}
+function logAct(ic,hue,txt){S.activity.unshift({icon:ic,hue,txt,ts:now()});S.activity=S.activity.slice(0,16)}
+function notify(type,txt,orderId){S.notifications.unshift({id:"n"+now()+Math.random().toString(36).slice(2,6),type,txt,ts:now(),read:false,orderId});S.notifications=S.notifications.slice(0,24)}
+/* ═══════════ 12. CHARTS ═══════════ */
+function barSVG(vals,labels,todayIdx){
+const W=580,H=236,pL=12,pR=56,pT=18,pB=36,iW=W-pL-pR,iH=H-pT-pB;
+const max=Math.max(...vals,1)*1.14,step=iW/vals.length,bw=Math.min(46,step*.56);
+const steps=[5e5,1e6,2e6,3e6,5e6,1e7],st=steps.find(s=>s>=max/3.5)||1e7;
+let grid="";for(let v=0;v<=max;v+=st){const y=pT+iH-(v/max)*iH;grid+=`<line x1="${pL}" y1="${y}" x2="${W-pR}" y2="${y}" stroke="var(--line)" stroke-width="1" ${v?'stroke-dasharray="3 4"':""}/><text x="${W-pR+8}" y="${y+4}" font-size="10" fill="var(--mut2)">${v?fmtD(v/1e6)+"م":"۰"}</text>`}
+let bars="";vals.forEach((v,i)=>{const x=W-pR-(i+1)*step+(step-bw)/2,h=Math.max(v>0?6:3,(v/max)*iH),y=pT+iH-h,td=i===todayIdx,fut=i>todayIdx;
+bars+=`<g class="bar-g" style="animation-delay:${i*60}ms"><rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="7" fill="${td?"url(#gA)":"url(#gT)"}" opacity="${fut?.28:1}"/></g><text x="${x+bw/2}" y="${H-13}" text-anchor="middle" font-size="10.5" fill="${td?"var(--brandSoft)":"var(--mut2)"}" font-weight="${td?800:500}">${labels[i]}</text>${td?`<text x="${x+bw/2}" y="${y-6}" text-anchor="middle" font-size="9.5" fill="var(--brandSoft)" font-weight="800">امروز</text>`:""}<rect class="hit" data-bar="${i}" x="${x-4}" y="${pT}" width="${bw+8}" height="${iH}" fill="transparent"/>`});
+return `<svg id="chartSvg" viewBox="0 0 ${W} ${H}" role="img" aria-label="نمودار درآمد"><defs><linearGradient id="gT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2BD9C8"/><stop offset="1" stop-color="#1B47B8"/></linearGradient><linearGradient id="gA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC24D"/><stop offset="1" stop-color="#E4570B"/></linearGradient></defs>${grid}${bars}</svg>`}
+function bindChart(){const svg=$("#chartSvg"),tip=$("#ctip");if(!svg||!tip)return;
+const vals=U.chartMode==="week"?weekVals():monthVals();
+const labels=U.chartMode==="week"?["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه"]:["هفته اول","هفته دوم","هفته سوم","هفته جاری"];
+svg.addEventListener("mousemove",e=>{const h=e.target.closest("[data-bar]");if(!h){tip.style.opacity=0;return}
+const i=+h.dataset.bar,r=svg.getBoundingClientRect(),hb=h.getBoundingClientRect();
+tip.innerHTML=`<b>${money(vals[i])}</b>${labels[i]}`;tip.style.left=(hb.left-r.left+hb.width/2)+"px";tip.style.top=(hb.top-r.top+66)+"px";tip.style.opacity=1});
+svg.addEventListener("mouseleave",()=>tip.style.opacity=0)}
+function donutData(){const m={};S.orders.forEach(o=>m[o.cat]=(m[o.cat]||0)+1);const a=Object.entries(m).sort((x,y)=>y[1]-x[1]),top=a.slice(0,5),rest=a.slice(5).reduce((s,[,c])=>s+c,0);if(rest)top.push(["other",rest]);return top}
+function donutSVG(){const d=donutData(),tot=S.orders.length,r=54,c=2*Math.PI*r;let off=0;
+const segs=d.map(([k,n])=>{const hue=k==="other"?"#8592B0":CATS[k].hue,len=n/tot*c;
+const s=`<circle data-seg="${k}" cx="70" cy="70" r="${r}" fill="none" stroke="${hue}" stroke-width="20" stroke-dasharray="${len} ${c-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"/>`;off+=len;return s}).join("");
+return `<svg id="donut" viewBox="0 0 140 140" width="140" height="140">${segs}<text x="70" y="66" text-anchor="middle" font-size="22" font-weight="800" fill="var(--ink)">${fmt(tot)}</text><text x="70" y="84" text-anchor="middle" font-size="10" fill="var(--mut)">سفارش</text></svg>`}
+function ringSVG(pct,size=88,sw=9){const r=(size-sw*2)/2,c=2*Math.PI*r,ct=size/2;
+return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}"><circle cx="${ct}" cy="${ct}" r="${r}" fill="none" stroke="var(--surf4)" stroke-width="${sw}"/><circle cx="${ct}" cy="${ct}" r="${r}" fill="none" stroke="url(#gr)" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-pct/100)}" transform="rotate(-90 ${ct} ${ct})" style="transition:stroke-dashoffset 1s cubic-bezier(.2,.9,.25,1)"/><defs><linearGradient id="gr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC24D"/><stop offset="1" stop-color="#0FA3A3"/></linearGradient></defs><text x="${ct}" y="${ct+5}" text-anchor="middle" font-size="${size*.19}" font-weight="900" fill="var(--ink)">${fmt(pct)}٪</text></svg>`}
+/* ═══════════ 13. DASHBOARD ═══════════ */
+function dashHTML(){
+const p=S.profile,nc=newCount(),urg=S.orders.filter(o=>o.status==="new"&&o.urgent).length,acc=acceptance(),comp=completeness();
+const trend=Math.round((S.earnToday-S.prevSameDay)/S.prevSameDay*100);
+const sched=S.orders.filter(o=>["accepted","doing"].includes(o.status));
+const vals=U.chartMode==="week"?weekVals():monthVals();
+const labels=U.chartMode==="week"?["ش","ی","د","س","چ","پ","ج"]:["هفته ۱","هفته ۲","هفته ۳","جاری"];
+const ti=U.chartMode==="week"?(new Date().getDay()+1)%7:3;
+const total=vals.reduce((a,b)=>a+b,0),dn=donutData(),cp=curPlan(),pa=planActive(),dl=planDaysLeft();
+const hr=new Date().getHours(),greet=hr<12?"صبح بخیر":hr<17?"ظهر بخیر":hr<20?"عصر بخیر":"شب بخیر";
+const headroom=S.services.filter(s=>s.active).reduce((a,s)=>a+(ceilOf(s)-s.myRate),0);
+return `<div class="vhead"><div><h2>${greet}، <span class="grad">${esc(p.name.split(" ")[0])}</span> 👋</h2><p>${faDate()} · ${fmt(nc)} سفارش جدید منتظر پیشنهاد شماست</p></div><div class="sp"></div><button class="btn gh" data-act="nav" data-view="plans">${ICON("crown2",16)} ${pa?"مدیریت اشتراک":"خرید اشتراک"}</button><button class="btn p" data-act="statNew">${ICON("bolt",17)} سفارش‌های جدید</button></div>
+<div class="kpis stag">
+<div class="card kpi" style="--d:0"><div class="top">${tile("electrical",40)}<span class="lbl">درآمد امروز</span></div><div class="val">${fmt(S.earnToday)} <small>تومان</small></div><span class="sub"><span class="${trend>=0?"up":"dn"}">${ICON("trend",12)} ${trend>=0?"+":"−"}${fmt(Math.abs(trend))}٪</span> نسبت به هفته قبل</span></div>
+<div class="card kpi click" style="--d:1" data-act="statNew" role="button" tabindex="0"><div class="top">${tile("iphone",40)}<span class="lbl">سفارش‌های جدید</span></div><div class="val">${fmt(nc)}</div><span class="sub">${fmt(urg)} فوری · ${fmt(S.orders.filter(o=>o.status==="quoted").length)} پیشنهاد در انتظار</span></div>
+<div class="card kpi" style="--d:2"><div class="top">${tile("outlet",40)}<span class="lbl">نرخ پذیرش پیشنهاد</span></div><div class="val">${fmt(acc.pct)}٪</div><div class="bar"><i data-w="${acc.pct}"></i></div><span class="sub">از ${fmt(acc.total)} پیشنهاد نهایی‌شده</span></div>
+<div class="card kpi click" style="--d:3" data-act="nav" data-view="plans" role="button" tabindex="0"><div class="top"><span class="tile" style="width:40px;height:40px;color:${cp.c};background:${cp.c}1f;border-color:${cp.c}55">${ICON("crown2",20)}</span><span class="lbl">سقف افزایش نرخ</span></div><div class="val" style="color:${cp.c}">${faStr(planPct())}٪</div><span class="sub">${pa?cp.name+" · "+fmt(dl)+" روز اعتبار":"پلن پایه — برای افزایش، اشتراک بخرید"}</span></div>
+</div>
+${!pa?`<div class="banner vio" style="margin-bottom:16px">${ICON("crown2",18)}<div style="flex:1"><b>سقف افزایش نرخ شما ۰٪ است.</b> با خرید اشتراک، روی خدماتی که کیفیت‌شان تأیید شده تا ۵۰٪ بالای نرخ مصوب اتحادیه قیمت بگذارید.</div><button class="btn v sm" data-act="nav" data-view="plans">مشاهده پلن‌ها</button></div>`:dl<=20?`<div class="banner warn" style="margin-bottom:16px">${ICON("alert",18)}<div style="flex:1"><b>اشتراک «${cp.name}» ${fmt(dl)} روز دیگر منقضی می‌شود.</b> پس از انقضا، سقف افزایش نرخ به ۰٪ برمی‌گردد و نرخ‌های بالای مصوبه غیرفعال می‌شوند.</div><button class="btn p sm" data-act="renew">تمدید اشتراک</button></div>`:""}
+<div class="grid2">
+<div class="col stag">
+<div class="card pad" style="--d:1"><div class="chead">${ICON("chart",18)}<h3>درآمد ${U.chartMode==="week"?"هفته":"ماه"}</h3><span class="ctotal">${money(total)}</span><button class="chip ${U.chartMode==="week"?"on":""}" data-act="chartMode" data-m="week">هفته</button><button class="chip ${U.chartMode==="month"?"on":""}" data-act="chartMode" data-m="month">ماه</button></div><div class="cwrap">${barSVG(vals,labels,ti)}<div id="ctip"></div></div><div class="cnote">ارقام محور عمودی به میلیون تومان</div></div>
+<div class="card pad" style="--d:2"><div class="chead">${ICON("cal",18)}<h3>برنامه کاری شما</h3><span class="mchip">${fmt(sched.length)} کار فعال</span></div>${sched.length?sched.map(o=>`<div class="sched">${tile(o.cat,36)}<div class="si"><b>${esc(o.title)}</b><span>${esc(o.customer.name)} · ${esc(o.area)}</span></div><span class="tchip">${esc(o.when)}</span>${badge(o)}${o.status==="accepted"?`<button class="btn t sm" data-act="startWork" data-id="${o.id}">${ICON("play",13)} شروع کار</button>`:`<button class="btn g sm" data-act="finishWork" data-id="${o.id}">${ICON("check",13)} اتمام و تسویه</button>`}</div>`).join(""):`<div class="empty" style="padding:24px">${ICON("cal",30)}<h4>کار زمان‌بندی‌شده‌ای ندارید</h4><p>با ثبت پیشنهاد روی سفارش‌های جدید، برنامه کاری‌تان را پر کنید.</p><button class="btn gh sm" data-act="statNew">مشاهده سفارش‌ها</button></div>`}</div>
+<div class="card pad" style="--d:3"><div class="chead">${ICON("tag",18)}<h3>ظرفیت افزایش نرخ استفاده‌نشده</h3><span class="ctotal">${money(headroom)}</span></div><p style="font-size:11.5px;color:var(--mut);margin-bottom:11px">مجموع فاصله نرخ فعلی شما تا سقف مجاز در ${fmt(S.services.filter(s=>s.active).length)} خدمت فعال. برای استفاده، نرخ‌ها را در «نرخ‌های من» بالا ببرید.</p><button class="btn gh sm" data-act="nav" data-view="rates">${ICON("tag",14)} تنظیم نرخ‌ها</button></div>
+</div>
+<div class="col stag">
+<div class="card pad" style="--d:1"><div class="chead">${ICON("user",18)}<h3>تکمیل پروفایل</h3></div><div class="ringw">${ringSVG(comp)}<div class="rt"><b>${comp===100?"پروفایل کامل است ✓":"پروفایل شما "+fmt(comp)+"٪ کامل است"}</b><p>${missingHint()}</p><button class="btn p sm" data-act="editProfile">${ICON("edit",13)} ${comp===100?"ویرایش":"تکمیل پروفایل"}</button></div></div></div>
+<div class="card pad" style="--d:2"><div class="chead">${ICON("grid",18)}<h3>ترکیب سفارش‌ها</h3></div><div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">${donutSVG()}<div style="flex:1;min-width:150px">${dn.map(([k,n])=>`<div class="leg" data-leg="${k}"><span class="dot" style="background:${k==="other"?"#8592B0":CATS[k].hue}"></span><span class="nm">${k==="other"?"سایر":CATS[k].label}</span><b>${fmt(n)}</b><span class="pc">${fmt(Math.round(n/S.orders.length*100))}٪</span></div>`).join("")}</div></div></div>
+<div class="card pad" style="--d:3"><div class="chead">${ICON("clock",18)}<h3>فعالیت‌های اخیر</h3></div>${S.activity.slice(0,7).map(a=>`<div class="act"><span class="at" style="color:${a.hue}">${ICON(a.icon,15)}</span><p>${esc(a.txt)}</p><time>${ago(a.ts)}</time></div>`).join("")||'<p style="font-size:12px;color:var(--mut)">فعالیتی ثبت نشده.</p>'}</div>
+</div></div>`}
+const ST={new:["جدید","b-new"],quoted:["پیشنهاد ارسال‌شده","b-quoted"],accepted:["پذیرفته‌شده","b-accepted"],doing:["در حال انجام","b-doing"],done:["انجام‌شده","b-done"],declined:["ردشده","b-declined"]};
+function badge(o){const[t,c]=ST[o.status]||ST.new;return `<span class="badge ${c}"><i></i>${t}</span>`}
+/* ═══════════ 14. ORDERS ═══════════ */
+function logAct(ic,hue,txt){S.activity.unshift({icon:ic,hue,txt,ts:now()});S.activity=S.activity.slice(0,16)}
+function notify(type,txt,orderId){S.notifications.unshift({id:"n"+now()+Math.random().toString(36).slice(2,6),type,txt,ts:now(),read:false,orderId});S.notifications=S.notifications.slice(0,26)}
+function refresh(){if(U.view==="orders")renderOrders();else renderView();renderChrome()}
+const FILTERS=[["all","همه"],["new","جدید"],["quoted","پیشنهاد داده‌شده"],["active","در جریان"],["done","انجام‌شده"],["declined","ردشده"]];
+const ST={new:["جدید","b-new"],quoted:["پیشنهاد ارسال‌شده","b-quoted"],accepted:["پذیرفته‌شده","b-accepted"],doing:["در حال انجام","b-doing"],done:["انجام‌شده","b-done"],declined:["ردشده","b-declined"]};
+function statusBadge(o){const[t,c]=ST[o.status]||ST.new;return `<span class="badge ${c}"><i></i>${t}</span>`}
+function matchF(o,f){return f==="all"?true:f==="active"?(o.status==="accepted"||o.status==="doing"):o.status===f}
+function baseOrders(){let a=[...S.orders];const q=norm(U.q);
+if(q)a=a.filter(o=>norm(o.title+" "+o.desc+" "+o.customer.name+" "+o.area+" "+o.id).includes(q));
+if(U.urgent)a=a.filter(o=>o.urgent);
+if(U.preset==="near")a=a.filter(o=>o.dist<=5);
+if(U.preset==="rich")a=a.filter(o=>o.budget&&o.budget[1]>=1000000);
+return a}
+function filtered(){const a=baseOrders().filter(o=>matchF(o,U.filter)),s=U.sort;
+a.sort((x,y)=>s==="budget"?((y.budget?y.budget[1]:0)-(x.budget?x.budget[1]:0)):s==="near"?(x.dist-y.dist):s==="urgent"?((y.urgent-x.urgent)||(y.created-x.created)):(y.created-x.created));return a}
+function emptySVG(){return `<svg viewBox="0 0 140 110" width="132" height="104" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M25 55 70 40l45 15v35L70 105 25 90V55z" stroke="var(--line2)" stroke-width="2.5" fill="var(--surf3)"/><path d="M25 55 70 70l45-15M70 70v35" stroke="var(--line2)" stroke-width="2.5"/><path d="M78 12 62 34h12l-3 18 18-24H77l4-16z" stroke="#FFAE1A" stroke-width="2.5" fill="rgba(255,174,26,.16)"/><circle cx="20" cy="30" r="3" fill="#0FA3A3"/><circle cx="122" cy="24" r="2.5" fill="#2E63E7"/><circle cx="112" cy="98" r="2" fill="#E0447C"/></svg>`}
+function ordersHTML(){
+return `<div class="vhead"><div><h2>کارتابل سفارش‌ها</h2><p>سفارش‌ها را بررسی کنید و در چارچوب نرخ مصوب و سقف پلن، پیشنهاد قیمت بفرستید</p></div><div class="sp"></div>
+${!S.settings.available?`<span class="mchip hot">${ICON("lock",13)} دریافت سفارش غیرفعال</span>`:""}
+<button class="btn gh" data-act="nav" data-view="rates">${ICON("tag",16)} نرخ‌های من</button></div>
+${!S.settings.available?`<div class="banner warn" style="margin-bottom:13px">${ICON("alert",17)}<span>دریافت سفارش جدید موقتاً غیرفعال است؛ سفارش تازه‌ای به کارتابل شما اضافه نمی‌شود.</span><button class="btn gh sm" data-act="avail" style="margin-inline-start:auto">فعال‌سازی</button></div>`:""}
+<div class="toolbar">
+<div class="swrap">${ICON("search",17)}<input class="inp" id="q" placeholder="جستجو در سفارش، مشتری، محله… ( / )" value="${esc(U.q)}" autocomplete="off"><button class="sclear ${U.q?"":"hidden"}" id="qclear" data-act="clearQ" aria-label="پاک کردن">${ICON("x",14)}</button></div>
+<div class="selw" style="width:162px">${ICON("chevD",15)}<select class="inp" id="sortSel" aria-label="مرتب‌سازی"><option value="new" ${U.sort==="new"?"selected":""}>جدیدترین</option><option value="budget" ${U.sort==="budget"?"selected":""}>بیشترین بودجه</option><option value="near" ${U.sort==="near"?"selected":""}>نزدیک‌ترین</option><option value="urgent" ${U.sort==="urgent"?"selected":""}>فوری‌ها اول</option></select></div>
+<div class="selw" style="width:176px">${ICON("chevD",15)}<select class="inp" id="presetSel" aria-label="نماهای آماده"><option value="" ${U.preset===""?"selected":""}>نماهای آماده…</option><option value="urgentToday" ${U.preset==="urgentToday"?"selected":""}>فوری‌های امروز</option><option value="near" ${U.preset==="near"?"selected":""}>نزدیک من (زیر ۵ km)</option><option value="rich" ${U.preset==="rich"?"selected":""}>بودجه بالای ۱ میلیون</option></select></div>
+<button class="chip ${U.urgent?"on":""}" id="urgChip" data-act="urgToggle">${ICON("flame",14)} فقط فوری</button>
+</div><div id="odyn"></div>`}
+function cardHTML(o,i){const sel=U.sel.has(o.id),c=o.customer,sv=svcByCat(o.cat);
+const act=o.status==="new"?`<button class="btn p sm" data-act="openOrder" data-id="${o.id}">${ICON("send",13)} ثبت پیشنهاد</button>`:
+o.status==="quoted"?`<button class="btn gh sm" data-act="openOrder" data-id="${o.id}">${ICON("eye",13)} مشاهده</button>`:
+o.status==="accepted"?`<button class="btn t sm" data-act="startWork" data-id="${o.id}">${ICON("play",13)} شروع کار</button>`:
+o.status==="doing"?`<button class="btn g sm" data-act="finishWork" data-id="${o.id}">${ICON("check",13)} اتمام</button>`:
+`<button class="btn gh sm" data-act="openOrder" data-id="${o.id}">جزئیات</button>`;
+return `<article class="card oc ${sel?"sel":""} ${U.freshId===o.id?"fresh":""}" style="--d:${Math.min(i,6)}" data-act="openOrder" data-id="${o.id}" tabindex="0" aria-label="${esc(o.title)}">
+<div class="octop"><button class="ck" role="checkbox" aria-checked="${sel}" data-act="selOrder" data-id="${o.id}" aria-label="انتخاب">${ICON("check",14)}</button>${tile(o.cat,40)}<div class="tt"><b>${esc(o.title)}</b><span class="code ltr">${o.id}</span></div>${statusBadge(o)}</div>
+<div class="occust">${custAv(c,26)}<span class="nm">${esc(c.name)}</span>${c.jobs>=10?`<span class="cr" title="مشتری وفادار">${ICON("crown",14)}</span>`:""}<span class="rate">${ICON("star",12)} ${fmtD(c.rating)}</span></div>
+<p class="ocdesc">${esc(o.desc)}</p>
+<div class="ocmeta"><span class="mchip">${ICON("pin",13)} ${esc(o.area)} · ${fmtD(o.dist)} km</span><span class="mchip">${ICON("clock",13)} ${esc(o.when)}</span><span class="mchip money">${ICON("wallet",13)} ${rangeTxt(o.budget)}</span>${sv?`<span class="mchip ok">${ICON("shield",13)} سقف ${shortM(ceilOf(sv))}</span>`:""}${o.urgent?`<span class="mchip hot">${ICON("flame",13)} فوری</span>`:""}</div>
+<div class="ocfoot"><span class="ago">${ago(o.created)}</span><span class="qs">${ICON("users",13)} ${fmt(o.quotes)} پیشنهاد دیگر</span><span class="sp"></span>${act}</div></article>`}
+function renderOrders(){const box=$("#odyn");if(!box)return;
+const base=baseOrders(),list=filtered(),cnt={};FILTERS.forEach(([f])=>cnt[f]=base.filter(o=>matchF(o,f)).length);
+const all=list.length&&list.every(o=>U.sel.has(o.id)),some=list.some(o=>U.sel.has(o.id));
+box.innerHTML=`<div class="chips">${FILTERS.map(([f,t])=>`<button class="chip ${U.filter===f?"on":""}" data-act="filter" data-f="${f}">${t}<span class="cnt">${fmt(cnt[f])}</span></button>`).join("")}</div>
+${U.sel.size?`<div class="bulk">${ICON("check",16)}<b>${fmt(U.sel.size)} سفارش انتخاب شده</b><span class="sp"></span><button class="btn d sm" data-act="bulkDecline">${ICON("x",13)} رد گروهی</button><button class="btn gh sm" data-act="clearSel">لغو انتخاب</button></div>`:""}
+<div class="lhead"><button class="ck ${some&&!all?"part":""}" role="checkbox" aria-checked="${all}" data-act="selAll" aria-label="انتخاب همه">${ICON(all?"check":"minus",14)}</button><span>${fmt(list.length)} سفارش ${U.filter!=="all"?"در این نما":"برای شما"}</span></div>
+${list.length?`<div class="ogrid">${list.map((o,i)=>cardHTML(o,i)).join("")}</div>`:`<div class="card empty">${emptySVG()}<h4>سفارشی مطابق فیلترها نیست</h4><p>عبارت جستجو یا فیلترها را تغییر دهید تا سفارش‌های بیشتری ببینید.</p><button class="btn gh sm" data-act="clearFilters">${ICON("refresh",14)} پاک کردن فیلترها</button></div>`}`}
+function bulkDecline(){const ids=[...U.sel],snap=[];
+ids.forEach(id=>{const o=S.orders.find(x=>x.id===id);if(o&&(o.status==="new"||o.status==="quoted")){snap.push({id,status:o.status,quote:o.quote});clearDec(id);o.status="declined";o.declineNote="توسط شما رد شد"}});
+if(!snap.length){toast("warn","فقط سفارش‌های «جدید» یا «پیشنهاد داده‌شده» قابل رد کردن هستند.");return}
+U.sel.clear();logAct("x","#FF6257",fmt(snap.length)+" سفارش گروهی رد شد");beep(SND.pop);save();refresh();
+toast("warn",fmt(snap.length)+" سفارش رد شد.",{label:"بازگردانی",fn:()=>{snap.forEach(s=>{const o=S.orders.find(x=>x.id===s.id);if(o){o.status=s.status;o.quote=s.quote;o.declineNote=null;if(s.status==="quoted")scheduleDec(s.id)}});save();refresh();toast("success","سفارش‌ها بازگردانی شدند.")}})}
+
+/* ═══════════ 15. DRAWER + QUOTE ═══════════ */
+function stepVal(p){return p<200000?10000:p<1000000?50000:100000}
+function defQty(o,sv){return o.qty||(sv&&sv.unit==="هر متر"?60:1)}
+function makeDraft(o){const sv=svcByCat(o.cat),qty=o.quote&&o.quote.qty?o.quote.qty:defQty(o,sv);
+const lo=sv?sv.floor*qty:400000,hi=sv?ceilOf(sv)*qty:lo;
+const base=o.quote?o.quote.price:(sv?clamp(sv.myRate*qty,lo,hi):Math.round((o.budget?(o.budget[0]+o.budget[1])/2:lo)));
+return{qty,price:Math.round(base),hrs:o.quote?o.quote.hrs:"۱ تا ۲ ساعت",warOn:o.quote?o.quote.warOn:true,warDays:o.quote?o.quote.warDays:30,note:o.quote?o.quote.note:""}}
+function bounds(){const o=S.orders.find(x=>x.id===U.drawerId),sv=o?svcByCat(o.cat):null,d=U.draft;
+if(!sv||!d)return null;const q=Math.max(1,d.qty||1);return{sv,q,lo:sv.floor*q,hi:ceilOf(sv)*q}}
+function openDrawer(id){const o=S.orders.find(x=>x.id===id);if(!o)return;U.drawerId=id;U.editing=false;U.draft=makeDraft(o);$("#dwrap").classList.add("open");renderDrawer();lock()}
+function openOrder(id){if(U.drawerId===id&&$("#dwrap").classList.contains("open"))return;openDrawer(id)}
+function closeDrawer(){if(!U.drawerId)return;U.drawerId=null;U.editing=false;U.draft=null;$("#dwrap").classList.remove("open");lock()}
+function updateFee(){const d=U.draft,b=bounds();if(!d||!b)return;
+const p=d.price||0,set=(s,v)=>{const e=$(s);if(e)e.textContent=v};
+set("#qpFmt",money(p));set("#feeP",money(p));set("#feeC","− "+money(p-netOf(p)));set("#feeN",money(netOf(p)));set("#footN",money(netOf(p)));
+set("#unitRate",money(Math.round(p/b.q))+" / "+b.sv.unit.replace("هر ",""));
+const f=$("#qFill");if(f)f.style.width=clamp((p-b.lo)/Math.max(1,b.hi-b.lo)*100,0,100)+"%";
+const rg=$("#qRange");if(rg&&document.activeElement!==rg)rg.value=clamp(p,b.lo,Math.max(b.hi,b.lo+1000));
+checkQuote()}
+function checkQuote(){const d=U.draft,b=bounds();if(!d||!b)return;
+const err=$("#qErr"),btn=$("#qSubmit"),inp=$("#qp"),hit=$("#ceilHit");
+let msg="";
+if(d.price<b.lo)msg=`مبلغ پیشنهاد از نرخ مصوب اتحادیه (${money(b.lo)}) کمتر است.`;
+else if(d.price>b.hi)msg=`مبلغ پیشنهاد از سقف مجاز شما (${money(b.hi)}) بیشتر است.`;
+if(err){err.classList.toggle("hidden",!msg);if(msg)err.querySelector("span").textContent=msg}
+if(inp)inp.classList.toggle("bad",!!msg);
+if(btn)btn.disabled=!!msg;
+if(hit){
+if(d.price>b.hi){const g=gateOf(b.sv),np=PLANS.find(x=>x.pct>=g.pct&&x.pct>planPct())||PLANS[3];
+const nc=Math.round(b.sv.floor*(1+Math.min(np.pct,g.pct)/100)/1000)*1000*b.q;
+hit.innerHTML=`<div class="banner vio">${ICON("crown2",17)}<div style="flex:1"><b>به سقف پلن رسیدید.</b> با پلن «${np.name}» سقف این خدمت به ${money(nc)} می‌رسد — ${money(nc-b.hi)} فضای بیشتر در همین سفارش.</div><button class="btn v sm" data-act="buyPlan" data-plan="${np.id}">خرید ${np.name}</button></div>`}
+else hit.innerHTML=""}}
+function setPrice(v){if(!U.draft)return;U.draft.price=Math.max(0,Math.round(v));const i=$("#qp");if(i&&document.activeElement!==i)i.value=U.draft.price;updateFee()}
+function setQty(v){const b=bounds();if(!b||!U.draft)return;U.draft.qty=Math.max(1,Math.round(v)||1);
+const nb=bounds();U.draft.price=clamp(Math.round(b.sv.myRate*nb.q),nb.lo,nb.hi);renderDrawer()}
+function quoteForm(o){const d=U.draft,b=bounds();
+if(!b)return `<div class="banner bad">${ICON("alert",17)}<span>برای این دسته خدمتی تعریف نشده است. ابتدا در «نرخ‌های من» خدمت مربوطه را اضافه کنید.</span><button class="btn gh sm" data-act="nav" data-view="rates">افزودن خدمت</button></div>`;
+const g=gateOf(b.sv),ep=effPct(b.sv),pos=clamp((d.price-b.lo)/Math.max(1,b.hi-b.lo)*100,0,100);
+const chips=[[b.lo,"کف مصوب: "+fmt(b.lo)],[clamp(b.sv.myRate*b.q,b.lo,b.hi),"نرخ من: "+fmt(clamp(b.sv.myRate*b.q,b.lo,b.hi))],[b.hi,"سقف مجاز: "+fmt(b.hi)]];
+if(o.budget){const bm=clamp(Math.round((o.budget[0]+o.budget[1])/2),b.lo,b.hi);chips.push([bm,"میانه بودجه: "+fmt(bm)])}
+return `<div class="dsec"><h4>${ICON("send",15)} ${U.editing?"ویرایش پیشنهاد قیمت":"پیشنهاد قیمت شما"}</h4>
+<div style="display:flex;flex-direction:column;gap:13px">
+<div class="corrlbl"><span>کف اتحادیه: <b>${fmt(b.sv.floor)}</b> / ${esc(b.sv.unit.replace("هر ",""))}</span><span>سقف شما: <b style="color:var(--brandSoft)">${fmt(ceilOf(b.sv))}</b> <span class="gate g${g.rank}">${g.name} ${faStr(ep)}٪</span></span></div>
+<div class="corr"><div class="track"></div><div class="fill" id="qFill" style="width:${pos}%"></div><div class="tick" style="right:0"></div><div class="tick" style="left:0"></div>
+<input type="range" id="qRange" min="${b.lo}" max="${Math.max(b.hi,b.lo+1000)}" step="1000" value="${clamp(d.price,b.lo,Math.max(b.hi,b.lo+1000))}" aria-label="مبلغ در بازه مجاز"></div>
+${ep<g.pct?`<div class="banner vio" style="font-size:11.5px">${ICON("crown2",15)}<span>کیفیت این خدمت سطح «${g.name}» (${faStr(g.pct)}٪) است ولی پلن شما ${faStr(planPct())}٪ اجازه می‌دهد.</span><button class="btn v sm" data-act="buyPlan" data-plan="${(PLANS.find(x=>x.pct>=g.pct&&x.pct>planPct())||PLANS[3]).id}">ارتقا</button></div>`:""}
+<div class="fgrid">
+<div class="frow"><label for="qQty">تعداد / مقدار (${esc(b.sv.unit)})</label><input class="inp num ltr" id="qQty" inputmode="numeric" value="${d.qty}"></div>
+<div class="frow"><label>نرخ واحد محاسبه‌شده</label><input class="inp" id="unitRate" value="${money(Math.round(d.price/b.q))}" readonly></div>
+</div>
+<div class="frow"><label for="qp">مبلغ کل پیشنهادی</label>
+<div class="pwrap"><input class="inp num ltr" id="qp" inputmode="numeric" value="${d.price}" autocomplete="off"><span class="unit">تومان</span>
+<button class="stp minus" data-act="stepQ" data-dir="-1" aria-label="کاهش">${ICON("minus",15)}</button>
+<button class="stp plus" data-act="stepQ" data-dir="1" aria-label="افزایش">${ICON("plus",15)}</button></div>
+<div class="pfmt" id="qpFmt">${money(d.price)}</div>
+<div class="qchips">${chips.map(([v,t])=>`<button class="qchip" data-act="quickP" data-v="${v}">${t}</button>`).join("")}</div></div>
+<div class="fgrid">
+<div class="frow"><label for="qh">مدت انجام کار</label><div class="selw">${ICON("chevD",15)}<select class="inp" id="qh">${HRS.map(h=>`<option ${d.hrs===h?"selected":""}>${h}</option>`).join("")}</select></div></div>
+<div class="frow"><label>گارانتی کار</label><div class="war"><button class="sw" role="switch" aria-checked="${d.warOn}" data-act="warToggle" aria-label="گارانتی"><span class="knob"></span></button>
+<div class="selw">${ICON("chevD",15)}<select class="inp" id="qwd" ${d.warOn?"":"disabled"}>${[7,30,90,180].map(x=>`<option value="${x}" ${d.warDays===x?"selected":""}>${fmt(x)} روز</option>`).join("")}</select></div></div></div></div>
+<div class="frow"><label for="qn">پیام به مشتری</label><textarea class="inp" id="qn" placeholder="توضیح کوتاه درباره نحوه انجام کار…">${esc(d.note)}</textarea>
+<div class="qchips"><button class="qchip" data-act="tpl" data-i="0">الگوی بازدید رایگان</button><button class="qchip" data-act="tpl" data-i="1">الگوی ضمانت کتبی</button></div></div>
+<div class="fee">
+<div class="feer"><span>مبلغ خدمت</span><span id="feeP">${money(d.price)}</span></div>
+<div class="feer"><span>کارمزد پلتفرم (${faStr(S.commission)}٪)</span><span class="neg" id="feeC">− ${money(d.price-netOf(d.price))}</span></div>
+<div class="feer"><span>منبع درآمد پلتفرم</span><span class="pos">اشتراک ماهانه</span></div>
+<div class="feer net"><span>دریافتی شما</span><b id="feeN">${money(netOf(d.price))}</b></div></div>
+<div class="err hidden" id="qErr">${ICON("alert",14)}<span></span></div><div id="ceilHit"></div>
+</div></div>`}
+function quoteCard(o){const q=o.quote;if(!q)return"";
+return `<div class="qcard"><div class="qp">${money(q.price)} <small>پیشنهاد شما · ${ago(q.at)}</small></div>
+<div class="qmeta"><span class="mchip">${ICON("clock",13)} ${esc(q.hrs)}</span><span class="mchip">${ICON("shield",13)} ${q.warOn?"گارانتی "+fmt(q.warDays)+" روز":"بدون گارانتی"}</span>${q.qty>1?`<span class="mchip">${ICON("grid",13)} ${fmt(q.qty)} واحد</span>`:""}<span class="mchip money">${ICON("wallet",13)} دریافتی ${money(netOf(q.price))}</span></div>
+${q.note?`<div class="qmsg">${esc(q.note)}</div>`:""}</div>`}
+function renderDrawer(){
+const d=$("#drawer"),o=S.orders.find(x=>x.id===U.drawerId);if(!o){d.innerHTML="";return}
+const c=o.customer,ok=["accepted","doing","done"].includes(o.status);
+const si={new:0,quoted:1,accepted:2,doing:3,done:4}[o.status]||0,steps=["ثبت","پیشنهاد","پذیرش","اجرا","تسویه"];
+const stepsH=`<div class="steps"><span class="prog" style="width:${(o.status==="declined"?1:si)/4*78}%"></span>${steps.map((s,i)=>{const cl=o.status==="declined"?(i<1?"pass":i===1?"fail":""):(i<si?"pass":i===si?"cur":"");return `<div class="step ${cl}"><span class="sd">${cl==="pass"?ICON("check",11):cl==="fail"?ICON("x",11):""}</span><span>${s}</span></div>`}).join("")}</div>`;
+const custH=`<div class="dcust">${custAv(c,46)}<div class="who"><b>${esc(c.name)} ${c.jobs>=10?`<span style="color:var(--brandSoft)">${ICON("crown",14)}</span>`:""}</b><span>${ICON("star",12)} ${fmtD(c.rating)} · ${fmt(c.jobs)} سفارش در ZingoVingo</span></div>
+<div class="phone">${ICON("phone",15)}<span class="ltr num">${ok?faStr(c.phone):faStr(c.phone.slice(0,4))+"•••••"+faStr(c.phone.slice(-2))}</span>${ok?`<a class="btn gh sm" href="tel:${c.phone}" style="margin-inline-start:auto">${ICON("phone",13)} تماس</a>`:`<span class="mn" style="margin-inline-start:auto">${ICON("lock",11)} نمایش پس از پذیرش</span>`}</div></div>`;
+const metaH=`<div class="mgrid">
+<div class="mtile"><span class="ml">${ICON("pin",14)} محله و فاصله</span><b>${esc(o.area)} · ${fmtD(o.dist)} کیلومتر</b></div>
+<div class="mtile"><span class="ml">${ICON("clock",14)} زمان درخواستی</span><b>${esc(o.when)}</b></div>
+<div class="mtile"><span class="ml">${ICON("wallet",14)} بودجه مشتری</span><b>${rangeTxt(o.budget)}</b></div>
+<div class="mtile"><span class="ml">${ICON("users",14)} رقابت</span><b>${fmt(o.quotes)} پیشنهاد دیگر</b></div></div>`;
+const descH=`<div class="dsec"><h4>${ICON("msg",15)} شرح درخواست</h4><div class="ddesc">${esc(o.desc)}</div></div>`;
+const attH=o.att&&o.att.length?`<div class="dsec"><h4>${ICON("camera",15)} تصاویر محل کار</h4><div class="attrow">${o.att.map(k=>`<div class="att"><button class="th" data-act="attOpen" data-kind="${k}" aria-label="بزرگ‌نمایی">${sketch(k)}</button><small>${ATT_CAP[k]||"تصویر محل"}</small></div>`).join("")}</div></div>`:"";
+let body="",foot="";
+if(o.status==="new"||U.editing){body=quoteForm(o);const b=bounds(),valid=b&&U.draft.price>=b.lo&&U.draft.price<=b.hi;
+foot=`<div class="net"><small>دریافتی شما</small><b id="footN">${money(netOf(U.draft.price))}</b></div><button class="btn p" data-act="submitQuote" data-id="${o.id}" ${valid?"":"disabled"} id="qSubmit">${ICON("send",16)} ${U.editing?"به‌روزرسانی":"ارسال پیشنهاد"}</button>${U.editing?`<button class="btn gh" data-act="cancelEdit">انصراف</button>`:""}`}
+else if(o.status==="quoted"){body=quoteCard(o)+`<div class="banner info">${ICON("clock",17)}<span class="wait" style="color:inherit"><span class="wd"><i></i><i></i><i></i></span> در انتظار پاسخ مشتری…</span></div>`;
+foot=`<button class="btn gh" data-act="editQuote" data-id="${o.id}">${ICON("edit",15)} ویرایش</button><button class="btn d" data-act="withdraw" data-id="${o.id}">${ICON("undo",15)} پس‌گرفتن</button>`}
+else if(o.status==="accepted"){body=`<div class="banner ok">${ICON("checkC",17)}<span>مشتری پیشنهاد شما را پذیرفت (${ago(o.acceptedAt)}). شماره تماس فعال شد.</span></div>`+quoteCard(o);
+foot=`<a class="btn gh" href="tel:${c.phone}">${ICON("phone",15)} تماس</a><button class="btn t" data-act="startWork" data-id="${o.id}">${ICON("play",15)} شروع کار</button>`}
+else if(o.status==="doing"){body=`<div class="banner info">${ICON("play",17)}<span>کار در حال انجام است (شروع ${ago(o.startedAt)}). پس از اتمام، تسویه خودکار است.</span></div>`+quoteCard(o);
+foot=`<button class="btn g" data-act="finishWork" data-id="${o.id}">${ICON("check",16)} اتمام و تسویه</button>`}
+else if(o.status==="done"){const q=o.quote;body=`<div class="banner ok">${ICON("checkC",17)}<span>کار با موفقیت تکمیل شد.</span><span class="paidtag" style="margin-inline-start:auto">${ICON("wallet",14)} تسویه شد</span></div>
+<div class="fee"><div class="feer"><span>مبلغ خدمت</span><span>${money(q.price)}</span></div><div class="feer"><span>کارمزد (${faStr(S.commission)}٪)</span><span class="neg">− ${money(q.price-o.paidNet)}</span></div><div class="feer net"><span>واریز به کیف پول</span><b>${money(o.paidNet)}</b></div><div class="feer"><span>زمان تسویه</span><span>${ago(o.paidAt)}</span></div></div>`+quoteCard(o);
+foot=`<button class="btn gh" data-act="closeDrawer">بستن</button><button class="btn gh" data-act="nav" data-view="settle">${ICON("wallet",15)} تسویه‌ها</button>`}
+else{body=`<div class="banner bad">${ICON("xC",17)}<span>${esc(o.declineNote||"این سفارش بسته شد.")}</span></div>`+quoteCard(o);
+foot=`<button class="btn gh" data-act="closeDrawer">بستن</button><button class="btn p" data-act="statNew">${ICON("bolt",15)} سفارش‌های جدید</button>`}
+d.innerHTML=`<div class="dhead">${tile(o.cat,40)}<div class="tt"><h3>${esc(o.title)}</h3><span><span class="ltr">${o.id}</span> · ${ago(o.created)}</span></div>${statusBadge(o)}<button class="ibtn" data-act="closeDrawer" aria-label="بستن">${ICON("x",16)}</button></div>
+<div class="dbody">${stepsH}${custH}${metaH}${descH}${attH}${body}</div><div class="dfoot">${foot}</div>`;
+const rg=$("#qRange");if(rg)rg.addEventListener("input",()=>setPrice(+rg.value));
+checkQuote()}
+const decT={};
+function clearDec(id){if(decT[id]){clearTimeout(decT[id]);delete decT[id]}}
+function scheduleDec(id,delay){clearDec(id);decT[id]=setTimeout(()=>decide(id),delay||(17000+Math.random()*21000))}
+function decide(id){delete decT[id];const o=S.orders.find(x=>x.id===id);if(!o||o.status!=="quoted")return;
+if(Math.random()<.74){o.status="accepted";o.acceptedAt=now();notify("accept",o.customer.name+" پیشنهاد شما برای «"+o.title+"» را پذیرفت.",id);
+logAct("checkC","#0FA3A3","پیشنهاد «"+o.title+"» پذیرفته شد");beep(SND.accept);
+toast("success","🎉 "+esc(o.customer.name)+" پیشنهاد شما را پذیرفت!",{label:"مشاهده",fn:()=>{setView("orders");openDrawer(id)}})}
+else{o.status="declined";o.declineNote=Math.random()<.5?"مشتری پیشنهاد پایین‌تری از متخصص دیگری پذیرفت.":"مشتری فعلاً از انجام کار منصرف شد.";
+notify("decline","پیشنهاد شما برای «"+o.title+"» پذیرفته نشد.",id);logAct("xC","#FF6257","پیشنهاد «"+o.title+"» رد شد");beep(SND.decline);
+toast("warn","پیشنهاد «"+esc(o.title)+"» پذیرفته نشد.",{label:"مشاهده",fn:()=>{setView("orders");openDrawer(id)}})}
+save();refresh();if(U.drawerId===id)renderDrawer()}
+function submitQuote(id){const o=S.orders.find(x=>x.id===id);if(!o||!U.draft)return;const b=bounds();if(!b)return;
+const p=U.draft.price;
+if(p<b.lo||p>b.hi){checkQuote();beep(SND.err);const e=$("#qErr");if(e){e.classList.add("shake");setTimeout(()=>e.classList.remove("shake"),450)}return}
+const wasEdit=U.editing,prev={status:o.status,quote:o.quote};
+o.qty=U.draft.qty;
+o.quote={price:p,qty:U.draft.qty,hrs:($("#qh")||{}).value||U.draft.hrs,warOn:U.draft.warOn,warDays:+(($("#qwd")||{}).value||U.draft.warDays),note:($("#qn")||{}).value?.trim()||U.draft.note,at:now()};
+o.status="quoted";U.editing=false;U.draft=makeDraft(o);scheduleDec(id);
+logAct("send","#2E63E7","پیشنهاد "+money(p)+" برای «"+o.title+"» "+(wasEdit?"به‌روزرسانی شد":"ثبت شد"));
+beep(SND.send);save();refresh();renderDrawer();
+if(wasEdit)toast("success","پیشنهاد شما به‌روزرسانی شد.");
+else toast("success","پیشنهاد <b>"+money(p)+"</b> برای "+esc(o.customer.name)+" ارسال شد.",{label:"بازگردانی",fn:()=>{const x=S.orders.find(y=>y.id===id);if(!x)return;clearDec(id);x.status=prev.status;x.quote=prev.quote;if(U.drawerId===id){U.editing=false;U.draft=makeDraft(x)}save();refresh();if(U.drawerId===id)renderDrawer();toast("info","پیشنهاد پس گرفته شد.")}})}
+function withdraw(id){const o=S.orders.find(x=>x.id===id);if(!o||o.status!=="quoted")return;const prev={status:o.status,quote:o.quote};
+clearDec(id);o.status="new";o.quote=null;U.editing=false;U.draft=makeDraft(o);
+logAct("undo","#FFAE1A","پیشنهاد «"+o.title+"» پس گرفته شد");beep(SND.pop);save();refresh();renderDrawer();
+toast("info","پیشنهاد پس گرفته شد؛ سفارش به حالت جدید برگشت.",{label:"بازگردانی",fn:()=>{const x=S.orders.find(y=>y.id===id);if(!x)return;x.status=prev.status;x.quote=prev.quote;scheduleDec(id);if(U.drawerId===id)U.draft=makeDraft(x);save();refresh();if(U.drawerId===id)renderDrawer();toast("success","پیشنهاد بازگردانی شد.")}})}
+function startWork(id){const o=S.orders.find(x=>x.id===id);if(!o||o.status!=="accepted")return;o.status="doing";o.startedAt=now();
+logAct("play","#A78BFA","کار «"+o.title+"» آغاز شد");beep(SND.pop);save();refresh();if(U.drawerId===id)renderDrawer();
+toast("info","کار آغاز شد؛ پس از اتمام، تسویه خودکار انجام می‌شود.")}
+let wRaf=null;
+function animWallet(from,to){const el=$("#walletVal");if(!el)return;if(wRaf)cancelAnimationFrame(wRaf);const t0=performance.now();
+const tick=t=>{const p=Math.min(1,(t-t0)/900),e=1-Math.pow(1-p,3);el.textContent=fmt(from+(to-from)*e);if(p<1)wRaf=requestAnimationFrame(tick)};wRaf=requestAnimationFrame(tick)}
+function finishWork(id,ev){const o=S.orders.find(x=>x.id===id);if(!o||o.status!=="doing")return;
+const net=netOf(o.quote.price),old=S.wallet;
+o.status="done";o.paidAt=now();o.paidNet=net;S.wallet+=net;S.earnToday+=net;S.profile.jobsDone++;
+const sv=svcByCat(o.cat);if(sv){sv.jobs++;sv.rating=Math.round(((sv.rating*(sv.jobs-1))+5)/sv.jobs*100)/100}
+logAct("wallet","#46D07C","سفارش «"+o.title+"» تکمیل و "+money(net)+" تسویه شد");
+notify("pay","مبلغ "+money(net)+" بابت «"+o.title+"» به کیف پول شما واریز شد.",id);
+beep(SND.pay);save();renderChrome();animWallet(old,S.wallet);renderView();if(U.drawerId===id)renderDrawer();
+confetti(ev&&ev.clientX?ev.clientX:innerWidth/2,ev&&ev.clientY?ev.clientY:innerHeight/2);
+toast("success","مبلغ <b>"+money(net)+"</b> به کیف پول شما واریز شد. 🎉");
+if(sv){const g=gateOf(sv);if(g.rank>0&&sv.jobs===g.jobs){notify("plan","سطح کیفیت «"+sv.name+"» به «"+g.name+"» ارتقا یافت — سقف "+faStr(g.pct)+"٪");toast("success","سطح کیفیت «"+esc(sv.name)+"» به <b>"+g.name+"</b> ارتقا یافت!")}}}
+
+/* ═══════════ 16. RATES ═══════════ */
+function ratesHTML(){
+const act=S.services.filter(s=>s.active),avg=act.length?Math.round(act.reduce((a,s)=>a+s.myRate,0)/act.length):0;
+const head=act.reduce((a,s)=>a+Math.max(0,ceilOf(s)-s.myRate),0);
+const q=norm(U.rateQ),list=S.services.filter(s=>!q||norm(s.name+" "+CATS[s.cat].label).includes(q));
+return `<div class="vhead"><div><h2>نرخ‌های من</h2><p>کف = نرخ مصوب اتحادیه شهر · سقف = کف × (۱ + کمینهٔ پلن و کیفیت خدمت)</p></div><div class="sp"></div>
+<button class="btn gh" data-act="bulkPct" data-p="-10">${ICON("percent",15)} کاهش ۱۰٪</button>
+<button class="btn gh" data-act="bulkPct" data-p="10">${ICON("percent",15)} افزایش ۱۰٪</button>
+<button class="btn gh" data-act="toCeiling">${ICON("trend",15)} رساندن به سقف</button>
+<button class="btn p" data-act="svcAdd">${ICON("plus",16)} افزودن خدمت</button></div>
+<div class="svcsum"><span class="sumchip">${ICON("tag",16)} <b>${fmt(act.length)}</b> خدمت فعال</span><span class="sumchip">${ICON("wallet",16)} میانگین نرخ: <b>${money(avg)}</b></span><span class="sumchip">${ICON("trend",16)} ظرفیت استفاده‌نشده: <b>${money(head)}</b></span><span class="sumchip">${ICON("crown2",16)} پلن: <b>${curPlan().name} ${faStr(planPct())}٪</b></span></div>
+${planPct()===0?`<div class="banner vio" style="margin-bottom:14px">${ICON("crown2",18)}<div style="flex:1"><b>با پلن پایه، نرخ شما دقیقاً برابر مصوبه اتحادیه است.</b> برای قیمت‌گذاری بالاتر اشتراک بخرید؛ سقف هر خدمت به سطح کیفیت آن بستگی دارد.</div><button class="btn v sm" data-act="nav" data-view="plans">خرید اشتراک</button></div>`:`<div class="banner info" style="margin-bottom:14px">${ICON("info",17)}<span>این نرخ‌ها در فرم پیشنهاد قیمت به‌عنوان پیش‌فرض استفاده می‌شوند. کارمزد تراکنش ${faStr(S.commission)}٪ است؛ درآمد اصلی پلتفرم از اشتراک تأمین می‌شود.</span></div>`}
+<div class="toolbar"><div class="swrap">${ICON("search",17)}<input class="inp" id="rateQ" placeholder="جستجو در خدمات…" value="${esc(U.rateQ)}"></div><span class="mchip">${ICON("grip",13)} برای جابه‌جایی، دستگیره را بکشید</span></div>
+<div class="svclist" id="svcList">${list.length?list.map(s=>svcRow(s)).join(""):`<div class="card empty">${emptySVG()}<h4>خدمتی یافت نشد</h4><p>عبارت جستجو را تغییر دهید یا خدمت جدید اضافه کنید.</p></div>`}</div>`}
+function svcRow(s){const g=gateOf(s),ep=effPct(s),ce=ceilOf(s),rel=S.orders.filter(o=>o.cat===s.cat).length;
+const pos=ce>s.floor?clamp((s.myRate-s.floor)/(ce-s.floor)*100,0,100):0;
+const nx=GATES.find(x=>x.rank===g.rank+1);
+return `<div class="card svc ${s.active?"":"off"}" data-row="${s.id}">
+<span class="grip" draggable="true" data-drag="${s.id}" title="جابه‌جایی">${ICON("grip",16)}</span>${tile(s.cat,42)}
+<div class="svci"><b>${esc(s.name)}</b><span>${CATS[s.cat].label} · ${esc(s.unit)} · <span class="gate g${g.rank}">${g.name}</span></span>
+<span class="rel">${fmt(s.jobs)} کار · امتیاز ${fmtD(s.rating)} · ${fmt(rel)} سفارش مرتبط${nx?` · تا ${nx.name}: ${fmt(Math.max(0,nx.jobs-s.jobs))} کار`:""}</span></div>
+<div class="corrcell"><div class="cr1"><span>کف <b>${fmt(s.floor)}</b></span><span class="ceil" data-act="upgrade" data-svc="${s.id}" title="ارتقای پلن برای سقف بالاتر">سقف ${fmt(ce)} (${faStr(ep)}٪)</span></div>
+<div class="bar"><i style="width:${pos}%;background:linear-gradient(90deg,#0FA3A3,#FF6B1A)"></i></div></div>
+<div class="pe"><div class="perow">
+<button class="peb" data-act="svcStep" data-id="${s.id}" data-dir="-1" aria-label="کاهش نرخ">${ICON("minus",15)}</button>
+<input class="inp num ltr" data-rate="${s.id}" value="${s.myRate}" inputmode="numeric" aria-label="نرخ ${esc(s.name)}">
+<button class="peb" data-act="svcStep" data-id="${s.id}" data-dir="1" aria-label="افزایش نرخ">${ICON("plus",15)}</button></div>
+<span class="pefmt" data-fmt="${s.id}">${money(s.myRate)}<span class="tick2">✓</span></span></div>
+<div class="svcct"><button class="sw" role="switch" aria-checked="${s.active}" data-act="svcToggle" data-id="${s.id}" aria-label="فعال بودن"><span class="knob"></span></button>
+<button class="delb" data-act="svcDel" data-id="${s.id}" aria-label="حذف خدمت">${ICON("trash",16)}</button></div></div>`}
+function flashSaved(id){const e=$(`[data-fmt="${id}"]`);if(!e)return;e.classList.remove("saved");void e.offsetWidth;e.classList.add("saved")}
+function updateRateSummary(){const e=$(".svcsum");if(!e)return;const act=S.services.filter(s=>s.active),avg=act.length?Math.round(act.reduce((a,s)=>a+s.myRate,0)/act.length):0,head=act.reduce((a,s)=>a+Math.max(0,ceilOf(s)-s.myRate),0);
+e.innerHTML=`<span class="sumchip">${ICON("tag",16)} <b>${fmt(act.length)}</b> خدمت فعال</span><span class="sumchip">${ICON("wallet",16)} میانگین نرخ: <b>${money(avg)}</b></span><span class="sumchip">${ICON("trend",16)} ظرفیت استفاده‌نشده: <b>${money(head)}</b></span><span class="sumchip">${ICON("crown2",16)} پلن: <b>${curPlan().name} ${faStr(planPct())}٪</b></span>`}
+function setRate(id,v,silent){const s=S.services.find(x=>x.id===id);if(!s)return;
+const ce=ceilOf(s);let clamped=Math.max(s.floor,Math.round(v)),hit=false;
+if(clamped>ce){clamped=ce;hit=true}
+s.myRate=clamped;
+const inp=$(`[data-rate="${id}"]`);if(inp&&document.activeElement!==inp)inp.value=clamped;
+const f=$(`[data-fmt="${id}"]`);if(f)f.innerHTML=money(clamped)+'<span class="tick2">✓</span>';
+const row=$(`[data-row="${id}"]`);if(row){const b=row.querySelector(".bar i");if(b)b.style.width=(ce>s.floor?clamp((clamped-s.floor)/(ce-s.floor)*100,0,100):0)+"%"}
+flashSaved(id);save();
+if(hit&&!silent){const g=gateOf(s),np=PLANS.find(x=>x.pct>=g.pct&&x.pct>planPct())||PLANS[3];
+toast("warn","نرخ به سقف مجاز ("+money(ce)+") محدود شد.",{label:"ارتقای پلن",fn:()=>buyModal(np.id)})}
+updateRateSummary()}
+function svcToggle(id){const s=S.services.find(x=>x.id===id);if(!s)return;s.active=!s.active;beep(SND.tick);save();
+const r=$(`[data-row="${id}"]`);if(r){r.classList.toggle("off",!s.active);const sw=r.querySelector(".sw");if(sw)sw.setAttribute("aria-checked",s.active)}
+updateRateSummary();toast("info","خدمت «"+esc(s.name)+"» "+(s.active?"فعال":"غیرفعال")+" شد.")}
+function svcDel(id){const i=S.services.findIndex(x=>x.id===id);if(i<0)return;const[s]=S.services.splice(i,1);
+logAct("trash","#FF6257","خدمت «"+s.name+"» حذف شد");beep(SND.pop);save();renderView();
+toast("warn","خدمت «"+esc(s.name)+"» حذف شد.",{label:"بازگردانی",fn:()=>{S.services.splice(Math.min(i,S.services.length),0,s);save();if(U.view==="rates")renderView();toast("success","خدمت بازگردانی شد.")}})}
+function bulkPct(p){const act=S.services.filter(s=>s.active);if(!act.length){toast("warn","خدمت فعالی وجود ندارد.");return}
+const snap=act.map(s=>({id:s.id,rate:s.myRate}));let hits=0;
+act.forEach(s=>{const ce=ceilOf(s),want=Math.round(s.myRate*(1+p/100)/1000)*1000;if(want>ce)hits++;s.myRate=clamp(want,s.floor,ce)});
+logAct("percent","#FFAE1A","نرخ "+fmt(act.length)+" خدمت "+(p>0?"۱۰٪ افزایش":"۱۰٪ کاهش")+" یافت");beep(SND.tick);save();renderView();
+toast(hits?"warn":"success","نرخ "+fmt(act.length)+" خدمت "+(p>0?"۱۰٪ افزایش":"۱۰٪ کاهش")+" یافت."+(hits?" "+fmt(hits)+" مورد به سقف خورد.":""),{label:"بازگردانی",fn:()=>{snap.forEach(x=>{const s=S.services.find(y=>y.id===x.id);if(s)s.myRate=x.rate});save();if(U.view==="rates")renderView();toast("info","نرخ‌ها به حالت قبل برگشت.")}})}
+function toCeiling(){const act=S.services.filter(s=>s.active);if(!act.length)return;
+const snap=act.map(s=>({id:s.id,rate:s.myRate}));let gain=0;
+act.forEach(s=>{const ce=ceilOf(s);gain+=Math.max(0,ce-s.myRate);s.myRate=ce});
+logAct("trend","#0FA3A3","همه نرخ‌ها به سقف مجاز رسید");beep(SND.upgrade);save();renderView();
+toast("success","نرخ‌ها به سقف مجاز رسید — ظرفیت آزادشده: <b>"+money(gain)+"</b>",{label:"بازگردانی",fn:()=>{snap.forEach(x=>{const s=S.services.find(y=>y.id===x.id);if(s)s.myRate=x.rate});save();if(U.view==="rates")renderView()}})}
+function svcAddModal(){openModal(`<div class="mhead">${ICON("plus",20)}<h3>افزودن خدمت جدید</h3><button class="ibtn" data-act="closeModal" aria-label="بستن">${ICON("x",16)}</button></div>
+<div class="mbody">
+<div class="banner info">${ICON("info",16)}<span>کف نرخ از مصوبه اتحادیه شهر شما گرفته می‌شود. سقف مجاز بر اساس پلن و سطح کیفیت این خدمت محاسبه خواهد شد.</span></div>
+<div class="frow"><label for="nsName">عنوان خدمت</label><input class="inp" id="nsName" placeholder="مثلاً نصب دوربین مداربسته"></div>
+<div class="fgrid">
+<div class="frow"><label for="nsCat">دسته‌بندی</label><div class="selw">${ICON("chevD",15)}<select class="inp" id="nsCat">${Object.entries(CATS).map(([k,c])=>`<option value="${k}">${c.label}</option>`).join("")}</select></div></div>
+<div class="frow"><label for="nsUnit">واحد قیمت</label><div class="selw">${ICON("chevD",15)}<select class="inp" id="nsUnit">${["هر مورد","هر عدد","هر متر","هر دستگاه","هر ساعت","هر تابلو","پروژه‌ای"].map(u=>`<option>${u}</option>`).join("")}</select></div></div>
+<div class="frow"><label for="nsFloor">نرخ مصوب اتحادیه (تومان)</label><input class="inp num ltr" id="nsFloor" inputmode="numeric" placeholder="450000"></div>
+<div class="frow"><label for="nsJobs">کارهای تکمیل‌شده در این خدمت</label><input class="inp num ltr" id="nsJobs" inputmode="numeric" value="0"></div></div>
+<div class="err hidden" id="nsErr">${ICON("alert",14)}<span></span></div>
+</div><div class="mfoot"><button class="btn p" data-act="svcAddSave">${ICON("check",16)} ثبت خدمت</button><button class="btn gh" data-act="closeModal">انصراف</button></div>`)}
+function svcAddSave(){const name=$("#nsName").value.trim(),cat=$("#nsCat").value,unit=$("#nsUnit").value,fl=parseNum($("#nsFloor").value),jobs=parseNum($("#nsJobs").value),err=$("#nsErr");
+if(!name||fl<10000){err.classList.remove("hidden");err.querySelector("span").textContent=!name?"عنوان خدمت را وارد کنید.":"حداقل نرخ مصوب ۱۰٬۰۰۰ تومان است.";beep(SND.err);return}
+const s={id:"s"+now(),name,cat,unit,floor:fl,myRate:fl,active:true,jobs,rating:jobs>=20?4.3:0};
+S.services.push(s);logAct("plus","#0FA3A3","خدمت «"+name+"» با نرخ مصوب "+money(fl)+" اضافه شد");beep(SND.send);save();closeModal();renderView();
+const r=$(`[data-row="${s.id}"]`);if(r)r.scrollIntoView({behavior:"smooth",block:"center"});
+toast("success","خدمت «"+esc(name)+"» اضافه شد.")}
+
+/* ═══════════ 17. PLANS / SUBSCRIPTION ═══════════ */
+function plansHTML(){
+const cp=curPlan(),pa=planActive(),dl=planDaysLeft(),sc=overallScore();
+const gated=S.services.filter(s=>s.active&&gateOf(s).pct>planPct());
+const lost=gated.reduce((a,s)=>a+Math.round(s.floor*(Math.min(gateOf(s).pct,50)-planPct())/100),0);
+return `<div class="vhead"><div><h2>اشتراک و پلن</h2><p>پلتفرم واسطه است؛ درآمد آن از فروش امکانات است، نه درصد گرفتن از کار شما</p></div><div class="sp"></div>
+${pa?`<button class="btn gh" data-act="renew">${ICON("refresh",16)} تمدید ${cp.name}</button>`:""}
+<button class="btn gh" data-act="nav" data-view="quality">${ICON("shield",16)} سطح کیفیت خدمات</button></div>
+<div class="card pad" style="margin-bottom:16px;border-right:4px solid ${cp.c}">
+<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+<span class="tile" style="width:56px;height:56px;color:${cp.c};background:${cp.c}1f;border-color:${cp.c}55">${ICON("crown2",28)}</span>
+<div style="flex:1;min-width:210px"><b style="font-size:17px;display:block">پلن فعلی: ${pa?cp.name:"پایه (رایگان)"}</b>
+<p style="font-size:12px;color:var(--mut);margin-top:3px">${pa?`اعتبار تا ${jalali(new Date(S.planEnd))} · ${fmt(dl)} روز باقی‌مانده · ${S.planScope==="team"?"تیمی ("+fmt(S.teamSize)+" نفر)":"انفرادی"}`:"برای قیمت‌گذاری بالای نرخ مصوب اتحادیه، اشتراک بخرید."}</p></div>
+<div style="text-align:center;min-width:100px"><div style="font-size:30px;font-weight:900;color:${cp.c}">${faStr(planPct())}٪</div><small style="font-size:10.5px;color:var(--mut)">سقف افزایش فعال</small></div>
+<div style="text-align:center;min-width:100px"><div style="font-size:30px;font-weight:900;color:var(--tealL)">${faStr(sc)}</div><small style="font-size:10.5px;color:var(--mut)">امتیاز کیفیت کل</small></div>
+</div>
+${pa&&dl<=20?`<div class="banner warn" style="margin-top:13px">${ICON("alert",17)}<span>با انقضای اشتراک، سقف افزایش به ۰٪ برمی‌گردد و نرخ‌های بالای مصوبه به کف محدود می‌شوند.</span><button class="btn p sm" data-act="renew">تمدید الآن</button></div>`:""}
+${gated.length?`<div class="banner vio" style="margin-top:13px">${ICON("trend",17)}<div style="flex:1"><b>${fmt(gated.length)} خدمت شما کیفیت بالاتری از پلن فعلی دارد.</b> با ارتقا، مجموعاً ${money(lost)} ظرفیت افزایش نرخ در هر واحد آزاد می‌شود.</div><button class="btn v sm" data-act="nav" data-view="quality">مشاهده</button></div>`:""}
+</div>
+<div class="plans stag">${PLANS.map((p,i)=>{const on=p.id===S.plan&&pa;
+return `<div class="card plan ${on?"on":""}" style="--pc:${p.c};--d:${i}">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="color:${p.c}">${ICON("crown2",20)}</span>${on?'<span class="badge b-accepted"><i></i>پلن شما</span>':p.id==="free"?'<span class="badge b-gray" style="color:var(--mut);background:var(--surf3);border-color:var(--line)"><i></i>رایگان</span>':""}</div>
+<h4>${p.name}</h4><div class="pct">${faStr(p.pct)}٪</div>
+<ul>${p.feat.map(f=>`<li>${ICON("check",13)}<span>${f}</span></li>`).join("")}</ul>
+<div class="price">${p.monthly?money(p.monthly):"رایگان"} ${p.monthly?'<small>/ ماه</small>':""}</div>
+<div class="req">${ICON("shield",12)} حداقل کیفیت: ${p.gate}</div>
+${on?`<button class="btn gh" disabled>${ICON("check",15)} فعال است</button>`:p.id==="free"?`<button class="btn gh" data-act="downgrade">${ICON("undo",15)} بازگشت به پایه</button>`:`<button class="btn ${p.id==="elite"?"v":"p"}" data-act="buyPlan" data-plan="${p.id}">${ICON("wallet",15)} خرید اشتراک</button>`}
+</div>`}).join("")}</div>
+<div class="card pad" style="margin-top:16px"><div class="chead">${ICON("users",18)}<h3>قیمت‌گذاری پلکانی تیمی</h3><span class="mchip">تیم شما: ${fmt(S.teamSize)} نفر · ضریب ${faStr(bandMult(S.teamSize))}</span></div>
+<p style="font-size:11.5px;color:var(--mut);margin-bottom:11px">یک اشتراک تیمی، سقف افزایش را برای همه اعضا فعال می‌کند. قیمت بر اساس تعداد اعضا پلکانی است — به‌صرفه‌تر از خرید انفرادی برای هر نفر.</p>
+<div class="tw"><table class="ptable"><thead><tr><th>باند اعضا</th><th>ضریب</th><th>حرفه‌ای</th><th>ممتاز</th><th>ویژه</th><th>معادل انفرادی</th></tr></thead><tbody>
+${TEAM_BANDS.map(([a,b,m])=>`<tr${S.teamSize>=a&&S.teamSize<=b?' style="background:rgba(255,107,26,.07)"':""}><td><b>${faStr(a)}–${faStr(b)} نفر</b>${S.teamSize>=a&&S.teamSize<=b?' <span class="badge b-new" style="margin-inline-start:6px"><i></i>تیم شما</span>':""}</td><td class="num">${faStr(m)}×</td>
+${PLANS.slice(1).map(p=>`<td class="num">${shortM(Math.round(p.monthly*m))}</td>`).join("")}
+<td class="num" style="color:var(--mut)">${shortM(PLANS[1].monthly*b)}</td></tr>`).join("")}
+</tbody></table></div></div>
+<div class="card pad" style="margin-top:16px"><div class="chead">${ICON("receipt",18)}<h3>تاریخچه پرداخت اشتراک</h3><span class="mchip">${fmt(S.payments.length)} تراکنش</span></div>
+${S.payments.length?`<div class="tw"><table class="ptable"><thead><tr><th>شناسه</th><th>پلن</th><th>دوره</th><th>دامنه</th><th>مبلغ</th><th>روش</th><th>تاریخ</th><th>وضعیت</th></tr></thead><tbody>
+${S.payments.slice().reverse().map(p=>`<tr><td><b class="ltr">${esc(p.id)}</b></td><td>${esc(p.planName)}</td><td>${faStr(p.cycle)} ماهه</td><td>${p.scope==="team"?"تیمی ("+fmt(p.members)+")":"انفرادی"}</td><td class="num" style="color:var(--brandSoft);font-weight:800">${money(p.amount)}</td><td>${esc(p.method)}</td><td>${jalali(new Date(p.at))}</td><td><span class="badge ${p.status==="پرداخت شده"?"b-done":"b-new"}"><i></i>${p.status}</span></td></tr>`).join("")}
+</tbody></table></div>`:'<p style="font-size:12px;color:var(--mut)">پرداختی ثبت نشده است.</p>'}</div>`}
+function buyModal(planId,cycle,scope,members){
+const p=planOf(planId);if(!p||p.id==="free")return;
+U.buy={plan:p.id,cycle:cycle||1,scope:scope||S.planScope||"individual",members:members||S.teamSize,method:"کیف پول"};
+openModal(`<div class="mhead">${ICON("crown2",20)}<h3>خرید اشتراک ${p.name}</h3><button class="ibtn" data-act="closeModal" aria-label="بستن">${ICON("x",16)}</button></div>
+<div class="mbody">
+<div class="banner ok">${ICON("shield",17)}<span>با این پلن، سقف افزایش نرخ شما <b>${faStr(p.pct)}٪</b> می‌شود. سقف مؤثر هر خدمت = کمینهٔ پلن و سطح کیفیت آن خدمت.</span></div>
+<div class="frow"><label>دوره اشتراک</label><div class="seg" id="buyCycle">${CYCLES.map(c=>`<button data-act="buyCycle" data-c="${c.id}" class="${U.buy.cycle===c.id?"on":""}">${c.label}${c.id>1?` <span style="font-size:9.5px;opacity:.8">(${faStr(Math.round((1-c.mult/c.id)*100))}٪ تخفیف)</span>`:""}</button>`).join("")}</div></div>
+<div class="frow"><label>دامنه اشتراک</label><div class="seg" id="buyScope"><button data-act="buyScope" data-s="individual" class="${U.buy.scope==="individual"?"on":""}">انفرادی</button><button data-act="buyScope" data-s="team" class="${U.buy.scope==="team"?"on":""}">تیمی</button></div></div>
+<div id="buyTeam" class="${U.buy.scope==="team"?"":"hidden"}"><div class="frow"><label for="buyMembers">تعداد اعضای تیم</label>
+<div class="selw">${ICON("chevD",15)}<select class="inp" id="buyMembers">${[2,3,4,5,6,7,8,10,12,15,20].map(n=>`<option value="${n}" ${U.buy.members===n?"selected":""}>${faStr(n)} نفر — ${bandLabel(n)}</option>`).join("")}</select></div></div></div>
+<div class="frow"><label for="buyMethod">روش پرداخت</label><div class="selw">${ICON("chevD",15)}<select class="inp" id="buyMethod"><option>کیف پول</option><option>درگاه پرداخت</option><option>کارت به کارت</option></select></div></div>
+<div class="fee" id="buyFee"></div><div id="buyWarn"></div>
+</div><div class="mfoot"><button class="btn p" data-act="buyConfirm" id="buyBtn">${ICON("check",16)} پرداخت و فعال‌سازی</button><button class="btn gh" data-act="closeModal">انصراف</button><span class="sp"></span><span class="mchip">${ICON("wallet",13)} موجودی: ${fmt(S.wallet)} تومان</span></div>`,"wide");
+const ms=$("#buyMethod");if(ms)ms.value=U.buy.method;
+updateBuy()}
+function buyPrice(){const b=U.buy,p=planOf(b.plan),c=CYCLES.find(x=>x.id===b.cycle)||CYCLES[0];
+const base=Math.round(p.monthly*c.mult),mult=b.scope==="team"?bandMult(b.members):1;
+return{base,mult,total:Math.round(base*mult/1000)*1000,days:c.days,cycle:c}}
+function updateBuy(){const b=U.buy;if(!b)return;const pr=buyPrice(),p=planOf(b.plan);
+const f=$("#buyFee");if(f)f.innerHTML=`
+<div class="feer"><span>پلن ${p.name} · ${pr.cycle.label}</span><span>${money(pr.base)}</span></div>
+${b.scope==="team"?`<div class="feer"><span>ضریب تیمی (${bandLabel(b.members)})</span><span>${faStr(pr.mult)}×</span></div>`:""}
+<div class="feer"><span>اعتبار پس از خرید</span><span>${faStr(pr.days)} روز</span></div>
+<div class="feer"><span>سقف افزایش نرخ</span><span class="pos">${faStr(p.pct)}٪</span></div>
+<div class="feer net"><span>مبلغ قابل پرداخت</span><b>${money(pr.total)}</b></div>`;
+const tw=$("#buyTeam");if(tw)tw.classList.toggle("hidden",b.scope!=="team");
+$$("#buyCycle button").forEach(x=>x.classList.toggle("on",+x.dataset.c===b.cycle));
+$$("#buyScope button").forEach(x=>x.classList.toggle("on",x.dataset.s===b.scope));
+const w=$("#buyWarn"),btn=$("#buyBtn"),m=($("#buyMethod")||{}).value||b.method;b.method=m;
+if(m==="کیف پول"&&S.wallet<pr.total){const need=pr.total-S.wallet;
+if(w)w.innerHTML=`<div class="banner bad">${ICON("alert",17)}<div style="flex:1"><b>موجودی کیف پول کافی نیست.</b><div class="mgrid" style="margin-top:8px"><div class="mtile"><span class="ml">موجودی</span><b>${fmt(S.wallet)}</b></div><div class="mtile"><span class="ml">مبلغ</span><b>${fmt(pr.total)}</b></div><div class="mtile"><span class="ml">کسری</span><b style="color:var(--redL)">${fmt(need)}</b></div></div></div><div style="display:flex;flex-direction:column;gap:7px"><button class="btn p sm" data-act="topup" data-need="${need}">شارژ کیف پول</button><button class="btn gh sm" data-act="buyMethodSwitch">تغییر روش</button></div></div>`;
+if(btn)btn.disabled=true}
+else{if(w)w.innerHTML=m==="کیف پول"?`<div class="banner ok">${ICON("checkC",17)}<span>موجودی کافی است — پس از پرداخت، اشتراک فوراً فعال می‌شود و موجودی جدید ${money(S.wallet-pr.total)} خواهد بود.</span></div>`:`<div class="banner warn">${ICON("clock",17)}<span>پرداخت با ${esc(m)} پس از تأیید واحد مالی فعال می‌شود. درخواست شما در تاریخچه با وضعیت «در انتظار» ثبت می‌گردد.</span></div>`;
+if(btn)btn.disabled=false}}
+function buyConfirm(){const b=U.buy;if(!b)return;const pr=buyPrice(),p=planOf(b.plan),m=b.method;
+if(m==="کیف پول"&&S.wallet<pr.total){updateBuy();beep(SND.err);return}
+const id="PAY-"+String(1042+S.payments.length);
+if(m==="کیف پول"){
+const old=S.wallet;S.wallet-=pr.total;
+S.plan=p.id;S.planScope=b.scope;if(b.scope==="team")S.teamSize=b.members;
+const baseEnd=planActive()&&S.plan===p.id?S.planEnd:now();
+S.planStart=now();S.planEnd=Math.max(baseEnd,now())+pr.days*DAY;
+S.payments.push({id,plan:p.id,planName:p.name,cycle:b.cycle,scope:b.scope,members:b.scope==="team"?b.members:1,amount:pr.total,method:m,at:now(),status:"پرداخت شده",days:pr.days});
+S.services.forEach(s=>{s.myRate=clamp(s.myRate,s.floor,ceilOf(s))});
+logAct("crown2",p.c,"اشتراک «"+p.name+"» فعال شد — سقف "+faStr(p.pct)+"٪");
+notify("plan","اشتراک «"+p.name+"» به مدت "+faStr(pr.days)+" روز فعال شد. سقف افزایش نرخ: "+faStr(p.pct)+"٪");
+beep(SND.upgrade);save();closeModal();renderChrome();animWallet(old,S.wallet);renderView();
+confetti(innerWidth/2,innerHeight/2);
+toast("success","🎉 اشتراک <b>"+p.name+"</b> فعال شد — سقف افزایش "+faStr(p.pct)+"٪",{label:"تنظیم نرخ‌ها",fn:()=>setView("rates")});
+}else{
+S.payments.push({id,plan:p.id,planName:p.name,cycle:b.cycle,scope:b.scope,members:b.scope==="team"?b.members:1,amount:pr.total,method:m,at:now(),status:"در انتظار",days:pr.days});
+logAct("receipt","#FFAE1A","درخواست خرید اشتراک «"+p.name+"» ثبت شد");beep(SND.send);save();closeModal();renderView();
+toast("info","درخواست خرید ثبت شد و در انتظار تأیید مالی است.")}}
+function topupModal(need){const sug=Math.max(100000,Math.ceil(need/100000)*100000);
+openModal(`<div class="mhead">${ICON("wallet",20)}<h3>شارژ کیف پول</h3><button class="ibtn" data-act="closeModal" aria-label="بستن">${ICON("x",16)}</button></div>
+<div class="mbody"><div class="mgrid"><div class="mtile"><span class="ml">${ICON("wallet",14)} موجودی فعلی</span><b>${money(S.wallet)}</b></div><div class="mtile"><span class="ml">${ICON("alert",14)} کسری مورد نیاز</span><b style="color:var(--brandSoft)">${money(need)}</b></div></div>
+<div class="frow"><label for="tuAmt">مبلغ شارژ (تومان)</label><input class="inp num ltr" id="tuAmt" inputmode="numeric" value="${sug}"></div>
+<div class="frow"><label for="tuM">روش پرداخت</label><div class="selw">${ICON("chevD",15)}<select class="inp" id="tuM"><option>درگاه پرداخت</option><option>کارت به کارت</option><option>حواله بانکی</option></select></div></div>
+<div class="banner ok">${ICON("checkC",17)}<span>در این نسخه، شارژ از درگاه بلافاصله در کیف پول منعکس می‌شود تا بتوانید خرید اشتراک را کامل کنید.</span></div>
+</div><div class="mfoot"><button class="btn p" data-act="topupGo">${ICON("check",16)} پرداخت و شارژ</button><button class="btn gh" data-act="closeModal">انصراف</button></div>`)}
+function downgrade(){confirmModal("بازگشت به پلن پایه","با این کار سقف افزایش نرخ شما به ۰٪ برمی‌گردد و همه نرخ‌ها به مصوبه اتحادیه محدود می‌شوند. اعتبار باقی‌مانده بازپرداخت نمی‌شود.","بازگشت به پایه",()=>{
+const snap=S.services.map(s=>({id:s.id,rate:s.myRate})),oldPlan=S.plan,oldEnd=S.planEnd;
+S.plan="free";S.services.forEach(s=>s.myRate=s.floor);
+logAct("undo","#8592B0","بازگشت به پلن پایه");beep(SND.pop);save();renderChrome();renderView();
+toast("warn","به پلن پایه بازگشتید؛ نرخ‌ها به مصوبه محدود شد.",{label:"بازگردانی",fn:()=>{S.plan=oldPlan;S.planEnd=oldEnd;snap.forEach(x=>{const s=S.services.find(y=>y.id===x.id);if(s)s.myRate=x.rate});save();renderChrome();renderView();toast("success","پلن و نرخ‌ها بازگردانی شد.")}})})}
+
+/* ═══════════ 18. SETTLEMENT ═══════════ */
+function settleHTML(){
+const done=S.orders.filter(o=>o.status==="done"),gross=done.reduce((a,o)=>a+o.quote.price,0),net=done.reduce((a,o)=>a+o.paidNet,0);
+const fees=gross-net,t=S.team,mg=Math.round(gross*t.mgmt/100),pool=gross-mg;
+const th=t.members.reduce((a,m)=>a+m.hours,0)||1,mine=t.members.find(m=>m.self)||t.members[0];
+const myShare=Math.round(pool*mine.hours/th);
+const vals=weekVals(),labels=["ش","ی","د","س","چ","پ","ج"],ti=(new Date().getDay()+1)%7;
+const team=U.settleMode==="team";
+return `<div class="vhead"><div><h2>تسویه و درآمد</h2><p>${team?"مدل ترکیبی: سهم مدیریت سرپرست + تقسیم استخر بر اساس ساعت کاری":"تسویه فردی: مبلغ خدمت منهای کارمزد پلتفرم"}</p></div><div class="sp"></div>
+<button class="chip ${!team?"on":""}" data-act="settleMode" data-m="solo">انفرادی</button>
+<button class="chip ${team?"on":""}" data-act="settleMode" data-m="team">تیمی</button>
+<button class="btn gh" data-act="exportSettle">${ICON("dl",15)} خروجی CSV</button></div>
+<div class="kpis stag">
+<div class="card kpi" style="--d:0"><div class="top">${tile("electrical",40)}<span class="lbl">موجودی کیف پول</span></div><div class="val" style="color:var(--brandSoft)">${fmt(S.wallet)}</div><span class="sub">تومان · قابل برداشت</span></div>
+<div class="card kpi" style="--d:1"><div class="top">${tile("outlet",40)}<span class="lbl">درآمد ناخالص</span></div><div class="val">${fmt(gross)}</div><span class="sub">${fmt(done.length)} کار تکمیل‌شده</span></div>
+<div class="card kpi" style="--d:2"><div class="top">${tile("panel",40)}<span class="lbl">${team?"سهم مدیریت ("+faStr(t.mgmt)+"٪)":"کارمزد پلتفرم ("+faStr(S.commission)+"٪)"}</span></div><div class="val">${fmt(team?mg:fees)}</div><span class="sub">${team?esc(t.supervisor):"درآمد از اشتراک، نه کمیسیون"}</span></div>
+<div class="card kpi" style="--d:3"><div class="top">${tile("wiring",40)}<span class="lbl">${team?"سهم شما از استخر":"دریافتی خالص شما"}</span></div><div class="val" style="color:var(--greenL)">${fmt(team?myShare:net)}</div><span class="sub">${team?fmt(mine.hours)+" ساعت از "+fmt(th):"واریز به کیف پول"}</span></div>
+</div>
+<div class="grid2">
+<div class="col stag">
+<div class="card pad" style="--d:1"><div class="chead">${ICON("chart",18)}<h3>روند درآمد هفته</h3><span class="ctotal">${money(vals.reduce((a,b)=>a+b,0))}</span></div><div class="cwrap">${barSVG(vals,labels,ti)}</div></div>
+${team?`<div class="card pad" style="--d:2"><div class="chead">${ICON("users",18)}<h3>تقسیم استخر بین اعضا</h3><span class="mchip">استخر: ${money(pool)}</span></div>
+<div class="tw"><table class="ptable"><thead><tr><th>عضو</th><th>ساعت کاری</th><th>سهم از استخر</th><th>درصد</th><th>سهم مدیریت</th><th>جمع دریافتی</th></tr></thead><tbody>
+${t.members.map(m=>{const sh=Math.round(pool*m.hours/th),mgx=m.self?mg:0;return `<tr${m.self?' style="background:rgba(255,107,26,.07)"':""}><td><b>${esc(m.name)}</b>${m.self?' <span class="badge b-new" style="margin-inline-start:5px"><i></i>شما</span>':""}</td><td class="num">${fmt(m.hours)}</td><td class="num">${money(sh)}</td><td><div style="display:flex;align-items:center;gap:7px"><div class="bar" style="flex:1"><i style="width:${Math.round(m.hours/th*100)}%"></i></div><b class="num">${fmt(Math.round(m.hours/th*100))}٪</b></div></td><td class="num">${mgx?money(mgx):"—"}</td><td class="num" style="color:var(--greenL);font-weight:800">${money(sh+mgx)}</td></tr>`}).join("")}
+</tbody></table></div>
+<div class="banner info" style="margin-top:12px">${ICON("info",16)}<span>سهم مدیریت ${faStr(t.mgmt)}٪ به سرپرست تیم می‌رسد؛ باقی‌مانده به نسبت ساعت کاری واقعی بین اعضا تقسیم می‌شود. کارت‌های تکمیل‌نشده در تسویه وارد نمی‌شوند.</span></div></div>`:""}
+<div class="card pad" style="--d:3"><div class="chead">${ICON("receipt",18)}<h3>ریز تسویه سفارش‌ها</h3><span class="mchip">${fmt(done.length)} مورد</span></div>
+${done.length?`<div class="tw"><table class="ptable"><thead><tr><th>سفارش</th><th>خدمت</th><th>مبلغ</th><th>کارمزد</th><th>دریافتی</th><th>زمان</th></tr></thead><tbody>
+${done.slice().reverse().map(o=>`<tr><td><b class="ltr">${o.id}</b></td><td>${esc(o.title)}</td><td class="num">${money(o.quote.price)}</td><td class="num" style="color:var(--redL)">− ${fmt(o.quote.price-o.paidNet)}</td><td class="num" style="color:var(--greenL);font-weight:800">${money(o.paidNet)}</td><td>${ago(o.paidAt)}</td></tr>`).join("")}
+</tbody></table></div>`:`<div class="empty" style="padding:26px">${ICON("receipt",30)}<h4>تسویه‌ای ثبت نشده</h4><p>پس از اتمام اولین کار، تسویه اینجا ثبت می‌شود.</p></div>`}</div>
+</div>
+<div class="col stag">
+<div class="card pad" style="--d:1"><div class="chead">${ICON("wallet",18)}<h3>خلاصه مالی</h3></div>
+<div class="pstat"><span>درآمد ناخالص</span><b>${money(gross)}</b></div>
+<div class="pstat"><span>کارمزد پلتفرم</span><b style="color:var(--redL)">− ${money(fees)}</b></div>
+<div class="pstat"><span>پرداخت اشتراک‌ها</span><b style="color:var(--violetL)">− ${money(S.payments.filter(p=>p.status==="پرداخت شده").reduce((a,p)=>a+p.amount,0))}</b></div>
+<div class="pstat"><span>خالص دریافتی</span><b style="color:var(--greenL)">${money(net)}</b></div>
+<div class="pstat"><span>موجودی فعلی</span><b style="color:var(--brandSoft)">${money(S.wallet)}</b></div></div>
+<div class="card pad" style="--d:2"><div class="chead">${ICON("percent",18)}<h3>کارمزد تراکنش</h3></div>
+<p style="font-size:11.5px;color:var(--mut);margin-bottom:11px">درآمد اصلی پلتفرم از فروش اشتراک است. کارمزد تراکنش به‌صورت پیش‌فرض صفر است و در صورت فعال‌سازی، از هر پیشنهاد کسر می‌شود.</p>
+<div class="frow"><label for="comIn">درصد کارمزد: <b id="comVal" style="color:var(--brandSoft)">${faStr(S.commission)}٪</b></label>
+<input type="range" id="comIn" min="0" max="15" step="1" value="${S.commission}" style="width:100%;accent-color:var(--brand)"></div>
+<div class="fee" style="margin-top:11px"><div class="feer"><span>نمونه پیشنهاد ۱٬۰۰۰٬۰۰۰</span><span>${money(1000000)}</span></div><div class="feer net"><span>دریافتی شما</span><b id="comNet">${money(netOf(1000000))}</b></div></div></div>
+<div class="card pad" style="--d:3"><div class="chead">${ICON("crown2",18)}<h3>هزینه اشتراک</h3></div>
+<div class="pstat"><span>پلن فعال</span><b>${curPlan().name}</b></div>
+<div class="pstat"><span>مبلغ ماهانه</span><b>${money(curPlan().monthly)}</b></div>
+<div class="pstat"><span>اعتبار باقی‌مانده</span><b>${fmt(planDaysLeft())} روز</b></div>
+<button class="btn v sm" style="margin-top:11px;width:100%" data-act="nav" data-view="plans">${ICON("crown2",14)} مدیریت اشتراک</button></div>
+</div></div>`}
+function exportSettle(){const done=S.orders.filter(o=>o.status==="done");
+if(!done.length){toast("warn","تسویه‌ای برای خروجی وجود ندارد.");return}
+const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+const lines=[["شناسه","خدمت","مبلغ","کارمزد","دریافتی","تاریخ"].map(q).join(",")];
+done.forEach(o=>lines.push([o.id,o.title,o.quote.price,o.quote.price-o.paidNet,o.paidNet,jalali(new Date(o.paidAt))].map(q).join(",")));
+const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\uFEFF"+lines.join("\n")],{type:"text/csv;charset=utf-8"}));
+a.download="zingovingo-settlement.csv";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);toast("success","فایل CSV دانلود شد.")}
+
+/* ═══════════ 19. QUALITY ═══════════ */
+function qualityHTML(){
+const sc=overallScore(),acc=acceptance(),comp=completeness();
+const avgR=S.services.reduce((a,s)=>a+s.rating,0)/S.services.length;
+const comps=[["امتیاز مشتریان",Math.round(avgR/5*100),"#FFAE1A",fmtD(avgR)+" از ۵"],
+["حجم کار تکمیل‌شده",Math.min(100,Math.round(S.services.reduce((a,s)=>a+s.jobs,0)/600*100)),"#0FA3A3",fmt(S.services.reduce((a,s)=>a+s.jobs,0))+" کار"],
+["نرخ پذیرش پیشنهاد",acc.pct,"#2E63E7",fmt(acc.pct)+"٪"],
+["تکمیل پروفایل",comp,"#A78BFA",fmt(comp)+"٪"],
+["تحویل به‌موقع",94,"#9BE24A","۹۴٪"],
+["نرخ اختلاف (معکوس)",97,"#E0447C","۳٪"]];
+const gated=S.services.filter(s=>s.active&&gateOf(s).pct>planPct());
+const curRank=Math.max(...S.services.map(s=>gateOf(s).rank));
+return `<div class="vhead"><div><h2>کیفیت و اعتبار</h2><p>سطح کیفیت هر خدمت، سقف افزایش نرخ آن را تعیین می‌کند — پول دسترسی می‌خرد، کیفیت اعتماد می‌سازد</p></div><div class="sp"></div><button class="btn gh" data-act="nav" data-view="plans">${ICON("crown2",16)} ارتقای پلن</button></div>
+<div class="card pad" style="margin-bottom:16px"><div class="ringw">${ringSVG(sc,124,12)}
+<div class="rt"><b style="font-size:16px">امتیاز کل کیفیت: ${fmt(sc)} از ۱۰۰</b>
+<p>این امتیاز از ترکیب رضایت مشتری، حجم کار، نرخ پذیرش و تکمیل پروفایل محاسبه می‌شود. سطح هر خدمت جداگانه از تعداد کار و امتیاز همان خدمت به دست می‌آید.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap">${GATES.map(g=>`<span class="gate g${g.rank}">${g.name} · ${faStr(g.pct)}٪ · ${fmt(g.jobs)} کار / ${fmtD(g.rating)}</span>`).join("")}</div></div></div></div>
+${gated.length?`<div class="banner vio" style="margin-bottom:16px">${ICON("crown2",18)}<div style="flex:1"><b>${fmt(gated.length)} خدمت کیفیت بالاتر از پلن شما دارد.</b> این خدمت‌ها آماده سقف بیشترند اما پلن فعلی اجازه نمی‌دهد: ${gated.map(s=>esc(s.name)).join("، ")}</div><button class="btn v sm" data-act="nav" data-view="plans">ارتقا</button></div>`:""}
+<div class="grid2">
+<div class="col stag">
+<div class="card pad" style="--d:1"><div class="chead">${ICON("chart",18)}<h3>مؤلفه‌های امتیاز</h3></div>
+${comps.map(([n,v,c,t])=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;font-size:11.5px"><span style="min-width:132px;font-weight:700">${n}</span><div class="bar" style="flex:1"><i style="width:${v}%;background:${c}"></i></div><b style="min-width:62px;text-align:left;color:${c}">${t}</b></div>`).join("")}</div>
+<div class="card pad" style="--d:2"><div class="chead">${ICON("shield",18)}<h3>سطح کیفیت هر خدمت</h3></div>
+<div class="tw"><table class="ptable"><thead><tr><th>خدمت</th><th>کار</th><th>امتیاز</th><th>سطح</th><th>سقف کیفیت</th><th>سقف مؤثر</th><th>تا سطح بعد</th></tr></thead><tbody>
+${S.services.map(s=>{const g=gateOf(s),ep=effPct(s),nx=GATES.find(x=>x.rank===g.rank+1);
+return `<tr><td><b>${esc(s.name)}</b></td><td class="num">${fmt(s.jobs)}</td><td class="num">${fmtD(s.rating)}</td><td><span class="gate g${g.rank}">${g.name}</span></td><td class="num">${faStr(g.pct)}٪</td><td class="num" style="color:${ep<g.pct?"var(--brandSoft)":"var(--greenL)"};font-weight:800">${faStr(ep)}٪${ep<g.pct?" ⚠":""}</td><td>${nx?`<span style="font-size:10.5px;color:var(--mut)">${fmt(Math.max(0,nx.jobs-s.jobs))} کار · ${fmtD(Math.max(0,nx.rating-s.rating))} امتیاز</span>`:'<span class="badge b-done"><i></i>حداکثر</span>'}</td></tr>`}).join("")}
+</tbody></table></div></div>
+</div>
+<div class="col stag">
+<div class="card pad" style="--d:1"><div class="chead">${ICON("award",18)}<h3>نردبان اعتبار</h3></div>
+${GATES.map((g,i)=>{const on=g.rank===curRank,pass=g.rank<curRank;
+return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)"><span style="width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:11px;font-weight:900;background:${on?"var(--grad)":pass?"var(--teal)":"var(--surf4)"};color:${on?"#221503":pass?"#04211C":"var(--mut)"}">${pass?ICON("check",13):faStr(i+1)}</span>
+<div style="flex:1"><b style="font-size:12.5px">${g.name}</b> · سقف ${faStr(g.pct)}٪<br><small style="font-size:10px;color:var(--mut)">${fmt(g.jobs)} کار · امتیاز ${fmtD(g.rating)}</small></div>${on?'<span class="badge b-new"><i></i>فعال</span>':""}</div>`}).join("")}</div>
+<div class="card pad" style="--d:2"><div class="chead">${ICON("target",18)}<h3>اقدامات پیشنهادی</h3></div>
+<div class="act"><span class="at" style="color:#FFAE1A">${ICON("camera",15)}</span><p>${comp<100?"برای رسیدن به پروفایل ۱۰۰٪، عکس واقعی بارگذاری کنید.":"پروفایل شما کامل است."}</p></div>
+<div class="act"><span class="at" style="color:#0FA3A3">${ICON("case",15)}</span><p>${S.services.filter(s=>gateOf(s).rank<3).length} خدمت هنوز به سطح «برتر» نرسیده؛ با تکمیل کار بیشتر ارتقا می‌یابند.</p></div>
+<div class="act"><span class="at" style="color:#A78BFA">${ICON("crown2",15)}</span><p>${planPct()<50?"با پلن ویژه، سقف ۵۰٪ روی خدمات واجد کیفیت آزاد می‌شود.":"شما بالاترین پلن را دارید."}</p></div>
+<div class="act"><span class="at" style="color:#2E63E7">${ICON("send",15)}</span><p>نرخ پذیرش فعلی ${fmt(acc.pct)}٪ است؛ پاسخ سریع‌تر به سفارش‌های فوری آن را بالا می‌برد.</p></div></div>
+</div></div>`}
+
+/* ═══════════ 20. PROFILE ═══════════ */
+function profileHTML(){const p=S.profile,acc=acceptance();
+return `<div class="vhead"><div><h2>پروفایل من</h2><p>این اطلاعات به مشتریان نمایش داده می‌شود</p></div><div class="sp"></div><button class="btn p" data-act="editProfile">${ICON("edit",16)} ویرایش پروفایل</button></div>
+<div class="card phero">
+<div class="pcover">${ICON("bolt",112,"c1")}${ICON("plug",72,"c2")}${ICON("lamp",92,"c3")}
+<span class="avail"><span class="pdot ${S.settings.available?"":"off"}"></span>${S.settings.available?"آماده دریافت سفارش":"موقتاً آفلاین"}<button class="sw" role="switch" aria-checked="${S.settings.available}" data-act="avail" aria-label="دریافت سفارش"><span class="knob"></span></button></span></div>
+<div class="pbody">
+<div class="pav"><div class="imgb">${avInner(p.avatar)}</div><button class="camb" data-act="editProfile" title="تغییر تصویر" aria-label="تغییر تصویر">${ICON("camera",16)}</button></div>
+<div class="pwho"><h3>${esc(p.name)} ${p.verified?`<span class="verif">${ICON("shield",12)} تأیید شده</span>`:""}</h3><div class="pt">${esc(p.title)}</div>
+<div class="pmeta"><span class="mchip">${ICON("pin",13)} ${esc(p.area)}</span><span class="mchip">${ICON("cal",13)} عضویت از ${faStr(p.memberYear)}</span><span class="mchip">${ICON("case",13)} ${fmt(p.jobsDone)} کار موفق</span><span class="mchip">${ICON("clock",13)} ${faStr(p.hours[0])} تا ${faStr(p.hours[1])}</span><span class="mchip money">${ICON("star",13)} ${fmtD(p.rating)} (${fmt(p.reviews)} نظر)</span><span class="mchip ok">${ICON("crown2",13)} ${curPlan().name}</span></div></div></div></div>
+<div class="grid2">
+<div class="col stag">
+<div class="card pad" style="--d:0"><div class="chead">${ICON("msg",18)}<h3>درباره من</h3><button class="btn gh sm" data-act="editProfile">${ICON("edit",13)} ویرایش</button></div><p style="font-size:12.5px;line-height:2.1;color:var(--ink2)">${esc(p.bio)}</p></div>
+<div class="card pad" style="--d:1"><div class="chead">${ICON("tag",18)}<h3>مهارت‌ها</h3><button class="btn gh sm" data-act="editProfile">${ICON("plus",13)} مدیریت</button></div><div style="display:flex;gap:8px;flex-wrap:wrap">${p.skills.map(s=>`<span class="skill">${esc(s)}</span>`).join("")||'<span style="font-size:12px;color:var(--mut)">مهارتی ثبت نشده.</span>'}</div></div>
+<div class="card pad" style="--d:2"><div class="chead">${ICON("users",18)}<h3>تیم من</h3><span class="mchip">${fmt(S.team.members.length)} عضو</span></div>
+<div class="pstat"><span>نام تیم</span><b>${esc(S.team.name)}</b></div>
+<div class="pstat"><span>سرپرست</span><b>${esc(S.team.supervisor)}</b></div>
+<div class="pstat"><span>نقش شما</span><b style="color:var(--brandSoft)">${S.team.isSupervisor?"سرپرست (تعیین‌کننده نرخ تیم)":"عضو"}</b></div>
+<div class="pstat"><span>سهم مدیریت</span><b>${faStr(S.team.mgmt)}٪</b></div>
+<div class="pref" style="margin-top:6px"><div class="pl"><b>من سرپرست تیم هستم</b><span>در حالت تیمی، سرپرست نرخ تیم را تعیین و کار را تقسیم می‌کند</span></div><button class="sw" role="switch" aria-checked="${S.team.isSupervisor}" data-act="supToggle" aria-label="سرپرست"><span class="knob"></span></button></div>
+<div class="banner ${S.team.isSupervisor?"ok":"info"}" style="margin-top:11px">${ICON(S.team.isSupervisor?"checkC":"lock",16)}<span>${S.team.isSupervisor?"شما اختیار قیمت‌گذاری تیمی و تقسیم کار بین اعضا را دارید.":"در حالت تیمی، نرخ‌ها توسط سرپرست تعیین می‌شود؛ نرخ‌های شخصی شما برای کارت‌های انفرادی استفاده می‌شود."}</span></div></div>
+<div class="card pad" style="--d:3"><div class="chead">${ICON("refresh",18)}<h3>داده‌های نمایشی</h3></div><p style="font-size:11.5px;color:var(--mut);margin-bottom:11px">همه تغییرات در مرورگر شما ذخیره می‌شود. برای شروع دوباره، داده‌ها را بازنشانی کنید.</p><button class="btn d" data-act="reset">${ICON("refresh",15)} بازنشانی داده‌ها</button></div>
+</div>
+<div class="col stag">
+<div class="card pad" style="--d:0"><div class="chead">${ICON("chart",18)}<h3>آمار عملکرد</h3></div>
+<div class="pstat"><span>نرخ پذیرش پیشنهاد</span><b style="color:var(--tealL)">${fmt(acc.pct)}٪</b></div>
+<div class="pstat"><span>میانگین زمان پاسخ</span><b>۱۲ دقیقه</b></div>
+<div class="pstat"><span>کارهای موفق</span><b>${fmt(p.jobsDone)}</b></div>
+<div class="pstat"><span>تکمیل پروفایل</span><b style="color:var(--brandSoft)">${fmt(completeness())}٪</b></div>
+<div class="pstat"><span>امتیاز کیفیت کل</span><b style="color:var(--violetL)">${fmt(overallScore())} از ۱۰۰</b></div></div>
+<div class="card pad" style="--d:1"><div class="chead">${ICON("bell",18)}<h3>تنظیمات اعلان</h3></div>
+<div class="pref"><div class="pl"><b>پیامک سفارش جدید</b><span>اطلاع‌رسانی پیامکی برای سفارش‌های فوری</span></div><button class="sw" role="switch" aria-checked="${S.settings.smsNew}" data-act="pref" data-k="smsNew" aria-label="پیامک"><span class="knob"></span></button></div>
+<div class="pref"><div class="pl"><b>اعلان صوتی</b><span>صدای کوتاه برای رویدادهای مهم پنل</span></div><button class="sw" role="switch" aria-checked="${S.settings.sound}" data-act="sound" aria-label="صدا"><span class="knob"></span></button></div>
+<div class="pref"><div class="pl"><b>گزارش هفتگی</b><span>خلاصه درآمد و عملکرد هر هفته</span></div><button class="sw" role="switch" aria-checked="${S.settings.weekly}" data-act="pref" data-k="weekly" aria-label="گزارش"><span class="knob"></span></button></div></div>
+<div class="card pad" style="--d:2"><div class="chead">${ICON("crown2",18)}<h3>اشتراک فعال</h3></div>
+<div class="pstat"><span>پلن</span><b style="color:${curPlan().c}">${curPlan().name}</b></div>
+<div class="pstat"><span>سقف افزایش</span><b>${faStr(planPct())}٪</b></div>
+<div class="pstat"><span>اعتبار</span><b>${fmt(planDaysLeft())} روز</b></div>
+<button class="btn v sm" style="margin-top:11px;width:100%" data-act="nav" data-view="plans">${ICON("crown2",14)} مدیریت اشتراک</button></div>
+</div></div>`}
+function hourOpts(sel){let h="";for(let i=6;i<=23;i++){const v=String(i).padStart(2,"0")+":00";h+=`<option value="${v}" ${sel===v?"selected":""}>${faStr(v)}</option>`}return h}
+function skillList(){return U.pTmp.skills.map((s,i)=>`<span class="skill">${esc(s)}<button data-act="delSkill" data-i="${i}" aria-label="حذف">${ICON("x",11)}</button></span>`).join("")||'<span style="font-size:12px;color:var(--mut)">مهارتی اضافه نشده.</span>'}
+function refreshAvPick(){const pv=$("#avPrev");if(pv)pv.innerHTML=avInner(U.pTmp.avatar);$$("#presets .preb").forEach((b,i)=>b.classList.toggle("on",U.pTmp.avatar.type==="preset"&&U.pTmp.avatar.id===i))}
+function editProfileModal(){U.pTmp=JSON.parse(JSON.stringify(S.profile));
+openModal(`<div class="mhead">${ICON("edit",20)}<h3>ویرایش پروفایل</h3><button class="ibtn" data-act="closeModal" aria-label="بستن">${ICON("x",16)}</button></div>
+<div class="mbody">
+<div class="avpick"><div class="avprev" id="avPrev">${avInner(U.pTmp.avatar)}</div>
+<div class="avopts"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn gh sm" data-act="uploadAv">${ICON("upload",14)} آپلود تصویر</button>${U.pTmp.avatar.type==="upload"?`<button class="btn gh sm" data-act="pickAv" data-i="0">${ICON("undo",14)} تصویر پیش‌فرض</button>`:""}</div>
+<div class="presets" id="presets">${AV.map((_,i)=>`<button class="preb ${U.pTmp.avatar.type==="preset"&&U.pTmp.avatar.id===i?"on":""}" data-act="pickAv" data-i="${i}" aria-label="تصویر ${i+1}">${avatarSVG(i)}</button>`).join("")}</div>
+<span class="avhint">JPG یا PNG تا ۲ مگابایت؛ تصویر مربع برش می‌خورد. عکس واقعی، تکمیل پروفایل را به ۱۰۰٪ می‌رساند.</span></div></div>
+<div class="fgrid">
+<div class="frow"><label for="pfName">نام و نام خانوادگی</label><input class="inp" id="pfName" value="${esc(U.pTmp.name)}"></div>
+<div class="frow"><label for="pfTitle">عنوان تخصص</label><input class="inp" id="pfTitle" value="${esc(U.pTmp.title)}"></div>
+<div class="frow"><label for="pfPhone">شماره موبایل</label><input class="inp num ltr" id="pfPhone" inputmode="numeric" value="${U.pTmp.phone}"></div>
+<div class="frow"><label for="pfArea">محدوده فعالیت</label><input class="inp" id="pfArea" value="${esc(U.pTmp.area)}"></div>
+<div class="frow"><label for="pfFrom">شروع ساعت کاری</label><div class="selw">${ICON("chevD",15)}<select class="inp" id="pfFrom">${hourOpts(U.pTmp.hours[0])}</select></div></div>
+<div class="frow"><label for="pfTo">پایان ساعت کاری</label><div class="selw">${ICON("chevD",15)}<select class="inp" id="pfTo">${hourOpts(U.pTmp.hours[1])}</select></div></div></div>
+<div class="frow"><label for="pfBio">درباره من</label><textarea class="inp" id="pfBio" maxlength="300">${esc(U.pTmp.bio)}</textarea><span class="counter" id="bioCnt">${fmt(U.pTmp.bio.length)} / ۳۰۰</span></div>
+<div class="frow"><label>مهارت‌ها (حداکثر ۸)</label><div id="skList" style="display:flex;gap:8px;flex-wrap:wrap">${skillList()}</div>
+<div class="skedit"><input class="inp" id="skInp" placeholder="مهارت جدید… (Enter)"><button class="btn gh" data-act="addSkill">${ICON("plus",15)}</button></div></div>
+<div class="err hidden" id="pfErr">${ICON("alert",14)}<span></span></div>
+</div><div class="mfoot"><button class="btn p" data-act="saveProfile">${ICON("check",16)} ذخیره تغییرات</button><button class="btn gh" data-act="closeModal">انصراف</button></div>`,"wide")}
+function addSkill(){const i=$("#skInp");if(!i||!U.pTmp)return;const v=i.value.trim();if(!v)return;
+if(U.pTmp.skills.length>=8){toast("warn","حداکثر ۸ مهارت می‌توانید ثبت کنید.");return}
+if(U.pTmp.skills.includes(v)){toast("info","این مهارت قبلاً ثبت شده.");return}
+U.pTmp.skills.push(v);i.value="";$("#skList").innerHTML=skillList();i.focus();beep(SND.tick)}
+function saveProfile(){if(!U.pTmp)return;
+const name=$("#pfName").value.trim(),title=$("#pfTitle").value.trim(),phone=String(parseNum($("#pfPhone").value)).padStart(11,"0"),area=$("#pfArea").value.trim(),bio=$("#pfBio").value.trim(),err=$("#pfErr");
+const bad=(m,s)=>{err.classList.remove("hidden");err.querySelector("span").textContent=m;if(s){$(s).classList.add("bad");$(s).focus()}beep(SND.err)};
+$$(".modal .inp").forEach(i=>i.classList.remove("bad"));
+if(!name)return bad("نام را وارد کنید.","#pfName");
+if(!title)return bad("عنوان تخصص را وارد کنید.","#pfTitle");
+if(!/^09\d{9}$/.test(phone))return bad("شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود.","#pfPhone");
+if(!area)return bad("محدوده فعالیت را وارد کنید.","#pfArea");
+const before=completeness();
+Object.assign(S.profile,{name,title,phone,area,bio,avatar:U.pTmp.avatar,skills:U.pTmp.skills,hours:[$("#pfFrom").value,$("#pfTo").value]});
+logAct("user","#0FA3A3","پروفایل به‌روزرسانی شد");beep(SND.send);save();closeModal();renderChrome();renderView();
+toast("success","پروفایل شما به‌روزرسانی شد.");
+if(before<100&&completeness()===100){confetti(innerWidth/2,innerHeight/2);toast("success","🎉 پروفایل شما ۱۰۰٪ کامل شد!");notify("system","پروفایل شما کامل شد؛ نشان «متخصص تأییدشده» فعال است.")}}
+$("#avFile").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0];e.target.value="";if(!f||!U.pTmp)return;
+if(!f.type.startsWith("image/")){toast("danger","فقط فایل تصویری مجاز است.");return}
+if(f.size>2.5*1024*1024){toast("danger","حجم تصویر باید کمتر از ۲ مگابایت باشد.");return}
+const rd=new FileReader();rd.onload=()=>{const img=new Image();img.onload=()=>{try{
+const side=Math.min(img.width,img.height),cv=document.createElement("canvas");cv.width=cv.height=256;
+const cx=cv.getContext("2d");cx.fillStyle="#0E1830";cx.fillRect(0,0,256,256);
+cx.drawImage(img,(img.width-side)/2,(img.height-side)/2,side,side,0,0,256,256);
+U.pTmp.avatar={type:"upload",data:cv.toDataURL("image/jpeg",.86)};refreshAvPick();beep(SND.tick);
+toast("success","تصویر آماده شد؛ برای اعمال، «ذخیره تغییرات» را بزنید.")}catch(_){toast("danger","پردازش تصویر ممکن نشد.")}};
+img.onerror=()=>toast("danger","تصویر خوانده نشد.");img.src=rd.result};
+rd.onerror=()=>toast("danger","خواندن فایل ممکن نشد.");rd.readAsDataURL(f)});
+function resetData(){confirmModal("بازنشانی داده‌ها","همه تغییرات شما (پروفایل، نرخ‌ها، سفارش‌ها، اشتراک و کیف پول) پاک و داده‌های نمونه بازیابی می‌شود. این کار قابل بازگشت نیست.","بازنشانی کن",()=>{
+Object.values(decT).forEach(clearTimeout);for(const k in decT)delete decT[k];clearTimeout(simT);
+try{localStorage.removeItem(LS)}catch(e){}
+S=seed();Object.assign(U,{view:"dashboard",filter:"all",q:"",sort:"new",urgent:false,preset:"",freshId:null,chartMode:"week",notifOpen:false,settleMode:"team",rateQ:""});
+U.sel.clear();U.drawerId=null;U.editing=false;U.draft=null;
+$("#dwrap").classList.remove("open");persist();renderChrome();renderView();lock();
+S.orders.filter(o=>o.status==="quoted").forEach(o=>scheduleDec(o.id,15000+Math.random()*15000));queueSim(true);
+toast("success","داده‌های نمایشی بازنشانی شد.")})}
+
+/* ═══════════ 21. LIVE SIM ═══════════ */
+let simT=null;
+function queueSim(first){clearTimeout(simT);if(S.poolIdx>=S.pool.length)return;
+simT=setTimeout(()=>{if(S.settings.available)spawn();queueSim()},first?24000:42000+Math.random()*26000)}
+function spawn(){const tpl=S.pool[S.poolIdx];if(!tpl)return;S.poolIdx++;
+const o=JSON.parse(JSON.stringify(tpl));o.created=now();o.status="new";S.orders.unshift(o);U.freshId=o.id;
+setTimeout(()=>{if(U.freshId===o.id)U.freshId=null},5200);
+notify("order","سفارش جدید «"+o.title+"» در "+o.area+" ثبت شد.",o.id);
+logAct("bolt","#FFAE1A","سفارش جدید «"+o.title+"» دریافت شد");beep(SND.new);save();refresh();
+toast("info","سفارش جدید: <b>"+esc(o.title)+"</b> · "+esc(o.area),{label:"مشاهده",fn:()=>{setView("orders");openDrawer(o.id)}})}
+
+/* ═══════════ 22. EVENTS ═══════════ */
+document.addEventListener("click",e=>{
+const el=e.target.closest("[data-act]");
+if(!e.target.closest("#np")&&!e.target.closest("#bellBtn")&&U.notifOpen){U.notifOpen=false;renderNP()}
+if(!el)return;const a=el.dataset.act,id=el.dataset.id;
+switch(a){
+case"nav":setView(el.dataset.view);break;
+case"menu":document.body.classList.add("nav");lock();break;
+case"closeNav":document.body.classList.remove("nav");lock();break;
+case"rail":{const on=!document.documentElement.classList.contains("rail");document.documentElement.classList.toggle("rail",on);try{localStorage.setItem("zv_wrk_rail",on?"1":"0")}catch(_){}break}
+case"theme":{const t=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem("zv_wrk_theme",t)}catch(_){}renderChrome();renderView();beep(SND.tick);break}
+case"sound":S.settings.sound=!S.settings.sound;save();renderChrome();if(U.view==="profile")renderView();if(S.settings.sound)beep(SND.pop);toast("info",S.settings.sound?"اعلان صوتی روشن شد.":"اعلان صوتی خاموش شد.");break;
+case"bell":U.notifOpen=!U.notifOpen;renderNP();break;
+case"notifAll":S.notifications.forEach(n=>n.read=true);save();renderChrome();break;
+case"notifItem":{const n=S.notifications.find(x=>x.id===el.dataset.nid);if(n){n.read=true;save();U.notifOpen=false;renderChrome();
+if(n.orderId&&S.orders.find(o=>o.id===n.orderId)){setView("orders");openDrawer(n.orderId)}else if(n.type==="plan")setView("plans")}break}
+case"editProfile":editProfileModal();break;
+case"closeModal":closeModal();break;
+case"confirmYes":{const cb=U.confirmCb;closeModal();if(cb)cb();break}
+case"saveProfile":saveProfile();break;
+case"pickAv":if(U.pTmp){U.pTmp.avatar={type:"preset",id:+el.dataset.i};refreshAvPick();beep(SND.tick)}break;
+case"uploadAv":$("#avFile").click();break;
+case"addSkill":addSkill();break;
+case"delSkill":if(U.pTmp){U.pTmp.skills.splice(+el.dataset.i,1);$("#skList").innerHTML=skillList();beep(SND.tick)}break;
+case"avail":S.settings.available=!S.settings.available;save();renderChrome();if(["orders","profile","dashboard"].includes(U.view))renderView();beep(SND.tick);toast("info",S.settings.available?"دریافت سفارش جدید فعال شد؛ آنلاین هستید.":"دریافت سفارش جدید غیرفعال شد.");break;
+case"pref":{const k=el.dataset.k;S.settings[k]=!S.settings[k];save();el.setAttribute("aria-checked",S.settings[k]);beep(SND.tick);break}
+case"supToggle":S.team.isSupervisor=!S.team.isSupervisor;save();el.setAttribute("aria-checked",S.team.isSupervisor);renderView();beep(SND.tick);toast("info",S.team.isSupervisor?"شما سرپرست تیم شدید؛ اختیار نرخ‌گذاری تیمی فعال است.":"نقش شما به عضو تیم تغییر کرد.");break;
+case"reset":resetData();break;
+case"statNew":U.filter="new";U.preset="";setView("orders");break;
+case"filter":U.filter=el.dataset.f;renderOrders();break;
+case"urgToggle":U.urgent=!U.urgent;U.preset="";el.classList.toggle("on",U.urgent);{const p=$("#presetSel");if(p)p.value=""}renderOrders();break;
+case"clearQ":U.q="";{const i=$("#q");if(i){i.value="";i.focus()}$("#qclear").classList.add("hidden")}renderOrders();break;
+case"clearFilters":Object.assign(U,{q:"",filter:"all",urgent:false,preset:"",sort:"new"});renderView();break;
+case"selOrder":if(U.sel.has(id))U.sel.delete(id);else U.sel.add(id);beep(SND.tick);renderOrders();break;
+case"selAll":{const l=filtered(),all=l.length&&l.every(o=>U.sel.has(o.id));l.forEach(o=>all?U.sel.delete(o.id):U.sel.add(o.id));beep(SND.tick);renderOrders();break}
+case"clearSel":U.sel.clear();renderOrders();break;
+case"bulkDecline":bulkDecline();break;
+case"openOrder":openOrder(id);break;
+case"closeDrawer":closeDrawer();break;
+case"quickP":setPrice(+el.dataset.v);beep(SND.tick);break;
+case"stepQ":setPrice(U.draft.price+(+el.dataset.dir)*stepVal(U.draft.price));beep(SND.tick);break;
+case"tpl":{const t=TPL[+el.dataset.i];if(U.draft)U.draft.note=t;const ta=$("#qn");if(ta)ta.value=t;break}
+case"warToggle":if(U.draft){U.draft.warOn=!U.draft.warOn;el.setAttribute("aria-checked",U.draft.warOn);const s=$("#qwd");if(s)s.disabled=!U.draft.warOn;beep(SND.tick)}break;
+case"submitQuote":submitQuote(id);break;
+case"editQuote":{const o=S.orders.find(x=>x.id===id);if(o){U.editing=true;U.draft=makeDraft(o);renderDrawer()}break}
+case"cancelEdit":U.editing=false;{const o=S.orders.find(x=>x.id===U.drawerId);if(o)U.draft=makeDraft(o)}renderDrawer();break;
+case"withdraw":withdraw(id);break;
+case"startWork":startWork(id);break;
+case"finishWork":finishWork(id,e);break;
+case"attOpen":{const k=el.dataset.kind;openModal(`<div class="mhead">${ICON("camera",19)}<h3>${ATT_CAP[k]||"تصویر محل"}</h3><button class="ibtn" data-act="closeModal" aria-label="بستن">${ICON("x",16)}</button></div><div class="lbsvg">${sketch(k)}</div><div class="lbcap">تصویر ارسالی مشتری · برای بستن، بیرون تصویر کلیک کنید</div>`,"lb");break}
+case"svcStep":{const s=S.services.find(x=>x.id===id);if(s){setRate(id,s.myRate+(+el.dataset.dir)*stepVal(s.myRate));beep(SND.tick)}break}
+case"svcToggle":svcToggle(id);break;
+case"svcDel":svcDel(id);break;
+case"svcAdd":svcAddModal();break;
+case"svcAddSave":svcAddSave();break;
+case"bulkPct":bulkPct(+el.dataset.p);break;
+case"toCeiling":toCeiling();break;
+case"chartMode":U.chartMode=el.dataset.m;renderView();break;
+case"settleMode":U.settleMode=el.dataset.m;renderView();break;
+case"exportSettle":exportSettle();break;
+case"buyPlan":buyModal(el.dataset.plan);break;
+case"renew":buyModal(S.plan==="free"?"pro":S.plan);break;
+case"upgrade":{const s=S.services.find(x=>x.id===el.dataset.svc);const g=s?gateOf(s):GATES[3];const np=PLANS.find(x=>x.pct>=g.pct&&x.pct>planPct())||PLANS[3];buyModal(np.id);break}
+case"buyCycle":if(U.buy){U.buy.cycle=+el.dataset.c;updateBuy();beep(SND.tick)}break;
+case"buyScope":if(U.buy){U.buy.scope=el.dataset.s;updateBuy();beep(SND.tick)}break;
+case"buyMethodSwitch":{const m=$("#buyMethod");if(m){m.value="درگاه پرداخت";U.buy.method="درگاه پرداخت";updateBuy()}break}
+case"buyConfirm":buyConfirm();break;
+case"topup":topupModal(+el.dataset.need);break;
+case"topupGo":{const amt=parseNum($("#tuAmt").value);if(amt<100000){toast("danger","حداقل مبلغ شارژ ۱۰۰٬۰۰۰ تومان است.");beep(SND.err);return}
+const old=S.wallet;S.wallet+=amt;logAct("wallet","#46D07C","کیف پول "+money(amt)+" شارژ شد");notify("pay","مبلغ "+money(amt)+" به کیف پول شما اضافه شد.");
+beep(SND.pay);save();closeModal();renderChrome();animWallet(old,S.wallet);confetti(innerWidth/2,innerHeight/2);
+toast("success","کیف پول شارژ شد.");if(U.view==="plans")renderView();setTimeout(()=>buyModal(S.plan==="free"?"pro":S.plan),320);break}
+case"downgrade":downgrade();break;
+case"toastAct":{const fn=toastActs[el.dataset.tid];dismissToast(el.dataset.tid);if(fn)fn();break}
+case"toastClose":dismissToast(el.dataset.tid);break}});
+document.addEventListener("input",e=>{const t=e.target;
+if(t.id==="q"){U.q=t.value;$("#qclear").classList.toggle("hidden",!U.q);renderOrders();return}
+if(t.id==="rateQ"){U.rateQ=t.value;const l=$("#svcList");if(l){const q=norm(U.rateQ),list=S.services.filter(s=>!q||norm(s.name+" "+CATS[s.cat].label).includes(q));
+l.innerHTML=list.length?list.map(s=>svcRow(s)).join(""):`<div class="card empty">${emptySVG()}<h4>خدمتی یافت نشد</h4></div>`}return}
+if(t.id==="qp"){setPrice(parseNum(t.value));return}
+if(t.id==="qRange"){setPrice(+t.value);return}
+if(t.id==="qn"){if(U.draft)U.draft.note=t.value;return}
+if(t.id==="pfBio"){const c=$("#bioCnt");if(c)c.textContent=fmt(t.value.length)+" / ۳۰۰";return}
+if(t.id==="comIn"){S.commission=+t.value;const v=$("#comVal"),n=$("#comNet");if(v)v.textContent=faStr(S.commission)+"٪";if(n)n.textContent=money(netOf(1000000));save();return}
+if(t.dataset&&t.dataset.rate){const s=S.services.find(x=>x.id===t.dataset.rate);if(s){const v=parseNum(t.value);s.myRate=v;
+const f=$(`[data-fmt="${s.id}"]`);if(f)f.innerHTML=money(v)+'<span class="tick2">✓</span>';save()}return}});
+document.addEventListener("change",e=>{const t=e.target;
+if(t.id==="sortSel"){U.sort=t.value;renderOrders();return}
+if(t.id==="presetSel"){U.preset=t.value;
+if(t.value==="urgentToday"){U.urgent=true;U.sort="urgent";U.filter="all"}
+else if(t.value==="near"){U.urgent=false;U.sort="near";U.filter="all"}
+else if(t.value==="rich"){U.urgent=false;U.sort="budget";U.filter="all"}else U.urgent=false;
+const s=$("#sortSel");if(s)s.value=U.sort;const u=$("#urgChip");if(u)u.classList.toggle("on",U.urgent);renderOrders();return}
+if(t.id==="qQty"){setQty(parseNum(t.value));return}
+if(t.id==="qh"){if(U.draft)U.draft.hrs=t.value;return}
+if(t.id==="qwd"){if(U.draft)U.draft.warDays=+t.value;return}
+if(t.id==="buyMembers"){if(U.buy){U.buy.members=+t.value;updateBuy()}return}
+if(t.id==="buyMethod"){if(U.buy){U.buy.method=t.value;updateBuy()}return}});
+document.addEventListener("focusout",e=>{const t=e.target;
+if(t.dataset&&t.dataset.rate){const s=S.services.find(x=>x.id===t.dataset.rate);if(s){setRate(s.id,s.myRate);t.value=s.myRate;updateRateSummary()}return}
+if(t.id==="qp"&&U.draft){const b=bounds();if(b){U.draft.price=clamp(U.draft.price,b.lo,b.hi);t.value=U.draft.price;updateFee()}return}});
+document.addEventListener("keydown",e=>{
+if((e.ctrlKey||e.metaKey)&&String(e.key).toLowerCase()==="b"){const tg=(e.target.tagName||"").toLowerCase();
+if(tg==="input"||tg==="textarea"||e.target.isContentEditable)return;e.preventDefault();document.getElementById("railBtn")?.click();return}
+if(e.key==="Escape"){if($("#mwrap").classList.contains("open"))closeModal();else if(U.drawerId)closeDrawer();
+else if(document.body.classList.contains("nav")){document.body.classList.remove("nav");lock()}
+else if(U.notifOpen){U.notifOpen=false;renderNP()}return}
+if(e.key==="Enter"&&e.target.id==="skInp"){e.preventDefault();addSkill();return}
+if(e.key==="Enter"&&e.target.classList&&e.target.classList.contains("oc")){openOrder(e.target.dataset.id);return}
+if(e.key==="/"&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)&&U.view==="orders"){e.preventDefault();const i=$("#q");if(i)i.focus()}});
+document.addEventListener("mouseover",e=>{const leg=e.target.closest("[data-leg]");if(!leg)return;$$("#donut [data-seg]").forEach(g=>g.classList.toggle("dim",g.dataset.seg!==leg.dataset.leg))});
+document.addEventListener("mouseout",e=>{if(!e.target.closest("[data-leg]"))return;$$("#donut [data-seg]").forEach(g=>g.classList.remove("dim"))});
+document.addEventListener("dragstart",e=>{const g=e.target.closest("[data-drag]");if(!g)return;U.dragSvc=g.dataset.drag;
+e.dataTransfer.effectAllowed="move";try{e.dataTransfer.setData("text/plain",U.dragSvc)}catch(_){}});
+document.addEventListener("dragover",e=>{const r=e.target.closest("[data-row]");if(!r||!U.dragSvc)return;e.preventDefault();
+$$(".svc.over").forEach(x=>x.classList.remove("over"));r.classList.add("over")});
+document.addEventListener("drop",e=>{const r=e.target.closest("[data-row]");if(!r||!U.dragSvc)return;e.preventDefault();
+const f=S.services.findIndex(s=>s.id===U.dragSvc),t=S.services.findIndex(s=>s.id===r.dataset.row);
+if(f>=0&&t>=0&&f!==t){const[m]=S.services.splice(f,1);S.services.splice(t,0,m);save();renderView();beep(SND.tick)}
+U.dragSvc=null;$$(".svc.over").forEach(x=>x.classList.remove("over"))});
+document.addEventListener("dragend",()=>{U.dragSvc=null;$$(".svc.over").forEach(x=>x.classList.remove("over"))});
+window.addEventListener("resize",()=>{if(U.view==="dashboard")bindChart()});
+window.addEventListener("beforeunload",persist);
+
+/* ═══════════ 23. BOOT ═══════════ */
+document.head.insertAdjacentHTML("beforeend",`<style>
+.avb svg,.avb img{width:100%;height:100%;display:block;object-fit:cover}
+.svci .rel{display:block}
+.nphead .btn{margin-inline-start:auto}
+.pwrap .stp.plus{display:grid}
+.feer .pos{color:var(--greenL)}
+.badge.b-gray{color:var(--mut);background:var(--surf3);border-color:var(--line)}
+</style>`);
+(function init(){
+try{const t=localStorage.getItem("zv_wrk_theme");if(t)document.documentElement.dataset.theme=t}catch(e){}
+try{if(localStorage.getItem("zv_wrk_rail")==="1")document.documentElement.classList.add("rail")}catch(e){}
+S=load();renderChrome();renderView();
+S.orders.filter(o=>o.status==="quoted").forEach(o=>scheduleDec(o.id,15000+Math.random()*15000));
+queueSim(true);
+})();
+</script>
+</body>
+</html>
